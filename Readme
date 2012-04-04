@@ -1,0 +1,57 @@
+
+
+Read
+List
+rm
+
+cp
+mv
+link
+add
+cat
+
+
+Find.c: question how to treat word and search_term upon leaving - free???
+
+
+When Free called from Rm,c  check that the pointer in the main structure is NULL.
+
+		for (i=0; i<founds; i++){
+			Tmp1 = Found_Nodes[i]->List;
+			if ( (rmnodes = rm_list(&Tmp1)) > 0){
+				rm_tot_nodes = rm_tot_nodes + rmnodes;
+			}
+
+
+
+1. check if pointer List is DIR or node. If DIR, can not use it in rm,
+   find, add etc.
+
+2. rm function, options --recursive (all items in DIR), --level (all
+   items in dir at first level), --Number, --Size, --Type
+
+3. Start writing helps for this function (groff mdoc)
+
+
+5. KO this scenario:*  /*
+     * can not remove this DIR, it is not empty.
+     * this situation happens in --IGNORE if DIR contains items which
+   are all ignored
+     * and algorithm tries to then delete DIR
+     */*         --------------------------- *  if((*List)->ndim != 0){
+   /*
+     * can not remove this DIR, it is not empty.
+     * this situation happens in --IGNORE if DIR contains items which
+   are all ignored
+     * and algorithm tries to then delete DIR
+     */
+                        Warning(" Can not delete DIR, not empty");
+                        return -2;
+                    }*
+
+      printf("Number of removed nodes is %ld\n", Rm(&Tmpnode ,
+   "--recursive", "--IGNOR", "BBB_DATA_DADA", (char *)NULL) ); 
+
+
+
+ 6. KO args_num in long_opt call in Find c etc.
