@@ -2,6 +2,7 @@
  * function frees memory of the node 
  * copyright ï¿½ 2012 Adam Jirasek
  *
+ *
  */
  
 #include "Header.h"
