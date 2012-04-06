@@ -1,42 +1,4 @@
 
-/*                                                                     
-       All rights reserved.  Unpublished, all rights reserved under  
-       copyright law and international treaty.  Use of a copyright   
-       notice is precautionary only and does not imply publication   
-       or disclosure.                                                
-                                                                     
-       Permission to use, copy, modify and distribute this software  
-       for any non-commercial purpose and without fee is hereby      
-       granted, provided the Adam Jirasek copyright notice appear on all 
-       copies of the software. The Adam Jirasek name or Logo may not be  
-       used in any advertising or publicity pertaining to the use    
-       of the software without the written permission of Adam Jirasek.                                                  
-                                                                     
-       Permission to use, copy, modify and distribute this software  
-       for any commercial purpose requires a fee to be paid to       
-       Adam Jirasek. Once the fee is received by Adam Jirasek    
-       the latest version of the software will be delivered and a    
-       license will be granted for use within an enterprise,         
-       provided the Adam Jirasek copyright notice appear on all copies   
-       of the software. The Adam Jirasek or Logo may not be used    
-       in any advertising or publicity pertaining to the use of the  
-       software without the written permission of Adam Jirasek                                                  
-                                                                     
-       Adam Jirasek makes no warranty or representations     
-       about the suitability of the software for any purpose. It is  
-       provided "AS IS" without any expressed or implied warranty,   
-       including the implied warranties of merchantability, fitness  
-       for a particular purpose and non-infringement. Adam Jirasek
-       shall not be liable for any direct, indirect,     
-       special or consequential damages resulting from the loss of   
-       use, data or projects, whether in an action of contract or    
-       tort, arising out of or in connection with the use or         
-       performance of this software                                  
-                                                                     
-        Copyright (C) 2012 Adam Jirasek.                 
-*/                            
-
-
 /*
  * function frees memory of the node 
  * copyright ï¿½ 2012 Adam Jirasek

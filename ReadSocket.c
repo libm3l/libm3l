@@ -9,23 +9,26 @@
 
 #include "FunctionsPrt.h"
 #include "udf_rm.h"
-#include "ReadDescriptor.h"
+#include "ReadSocket.h"
 
-static int read_data_line(node_t **, tmpstruct_t, FILE *);
-static node_t *read_dir_data(tmpstruct_t , FILE *);
-static node_t *read_data(FILE *);
+static int read_socket_data_line(node_t **, tmpstruct_t, int);
+static node_t *read_socket_dir_data(tmpstruct_t , int);
+static node_t *read_socket_data(int);
 
 static char *pc, buff[MAXLINE];
 static size_t ngotten;
 
 /*
- * Function read just one line from the file, disregarding comments line
+ * Function read just one line from a socket, disregarding comments line
  * It identifies if the line is a header of DATA or DIR list
  * If DATA type of list it allocates a node_t and calls ReadDataLine which reads the
  * actual conent of the list
  * If the list if of DIR type, it calls ReadDir routine which reads DIR types of list (recursive calling)
+ * 
+ * NOTE - this function is an exact copy of ReadDescriptor, the only change is replacing the 
+ * FILE * by int and fread by read
  */ 
-node_t *read_file(FILE *fp)
+node_t *read_socket(int descrpt)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t   wc, i, hi;
@@ -69,7 +72,7 @@ node_t *read_file(FILE *fp)
  * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the fiield
  */
 	bzero(buff, strlen(buff));
-	ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+	ngotten = read(descrpt,buff,MAXLINE-1);
 	pc = &buff[0];
 /*
  * process the string, in case it returned anything
@@ -93,7 +96,7 @@ node_t *read_file(FILE *fp)
  * if number of chars in one word exceeds limit, print warning
  */
 				if(i == (MAX_WORD_LENGTH-1))
-					Perror("read_file - word too long");
+					Perror("read_socket - word too long");
 			}
 /*
  * set the last member of the string to \0
@@ -128,7 +131,7 @@ node_t *read_file(FILE *fp)
  * read next chunk of text file, complete the word by the rest from next chunk and put pointer at it's beggining
  */
 				bzero(buff,sizeof(buff));
-				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				ngotten = read(descrpt,buff,MAXLINE-1);
 				pc = &buff[0];
 /*
  * if last character was not space, tab, new line or \0 the buffer did not contain entire word, some of it's part is in the next buffer
@@ -170,7 +173,7 @@ node_t *read_file(FILE *fp)
  */
 
 					printf("ReadDir1 - Number of dimensions is %ld\n", TMPSTR.ndim);
-					if( (Dnode = read_dir_data(TMPSTR, fp)) == NULL)
+					if( (Dnode = read_socket_dir_data(TMPSTR, descrpt)) == NULL)
 						Perror("ReadDirData - ReadDir");
 					printf("ReadDir1 - SUCCESS reading entire dir %s\n", Dnode->name);
 /*
@@ -208,7 +211,7 @@ node_t *read_file(FILE *fp)
  */
 
 
-node_t *read_dir_data(tmpstruct_t TMPSTR, FILE *fp)
+node_t *read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt)
 {
 	size_t i;
 	node_t *Dnode, *Tmpnode, *Pnode;
@@ -227,7 +230,7 @@ node_t *read_dir_data(tmpstruct_t TMPSTR, FILE *fp)
  
 		printf("ReadDirData1 - Reading data set in dir %s number %ld of %ld\n",Dnode->name, i,Dnode->ndim);
 		Tmpnode=NULL;	
-		if ( (Tmpnode = read_data(fp)) == NULL)
+		if ( (Tmpnode = read_socket_data(descrpt)) == NULL)
 			Error("ReadDirData: ReadData");
 
 		printf("ReadDirData1 - After reading data set %s in PAR: %s \n",Tmpnode->name, Dnode->name);
@@ -254,7 +257,7 @@ node_t *read_dir_data(tmpstruct_t TMPSTR, FILE *fp)
 
 
 
-node_t *read_data(FILE *fp)
+node_t *read_socket_data(int descrpt)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t   wc, i, hi;
@@ -282,7 +285,7 @@ node_t *read_data(FILE *fp)
  * if number of chars in one word exceeds limit, print warning
  */
 				if(i == (MAX_WORD_LENGTH-1))
-					Perror("read_file - word too long");
+					Perror("read_socket - word too long");
 			}
 			type[i] = '\0';
 
@@ -307,7 +310,7 @@ node_t *read_data(FILE *fp)
  */
 
 				bzero(buff,sizeof(buff));
-				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				ngotten = read(descrpt,buff,MAXLINE-1);
 
 				pc = &buff[0];
 
@@ -360,7 +363,7 @@ node_t *read_data(FILE *fp)
 /*
  * if type is DIR, read it
  */
-						if( (Pnode = read_dir_data(TMPSTR, fp)) == NULL)
+						if( (Pnode = read_socket_dir_data(TMPSTR, descrpt)) == NULL)
 							Perror("ReadData1 - ReadDir");
 						return Pnode;
 					}
@@ -383,7 +386,7 @@ node_t *read_data(FILE *fp)
 		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
 			Error("Allocate");}
 	
-		if( read_data_line(&Pnode, TMPSTR, fp) != 0)
+		if( read_socket_data_line(&Pnode, TMPSTR, descrpt) != 0)
 			Error("Error reading data");
 
 		if(TMPSTR.dim!=NULL)
@@ -409,7 +412,7 @@ node_t *read_data(FILE *fp)
 
 
 
-int read_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
+int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t i, tot_dim, wc, hi;
@@ -440,7 +443,7 @@ int read_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if number of chars in one word exceeds limit, print warning
  */
 				if(i == (MAX_WORD_LENGTH-1))
-					Perror("read_file - word too long");
+					Perror("read_socket - word too long");
 			}
 			type[i] = '\0';
 
@@ -463,7 +466,7 @@ int read_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read next chunk of text file, complete the word by the rest from next chunk
  */
 				bzero(buff,sizeof(buff));
-				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				ngotten = read(descrpt,buff,MAXLINE-1);
 				pc = &buff[0];
 
 				if(lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0') continue;

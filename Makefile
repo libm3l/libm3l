@@ -12,8 +12,10 @@ Mount.c\
 ReadData.c \
 ReadDir.c \
 ReadDescriptor.c \
+ReadSocket.c \
 Rm.c \
 rm_list.c \
+server_openbindlistensocket.c\
 udf_rm.c \
 Umount.c \
 WriteData.c \

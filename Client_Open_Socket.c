@@ -3,8 +3,12 @@
  * copyright ï¿½ 2012 Adam Jirasek
  */
  
+/*
+ * function opens socket for a client
+ */
 #include "Header.h"
 #include "format_type.h"
+#include "Client_Open_Socket.h"
 
 int cli_open_socket(const char * server_addr, int portno)
 {
