@@ -8,7 +8,7 @@
 #include "FunctionsPrt.h"
 #include "WriteData.h"
 /*
- * routine writes linked list structure to the file
+ * routine writes linked list structure to the int type of descriptor
  */
 int WriteData(node_t *List,  FILE *fp)
 {
