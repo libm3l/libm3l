@@ -11,6 +11,12 @@
 #include "udf_rm.h"
 #include "ReadSocket.h"
 
+#define EXPR       *pc != SEPAR_SIGN
+#define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0'
+#define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' 
+//&& lastchar != SEPAR_SIGN
+
+
 static int read_socket_data_line(node_t **, tmpstruct_t, int);
 static node_t *read_socket_dir_data(tmpstruct_t , int);
 static node_t *read_socket_data(int);
@@ -73,24 +79,40 @@ node_t *read_socket(int descrpt)
  */
 	bzero(buff, strlen(buff));
 	ngotten = read(descrpt,buff,MAXLINE-1);
+	buff[ngotten] = '\0';
+	printf("ngotten is %d\n", ngotten);
+	printf("'%s'\n", buff);
+	
+	exit(0);
+	
 	pc = &buff[0];
 /*
  * process the string, in case it returned anything
  */
+    printf("before );
+
 	while(ngotten)
 	{
 		bzero(type,sizeof(type));
 		i = 0;
 		wc = 0;
 		lastchar = '\0';
+		
+		printf("character2 is %c \n", *pc);
+
 /*
  * read until the end of string
  */
 		while(*pc != '\0'){
+			
+			
+		printf("character is %c \n", *pc);
 /*
  *avoid having empty spaces, tabs, newlines or end of buffer
  */
-			while(*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'){
+			while(EXPR){
+				printf("character1 is %c \n", *pc);
+
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -111,7 +133,7 @@ node_t *read_socket(int descrpt)
  * if the last string in previuous while loop was the end of buff - \0 set indicator of it
  */
 			if(*pc == '\0'){
-				hi =0;
+				hi = 0;
 			}
 			else
 			{
@@ -132,12 +154,13 @@ node_t *read_socket(int descrpt)
  */
 				bzero(buff,sizeof(buff));
 				ngotten = read(descrpt,buff,MAXLINE-1);
+				buff[ngotten] = '\0';
 				pc = &buff[0];
 /*
  * if last character was not space, tab, new line or \0 the buffer did not contain entire word, some of it's part is in the next buffer
  * NOTE - for TCP/IP this is going to be replaced by separator 
  */
-				if(lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0') continue;
+				if(LASTEXPR) continue;
 			}
 /*
  * if word is longer then 0
@@ -186,7 +209,8 @@ node_t *read_socket(int descrpt)
 /*
  * if emtpy spaces and new lines after the word, move pointer
  */
-			if(*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0') pc++;
+//			if(IFEXPR) pc++;
+			pc++;
 /*
  * nullify type char, set counter of chars in word to 0 and set lastchar to \0
  */
@@ -279,7 +303,7 @@ node_t *read_socket_data(int descrpt)
 /*
  *avoid having empty spaces, tabs, newlines or end of buffer 
  */
-			while(*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'){
+			while(EXPR){
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -311,10 +335,10 @@ node_t *read_socket_data(int descrpt)
 
 				bzero(buff,sizeof(buff));
 				ngotten = read(descrpt,buff,MAXLINE-1);
-
+				buff[ngotten] = '\0';
 				pc = &buff[0];
 
-				if(lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0')
+				if(LASTEXPR)
 					continue;
 			}
 
@@ -375,7 +399,7 @@ node_t *read_socket_data(int descrpt)
 				}
 			}
 
-			if(*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0') pc++;
+			if(IFEXPR) pc++;
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';
@@ -437,7 +461,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  * read until the end of string
  */
 		while(*pc != '\0'){
-			while(*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'){ /*avoid having empty spaces, tabs, newlines or end of buffer */
+			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -467,9 +491,10 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  */
 				bzero(buff,sizeof(buff));
 				ngotten = read(descrpt,buff,MAXLINE-1);
+				buff[ngotten] = '\0';
 				pc = &buff[0];
 
-				if(lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0') continue;
+				if(LASTEXPR) continue;
 			}
 /*
  * if word is longer then 0
@@ -488,7 +513,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				if( wc == tot_dim ) return 0;
 			}
 
-			if(*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0') pc++;
+			if(IFEXPR) pc++;
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';

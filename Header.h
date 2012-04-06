@@ -36,7 +36,7 @@
 // #define MAXLINE  2048               /* Max length of buffer */
 #define MAXLINE  100
 #define MAX_WORD_LENGTH  60               /* Max length of word in buffer for TCP/IP   */
-#define SEPAR_SIGN ","              /* Separation symbol between words in TCP/IP */
+#define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
 /*
  * node_t data specification

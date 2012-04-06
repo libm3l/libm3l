@@ -76,7 +76,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 					if(strncmp(Tmpnode->type, "DIR", 3) == 0)
 					{
 						bzero(buff, sizeof(buff));
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%sSEPAR_SIGN%sSEPAR_SIGN%ldSEPAR_SIGN",Tmpnode->name, Tmpnode->type, Tmpnode->ndim)) < 0)
+						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type,SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
 	      					        Perror("snprintf");
 						buff[n] = '\0';
 						if( write_buffer(buff, socket_descrpt) == 0 )
@@ -88,7 +88,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
  * write only FILE data, if DIR is empty, it will be written in snippet above
  */
 						bzero(buff, sizeof(buff));
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%sSEPAR_SIGN%sSEPAR_SIGN%ldSEPAR_SIGN",Tmpnode->name, Tmpnode->type, Tmpnode->ndim)) < 0)
+						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type, SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
 	      					        Perror("snprintf");
 						buff[n] = '\0';
 						if( write_buffer(buff, socket_descrpt) == 0 )
@@ -100,7 +100,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 						for(i=0; i<Tmpnode->ndim; i++){
 
 							bzero(buff, sizeof(buff));
-							if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ldSEPAR_SIGN",Tmpnode->fdim[i])) < 0)
+							if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c",Tmpnode->fdim[i], SEPAR_SIGN)) < 0)
 	      						        Perror("snprintf");
 							buff[n] = '\0';
 							if( write_buffer(buff, socket_descrpt) == 0 )
@@ -111,7 +111,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 /*
  * got to new line
  */
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"SEPAR_SIGN")) < 0)
+						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%c", SEPAR_SIGN)) < 0)
 	      						        Perror("snprintf");
 						buff[n] = '\0';
 						if( write_buffer(buff, socket_descrpt) == 0 )
@@ -124,7 +124,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 /*
  * got to new line
  */
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"SEPAR_SIGN")) < 0)
+						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%c", SEPAR_SIGN)) < 0)
 	      						        Perror("snprintf");
 						buff[n] = '\0';
 						if( write_buffer(buff, socket_descrpt) == 0 )
@@ -144,7 +144,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
  * node has children, it is type DIR, write its head 
  */
 		bzero(buff, sizeof(buff));
-		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%sSEPAR_SIGN%sSEPAR_SIGN%ldSEPAR_SIGN",List->name, List->type, List->ndim)) < 0)
+		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",List->name, SEPAR_SIGN, List->type, SEPAR_SIGN, List->ndim, SEPAR_SIGN)) < 0)
 	              Perror("snprintf");
 		buff[n] = '\0';
 		if( write_buffer(buff, socket_descrpt) == 0 )
@@ -160,16 +160,16 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 		};
 	}
 /*
- * SEND LAST DATA TO SOCKET, do not forget to send EOMB instruction
+ * SEND LAST DATA TO SOCKET, do not forget to send EOMB instruction if ending initial call (ie call == 1)
  */
-
-	bzero(buff, sizeof(buff));
-	if( (n=snprintf(buff, MAX_WORD_LENGTH,EOFbuff)) < 0)
-		Perror("snprintf");
-	buff[n] = '\0';
-	if( write_buffer(buff, socket_descrpt) == 0 )
-		Error("Writing buffer");
-	
+	if(call == 1){
+		bzero(buff, sizeof(buff));
+		if( (n=snprintf(buff, MAX_WORD_LENGTH,EOFbuff)) < 0)
+			Perror("snprintf");
+		buff[n] = '\0';
+		if( write_buffer(buff, socket_descrpt) == 0 )
+			Error("Writing buffer");
+	}
 	return 0;
 }
 
@@ -193,7 +193,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
  * clean buff and write in i-th element of the field
  */
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.ldf[i])) < 0){
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.ldf[i], SEPAR_SIGN)) < 0){
 	      			       	Perror("snprintf");
 					return -1;
 				}
@@ -210,7 +210,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"D",1) == 0){  /* double */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.df[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.df[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -220,7 +220,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"F",1) == 0){  /* float */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.f[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.f[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -293,7 +293,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"ULLI",4) == 0){  /* unsigned long long  int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.ulli[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.ulli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -303,7 +303,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"SLLI",4) == 0){  /* signed long long  int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.slli[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.slli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -313,7 +313,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"ULI",3) == 0){  /* unsigned long int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.uli[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.uli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -323,7 +323,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"USI",3) == 0){  /* unsigned short int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.usi[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.usi[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -333,7 +333,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"SI",2) == 0){  /* short int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.si[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.si[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -343,7 +343,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"UI",2) == 0){  /* unsigned int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.ui[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.ui[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -353,7 +353,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"LI",2) == 0){  /* long  int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.li[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.li[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -363,7 +363,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"I",1) == 0){  /* int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lfSEPAR_SIGN", Tmpnode->data.i[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%d%c", Tmpnode->data.i[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -376,7 +376,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"ST",2) == 0){  /* size_t */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ldSEPAR_SIGN", Tmpnode->data.st[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c", Tmpnode->data.st[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -386,7 +386,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"PTRDF",1) == 0){  /* ptrdf_t */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ldSEPAR_SIGN", Tmpnode->data.ptrdf[i])) < 0)
+				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c", Tmpnode->data.ptrdf[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt) == 0 )
@@ -423,6 +423,7 @@ int write_buffer(const char *buff, int sockfd)
 /*
 * SEND TO SOCKET
 */
+	printf(" buffer is '%s'\n", buffer);
 			if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 				Perror("write()");
 			bzero(buffer, sizeof(buffer));
@@ -438,10 +439,12 @@ int write_buffer(const char *buff, int sockfd)
 /*
 * SEND TO SOCKET
 */
+	printf(" buffer is '%s'\n", buffer);
+
 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 			Perror("write()");
 		bzero(buffer, sizeof(buffer));
 	}
 	
-	return n;
+	return 1;
 }	

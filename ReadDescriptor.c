@@ -11,6 +11,9 @@
 #include "udf_rm.h"
 #include "ReadDescriptor.h"
 
+#define EXPR       *pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'
+#define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0'
+
 static int read_data_line(node_t **, tmpstruct_t, FILE *);
 static node_t *read_dir_data(tmpstruct_t , FILE *);
 static node_t *read_data(FILE *);
@@ -69,7 +72,8 @@ node_t *read_file(FILE *fp)
  * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the fiield
  */
 	bzero(buff, strlen(buff));
-	ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+	ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);	
+	buff[ngotten] = '\0';
 	pc = &buff[0];
 /*
  * process the string, in case it returned anything
@@ -87,7 +91,7 @@ node_t *read_file(FILE *fp)
 /*
  *avoid having empty spaces, tabs, newlines or end of buffer
  */
-			while(*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'){
+			while(EXPR){
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -129,6 +133,7 @@ node_t *read_file(FILE *fp)
  */
 				bzero(buff,sizeof(buff));
 				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				buff[ngotten] = '\0';
 				pc = &buff[0];
 /*
  * if last character was not space, tab, new line or \0 the buffer did not contain entire word, some of it's part is in the next buffer
@@ -183,7 +188,7 @@ node_t *read_file(FILE *fp)
 /*
  * if emtpy spaces and new lines after the word, move pointer
  */
-			if(*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0') pc++;
+			if(IFEXPR) pc++;
 /*
  * nullify type char, set counter of chars in word to 0 and set lastchar to \0
  */
@@ -276,7 +281,7 @@ node_t *read_data(FILE *fp)
 /*
  *avoid having empty spaces, tabs, newlines or end of buffer 
  */
-			while(*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'){
+			while(EXPR){
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -308,7 +313,7 @@ node_t *read_data(FILE *fp)
 
 				bzero(buff,sizeof(buff));
 				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
-
+				buff[ngotten] = '\0';
 				pc = &buff[0];
 
 				if(lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0')
@@ -372,7 +377,7 @@ node_t *read_data(FILE *fp)
 				}
 			}
 
-			if(*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0') pc++;
+			if(IFEXPR) pc++;
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';
@@ -434,7 +439,7 @@ int read_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read until the end of string
  */
 		while(*pc != '\0'){
-			while(*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'){ /*avoid having empty spaces, tabs, newlines or end of buffer */
+			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -464,6 +469,7 @@ int read_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 				bzero(buff,sizeof(buff));
 				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				buff[ngotten] = '\0';
 				pc = &buff[0];
 
 				if(lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0') continue;
@@ -485,7 +491,7 @@ int read_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				if( wc == tot_dim ) return 0;
 			}
 
-			if(*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0') pc++;
+			if(IFEXPR) pc++;
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';

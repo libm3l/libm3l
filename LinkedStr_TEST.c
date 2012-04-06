@@ -13,6 +13,7 @@
 #include "Mount.h"
 #include "Umount.h"
 #include "Cat.h"
+#include "Client_Open_Socket.h"
 
 #define LINESZ 1024
 
@@ -21,7 +22,7 @@ int main(void)
     node_t *Gnode=NULL, *Node, *Tmpnode;
     find_t **FoundNodes;
     
-    int i, count,countgrp;
+    int i, count,countgrp, socketnr;
     size_t founds;
     
     char name[255], type[30];
@@ -43,6 +44,12 @@ int main(void)
    if(Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
 	    	Error("CatData");
 	printf("\n\n\n");
+   
+   
+   
+   socketnr =  cli_open_socket("localhost", 4096);
+   write_to_socket(1, Gnode,  socketnr);
+   exit(0);
    
    
    	   printf("\n\n\n Cat \n\n\n");
