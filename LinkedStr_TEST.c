@@ -49,7 +49,7 @@ int main(void)
    
    socketnr =  cli_open_socket("localhost", 4096);
    write_to_socket(1, Gnode,  socketnr);
-   exit(0);
+   close(socketnr);
    
    
    	   printf("\n\n\n Cat \n\n\n");
@@ -81,6 +81,14 @@ int main(void)
         if(Cat(FoundNodes[0]->List, "-D", "-P", "-L","*", (char *)NULL) != 0)
 	    	Error("CatData");
 	
+	printf("writing to socklet\n");
+
+	sleep(5);
+	
+	   socketnr =  cli_open_socket("localhost", 4096);
+		write_to_socket(1, FoundNodes[0]->List,  socketnr);
+	   close(socketnr);
+
    	 printf("Removing Additional_directory node\n");
 
 	Tmpnode = FoundNodes[0]->List;
