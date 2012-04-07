@@ -11,10 +11,9 @@
 #include "udf_rm.h"
 #include "ReadSocket.h"
 
-#define EXPR       *pc != SEPAR_SIGN
-#define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0'
-#define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' 
-//&& lastchar != SEPAR_SIGN
+#define EXPR       *pc != SEPAR_SIGN && *pc != '\0'
+#define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN 
+#define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN 
 
 
 static int read_socket_data_line(node_t **, tmpstruct_t, int);
@@ -80,16 +79,12 @@ node_t *read_socket(int descrpt)
 	bzero(buff, strlen(buff));
 	ngotten = read(descrpt,buff,MAXLINE-1);
 	buff[ngotten] = '\0';
-	printf("ngotten is %d\n", ngotten);
-	printf("'%s'\n", buff);
-	
-	exit(0);
-	
+		
 	pc = &buff[0];
 /*
  * process the string, in case it returned anything
  */
-    printf("before );
+    printf("before ngotten, %c\n", *pc);
 
 	while(ngotten)
 	{
@@ -97,22 +92,14 @@ node_t *read_socket(int descrpt)
 		i = 0;
 		wc = 0;
 		lastchar = '\0';
-		
-		printf("character2 is %c \n", *pc);
-
 /*
  * read until the end of string
  */
 		while(*pc != '\0'){
-			
-			
-		printf("character is %c \n", *pc);
 /*
  *avoid having empty spaces, tabs, newlines or end of buffer
  */
 			while(EXPR){
-				printf("character1 is %c \n", *pc);
-
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -155,6 +142,8 @@ node_t *read_socket(int descrpt)
 				bzero(buff,sizeof(buff));
 				ngotten = read(descrpt,buff,MAXLINE-1);
 				buff[ngotten] = '\0';
+					printf("'%s'\n", buff);
+
 				pc = &buff[0];
 /*
  * if last character was not space, tab, new line or \0 the buffer did not contain entire word, some of it's part is in the next buffer
@@ -207,10 +196,9 @@ node_t *read_socket(int descrpt)
 			}
 	
 /*
- * if emtpy spaces and new lines after the word, move pointer
+ * if emtpy spaces and new lines and seprar sight (SEPAR_SIGN) and not '\0' after the word, move pointer
  */
-//			if(IFEXPR) pc++;
-			pc++;
+			if(IFEXPR) pc++;
 /*
  * nullify type char, set counter of chars in word to 0 and set lastchar to \0
  */
@@ -300,10 +288,14 @@ node_t *read_socket_data(int descrpt)
  * read until the end of string
  */
 		while(*pc != '\0'){
+			
+			printf(" PC here is %c\n", *pc);
 /*
  *avoid having empty spaces, tabs, newlines or end of buffer 
  */
 			while(EXPR){
+			
+				printf(" PC here1 is %c\n", *pc);
 				type[i++] = *pc++;
 /*
  * if number of chars in one word exceeds limit, print warning
@@ -312,7 +304,7 @@ node_t *read_socket_data(int descrpt)
 					Perror("read_socket - word too long");
 			}
 			type[i] = '\0';
-
+			printf("ReadSocketData - i is %d',   char is '%c'   type is %s  wc is %d\n", i, *pc, type, wc);
 /*
  * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
  * otherwise the buffer ended in the middle of word
@@ -336,10 +328,13 @@ node_t *read_socket_data(int descrpt)
 				bzero(buff,sizeof(buff));
 				ngotten = read(descrpt,buff,MAXLINE-1);
 				buff[ngotten] = '\0';
+					printf("Buffer is: '%s'\n", buff);
+					printf("last char is %c\n",lastchar);
+
 				pc = &buff[0];
 
-				if(LASTEXPR)
-					continue;
+				if(LASTEXPR){
+					printf(" Skipping \n " ); continue;}
 			}
 
 			
@@ -355,7 +350,7 @@ node_t *read_socket_data(int descrpt)
 					bzero(TMPSTR.Name_Of_List,sizeof(TMPSTR.Name_Of_List));
 					if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", type) < 0)
 		   				Perror("snprintf");
-	   				printf("ReadData1 - Name of list is %s\n", TMPSTR.Name_Of_List);
+	   				printf("ReadSocketData - Name of list is %s\n", TMPSTR.Name_Of_List);
 				}
 /*
  * get the type of the list
@@ -364,7 +359,7 @@ node_t *read_socket_data(int descrpt)
 					bzero(TMPSTR.Type,sizeof(TMPSTR.Type));
 					if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", type) < 0)
 		   				Perror("snprintf");
-					printf("ReadData1 - Type of list is %s\n", TMPSTR.Type);
+					printf("ReadSocketData - Type of list is %s\n", TMPSTR.Type);
 				}
 /*
  * get the number, in case of DIR number is a number of items in DIR, in case of DATA, number is a number of dimensions
@@ -372,7 +367,7 @@ node_t *read_socket_data(int descrpt)
 				else if (wc == 3){
 					TMPSTR.ndim = Strol(type);
 					TMPSTR.dim=NULL;
-					printf("ReadData1 - Number of dimensions is %ld\n", TMPSTR.ndim);
+					printf("ReadSocketData - Number of dimensions is %ld\n", TMPSTR.ndim);
 
 /*
  * if type is FILE, allocate field for its dimensions
@@ -388,24 +383,25 @@ node_t *read_socket_data(int descrpt)
  * if type is DIR, read it
  */
 						if( (Pnode = read_socket_dir_data(TMPSTR, descrpt)) == NULL)
-							Perror("ReadData1 - ReadDir");
+							Perror("ReadSocketData - ReadDir");
 						return Pnode;
 					}
 				}
 				else if ( wc > 3 && strncmp(TMPSTR.Type,"DIR",3) != 0){
 					TMPSTR.dim[wc - 4] = Strol(type);
-					printf("ReadData1 - Dimension #  %d is  %d\n", wc - 3, TMPSTR.dim[wc-4]);
+					printf("ReadSocketData - Dimension #  %d is  %d\n", wc - 3, TMPSTR.dim[wc-4]);
 					if( (wc - 3) == TMPSTR.ndim) break;
 				}
 			}
 
 			if(IFEXPR) pc++;
+			printf(" PC is %c\n", *pc);
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';
 		}		
 
-		printf("ReadData1 -  reading data line\n");
+		printf("ReadSocketData -  reading data line\n");
 		
 		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
 			Error("Allocate");}
@@ -419,7 +415,7 @@ node_t *read_socket_data(int descrpt)
 			TMPSTR.dim = NULL;
 		}
 
-		printf("ReadData1 -  success reading data of node %s  -- RETURNIGN\n", Pnode->name);
+		printf("ReadSocketData -  success reading data of node %s  -- RETURNIGN\n", Pnode->name);
 /*
  * Return main list
  */
@@ -462,7 +458,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  */
 		while(*pc != '\0'){
 			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
-				type[i++] = *pc++;
+				type[i++] = *pc++;				
 /*
  * if number of chars in one word exceeds limit, print warning
  */
@@ -484,6 +480,8 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			}
 
 			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); /* NOTE */ 
+				
+//			printf("Last char in READLINE IS %c\n",lastchar);
 			
 			if ( *(pc+hi) == '\0'){
 /*
@@ -492,7 +490,11 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				bzero(buff,sizeof(buff));
 				ngotten = read(descrpt,buff,MAXLINE-1);
 				buff[ngotten] = '\0';
+					printf("'%s'\n", buff);
+
 				pc = &buff[0];
+				
+//				printf(" READLINE buffer is %s\n", buff);
 
 				if(LASTEXPR) continue;
 			}
