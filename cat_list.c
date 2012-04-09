@@ -133,10 +133,10 @@ node_t *Tmp;
 		}
 		printf(" %s \t\t %ld\t", List->name, List->ndim);
 		if(strncmp(List->type,"DIR",3) != 0){
-		maxdim = 0;
+		maxdim = 1;
 			for (i=0; i<List->ndim; i++){
 				printf("%ld   ", List->fdim[i]);
-				maxdim = maxdim + List->fdim[i] ;
+				maxdim = maxdim * List->fdim[i] ;
 			}
 		printf("\n");
 

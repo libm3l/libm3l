@@ -8,9 +8,10 @@
 #include "format_type.h"
 #include "FunctionsPrt.h"
 #include "Write2Socket.h"
+#include "format_conversion_spec.h"
 
 static int write_buffer(const char *, int, int);
-static int write_file_data(node_t *, size_t , int);
+static int write_file_data_intdescprt(node_t *, size_t , int);
 
 static char *pc, buffer[MAXLINE];
 static size_t bitcount;
@@ -120,7 +121,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 /*
  * write data
  */
-						write_file_data(Tmpnode, tot_dim, socket_descrpt);
+						write_file_data_intdescprt(Tmpnode, tot_dim, socket_descrpt);
 
 /*
  * got to new line
@@ -179,7 +180,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 /*
  * function writes actual data of the FILE, need to distinguish between the type of field
  */
-int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
+int write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 {	
 	size_t i, n;
 	char *pc;
@@ -196,7 +197,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
  * clean buff and write in i-th element of the field
  */
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.ldf[i], SEPAR_SIGN)) < 0){
+				if( (n= FCS_W_LD(Tmpnode->data.ldf[i], SEPAR_SIGN)) < 0){
 	      			       	Perror("snprintf");
 					return -1;
 				}
@@ -213,7 +214,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"D",1) == 0){  /* double */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.df[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_D(Tmpnode->data.df[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -223,7 +224,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"F",1) == 0){  /* float */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.f[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_F(Tmpnode->data.f[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -231,64 +232,25 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 			} 
 		}
 /*
- * chars
+ * chars, do not serialize, write as they are
  */
 		else if (strncmp(Tmpnode->type,"SC",2) == 0){  /* signed char */
 /*
  * clean buff and make pointer pointing at its beginning
  */
-			bzero(buff, sizeof(buff));
-			pc = &buff[0];
-/*
- * loop over entire field
- */
-			for (i=0; i<tot_dim; i++){
-/*
- * copy char to buff, once at the end of buff ...
- */
-				*pc++ = Tmpnode->data.sc[i];
-				if(i == MAX_WORD_LENGTH){
-/*
- * set last buff char to \0 and add tu buffer
- */
-					*pc = '\0';
-					if( write_buffer(buff, socket_descrpt,0) == 0 )
-						Error("Writing buffer");
-/*
- * clean buff and make pointer pointing at its beginning
- */
-					bzero(buff, sizeof(buff));
-					pc = &buff[0];
-				}	
-			}
+			pc = &Tmpnode->data.sc[0];
+			if( write_buffer(pc, socket_descrpt,0) == 0 )
+				Error("Writing buffer");
 		}
 		else if(strncmp(Tmpnode->type,"UC",2) == 0){  /* unsigned char */
-			bzero(buff, sizeof(buff));
-			pc = &buff[0];
-			for (i=0; i<tot_dim; i++){
-				*pc++ = Tmpnode->data.uc[i];
-				if(i == MAX_WORD_LENGTH){
-					*pc = '\0';
-					if( write_buffer(buff, socket_descrpt,0) == 0 )
-						Error("Writing buffer");
-					bzero(buff, sizeof(buff));
-					pc = &buff[0];
-				}	
-			}
+			pc = &Tmpnode->data.uc[0];
+			if( write_buffer(pc, socket_descrpt,0) == 0 )
+				Error("Writing buffer");
 		}
 		else if(strncmp(Tmpnode->type,"C",1) == 0){  /* char */
-			bzero(buff, sizeof(buff));
-			pc = &buff[0];
-			for (i=0; i<tot_dim; i++){
-				*pc++ = Tmpnode->data.c[i];
-				if(i == MAX_WORD_LENGTH){
-					*pc = '\0';
-					if( write_buffer(buff, socket_descrpt,0) == 0 )
-						Error("Writing buffer");
-					bzero(buff, sizeof(buff));
-					pc = &buff[0];
-				}	
-			}
+			pc = &Tmpnode->data.c[0];
+			if( write_buffer(pc, socket_descrpt,0) == 0 )
+				Error("Writing buffer");
 		}
 /*
  * integers
@@ -296,7 +258,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"ULLI",4) == 0){  /* unsigned long long  int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.ulli[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_ULLI(Tmpnode->data.ulli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -306,7 +268,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"SLLI",4) == 0){  /* signed long long  int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.slli[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_SLLI(Tmpnode->data.slli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -316,7 +278,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"ULI",3) == 0){  /* unsigned long int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.uli[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_ULI(Tmpnode->data.uli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -326,7 +288,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"USI",3) == 0){  /* unsigned short int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.usi[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_USI(Tmpnode->data.usi[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -336,7 +298,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"SI",2) == 0){  /* short int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.si[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_SI(Tmpnode->data.si[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -346,7 +308,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"UI",2) == 0){  /* unsigned int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.ui[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_UI(Tmpnode->data.ui[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -356,7 +318,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"LI",2) == 0){  /* long  int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%lf%c", Tmpnode->data.li[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_LI(Tmpnode->data.li[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -366,7 +328,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"I",1) == 0){  /* int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%d%c", Tmpnode->data.i[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_I(Tmpnode->data.i[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -379,7 +341,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"ST",2) == 0){  /* size_t */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c", Tmpnode->data.st[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_ST(Tmpnode->data.st[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -389,7 +351,7 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 		else if(strncmp(Tmpnode->type,"PTRDF",1) == 0){  /* ptrdf_t */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c", Tmpnode->data.ptrdf[i], SEPAR_SIGN)) < 0)
+				if( (n=FCS_W_PTRDF(Tmpnode->data.ptrdf[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
 				if( write_buffer(buff, socket_descrpt,0) == 0 )
@@ -401,7 +363,6 @@ int write_file_data(node_t *Tmpnode, size_t tot_dim, int socket_descrpt)
 			Error("Unknown type");
 		}					
 }
-
 /*
  * function writes add data in buff to buffer
  * when the buffer is full, it is written to socket and 
@@ -411,7 +372,6 @@ int write_buffer(const char *buff, int sockfd, int force)
 {
 	size_t n,i;
      
-
 	while(*buff != '\0'){
 		if(bitcount == (MAXLINE-1))
 		{
