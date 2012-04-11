@@ -33,9 +33,24 @@ int main(void)
     FILE *fp;
 
     printf("Going to Fread1\n");
-    
+   
+
+	for (i=0; i<1000000; i++){
+
     if( (Gnode = Fread("TEST.dat"))  == NULL)
       Perror("Linked_test: Fread");
+    
+        printf("\n\n\n Umounting \n\n\n");
+
+	if(Umount(&Gnode) != 1)
+                  Perror("Umount");
+    
+	}    
+    exit(0);
+    
+    
+    
+    for (i=0; i<1000000; i++){
     
 /*
  * loop over list and print it
@@ -50,6 +65,16 @@ int main(void)
    socketnr =  cli_open_socket("localhost", 4096);
    write_to_socket(1, Gnode,  socketnr);
    close(socketnr);
+   
+   
+	}
+
+
+      if(Umount(&Gnode) != 1)
+                  Perror("Umount");
+
+
+ //  }
    
    
    	   printf("\n\n\n Cat \n\n\n");

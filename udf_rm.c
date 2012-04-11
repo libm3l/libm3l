@@ -151,8 +151,10 @@ int Allocate(node_t **Lnode, tmpstruct_t TMPSTR)
 	if ( ( (*Lnode)->name  = (char *)malloc(MAX_NAME_LENGTH* sizeof(char))) == NULL)
 		Perror("malloc");
 
-	if ( ( (*Lnode)->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
-		Perror("malloc");
+	if(strncmp(TMPSTR.Type,"DIR",3) != 0){
+		if ( ( (*Lnode)->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
+			Perror("malloc");
+	}
 /*
  * allocating data in data union (if list is of DATA type)
  */   
@@ -281,8 +283,10 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
 	if ( ( Lnode->name  = (char *)malloc(MAX_NAME_LENGTH* sizeof(char))) == NULL)
 		Perror("malloc");
  
-	if ( ( Lnode->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
-		Perror("malloc");
+	if(strncmp(TMPSTR.Type,"DIR",3) != 0){
+		if ( ( Lnode->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
+			Perror("malloc");
+	}
 /*
  * allocating data in data union (if list is of DATA type)
  */   
