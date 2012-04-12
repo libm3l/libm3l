@@ -9,6 +9,9 @@
 /*
  * function opens, binds and listen socket for a server
  */
+
+// This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit. (http://www.openssl.org/)
+
 #include "Header.h"
 #include "format_type.h"
 #include "tcpip_socket_op.h"
