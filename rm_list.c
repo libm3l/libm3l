@@ -64,7 +64,6 @@ SIZE_T rm_list(int call, node_t **List)
 /*
  * remove the master head node and return
  */
-				printf("Freeing %s\n", (*List)->name);
 				if(Free(List) != 0)
 					Error("Free");
 /*
@@ -105,7 +104,6 @@ SIZE_T rm_list(int call, node_t **List)
  */
 		(*List)->parent->ndim--;
 		
-		printf("Freeing %s\n", (*List)->name);
 		if(Free(List) != 0)
 			Error("Free");
 /*
