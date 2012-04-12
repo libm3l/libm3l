@@ -13,7 +13,7 @@
 #include "Mount.h"
 #include "Umount.h"
 #include "Cat.h"
-#include "Client_Open_Socket.h"
+#include "tcpip_socket_op.h"
 
 #define LINESZ 1024
 
@@ -35,17 +35,31 @@ int main(void)
     printf("Going to Fread1\n");
    
 
-	for (i=0; i<1000000; i++){
+//	for (i=0; i<1000000; i++){
 
     if( (Gnode = Fread("TEST.dat"))  == NULL)
       Perror("Linked_test: Fread");
     
         printf("\n\n\n Umounting \n\n\n");
 
+
+	   if(Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
+	                   Error("CatData");
+	   
+	   
+	   
+	   send_to_tcpipsocket(Gnode, "localhost", 4096);
+
+	   
+	/*      socketnr =  cli_open_socket("localhost", 4096);
+		write_to_socket(1, Gnode,  socketnr);
+	      close(socketnr);
+*/
+
 	if(Umount(&Gnode) != 1)
                   Perror("Umount");
     
-	}    
+//	}    
     exit(0);
     
     
