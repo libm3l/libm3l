@@ -8,7 +8,7 @@
 
 #include "IO.h"
 #include "Find.h"
-#include "Find_Source.h"
+//#include "Find_Source.h"
 #include "Rm.h"
 #include "Mount.h"
 #include "Umount.h"
@@ -19,7 +19,7 @@
 
 int main(void) 
 {	
-    node_t *Gnode=NULL, *Node, *Tmpnode;
+    node_t *Gnode=NULL, *Node, *Tmpnode, *RecNode;
     find_t **FoundNodes;
     
     int i, count,countgrp, socketnr;
@@ -40,7 +40,7 @@ int main(void)
     if( (Gnode = Fread("TEST.dat"))  == NULL)
       Perror("Linked_test: Fread");
     
-        printf("\n\n\n Umounting \n\n\n");
+//          printf("\n\n\n Umounting \n\n\n");
 
 
 	   if(Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
@@ -48,8 +48,16 @@ int main(void)
 	   
 	   
 	   
-	   send_to_tcpipsocket(Gnode, "localhost", 4096);
+//	   send_to_tcpipsocket(Gnode, "localhost", 4096);
+			   
+	    RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+          
+	    
+	    printf("\n\n\n Umounting \n\n\n");
 
+	    
+	    if(Cat(RecNode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	                   Error("CatData");
 	   
 	/*      socketnr =  cli_open_socket("localhost", 4096);
 		write_to_socket(1, Gnode,  socketnr);
@@ -57,6 +65,8 @@ int main(void)
 */
 
 	if(Umount(&Gnode) != 1)
+                  Perror("Umount");
+	if(Umount(&RecNode) != 1)
                   Perror("Umount");
     
 //	}    
@@ -74,12 +84,7 @@ int main(void)
 	    	Error("CatData");
 	printf("\n\n\n");
    
-   
-   
-   socketnr =  cli_open_socket("localhost", 4096);
-   write_to_socket(1, Gnode,  socketnr);
-   close(socketnr);
-   
+
    
 	}
 

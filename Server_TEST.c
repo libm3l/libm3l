@@ -6,9 +6,11 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
+#include "Find.h"
 #include "Cat.h"
 #include "server_openbindlistensocket.h"
 #include "ReadSocket.h"
+#include "Write2Socket.h"
 
 #define LINESZ 1024
 
@@ -77,10 +79,33 @@ int main(void)
 	    	Error("CatData");
 	printf("\n\n\n");
       
+      
+      
+      if( ( FoundNodes = Find(Gnode, &founds , "Additional_directory", (char *)NULL)) == NULL){
+         printf("No subset found\n"); exit(0);
+	}
+	else
+	{
+		for(i=0; i < founds; i++){
+		printf(" Found name is %s  %p   %s\n", FoundNodes[i]->List->name, FoundNodes[i]->List, FoundNodes[i]->List->type);
+		}
+	
+	
+		if(Cat(FoundNodes[0]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+			Error("CatData");
+		printf("\n\n\n");
+		write_to_socket(1, FoundNodes[0]->List,  newsockfd);
+	
+		DestroyFound(FoundNodes, founds);
+	}
+     
+	if (( status = close(newsockfd)) != 0)
+	 Perror("close()");
+	
           if(Umount(&Gnode) != 1)
 	    Perror("Umount");
 	printf(" GNODE unmounted\n");
-     exit(0);
+	exit(0);
 /*
  * end of child
  */
