@@ -3,7 +3,8 @@
 #include "format_type.h"
 #include "FunctionsPrt.h"
 
-#include "Client_Open_Socket.h"
+#include "tcpip_socket_op.h"
+#include "tcpip_socket_IOop.h"
 #include "Write2Socket.h"
 #include "ReadSocket.h"
 /*
