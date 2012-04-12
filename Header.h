@@ -3,8 +3,6 @@
  * Adam Jirasek C2012
  */
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,9 +23,13 @@
 #include <stdarg.h>     
 #include <getopt.h>
 #include <ctype.h>
-
 #include <netdb.h>
 #include <netinet/tcp.h>
+#include <malloc.h>
+#include <resolv.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <arpa/inet.h>
              
 /*
  * TCP/IP communication option

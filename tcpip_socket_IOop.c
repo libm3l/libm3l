@@ -1,4 +1,9 @@
 
+/* ssl_server.c
+ * some of the parts of this routine done according to 
+ * Sean Walton http://www.cs.utah.edu/~swalton/listings/sockets/programs/
+ */
+
 #include "Header.h"
 #include "format_type.h"
 #include "FunctionsPrt.h"
