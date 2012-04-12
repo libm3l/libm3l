@@ -11,18 +11,25 @@
 #include "udf_rm.h"
 #include "ReadSocket.h"
 
-#define EXPR       *pc != SEPAR_SIGN && *pc != '\0'
+#define EXPR      *pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0'
 #define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN 
 #define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN 
 
+
+/* 
+ * NOTE: these can be:  (Wite2Socket filters spaces, tabs and newlines)
+#define EXPR      *pc != SEPAR_SIGN && *pc != '\0'
+#define IFEXPR   *pc != '\0' || *pc == SEPAR_SIGN 
+#define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN 
+*/
 
 static int read_socket_data_line(node_t **, tmpstruct_t, int);
 static int read_socket_data_charline(node_t **, tmpstruct_t, int);
 static node_t *read_socket_dir_data(tmpstruct_t , int);
 static node_t *read_socket_data(int);
 
-static char *pc, buff[MAXLINE];
-static size_t ngotten;
+char *pc, buff[MAXLINE];
+size_t ngotten;
 
 /*
  * Function read just one line from a socket, disregarding comments line
@@ -37,7 +44,7 @@ static size_t ngotten;
 node_t *read_socket(int descrpt)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
-	size_t   wc, i, hi;
+	size_t   wc, i, hi, tmpi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
 /*
@@ -78,11 +85,11 @@ node_t *read_socket(int descrpt)
  * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the fiield
  */
 	bzero(buff, strlen(buff));
-	ngotten = read(descrpt,buff,MAXLINE-1);
+	if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+		Perror("read");
+
 	buff[ngotten] = '\0';		
 	pc = &buff[0];
-	
-	printf(" buffer is '%s'\n", buff);
 /*
  * process the string, in case it returned anything
  */
@@ -136,7 +143,8 @@ node_t *read_socket(int descrpt)
  * read next chunk of text file, complete the word by the rest from next chunk and put pointer at it's beggining
  */
 				bzero(buff,sizeof(buff));
-				ngotten = read(descrpt,buff,MAXLINE-1);
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
 				buff[ngotten] = '\0';
 
 				pc = &buff[0];
@@ -171,7 +179,6 @@ node_t *read_socket(int descrpt)
  * get the number, in case of DIR number is a number of items in DIR, in case of DATA, number is a number of dimensions
  */
 				else if (wc == 3){
-					printf("ndim %s\n", type);
 					TMPSTR.ndim = Strol(type);  
 					TMPSTR.dim=NULL;
 /*
@@ -183,6 +190,24 @@ node_t *read_socket(int descrpt)
 /*
  * Return main list
  */
+					while(IFEXPR) pc++;
+					i = 0;
+					while(EXPR){
+						type[i++] = *pc++;
+/*
+ * if number of chars in one word exceeds limit, print warning
+ */
+						if(i == (MAX_WORD_LENGTH-1))
+							Perror("read_socket - word too long");
+					}
+					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
+							tmpi = 0;
+							printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
+							while(*pc != '\0' && tmpi++ < 100)
+								printf("%c", *pc++);
+							printf("\n");
+							exit(0); 
+					}
 					return Dnode;
 				}
 			}
@@ -308,7 +333,9 @@ node_t *read_socket_data(int descrpt)
  */
 
 				bzero(buff,sizeof(buff));
-				ngotten = read(descrpt,buff,MAXLINE-1);
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
+
 				buff[ngotten] = '\0';
 
 				pc = &buff[0];
@@ -342,8 +369,6 @@ node_t *read_socket_data(int descrpt)
  * get the number, in case of DIR number is a number of items in DIR, in case of DATA, number is a number of dimensions
  */
 				else if (wc == 3){
-					printf("ndim %s\n", type);
-
 					TMPSTR.ndim = Strol(type);
 					TMPSTR.dim=NULL;
 
@@ -383,19 +408,12 @@ node_t *read_socket_data(int descrpt)
 		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C'){
 /*
  * data is Char type
- */
- 
- 	       printf(" Char data type \n");
- 
+ */ 
 			if( read_socket_data_charline(&Pnode, TMPSTR, descrpt) != 0)
 				Error("Error reading data");
 		}
 		else
 		{
-
- 	       printf(" Other data type \n");
-
-
 /*
  * data are numbers
  */
@@ -462,11 +480,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		tot_dim = tot_dim * TMPSTR.dim[i];
 /*
  * decide what type 
- */
-	
-	
-	printf(" Reading %s  total dimensions %d\n", TMPSTR.Type, tot_dim);	
-	
+ */	
 	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
 		pldf = (*Lnode)->data.ldf;
 	}
@@ -527,9 +541,6 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer
  */
- 
- 	printf("ngotten is %d\n", ngotten);
-
 	while(ngotten)
 	{
 		bzero(type,sizeof(type));
@@ -570,9 +581,10 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  * read next chunk of text file, complete the word by the rest from next chunk
  */
 				bzero(buff,sizeof(buff));
-				ngotten = read(descrpt,buff,MAXLINE-1);
-				buff[ngotten] = '\0';
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
 
+				buff[ngotten] = '\0';
 				pc = &buff[0];
 				
 				if(LASTEXPR) continue;
@@ -583,9 +595,6 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			
 			if(strlen(type) >0){
  				wc++;
-				
-				
-			printf("wc is %d, type is %s\n", wc, type);	
 /*
  * get the value
  */

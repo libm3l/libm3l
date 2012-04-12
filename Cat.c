@@ -267,6 +267,8 @@ int Cat(node_t *List, char * Options, ...)
 	if( *search_term == '*'){
 		if ( (status = cat_list(1, List, Popts)) != 0)
 			Warning("Cat");
+
+        	if(search_term != NULL) free(search_term);
 		return status;
 	}
 	else
@@ -299,7 +301,9 @@ int Cat(node_t *List, char * Options, ...)
 			}
 			
 			DestroyFound(Found_Nodes, founds);
-			
+
+			if(search_term != NULL) free(search_term);
+
 			return status1;
 		}
 	}

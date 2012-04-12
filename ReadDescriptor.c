@@ -21,8 +21,8 @@ static int read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
 static node_t *read_file_dir_data(tmpstruct_t , FILE *f);
 static node_t *read_file_data(FILE *f);
 
-static char *pc, buff[MAXLINE];
-static size_t ngotten;
+char *pc, buff[MAXLINE];
+size_t ngotten;
 
 /*
  * Function read just one line from a socket, disregarding comments line
@@ -37,7 +37,7 @@ static size_t ngotten;
 node_t *read_file(FILE *fp)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
-	size_t   wc, i, hi;
+	size_t   wc, i, hi, tmpi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
 /*
@@ -78,11 +78,13 @@ node_t *read_file(FILE *fp)
  * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the fiield
  */
 	bzero(buff, strlen(buff));
-	ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);	
+	if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+		if(ferror(fp))
+			Perror("fread");
+	}
+
 	buff[ngotten] = '\0';		
 	pc = &buff[0];
-	
-	printf(" buffer is '%s'\n", buff);
 /*
  * process the string, in case it returned anything
  */
@@ -136,7 +138,11 @@ node_t *read_file(FILE *fp)
  * read next chunk of text file, complete the word by the rest from next chunk and put pointer at it's beggining
  */
 				bzero(buff,sizeof(buff));
-				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+					if(ferror(fp))
+						Perror("fread");
+				}
+
 				buff[ngotten] = '\0';
 
 				pc = &buff[0];
@@ -171,7 +177,6 @@ node_t *read_file(FILE *fp)
  * get the number, in case of DIR number is a number of items in DIR, in case of DATA, number is a number of dimensions
  */
 				else if (wc == 3){
-					printf("ndim %s\n", type);
 					TMPSTR.ndim = Strol(type);  
 					TMPSTR.dim=NULL;
 /*
@@ -183,6 +188,14 @@ node_t *read_file(FILE *fp)
 /*
  * Return main list
  */
+					if( !feof(fp) || *pc != '\0' ){
+							tmpi = 0;
+							printf("\n  WARNING - end of file not reached \n  Remaining part of the file starts at\n");
+							while(*pc != '\0' && tmpi++ < 100)
+								printf("%c", *pc++);
+							printf("\n");
+							exit(0);
+					}
 					return Dnode;
 				}
 			}
@@ -308,7 +321,11 @@ node_t *read_file_data(FILE *fp)
  */
 
 				bzero(buff,sizeof(buff));
-				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+					if(ferror(fp))
+						Perror("fread");
+				}
+
 				buff[ngotten] = '\0';
 
 				pc = &buff[0];
@@ -342,7 +359,6 @@ node_t *read_file_data(FILE *fp)
  * get the number, in case of DIR number is a number of items in DIR, in case of DATA, number is a number of dimensions
  */
 				else if (wc == 3){
-					printf("ndim %s\n", type);
 
 					TMPSTR.ndim = Strol(type);
 					TMPSTR.dim=NULL;
@@ -383,19 +399,12 @@ node_t *read_file_data(FILE *fp)
 		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C'){
 /*
  * data is Char type
- */
- 
- 	       printf(" Char data type \n");
- 
+ */ 
 			if( read_file_data_charline(&Pnode, TMPSTR, fp) != 0)
 				Error("Error reading data");
 		}
 		else
 		{
-
- 	       printf(" Other data type \n");
-
-
 /*
  * data are numbers
  */
@@ -462,11 +471,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		tot_dim = tot_dim * TMPSTR.dim[i];
 /*
  * decide what type 
- */
-	
-	
-	printf(" Reading %s  total dimensions %d\n", TMPSTR.Type, tot_dim);	
-	
+ */	
 	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
 		pldf = (*Lnode)->data.ldf;
 	}
@@ -527,9 +532,6 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * process buffer
  */
- 
- 	printf("ngotten is %d\n", ngotten);
-
 	while(ngotten)
 	{
 		bzero(type,sizeof(type));
@@ -570,7 +572,11 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read next chunk of text file, complete the word by the rest from next chunk
  */
 				bzero(buff,sizeof(buff));
-				ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp);
+				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+					if(ferror(fp))
+						Perror("fread");
+				}
+
 				buff[ngotten] = '\0';
 
 				pc = &buff[0];
@@ -583,9 +589,6 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 			
 			if(strlen(type) >0){
  				wc++;
-				
-				
-			printf("wc is %d, type is %s\n", wc, type);	
 /*
  * get the value
  */

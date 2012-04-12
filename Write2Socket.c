@@ -13,8 +13,8 @@
 static int write_buffer(const char *, int, int);
 static int write_file_data_intdescprt(node_t *, size_t , int);
 
-static char *pc, buffer[MAXLINE];
-static size_t bitcount;
+char *pc, buffer[MAXLINE];
+size_t bitcount;
 
 /*
  * routine writes linked list structure to socket
