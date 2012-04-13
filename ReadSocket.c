@@ -457,9 +457,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * chars
  */
-	char           *pcc, *err;
-	signed char    *psc;
-	unsigned char  *puc;
+	char           *err;
 /*
  * integers
  */
@@ -495,15 +493,15 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * chars, do not serialize, write as they are
  */
-	else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-		psc = (*Lnode)->data.sc;
-	}
-	else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-		puc = (*Lnode)->data.uc;
-	}
-	else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-		pcc = (*Lnode)->data.c;
-	}
+// 	else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
+// 		psc = (*Lnode)->data.sc;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
+// 		puc = (*Lnode)->data.uc;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
+// 		pcc = (*Lnode)->data.c;
+// 	}
 /*
  * integers
  */
@@ -617,21 +615,21 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * chars, do not serialize, write as they are
  */
-		else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-			j = 0;
-			while(type != '\0')
-				*psc++ = (signed char) type[j++];
-		}
-		else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-			j = 0;
-			while(type != '\0')
-				*puc++ = (unsigned char)type[j++];
-		}
-		else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-			j = 0;
-			while(type != '\0')
-				*pcc++ = type[j++];
-		}
+// 		else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
+// 			j = 0;
+// 			while(type != '\0')
+// 				*psc++ = (signed char) type[j++];
+// 		}
+// 		else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
+// 			j = 0;
+// 			while(type != '\0')
+// 				*puc++ = (unsigned char)type[j++];
+// 		}
+// 		else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
+// 			j = 0;
+// 			while(type != '\0')
+// 				*pcc++ = type[j++];
+// 		}
 /*
  * integers
  */
