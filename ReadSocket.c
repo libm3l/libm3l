@@ -201,6 +201,16 @@ node_t *read_socket(int descrpt)
 						if(i == (MAX_WORD_LENGTH-1))
 							Perror("read_socket - word too long");
 					}
+/*
+ * make sure that if the EOFbuff word is split and part of it is still in socket
+ * read it and append to the beginning of word
+ */
+					if( *pc == '\0'){
+						if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+							Perror("read");
+						buff[ngotten] = '\0';
+						if(ngotten > 0) strcat(type, buff);						
+					}
 					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
 							tmpi = 0;
 							printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
@@ -667,50 +677,43 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  * function reads data from FILE
  */
 	size_t i, tot_dim;
-	char *pdat;
-	unsigned char *pdatu;
-	signed char   *pdats;
-	int init;
+	char 		*pdat;
+	unsigned char 	*pdatu;
+	signed char   	*pdats;
+	int 		init;
 
-	printf("Reading char line, buff = '%s'  first char is '%c'\n", buff, *pc);  
-	printf("first character is ");
-	printf("first character is '%c'", *pc);
-
+//	printf("Reading char line, buff = '%s'  first char is '%c'\n", buff, *pc);  
+//	printf("first character is ");
+//	printf("first character is '%c'", *pc);
+//
 	tot_dim = 1;
-	
-	printf("TMPSTR.ndim %ld   %ld", TMPSTR.ndim, TMPSTR.dim[0]);
-
 	
 	for(i=0; i<TMPSTR.ndim; i++)
 		tot_dim = tot_dim * TMPSTR.dim[i];
+/*
+ * array was allocated with +1 to store '\0' symbol
+ */
+	tot_dim--; 
 /*
  * what type of data
  */
 	if( strncmp(TMPSTR.Type,"UC",2) == 0){
 		pdatu = (*Lnode)->data.uc;
-				/*
+/*
  * process buffer, set last char to \0
  */
 		init = 0;
 		i = 0;
 		while(ngotten)
 		{
-/* 
- * if reading the very begining of the text, disregard everything before \`\ symbol
- */
-			if(init == 0){
-				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
-/*
- * once at `, disregard it and put init =1
- */
-				pc++;
-				init = 1;
-			}
 /*
  * read until end of buffer or ` symbol
- */			
-			while(*pc != '\0' && *pc != '`')
+ */
+			while(IFEXPR) pc++;			
+			while(*pc != '\0' && i < tot_dim){
 				*pdatu++ = (unsigned char)*pc++;
+				i++;
+			}
 /*
  * find why while was left
  */
@@ -718,13 +721,15 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				bzero(buff,sizeof(buff));
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
+
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+
 			}
-			else if (*pc == '`'){
-				pc++;  /* do not count ` in the next buff analysis */
+			else if (i == tot_dim){
 				*pdatu = '\0';
+				printf("buffer is '%s'\n", buff);
 				return 0;
 			}
 		}
@@ -738,22 +743,14 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		i = 0;
 		while(ngotten)
 		{
-/* 
- * if reading the very begining of the text, disregard everything before \`\ symbol
- */
-			if(init == 0){
-				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
-/*
- * once at `, disregard it and put init =1
- */
-				pc++;
-				init = 1;
-			}
 /*
  * read until end of buffer or ` symbol
- */			
-			while(*pc != '\0' && *pc != '`')
+ */
+			while(IFEXPR) pc++;			
+			while(*pc != '\0' && i < tot_dim){
 				*pdats++ = (signed char)*pc++;
+				i++;
+			}
 /*
  * find why while was left
  */
@@ -761,20 +758,22 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				bzero(buff,sizeof(buff));
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
+
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+
 			}
-			else if (*pc == '`'){
-				pc++;  /* do not count ` in the next buff analysis */
+			else if (i == tot_dim){
 				*pdats = '\0';
+				printf("buffer is '%s'\n", buff);
 				return 0;
 			}
 		}
 	}
 	else if ( TMPSTR.Type[0] == 'C'){
+
 		pdat = (*Lnode)->data.c;
-		printf("tady -   %c     %ld, %ld", *pc, ngotten, tot_dim);
 /*
  * process buffer, set last char to \0
  */
@@ -784,10 +783,11 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		{
 /*
  * read until end of buffer or ` symbol
- */			
-			while(*pc != '\0' && i++ < tot_dim){
-				printf("%c", *pc);
+ */
+			while(IFEXPR) pc++;			
+			while(*pc != '\0' && i < tot_dim){
 				*pdat++ = *pc++;
+				i++;
 			}
 /*
  * find why while was left
@@ -796,14 +796,15 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				bzero(buff,sizeof(buff));
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
+
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
 
 			}
-			else if (i==tot_dim){
-				pc++;  /* do not count ` in the next buff analysis */
+			else if (i == tot_dim){
 				*pdat = '\0';
+				printf("buffer is '%s'\n", buff);
 				return 0;
 			}
 		}

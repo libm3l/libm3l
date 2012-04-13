@@ -457,10 +457,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * chars
  */
-	char           *pcc, *err;
-	signed char    *psc;
-	unsigned char  *puc; 
-// 	char           *err;
+	char           *err;
 /*
  * integers
  */
@@ -493,18 +490,6 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
  		pf = (*Lnode)->data.f;
  	}
-/*
- * chars, do not serialize, write as they are
- */
-	else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-		psc = (*Lnode)->data.sc;
-	}
-	else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-		puc = (*Lnode)->data.uc;
-	}
-	else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-		pcc = (*Lnode)->data.c;
-	}
 /*
  * integers
  */
@@ -619,25 +604,6 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 					*pf++ = FCS_C2F(type, &err);
 				}
 /*
- * chars, do not serialize, write as they are
- */
-				else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-					j = 0;
-					while(type[j] != '\0')
-						*psc++ = (signed char)type[j++];
-				}
-				else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-					j = 0;
-					while(type[j] != '\0')
-						*puc++ = (unsigned char)type[j++];
-				}
-				else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-					j = 0;
-					while(type[j] != '\0'){
-						printf("%c", *pcc); 
-						*pcc++ = type[j++];}
-				}
-/*
  * integers2
  */
 				else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
@@ -699,25 +665,113 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /* 
  * function reads data from FILE
  */
-	char type[MAX_WORD_LENGTH], lastchar;
-	size_t i, tot_dim;
-	char *pdat;
-	unsigned char *pdatu;
-	unsigned char *pdatc;
-	int init;
+	char 		type[MAX_WORD_LENGTH], lastchar;
+	size_t 		i, tot_dim;
+	char		*pdat;
+	unsigned char 	*pdatu;
+	signed char   	*pdats;
+	int 		init;
 
 	tot_dim = 1;
 	
 	for(i=0; i<TMPSTR.ndim; i++)
 		tot_dim = tot_dim * TMPSTR.dim[i];
 /*
+ * array was allocated with +1 to store '\0' symbol
+ */
+	tot_dim--;   
+/*
  * what type of data
  */
 	if( strncmp(TMPSTR.Type,"UC",2) == 0){
-		pdat = (*Lnode)->data.uc;
+		pdatu = (*Lnode)->data.uc;
+				/*
+ * process buffer, set last char to \0
+ */
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/* 
+ * if reading the very begining of the text, disregard everything before \`\ symbol
+ */
+			if(init == 0){
+				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
+/*
+ * once at `, disregard it and put init =1
+ */
+				pc++;
+				init = 1;
+			}
+/*
+ * read until end of buffer or ` symbol
+ */			
+			while(*pc != '\0' && *pc != '`')
+				*pdatu++ = (unsigned char)*pc++;
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+					if(ferror(fp))
+						Perror("fread");
+				}
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+			}
+			else if (*pc == '`'){
+				pc++;  /* do not count ` in the next buff analysis */
+				*pdatu = '\0';
+				return 0;
+			}
+		}
 	}
 	else if ( strncmp(TMPSTR.Type,"SC",2) == 0 ){
-		pdat = (*Lnode)->data.sc;
+		pdats = (*Lnode)->data.sc;
+/*
+ * process buffer, set last char to \0
+ */
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/* 
+ * if reading the very begining of the text, disregard everything before \`\ symbol
+ */
+			if(init == 0){
+				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
+/*
+ * once at `, disregard it and put init =1
+ */
+				pc++;
+				init = 1;
+			}
+/*
+ * read until end of buffer or ` symbol
+ */			
+			while(*pc != '\0' && *pc != '`')
+				*pdats++ = (signed char)*pc++;
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+					if(ferror(fp))
+						Perror("fread");
+				}
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+			}
+			else if (*pc == '`'){
+				pc++;  /* do not count ` in the next buff analysis */
+				*pdats = '\0';
+				return 0;
+			}
+		}
 	}
 	else if ( TMPSTR.Type[0] == 'C'){
 		pdat = (*Lnode)->data.c;
@@ -726,10 +780,8 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 		init = 0;
 		i = 0;
-		printf(" buffer is '%s'\n", buff);
 		while(ngotten)
 		{
-			printf("First sign is '%c'\n", *pc);
 /* 
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
@@ -745,7 +797,6 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read until end of buffer or ` symbol
  */			
 			while(*pc != '\0' && *pc != '`'){
-				printf("%c", *pc);
 				*pdat++ = *pc++;
 			}
 /*
@@ -761,10 +812,8 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				buff[ngotten] = '\0';
 				pc = &buff[0];
 
-				printf(" \n buffer is '%s', ngotten is %ld \n", buff, ngotten);
 			}
 			else if (*pc == '`'){
-				printf(" Last symbol was %c\n", *pc);
 				pc++;  /* do not count ` in the next buff analysis */
 				*pdat = '\0';
 				return 0;
