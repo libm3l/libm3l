@@ -26,7 +26,7 @@ Write2Socket.c \
 OFILES=$(SFILES:%.c=%.o)
 
 CFLAGS = -fbounds-check -fstack-check -g 
-LFLAGS = -fbounds-check -fstack-check -g -lssl 
+LFLAGS = -fbounds-check -fstack-check -g 
 #CFLAGS =
 #LFLAGS =
 
