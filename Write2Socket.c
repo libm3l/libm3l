@@ -275,6 +275,16 @@ int write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_descr
 					Error("Writing buffer");
 			} 
 		}
+		else if(strncmp(Tmpnode->type,"LLI",3) == 0){  /* signed long long  int */
+			for (i=0; i<tot_dim; i++){
+				bzero(buff, sizeof(buff));
+				if( (n=FCS_W_LLI(Tmpnode->data.lli[i], SEPAR_SIGN)) < 0)
+	      			       	Perror("snprintf");
+				buff[n] = '\0';
+				if( write_buffer(buff, socket_descrpt,0) == 0 )
+					Error("Writing buffer");
+			} 
+		}
 		else if(strncmp(Tmpnode->type,"ULI",3) == 0){  /* unsigned long int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));

@@ -6,6 +6,7 @@
 #include "Header.h"
 #include "format_type.h"
 #include "internal_format_type.h"
+#include "format_conversion_spec.h"
 
 #include "FunctionsPrt.h"
 #include "udf_rm.h"
@@ -447,7 +448,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * chars
  */
-	char           *pcc;
+	char           *pcc, *err;
 	signed char    *psc;
 	unsigned char  *puc;
 /*
@@ -458,7 +459,8 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 	int           		*pi;
 	unsigned int  		*pui;
 	long  int     		*pli;
-	unsigned long int       *puli;
+	unsigned long int       *puli;	
+	long long int           *plli;
 	signed long long int    *pslli;
 	unsigned long long int  *pulli;
 
@@ -504,6 +506,9 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 	}
 	else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
 		puli = (*Lnode)->data.uli;
+	}
+	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+		plli = (*Lnode)->data.lli;
 	}
 	else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
 		pusi = (*Lnode)->data.usi;
@@ -595,13 +600,13 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 
 
 		if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
-//			*pldf++ = (*Lnode)->data.ldf;
+			*pldf++ = FCS_C2LD(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
-			*pdf++ = atof(type);
+			*pdf++ = FCS_C2D(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
-//			*pf++ = (*Lnode)->data.f;
+			*pf++ = FCS_C2F(type, &err);
 		}
 /*
  * chars, do not serialize, write as they are
@@ -609,12 +614,12 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
 			j = 0;
 			while(type != '\0')
-				*psc++ = type[j++];
+				*psc++ = (signed char)type[j++];
 		}
 		else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
 			j = 0;
 			while(type != '\0')
-				*puc++ = type[j++];
+				*puc++ = (unsigned char)type[j++];
 		}
 		else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
 			j = 0;
@@ -622,19 +627,22 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				*pcc++ = type[j++];
 		}
 /*
- * integers
+ * integers2
  */
 		else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
 //			*pulli++ = (*Lnode)->data.ulli;
 		}
 		else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
-//			*pslli++ = (*Lnode)->data.slli;
+			*pslli++ = FCS_C2LLI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
 //			*puli++ = (*Lnode)->data.uli;
 		}
 		else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
 //			*pusi++ = (*Lnode)->data.usi;
+		}
+		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+			*plli++ = FCS_C2LLI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
 //			*psi++ = (*Lnode)->data.si;
@@ -643,19 +651,19 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 //			*pui++ = (*Lnode)->data.ui;
 		}
 		else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
-//			*pli++ = (*Lnode)->data.li;
+			*pli++ = FCS_C2LI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
-			*pi++ = atoi(type);
+			*pi++ = FCS_C2I(type);
 		}
 /*
  * counters
  */
 		else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
-//			*pst++ = (*Lnode)->data.st;
+			*pst++ = FCS_C2LI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-//			*pptrdf++ = (*Lnode)->data.ptrdf;
+			*pptrdf++ = FCS_C2LI(type, &err);
 		}
 
 

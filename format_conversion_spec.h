@@ -9,6 +9,7 @@
 
 #define FCS_W_ULLI(A,B) snprintf(buff, MAX_WORD_LENGTH,"%lld%c", A, B)
 #define FCS_W_SLLI(A,B) snprintf(buff, MAX_WORD_LENGTH,"%lld%c", A, B)
+#define FCS_W_LLI(A,B)  snprintf(buff, MAX_WORD_LENGTH,"%lld%c", A, B)
 #define FCS_W_ULI(A,B)  snprintf(buff, MAX_WORD_LENGTH,"%ld%c",  A, B)
 #define FCS_W_USI(A,B)  snprintf(buff, MAX_WORD_LENGTH,"%d%c",   A, B)
 #define FCS_W_SI(A,B)   snprintf(buff, MAX_WORD_LENGTH,"%d%c",   A, B)
@@ -24,20 +25,33 @@
  * used in cat_data
  */
 
-#define FCS_C_LD(A)   printf("%Lf ", A )
-#define FCS_C_D(A)    printf("%lf ", A )
-#define FCS_C_F(A)    printf("%f ",  A )
+#define FCS_C_LD(A)   if( printf("%Lf ", A ) < 0) Perror("printf");
+#define FCS_C_D(A)    if( printf("%lf ", A ) < 0) Perror("printf");
+#define FCS_C_F(A)    if( printf("%f ",  A ) < 0) Perror("printf");
 
-#define FCS_C_ULLI(A) printf("%lld ", A )
-#define FCS_C_SLLI(A) printf("%lld ", A )
-#define FCS_C_ULI(A)  printf("%ld ",  A )
-#define FCS_C_USI(A)  printf("%d ",   A )
-#define FCS_C_SI(A)   printf("%d ",   A )
-#define FCS_C_UI(A)   printf("%d ",   A )
-#define FCS_C_LI(A)   printf("%ld ",  A )
-#define FCS_C_I(A)    printf("%d ",   A )
+#define FCS_C_ULLI(A) if( printf("%lld ", A ) < 0) Perror("printf");
+#define FCS_C_SLLI(A) if( printf("%lld ", A ) < 0) Perror("printf");
+#define FCS_C_LLI(A) if( printf("%lld ", A ) < 0) Perror("printf");
+#define FCS_C_ULI(A)  if( printf("%ld ",  A ) < 0) Perror("printf");
+#define FCS_C_USI(A)  if( printf("%d ",   A ) < 0) Perror("printf");
+#define FCS_C_SI(A)   if( printf("%d ",   A ) < 0) Perror("printf");
+#define FCS_C_UI(A)   if( printf("%d ",   A ) < 0) Perror("printf");
+#define FCS_C_LI(A)   if( printf("%ld ",  A ) < 0) Perror("printf");
+#define FCS_C_I(A)    if( printf("%d ",   A ) < 0) Perror("printf");
 
-#define FCS_C_ST(A)       printf("%ld ", A )
-#define FCS_C_PTRDF(A)    printf("%ld ", A )
+#define FCS_C_ST(A)       if( printf("%ld ", A ) < 0) Perror("printf");
+#define FCS_C_PTRDF(A)    if( printf("%ld ", A ) < 0) Perror("printf");
+
+
+/*
+ * used in ReadDescriptor and ReadSocket
+ */
+#define FCS_C2LD(A,B)  strtold(A,B);
+#define FCS_C2D(A,B)   strtod(A,B);
+#define FCS_C2F(A,B)   strtof(A,B);
+
+#define FCS_C2LLI(A,B)  strtoll(A,B,0);
+#define FCS_C2LI(A,B)   strtol(A,B,0);
+#define FCS_C2I(A)      atoi(A);
 
 #endif

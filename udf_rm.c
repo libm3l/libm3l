@@ -65,6 +65,10 @@ int Free(node_t **Lnode)
 			free( (*Lnode)->data.slli);
 			(*Lnode)->data.slli = NULL;
 		}
+		else if(strncmp((*Lnode)->type,"LLI",3) == 0){  /* unsigned short int */
+			free( (*Lnode)->data.lli);
+			(*Lnode)->data.lli = NULL;
+		}
 		else if(strncmp((*Lnode)->type,"ULI",3) == 0){  /* unsigned long int */
 			free( (*Lnode)->data.uli);
 			(*Lnode)->data.uli = NULL;
@@ -215,6 +219,10 @@ int Allocate(node_t **Lnode, tmpstruct_t TMPSTR)
 			if ( ( (*Lnode)->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int *))) == NULL)
 				Perror("malloc");
 		}
+		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
+			if ( ( (*Lnode)->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int *))) == NULL)
+				Perror("malloc");
+		}
 		else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
 			if ( ( (*Lnode)->data.uli = (unsigned long int *)malloc(tot_dim*sizeof(unsigned long int *))) == NULL)
 				Perror("malloc");
@@ -347,6 +355,10 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
 		}
 		else if(strncmp(Lnode->type,"SLLI",4) == 0){  /* signed long long  int */
 			if ( ( Lnode->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int *))) == NULL)
+				Perror("malloc");
+		}
+		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
+			if ( ( Lnode->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int *))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"ULI",3) == 0){  /* unsigned long int */
