@@ -410,6 +410,7 @@ node_t *read_socket_data(int descrpt)
 /*
  * data is Char type
  */ 
+			printf(" %s, %ld %ld\n", TMPSTR.Type, TMPSTR.ndim, TMPSTR.dim[0]);
 			if( read_socket_data_charline(&Pnode, TMPSTR, descrpt) != 0)
 				Error("Error reading data");
 		}
@@ -490,18 +491,6 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
 		pf = (*Lnode)->data.f;
 	}
-/*
- * chars, do not serialize, write as they are
- */
-// 	else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-// 		psc = (*Lnode)->data.sc;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-// 		puc = (*Lnode)->data.uc;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-// 		pcc = (*Lnode)->data.c;
-// 	}
 /*
  * integers
  */
@@ -613,24 +602,6 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			*pf++ = FCS_C2F(type, &err);
 		}
 /*
- * chars, do not serialize, write as they are
- */
-// 		else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-// 			j = 0;
-// 			while(type != '\0')
-// 				*psc++ = (signed char) type[j++];
-// 		}
-// 		else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-// 			j = 0;
-// 			while(type != '\0')
-// 				*puc++ = (unsigned char)type[j++];
-// 		}
-// 		else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-// 			j = 0;
-// 			while(type != '\0')
-// 				*pcc++ = type[j++];
-// 		}
-/*
  * integers
  */
 		else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
@@ -695,11 +666,20 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /* 
  * function reads data from FILE
  */
-	char type[MAX_WORD_LENGTH], lastchar;
-	size_t i, tot_dim, wc, hi;
+	size_t i, tot_dim;
 	char *pdat;
-	
+	unsigned char *pdatu;
+	signed char   *pdats;
+	int init;
+
+	printf("Reading char line, buff = '%s'  first char is '%c'\n", buff, *pc);  
+	printf("first character is ");
+	printf("first character is '%c'", *pc);
+
 	tot_dim = 1;
+	
+	printf("TMPSTR.ndim %ld   %ld", TMPSTR.ndim, TMPSTR.dim[0]);
+
 	
 	for(i=0; i<TMPSTR.ndim; i++)
 		tot_dim = tot_dim * TMPSTR.dim[i];
@@ -707,26 +687,129 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  * what type of data
  */
 	if( strncmp(TMPSTR.Type,"UC",2) == 0){
-		pdat = (*Lnode)->data.uc;
+		pdatu = (*Lnode)->data.uc;
+				/*
+ * process buffer, set last char to \0
+ */
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/* 
+ * if reading the very begining of the text, disregard everything before \`\ symbol
+ */
+			if(init == 0){
+				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
+/*
+ * once at `, disregard it and put init =1
+ */
+				pc++;
+				init = 1;
+			}
+/*
+ * read until end of buffer or ` symbol
+ */			
+			while(*pc != '\0' && *pc != '`')
+				*pdatu++ = (unsigned char)*pc++;
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+			}
+			else if (*pc == '`'){
+				pc++;  /* do not count ` in the next buff analysis */
+				*pdatu = '\0';
+				return 0;
+			}
+		}
 	}
 	else if ( strncmp(TMPSTR.Type,"SC",2) == 0 ){
-		pdat = (*Lnode)->data.sc;
-	}
-	else if ( TMPSTR.Type[0] == 'C'){
-		pdat = (*Lnode)->data.c;
-	}
-	else{
-		Error("char data type wrong");
-	}
+		pdats = (*Lnode)->data.sc;
 /*
  * process buffer, set last char to \0
  */
-	while(ngotten)
-	{
-		while(*pc != '\0'){
-			*pdat++ = *pc++;
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/* 
+ * if reading the very begining of the text, disregard everything before \`\ symbol
+ */
+			if(init == 0){
+				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
+/*
+ * once at `, disregard it and put init =1
+ */
+				pc++;
+				init = 1;
+			}
+/*
+ * read until end of buffer or ` symbol
+ */			
+			while(*pc != '\0' && *pc != '`')
+				*pdats++ = (signed char)*pc++;
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+			}
+			else if (*pc == '`'){
+				pc++;  /* do not count ` in the next buff analysis */
+				*pdats = '\0';
+				return 0;
+			}
 		}
-		*pdat = '\0';
+	}
+	else if ( TMPSTR.Type[0] == 'C'){
+		pdat = (*Lnode)->data.c;
+		printf("tady -   %c     %ld, %ld", *pc, ngotten, tot_dim);
+/*
+ * process buffer, set last char to \0
+ */
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/*
+ * read until end of buffer or ` symbol
+ */			
+			while(*pc != '\0' && i++ < tot_dim){
+				printf("%c", *pc);
+				*pdat++ = *pc++;
+			}
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+
+			}
+			else if (i==tot_dim){
+				pc++;  /* do not count ` in the next buff analysis */
+				*pdat = '\0';
+				return 0;
+			}
+		}
+	}
+	else{
+		Error("char data type wrong");
 	}
 /*
   * if you get here something went wrong
