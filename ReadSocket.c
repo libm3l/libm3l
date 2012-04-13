@@ -604,7 +604,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 //			*pldf++ = (*Lnode)->data.ldf;
 		}
 		else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
-//			*pdf++ = (*Lnode)->data.df;
+			*pdf++ = atof(type);
 		}
 		else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
 //			*pf++ = (*Lnode)->data.f;
