@@ -43,7 +43,7 @@ int main(void)
 //          printf("\n\n\n Umounting \n\n\n");
 
 
-	   if(Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
+	   if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
 	   
 	   
