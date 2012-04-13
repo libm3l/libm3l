@@ -630,25 +630,25 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * integers2
  */
 		else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
-//			*pulli++ = (*Lnode)->data.ulli;
+			*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
 		}
-		else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
-			*pslli++ = FCS_C2LLI(type, &err);
-		}
-		else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
-//			*puli++ = (*Lnode)->data.uli;
-		}
-		else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
-//			*pusi++ = (*Lnode)->data.usi;
+		else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long int */
+			*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
 			*plli++ = FCS_C2LLI(type, &err);
 		}
+		else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
+			*puli++ = (unsigned long int)FCS_C2LI(type, &err);
+		}
+		else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
+			*pusi++ = (unsigned short int)FCS_C2I(type);
+		}
 		else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
-//			*psi++ = (*Lnode)->data.si;
+			*psi++ = (signed int)FCS_C2I(type);
 		}
 		else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
-//			*pui++ = (*Lnode)->data.ui;
+			*pui++ = (unsigned int)FCS_C2I(type);
 		}
 		else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
 			*pli++ = FCS_C2LI(type, &err);
@@ -660,14 +660,11 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * counters
  */
 		else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
-			*pst++ = FCS_C2LI(type, &err);
+			*pst++ = FCS_C2LLI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-			*pptrdf++ = FCS_C2LI(type, &err);
+			*pptrdf++ = FCS_C2LLI(type, &err);
 		}
-
-
-//				*pi++ = atoi(type);
 /*
   * end of reading the line, number of words is the same as required, return succes
   */
