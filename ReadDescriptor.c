@@ -186,17 +186,15 @@ node_t *read_file(FILE *fp)
 					if( (Dnode = read_file_dir_data(TMPSTR, fp)) == NULL)
 						Perror("ReadDirData - ReadDir");
 /*
- * Return main list
- */
-					if( !feof(fp) || *pc != '\0' ){
-/*
+ * check if now additional data in the file
  * disregard possible spaces, tabs, newlines at the end of file
  */
 						while(IFEXPR) pc++;
+						
 /*
  * check if at the end of file was reached, if not give warning
  */
-						if( !feof(fp)){
+						if( !feof(fp) || *pc != '\0' ){
 						
 							tmpi = 0;
 							printf("\n  WARNING - end of file not reached \n  Remaining part of the file starts at\n");
@@ -205,7 +203,9 @@ node_t *read_file(FILE *fp)
 							printf("\n");
 							exit(0);
 						}
-					}
+/*
+ * reading of the main node succesfully finished, return
+ */
 					return Dnode;
 				}
 			}
