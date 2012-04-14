@@ -201,23 +201,47 @@ node_t *read_socket(int descrpt)
 						if(i == (MAX_WORD_LENGTH-1))
 							Perror("read_socket - word too long");
 					}
+					type[i] = '\0';
 /*
  * make sure that if the EOFbuff word is split and part of it is still in socket
  * read it and append to the beginning of word
+ * 
+ * compare the last word with EOFbuff, if not equal attempt to read rest if socket
  */
-					if( *pc == '\0'){
-						if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
-							Perror("read");
-						buff[ngotten] = '\0';
-						if(ngotten > 0) strcat(type, buff);						
-					}
 					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
-							tmpi = 0;
-							printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
-							while(*pc != '\0' && tmpi++ < 100)
-								printf("%c", *pc++);
-							printf("\n");
-							exit(0); 
+/*
+ * read the last part of buffer and add it to the previuous word
+ */
+							bzero(buff,sizeof(buff));
+							if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+								Perror("read");
+							buff[ngotten] = '\0';
+							if(ngotten > 0) strcat(type, buff);
+/*
+ * compare with EOFbuff, if not equal, give warning
+ * NOTE: if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
+ * sure the socket is empty
+ */
+						if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
+								tmpi = 0;
+								printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
+								while(*pc != '\0' && tmpi++ < 100)
+									printf("%c", *pc++);
+								printf("\n");
+/*
+ * if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
+ * sure the socket is empty
+ */								
+								while(ngotten){
+									bzero(buff,sizeof(buff));
+									if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+										Perror("read");
+								}
+								exit(0); 
+						}
+/*
+ * reading socket ended sucesfully, give back Gnode
+ */
 					}
 					return Dnode;
 				}
@@ -262,8 +286,7 @@ node_t *read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt)
 		Error("Allocate");
 	}
 
-	for(i=1;i<=TMPSTR.ndim; i++){
- 
+	for(i=1;i<=TMPSTR.ndim; i++){ 
 		Tmpnode=NULL;	
 		if ( (Tmpnode = read_socket_data(descrpt)) == NULL)
 			Error("ReadDirData: ReadData");
@@ -420,7 +443,6 @@ node_t *read_socket_data(int descrpt)
 /*
  * data is Char type
  */ 
-			printf(" %s, %ld %ld\n", TMPSTR.Type, TMPSTR.ndim, TMPSTR.dim[0]);
 			if( read_socket_data_charline(&Pnode, TMPSTR, descrpt) != 0)
 				Error("Error reading data");
 		}
@@ -600,8 +622,6 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * get the value
  */
-
-
 		if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
 			*pldf++ = FCS_C2LD(type, &err);
 		}
@@ -682,10 +702,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 	signed char   	*pdats;
 	int 		init;
 
-//	printf("Reading char line, buff = '%s'  first char is '%c'\n", buff, *pc);  
-//	printf("first character is ");
-//	printf("first character is '%c'", *pc);
-//
 	tot_dim = 1;
 	
 	for(i=0; i<TMPSTR.ndim; i++)
@@ -729,7 +745,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			}
 			else if (i == tot_dim){
 				*pdatu = '\0';
-				printf("buffer is '%s'\n", buff);
 				return 0;
 			}
 		}
@@ -766,7 +781,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			}
 			else if (i == tot_dim){
 				*pdats = '\0';
-				printf("buffer is '%s'\n", buff);
 				return 0;
 			}
 		}
@@ -804,7 +818,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			}
 			else if (i == tot_dim){
 				*pdat = '\0';
-				printf("buffer is '%s'\n", buff);
 				return 0;
 			}
 		}
