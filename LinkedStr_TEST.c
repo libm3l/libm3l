@@ -14,6 +14,7 @@
 #include "Umount.h"
 #include "Cat.h"
 #include "tcpip_socket_IOop.h"
+#include "WriteData.h"
 
 #define LINESZ 1024
 
@@ -45,6 +46,10 @@ int main(void)
 
 	   if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
+	   
+	   
+	   if( Fwrite(Gnode,  "ADA_TEST") != 0)
+		   Perror("Linked_test: Fwrite");
 	   
 	   
 	   

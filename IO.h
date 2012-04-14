@@ -3,4 +3,6 @@
 
 node_t *Fread(const char *);
 
+int Fwrite(node_t *, const char *);
+
 #endif
