@@ -238,12 +238,12 @@ int write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_descr
 /*
  * clean buff and make pointer pointing at its beginning
  */
-			pc = &Tmpnode->data.sc[0];
+			pc = (char *)&Tmpnode->data.sc[0];
 			if( write_buffer(pc, socket_descrpt,0,1) == 0 )
 				Error("Writing buffer");
 		}
 		else if(strncmp(Tmpnode->type,"UC",2) == 0){  /* unsigned char */
-			pc = &Tmpnode->data.uc[0];
+			pc = (char *)&Tmpnode->data.uc[0];
 			if( write_buffer(pc, socket_descrpt,0,1) == 0 )
 				Error("Writing buffer");
 		}

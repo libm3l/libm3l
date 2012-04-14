@@ -696,7 +696,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
 			if(init == 0){
-				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
+				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
 /*
  * once at `, disregard it and put init =1
  */
@@ -706,7 +706,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * read until end of buffer or ` symbol
  */			
-			while(*pc != '\0' && *pc != '`')
+			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN)
 				*pdatu++ = (unsigned char)*pc++;
 /*
  * find why while was left
@@ -721,7 +721,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				buff[ngotten] = '\0';
 				pc = &buff[0];
 			}
-			else if (*pc == '`'){
+			else if (*pc == TEXT_SEPAR_SIGN){
 				pc++;  /* do not count ` in the next buff analysis */
 				*pdatu = '\0';
 				return 0;
@@ -741,7 +741,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
 			if(init == 0){
-				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
+				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
 /*
  * once at `, disregard it and put init =1
  */
@@ -751,7 +751,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * read until end of buffer or ` symbol
  */			
-			while(*pc != '\0' && *pc != '`')
+			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN)
 				*pdats++ = (signed char)*pc++;
 /*
  * find why while was left
@@ -766,7 +766,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				buff[ngotten] = '\0';
 				pc = &buff[0];
 			}
-			else if (*pc == '`'){
+			else if (*pc == TEXT_SEPAR_SIGN){
 				pc++;  /* do not count ` in the next buff analysis */
 				*pdats = '\0';
 				return 0;
@@ -786,7 +786,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
 			if(init == 0){
-				while(*pc != '\0' && *pc != '`' && i++ < tot_dim)pc++;
+				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
 /*
  * once at `, disregard it and put init =1
  */
@@ -796,7 +796,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * read until end of buffer or ` symbol
  */			
-			while(*pc != '\0' && *pc != '`'){
+			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN){
 				*pdat++ = *pc++;
 			}
 /*
@@ -813,7 +813,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				pc = &buff[0];
 
 			}
-			else if (*pc == '`'){
+			else if (*pc == TEXT_SEPAR_SIGN){
 				pc++;  /* do not count ` in the next buff analysis */
 				*pdat = '\0';
 				return 0;

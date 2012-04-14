@@ -40,6 +40,8 @@
 #define MAX_WORD_LENGTH  60               /* Max length of word in buffer for TCP/IP   */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
+
+#define TEXT_SEPAR_SIGN '`'              /* sign determining the beginning and end of text (C, UC, SC) in disk file */
 /*
  * node_t data specification
  */

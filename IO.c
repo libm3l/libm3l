@@ -32,7 +32,7 @@ node_t *Fread(const char *name)
 		Perror("fopen");
 
 	if( (Lnode = read_file(fp)) == NULL)
-	Perror("ReadDir");
+		Perror("read_file");
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop
   */
@@ -40,4 +40,26 @@ node_t *Fread(const char *name)
 		Perror("fclose");
 
 	return Lnode;
+}
+
+
+
+int Fwrite(node_t *Lnode, const char *name)
+{
+	FILE *fp;
+
+	printf("Writing file %s\n", name);
+
+	if ( (fp = fopen(name,"w")) == NULL)
+		Perror("fopen");
+
+	if( WriteData(Lnode, fp) != 0)
+		Perror("WriteData");
+ /*
+  * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop
+  */
+	if( fclose (fp) != 0)
+		Perror("fclose");
+
+	return 0;
 }

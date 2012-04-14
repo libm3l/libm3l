@@ -723,7 +723,7 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		while(ngotten)
 		{
 /*
- * read until end of buffer or ` symbol
+ * read until end of buffer or until end of array dimension reached
  */
 			while(IFEXPR) pc++;			
 			while(*pc != '\0' && i < tot_dim){
@@ -759,7 +759,7 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		while(ngotten)
 		{
 /*
- * read until end of buffer or ` symbol
+ * read until end of buffer or end of array dimension reached
  */
 			while(IFEXPR) pc++;			
 			while(*pc != '\0' && i < tot_dim){
@@ -796,7 +796,7 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		while(ngotten)
 		{
 /*
- * read until end of buffer or ` symbol
+ * read until end of buffer or end of array dimension reached
  */
 			while(IFEXPR) pc++;			
 			while(*pc != '\0' && i < tot_dim){
