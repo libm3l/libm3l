@@ -29,6 +29,7 @@ typedef union{
 	unsigned int  *ui;
 	long  int     *li;
 	unsigned long int       *uli;
+	long long int           *lli;
 	signed long long int    *slli;
 	unsigned long long  int *ulli;
 

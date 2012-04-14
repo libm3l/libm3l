@@ -135,7 +135,7 @@ node_t *Tmp;
 		}
 		printf(" %s \t\t %ld\t", List->name, List->ndim);
 		if(strncmp(List->type,"DIR",3) != 0){
-		maxdim = 1;
+			maxdim = 1;
 			for (i=0; i<List->ndim; i++){
 				printf("%ld   ", List->fdim[i]);
 				maxdim = maxdim * List->fdim[i] ;
@@ -245,6 +245,10 @@ int cat_data(node_t *Tmpnode, size_t tot_dim)
 		else if(strncmp(Tmpnode->type,"SLLI",4) == 0){  /* signed long long  int */
 			for (i=0; i<tot_dim; i++)
 				FCS_C_SLLI(Tmpnode->data.slli[i]);
+		}
+		else if(strncmp(Tmpnode->type,"LLI",3) == 0){  /* signed long long  int */
+			for (i=0; i<tot_dim; i++)
+				FCS_C_LLI(Tmpnode->data.lli[i]);
 		}
 		else if(strncmp(Tmpnode->type,"ULI",3) == 0){  /* unsigned long int */
 			for (i=0; i<tot_dim; i++)

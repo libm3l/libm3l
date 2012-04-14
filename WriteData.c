@@ -285,6 +285,16 @@ int write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 					Perror("fwrite");
 			} 
 		}
+		else if(strncmp(Tmpnode->type,"LLI",3) == 0){  /* signed long long  int */
+			for (i=0; i<tot_dim; i++){
+				bzero(buff, sizeof(buff));
+				if( (n=FCS_W_LLI(Tmpnode->data.lli[i], SEPAR_SPACE)) < 0)
+	      			       	Perror("snprintf");
+				buff[n] = '\0';
+				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+					Perror("fwrite");
+			} 
+		}
 		else if(strncmp(Tmpnode->type,"ULI",3) == 0){  /* unsigned long int */
 			for (i=0; i<tot_dim; i++){
 				bzero(buff, sizeof(buff));

@@ -6,6 +6,7 @@
 #include "Header.h"
 #include "format_type.h"
 #include "internal_format_type.h"
+#include "format_conversion_spec.h"
 
 #include "FunctionsPrt.h"
 #include "udf_rm.h"
@@ -200,13 +201,47 @@ node_t *read_socket(int descrpt)
 						if(i == (MAX_WORD_LENGTH-1))
 							Perror("read_socket - word too long");
 					}
+					type[i] = '\0';
+/*
+ * make sure that if the EOFbuff word is split and part of it is still in socket
+ * read it and append to the beginning of word
+ * 
+ * compare the last word with EOFbuff, if not equal attempt to read rest if socket
+ */
 					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
-							tmpi = 0;
-							printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
-							while(*pc != '\0' && tmpi++ < 100)
-								printf("%c", *pc++);
-							printf("\n");
-							exit(0); 
+/*
+ * read the last part of buffer and add it to the previuous word
+ */
+							bzero(buff,sizeof(buff));
+							if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+								Perror("read");
+							buff[ngotten] = '\0';
+							if(ngotten > 0) strcat(type, buff);
+/*
+ * compare with EOFbuff, if not equal, give warning
+ * NOTE: if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
+ * sure the socket is empty
+ */
+						if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
+								tmpi = 0;
+								printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
+								while(*pc != '\0' && tmpi++ < 100)
+									printf("%c", *pc++);
+								printf("\n");
+/*
+ * if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
+ * sure the socket is empty
+ */								
+								while(ngotten){
+									bzero(buff,sizeof(buff));
+									if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+										Perror("read");
+								}
+								exit(0); 
+						}
+/*
+ * reading socket ended sucesfully, give back Gnode
+ */
 					}
 					return Dnode;
 				}
@@ -251,8 +286,7 @@ node_t *read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt)
 		Error("Allocate");
 	}
 
-	for(i=1;i<=TMPSTR.ndim; i++){
- 
+	for(i=1;i<=TMPSTR.ndim; i++){ 
 		Tmpnode=NULL;	
 		if ( (Tmpnode = read_socket_data(descrpt)) == NULL)
 			Error("ReadDirData: ReadData");
@@ -456,9 +490,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * chars
  */
-	char           *pcc;
-	signed char    *psc;
-	unsigned char  *puc;
+	char           *err;
 /*
  * integers
  */
@@ -468,6 +500,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 	unsigned int  		*pui;
 	long  int     		*pli;
 	unsigned long int       *puli;
+	long long int           *plli;
 	signed long long int    *pslli;
 	unsigned long long int  *pulli;
 
@@ -491,18 +524,6 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		pf = (*Lnode)->data.f;
 	}
 /*
- * chars, do not serialize, write as they are
- */
-	else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-		psc = (*Lnode)->data.sc;
-	}
-	else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-		puc = (*Lnode)->data.uc;
-	}
-	else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-		pcc = (*Lnode)->data.c;
-	}
-/*
  * integers
  */
 	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
@@ -516,6 +537,9 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 	}
 	else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
 		pusi = (*Lnode)->data.usi;
+	}
+	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+		plli = (*Lnode)->data.lli;
 	}
 	else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
 		psi = (*Lnode)->data.si;
@@ -598,70 +622,53 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * get the value
  */
-
-
 		if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
-//			*pldf++ = (*Lnode)->data.ldf;
+			*pldf++ = FCS_C2LD(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
-			*pdf++ = atof(type);
+			*pdf++ = FCS_C2D(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
-//			*pf++ = (*Lnode)->data.f;
-		}
-/*
- * chars, do not serialize, write as they are
- */
-		else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-			j = 0;
-			while(type != '\0')
-				*psc++ = type[j++];
-		}
-		else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-			j = 0;
-			while(type != '\0')
-				*puc++ = type[j++];
-		}
-		else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-			j = 0;
-			while(type != '\0')
-				*pcc++ = type[j++];
+			*pf++ = FCS_C2F(type, &err);
 		}
 /*
  * integers
  */
 		else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
-//			*pulli++ = (*Lnode)->data.ulli;
+			*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
 		}
-		else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
-//			*pslli++ = (*Lnode)->data.slli;
+		else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long int */
+			*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
+		}
+		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+			*plli++ = FCS_C2LLI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
-//			*puli++ = (*Lnode)->data.uli;
+			*puli++ = (unsigned long int)FCS_C2LI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
-//			*pusi++ = (*Lnode)->data.usi;
+			*pusi++ = (unsigned short int)FCS_C2I(type);
 		}
 		else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
-//			*psi++ = (*Lnode)->data.si;
+			*psi++ = (signed int)FCS_C2I(type);
 		}
 		else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
-//			*pui++ = (*Lnode)->data.ui;
+			*pui++ = (unsigned int)FCS_C2I(type);
 		}
 		else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
-//			*pli++ = (*Lnode)->data.li;
+			*pli++ = FCS_C2LI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
-			*pi++ = atoi(type);
+			*pi++ = FCS_C2I(type);
 		}
 /*
  * counters
  */
 		else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
-//			*pst++ = (*Lnode)->data.st;
+			*pst++ = FCS_C2LLI(type, &err);
 		}
 		else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-//			*pptrdf++ = (*Lnode)->data.ptrdf;
+			*pptrdf++ = FCS_C2LLI(type, &err);
 		}
 
 
@@ -689,38 +696,134 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /* 
  * function reads data from FILE
  */
-	char type[MAX_WORD_LENGTH], lastchar;
-	size_t i, tot_dim, wc, hi;
-	char *pdat;
-	
+	size_t i, tot_dim;
+	char 		*pdat;
+	unsigned char 	*pdatu;
+	signed char   	*pdats;
+	int 		init;
+
 	tot_dim = 1;
 	
 	for(i=0; i<TMPSTR.ndim; i++)
 		tot_dim = tot_dim * TMPSTR.dim[i];
 /*
+ * array was allocated with +1 to store '\0' symbol
+ */
+	tot_dim--; 
+/*
  * what type of data
  */
 	if( strncmp(TMPSTR.Type,"UC",2) == 0){
-		pdat = (*Lnode)->data.uc;
-	}
-	else if ( strncmp(TMPSTR.Type,"SC",2) == 0 ){
-		pdat = (*Lnode)->data.sc;
-	}
-	else if ( TMPSTR.Type[0] == 'C'){
-		pdat = (*Lnode)->data.c;
-	}
-	else{
-		Error("char data type wrong");
-	}
+		pdatu = (*Lnode)->data.uc;
 /*
  * process buffer, set last char to \0
  */
-	while(ngotten)
-	{
-		while(*pc != '\0'){
-			*pdat++ = *pc++;
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/*
+ * read until end of buffer or ` symbol
+ */
+			while(IFEXPR) pc++;			
+			while(*pc != '\0' && i < tot_dim){
+				*pdatu++ = (unsigned char)*pc++;
+				i++;
+			}
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
+
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+
+			}
+			else if (i == tot_dim){
+				*pdatu = '\0';
+				return 0;
+			}
 		}
-		*pdat = '\0';
+	}
+	else if ( strncmp(TMPSTR.Type,"SC",2) == 0 ){
+		pdats = (*Lnode)->data.sc;
+/*
+ * process buffer, set last char to \0
+ */
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/*
+ * read until end of buffer or ` symbol
+ */
+			while(IFEXPR) pc++;			
+			while(*pc != '\0' && i < tot_dim){
+				*pdats++ = (signed char)*pc++;
+				i++;
+			}
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
+
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+
+			}
+			else if (i == tot_dim){
+				*pdats = '\0';
+				return 0;
+			}
+		}
+	}
+	else if ( TMPSTR.Type[0] == 'C'){
+
+		pdat = (*Lnode)->data.c;
+/*
+ * process buffer, set last char to \0
+ */
+		init = 0;
+		i = 0;
+		while(ngotten)
+		{
+/*
+ * read until end of buffer or ` symbol
+ */
+			while(IFEXPR) pc++;			
+			while(*pc != '\0' && i < tot_dim){
+				*pdat++ = *pc++;
+				i++;
+			}
+/*
+ * find why while was left
+ */
+			if(*pc == '\0'){	
+				bzero(buff,sizeof(buff));
+				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+					Perror("read");
+
+				if(ngotten == 0)return 0; /* no more data in buffer */
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+
+			}
+			else if (i == tot_dim){
+				*pdat = '\0';
+				return 0;
+			}
+		}
+	}
+	else{
+		Error("char data type wrong");
 	}
 /*
   * if you get here something went wrong
