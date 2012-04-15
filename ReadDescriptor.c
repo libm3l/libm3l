@@ -31,9 +31,6 @@ size_t ngotten;
  * If DATA type of list it allocates a node_t and calls ReadDataLine which reads the
  * actual conent of the list
  * If the list if of DIR type, it calls ReadDir routine which reads DIR types of list (recursive calling)
- * 
- * NOTE - this function is an exact copy of ReadDescriptor, the only change is replacing the 
- * FILE * by int and fread by read
  */ 
 node_t *read_file(FILE *fp)
 {
@@ -129,7 +126,7 @@ node_t *read_file(FILE *fp)
 /*
  * save the last character - if the last character was due to \0 in buffer, save the one before
  */
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); /* NOTE */ 
+			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1);
 
 /*
  * if reached the end of buff
@@ -148,7 +145,6 @@ node_t *read_file(FILE *fp)
 				pc = &buff[0];
 /*
  * if last character was not space, tab, new line or \0 the buffer did not contain entire word, some of it's part is in the next buffer
- * NOTE - for TCP/IP this is going to be replaced by separator 
  */
 				if(LASTEXPR) continue;
 			}
@@ -564,7 +560,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				hi = 1;
 			}
 
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); /* NOTE */ 
+			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
 				
 			
 			if ( *(pc+hi) == '\0'){

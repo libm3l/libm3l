@@ -39,8 +39,10 @@ size_t ngotten;
  * actual conent of the list
  * If the list if of DIR type, it calls ReadDir routine which reads DIR types of list (recursive calling)
  * 
- * NOTE - this function is an exact copy of ReadDescriptor, the only change is replacing the 
- * FILE * by int and fread by read
+  * This function is a copy of ReadDescriptor, the only change is replacing the 
+ * FILE * by int and fread by read and having SEPAR_SIGN as a separation sign between the 
+ * words, although the algorithm should be able to take spaces, tabs and new lines too.
+ * For C, UC and SC fields, spaces, \t and \n are taken as valid characters
  */ 
 node_t *read_socket(int descrpt)
 {
@@ -134,7 +136,7 @@ node_t *read_socket(int descrpt)
 /*
  * save the last character - if the last character was due to \0 in buffer, save the one before
  */
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); /* NOTE */ 
+			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1);
 
 /*
  * if reached the end of buff
@@ -151,7 +153,6 @@ node_t *read_socket(int descrpt)
 				pc = &buff[0];
 /*
  * if last character was not space, tab, new line or \0 the buffer did not contain entire word, some of it's part is in the next buffer
- * NOTE - for TCP/IP this is going to be replaced by separator 
  */
 				if(LASTEXPR) continue;
 			}
@@ -597,7 +598,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				hi = 1;
 			}
 
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); /* NOTE */ 
+			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
 				
 			
 			if ( *(pc+hi) == '\0'){

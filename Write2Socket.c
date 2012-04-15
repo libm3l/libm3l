@@ -386,6 +386,10 @@ int write_buffer(const char *buff, int sockfd, int force, int add)
  * add   - parameter adds separ sing to the end, it is needed when 
  * 	chars are written in
  */
+
+/*
+ * NOTE-URGENT - check the algorithm for adding SEPAR_SIGN at the end of buffer, 
+ * especially situattion after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
 	size_t n,i;
      
 	while(*buff != '\0'){
@@ -407,7 +411,7 @@ int write_buffer(const char *buff, int sockfd, int force, int add)
 	if(bitcount < (MAXLINE-1) && add == 1){
 /*
  * add separ sign 
- * NOTE: make sure that if bitcount here is = MAXLINE-2 and add = force then it add SEPAR_SIGN here as well as in the following condition
+ * NOTE: make sure that if bitcount here is = MAXLINE-2 and add = force then it adds SEPAR_SIGN here as well
  */
 		*(buffer+bitcount) = SEPAR_SIGN;
 		bitcount++;

@@ -64,8 +64,10 @@ SIZE_T rm_list(int call, node_t **List)
 /*
  * remove the master head node and return
  */
-				if(Free(List) != 0)
-					Error("Free");
+				if(strncmp( (*List)->type, "LINK", 4) != 0){
+					if(Free(List) != 0)
+						Error("Free");
+				}
 /*
  * return value 1 meanign one deleted node
  */
@@ -104,8 +106,10 @@ SIZE_T rm_list(int call, node_t **List)
  */
 		(*List)->parent->ndim--;
 		
-		if(Free(List) != 0)
-			Error("Free");
+		if(strncmp( (*List)->type, "LINK", 4) != 0){
+			if(Free(List) != 0)
+				Error("Free");
+		}
 /*
  * return value 1 meanign one deleted node
  */
@@ -119,15 +123,30 @@ SIZE_T rm_list(int call, node_t **List)
  *	set the temporary pointer to first child node
  */
 		rmnodes = 0;
-		Tmpnode =  (*List)->child;
+		
+		if(strncmp( (*List)->type, "LINK", 4) != 0){
+/*
+ * if list in not LINK, remove all its children, otherwise
+ * remove just the node itself
+ */
+			Tmpnode =  (*List)->child;
 /*
  * remove all nodes in list, if node is DIR type, remove its children first (recursive call to rm_list)
  * increase counter of removed nodes
  */
-		while(Tmpnode != NULL){
-			Tmpnode1 = Tmpnode->next;
-			rmnodes = rmnodes + rm_list(2, &Tmpnode);
-			Tmpnode = Tmpnode1;
+			while(Tmpnode != NULL){
+				Tmpnode1 = Tmpnode->next;
+				rmnodes = rmnodes + rm_list(2, &Tmpnode);
+				Tmpnode = Tmpnode1;
+			}
+		}
+		else
+		{
+/*
+ * List is LINK, nullify its -> child pointer, set counter of items in the list = 0 and remove the list
+ */
+			(*List)->child = NULL;
+			(*List)->ndim  = 0; /* NOTE, this parameters MUST be original for LINK node, so when linking, make sure it is updated */
 		}
 /*
  * Free parent node
