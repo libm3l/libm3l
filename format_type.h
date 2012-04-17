@@ -3,8 +3,8 @@
  * copyright � 2012 Adam Jirasek
  */
 
-#ifndef __DATA__
-#define __DATA__
+#ifndef __DATA_H__
+#define __DATA_H__
 
 typedef union{
 	void *v;
@@ -37,10 +37,7 @@ typedef union{
 	ptrdiff_t *ptrdf;
 
 } data_t;
-#endif
 
-#ifndef  __NODE_T__
-#define  __NODE_T__
 
 typedef struct node {
 /*
@@ -76,19 +73,20 @@ typedef struct node {
   * pointers to the next list, parent list and child list
   */
 	struct node *next, *prev, *parent, *child;
+ /*
+  * structure used for linking information, lcounter is a number of linknode array
+  */
+	struct node_t **linknode;
+	size_t lcounter;
+
 } node_t;
 
-#endif
 
-
-#ifndef  __FIND_T__
-#define __FIND_T__
 /*
  * find_t structure
  */
 typedef struct find{
 	node_t *List;
-	char   *path;
 } find_t;
 
 #endif
