@@ -390,6 +390,7 @@ int write_buffer(const char *buff, int sockfd, int force, int add)
 /*
  * NOTE-URGENT - check the algorithm for adding SEPAR_SIGN at the end of buffer, 
  * especially situattion after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
+ */
 	size_t n,i;
      
 	while(*buff != '\0'){
