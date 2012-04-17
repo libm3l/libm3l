@@ -4,23 +4,26 @@
  
 #include "Header.h"
 #include "format_type.h"
-#include "add_list.h"
+#include "link_list.h"
 #include "FunctionsPrt.h"
 
 int add_list(node_t **List, node_t **WTAList, char option)
 {
 /*
- * function adds list to the list tree
- * Input is a node to add (**List) and node where to add (**WTAList)
-  * if the node where to add is DIR, the node is added to the DIR either at the beginning (option b) or at the end (option e)
-  * if the node where to add is FILE type, the node is add before that node (b) or after that node (a).
-  * in each case the count of parent DIR is increased by 1
-  *
-  * Upon return function returns:
-  *    1 - if sucess
-  *   0 of no scenario where and how to add a node was found
-  *   -1 if node which is to be added (**List) is NULL
-  *  -2 of node specifying where to add nodel (**WTAList) is NULL
+ * function links list to the list tree
+ * Input is a node to link (**List) and node where to link (**WTAList)
+ * if the node where to link  is DIR, the node is added to the DIR either at the beginning (option b) or at the end (option e)
+ * if the node where to add is FILE type, the node is added before that node (b) or after that node (a).
+ * in each case the count of parent DIR is increased by 1
+ *
+ * NOTE - the function is derivative of the add_list.c
+ * NOTE - if the WTAList is node, the question is if the node is to be used as a placeholder or if it should be removed and 
+ *        used for link.
+ * Upon return function returns:
+ *    1 - if sucess
+ *    0 of no scenario where and how to add a node was found
+ *   -1 if node which is to be added (**List) is NULL
+ *  -2 of node specifying where to add nodel (**WTAList) is NULL
  */
 	node_t *Node, *WTAnode, *WTAChild;
 
@@ -102,6 +105,15 @@ int add_list(node_t **List, node_t **WTAList, char option)
  * increase counter of number of items in parent list
  */
 			((*WTAList)->parent)->ndim = 0;
+ /* 
+  * copy some of the data of the previuous node
+  */
+ 
+ /*
+  * increase counter of the linked nodes in original node and add the address of this node to it
+  */
+			
+			
 			return 1;
 		}
 		else
@@ -130,6 +142,6 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * something went wrong, did not identify where to add node
  */
-return 0;
+return -1;
 }
 
