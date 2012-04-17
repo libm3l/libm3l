@@ -117,3 +117,69 @@ char *StrToUpper(char *s)
 	} 
 	return cs;	
 }
+
+
+char *Path(node_t *List)
+{
+	char   *path;
+	char   **segs;
+	node_t *Tmp;
+	size_t count,i,*len, tot_len, tot_len1, j;
+/*
+ * find the number of all nodes up to Master Head Node
+ */
+	Tmp = List;
+	count = 1;
+	while(Tmp->parent != NULL){
+		count++;
+		Tmp = Tmp->parent;
+	}
+
+	if ( (segs = (char**)malloc( (count)*sizeof(char **) )) == NULL)
+		Perror("malloc");
+	if ( (len = (size_t *)malloc( (count)*sizeof(size_t *) )) == NULL)
+		Perror("malloc");
+	
+	Tmp = List;
+	i=0;
+	tot_len = 0;
+	while(Tmp->parent != NULL){
+		len[i] = strlen(Tmp->name);
+
+		if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
+			Perror("malloc");
+		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
+			Perror("snprintf");
+		
+		Tmp = Tmp->parent;
+		tot_len = tot_len + len[i] + 1;
+		i++;
+	}
+	len[i] = strlen(Tmp->name);
+	if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
+			Perror("malloc");
+		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
+			Perror("snprintf");
+	tot_len = tot_len + len[i] + 1;
+	
+	
+	
+	if ( (path = (char*)malloc( (tot_len + 1)*sizeof(char **) )) == NULL)
+		Perror("malloc");
+	
+	tot_len1 = 0;
+	
+	for (i = count; i-- > 0; ){
+		path[tot_len1++] = '/';
+		for(j=0; j<len[i]; j++){
+			path[tot_len1++] = segs[i][j];}
+	}
+	
+	for(i=0; i<count; i++)
+		free(segs[i]);
+	free(segs);
+	free(len);
+	
+	return path;
+	
+}

@@ -1,0 +1,10 @@
+find . -type f -name '*.c' -exec cat {} \; | sed '/^\s*#/d;/^\s*$/d;/^\s*\/\//d' | wc -l
+
+
+cat *.c | sed '/^\s*#/d;/^\s*$/d' | wc -l
+
+
+ctags 
+sloccount
+dev-util/cscope
+pmd (java)

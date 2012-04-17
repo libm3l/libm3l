@@ -51,7 +51,9 @@ int main(void)
 	   if( Fwrite(Gnode,  "ADA_TEST") != 0)
 		   Perror("Linked_test: Fwrite");
 	   
+	   FoundNodes = Find(Gnode, &founds , "--recursive", "Belonging_to_ADDDATA", (char *)NULL);
 	   
+	   exit(0);
 	   
 	   printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
 	   if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)

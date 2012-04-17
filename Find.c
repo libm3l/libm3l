@@ -11,7 +11,6 @@
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
-
 extern int optind;
 static int verbose_flag;
 
@@ -231,10 +230,8 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 		printf(" number of founds is %ld \n", *founds);
 		for (i=0; i<*founds; i++){
 			printf("Name of found subset is --- pointer is %p\n", Found_Nodes[i]->List);
-				
+
 			Tmp1 = Found_Nodes[i]->List;
-			
-			
 
 			if( snprintf(path, 256,"%s/",Tmp1->name) < 0)
 				Perror("snprintf");
@@ -246,11 +243,17 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 				Tmp1 = Tmp1->parent;
 			}
 			Tmp1 = Found_Nodes[i]->List;
-			printf("reversed path is %s   type is %s\n", path, Tmp1->type); 
+			printf("reversed path is %s type is %s\n", path, Tmp1->type); 
+			
+			
+			printf(" Path is %s \n", Path(Found_Nodes[i]->List));
+			
 		}
 	}	
-//		if(word != NULL) free(word);
+//		NOTE: if(word != NULL) free(word);
 		if(search_term != NULL) free(search_term);
 
 	return Found_Nodes;
 }
+
+
