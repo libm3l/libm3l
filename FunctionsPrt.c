@@ -272,7 +272,7 @@ path_t *parse_path(const char *path)
 		perror("malloc");
 
 	for(i=0; i< counter; i++)
-		if ( (text[i] = (char *)malloc( (MAXLINE + 1) * sizeof(char *))) == NULL)
+		if ( (text[i] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
 			perror("malloc");
 /*
  * store individual words in array
@@ -292,8 +292,8 @@ path_t *parse_path(const char *path)
 	j = 0;
 
 		while(path[i] != '\0'){
-
-		text[j][st++] = path[i];
+		if( st < MAX_NAME_LENGTH)
+			text[j][st++] = path[i];
 
 		if(path[i++]  == '/' && path[i] != '\0'){
 			while( path[i] == '/' && path[i] != '\0') i++;
