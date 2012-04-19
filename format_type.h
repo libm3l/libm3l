@@ -70,9 +70,9 @@ typedef struct node {
 	size_t ndim;
 	data_t data;
  /* 
-  * pointers to the next list, parent list and child list
+  * pointers to the next list, parent list and child list and if the list is link, the original of the link
   */
-	struct node *next, *prev, *parent, *child;
+	struct node *next, *prev, *parent, *child, *link;
  /*
   * structure used for linking information, lcounter is a number of linknode array
   */

@@ -120,7 +120,7 @@ int Free(node_t **Lnode)
 /*
  * nullify node_t
  */
-	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL;
+	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; (*Lnode)->link=NULL;
 	
 	if((*Lnode)->lcounter > 0){
 		for (i=0; i<(*Lnode)->lcounter; i++)
@@ -156,7 +156,7 @@ int Allocate(node_t **Lnode, tmpstruct_t TMPSTR)
   /*
   * nullify all node_t pointes in the node_t list
   */
- 	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL;
+ 	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; (*Lnode)->link=NULL;
 	(*Lnode)->type=NULL; (*Lnode)->name=NULL;
 	(*Lnode)->linknode = NULL;
 	(*Lnode)->lcounter = 0;
@@ -294,7 +294,7 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
   /*
   * nullify all node_t pointes in the node_t list
   */
-	Lnode->next=NULL; Lnode->prev=NULL; Lnode->parent=NULL; Lnode->child=NULL;  Lnode->fdim=NULL;
+	Lnode->next=NULL; Lnode->prev=NULL; Lnode->parent=NULL; Lnode->child=NULL;  Lnode->fdim=NULL; Lnode->link=NULL;
 	Lnode->type=NULL; Lnode->name=NULL;
 	Lnode->linknode = NULL;
 	Lnode->lcounter = 0;
