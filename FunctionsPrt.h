@@ -1,3 +1,5 @@
+#include "internal_format_type.h"
+
 #ifndef __FUNCTIONPRT_H__
 #define __FUNCTIONPRT_H__
 
@@ -17,6 +19,7 @@ char *StrToLower(char *);
 
 char *Path(node_t *);
 
+path_t *parse_path(const char *);
 
 #endif
 

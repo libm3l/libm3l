@@ -15,6 +15,7 @@
 #include "Cat.h"
 #include "tcpip_socket_IOop.h"
 #include "WriteData.h"
+#include "FunctionsPrt.h"
 
 #define LINESZ 1024
 
@@ -28,6 +29,8 @@ int main(void)
     
     char name[255], type[30];
     char *pc,buff[LINESZ];
+    
+    path_t *parsed_path;
 
     int *ada, num, wc;
 
@@ -48,6 +51,15 @@ int main(void)
 
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
+		
+		parsed_path = parse_path("../../home/jka/ada");
+		
+		printf(" Number of segments is %ld\n",parsed_path->seg_count );
+		for (i=0; i< parsed_path->seg_count; i++)
+			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
+		
+		destroy_pars_path(&parsed_path);
+		
 	   
 	   
 /*	   if( Fwrite(Gnode,  "ADA_TEST") != 0)
