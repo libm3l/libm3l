@@ -23,7 +23,7 @@ int main(void)
     node_t *Gnode=NULL, *Node, *Tmpnode, *RecNode;
     find_t **FoundNodes;
     
-    int i, count,countgrp, socketnr;
+    int i, count,countgrp, socketnr, j;
     size_t founds;
     
     char name[255], type[30];
@@ -36,7 +36,9 @@ int main(void)
     printf("Going to Fread1\n");
    
 
-	for (i=0; i<1000000; i++){
+	for (j=0; j<1000000; j++){
+		
+		printf(" CYCLE %d\n\n", j);
 
 		if( (Gnode = Fread("TEST.dat"))  == NULL)
 			Perror("Linked_test: Fread");

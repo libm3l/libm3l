@@ -22,14 +22,12 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 	
 	find_t **Found_Nodes;
 	node_t *Tmp1;
- 	char *word, **opt, *search_term, *search_term1;
+ 	char *word, **opt, *search_term, *search_term1, *node_path;
 	opts_t *Popts, opts;
 	size_t args_num, len, i;
 	va_list args;
 	int c;
 	int option_index;
-	
-	char path[256];
 	
 	*founds = 0;
 	option_index = 0;
@@ -234,23 +232,12 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 		printf(" number of founds is %ld \n", *founds);
 		for (i=0; i<*founds; i++){
 			printf("Name of found subset is --- pointer is %p\n", Found_Nodes[i]->List);
-
-			Tmp1 = Found_Nodes[i]->List;
-
-			if( snprintf(path, 256,"%s/",Tmp1->name) < 0)
-				Perror("snprintf");
-			while(Tmp1->parent != NULL){
-				if( strncat(path, Tmp1->parent->name, strlen(Tmp1->parent->name)) < 0)
-					Perror("strcat");
-				if( strncat(path, "/",1) < 0)
-					Perror("strcat");
-				Tmp1 = Tmp1->parent;
+			
+			if( (node_path = Path(Found_Nodes[i]->List)) != NULL){
+				printf(" Path is %s \n", node_path);
+				free(node_path);
+// 				exit(0);
 			}
-			Tmp1 = Found_Nodes[i]->List;
-			printf("reversed path is %s type is %s\n", path, Tmp1->type); 
-			
-			
-		//	printf(" Path is %s \n", Path(Found_Nodes[i]->List));
 			
 		}
 	}	
