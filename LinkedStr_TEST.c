@@ -36,7 +36,7 @@ int main(void)
     printf("Going to Fread1\n");
    
 
-//	for (i=0; i<1000000; i++){
+	for (i=0; i<1000000; i++){
 
     if( (Gnode = Fread("TEST.dat"))  == NULL)
       Perror("Linked_test: Fread");
@@ -51,18 +51,34 @@ int main(void)
 	   if( Fwrite(Gnode,  "ADA_TEST") != 0)
 		   Perror("Linked_test: Fwrite");
 	   
+	   FoundNodes = Find(Gnode, &founds , "--recursive", "Belonging_to_ADDDATA", (char *)NULL);
+	   
+	   exit(0);
+	   
+	   printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
+	   if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	                   Error("CatData");
+	   
+	   if(Umount(&Gnode) != 1)
+                  Perror("Umount");
+	   
+}
+	   
 	   
 	   
 //	   send_to_tcpipsocket(Gnode, "localhost", 4096);
 			   
-	    RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+//	    RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
           
 	    
 	    printf("\n\n\n Umounting \n\n\n");
 
-	    
-	    if(Cat(RecNode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	    printf("Number of removed nodes is %ld\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
+//	    if(Cat(RecNode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
+	    
+	    
+	    
 	   
 	/*      socketnr =  cli_open_socket("localhost", 4096);
 		write_to_socket(1, Gnode,  socketnr);

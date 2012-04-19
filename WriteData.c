@@ -81,21 +81,11 @@ int WriteData(node_t *List,  FILE *fp)
 						if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
 							Perror("fwrite");
 /*
- * NOTE - here add a call to write_data or whatever else it is called
+ * call to function printing actual data in file
  */						
 
 						write_file_data_filedescprt(Tmpnode, tot_dim, fp);
 
-
-/*						for (i=0; i<tot_dim; i++){
-							bzero(buff, sizeof(buff));
-							if( snprintf(buff, MAX_WORD_LENGTH,"%d ", Tmpnode->data.i[i]) < 0)
-	      					        	Perror("snprintf");
-							if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
-								Perror("fwrite");
-							
-							printf("%d ", Tmpnode->data.i[i]);
-						} */
 						if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
 	      						        Perror("snprintf");
 						if (fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))

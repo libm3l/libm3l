@@ -242,7 +242,7 @@ size_t Rm(node_t **List, char * Options, ...)
 			for (i=0; i<founds; i++){
 				Tmp1 = Found_Nodes[i]->List;
 			
-				printf("RM    -- Removing %s\n", Tmp1->name);
+//				printf("RM    -- Removing %s\n", Tmp1->name);
 	
 				if ( (rmnodes = rm_list(1, &Tmp1)) > 0){
 					rm_tot_nodes = rm_tot_nodes + rmnodes;

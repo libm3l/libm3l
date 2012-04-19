@@ -211,12 +211,14 @@ void DestroyFound(find_t **FoundNodes, size_t founds)
  */
 	size_t i;
 	
-	for(i=0; i<founds; i++){
+	for(i=0; i<founds; i++)
+	{
 		free(FoundNodes[i]);
-		FoundNodes[i]=NULL;}
+//		FoundNodes[i]=NULL;
+	}
 	
-		free(FoundNodes);	
-		FoundNodes = NULL; 
+	free(FoundNodes);	
+	FoundNodes = NULL; 
 }	
 
 

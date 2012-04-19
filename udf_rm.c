@@ -19,6 +19,8 @@ int Free(node_t **Lnode)
  *       as freeing pointer does not modify its value
   *      http://cboard.cprogramming.com/c-programming/66209-struct-pointer-memory-allocation.html
  */
+	size_t i;
+
 	if(strncmp((*Lnode)->type,"DIR",3) != 0){
  /*
   * get the total size of field if multidimensional 
@@ -115,8 +117,18 @@ int Free(node_t **Lnode)
 		free((*Lnode)->name);
 		(*Lnode)->name == NULL;
 	}
-
-	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL;
+/*
+ * nullify node_t
+ */
+	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; (*Lnode)->link=NULL;
+	
+	if((*Lnode)->lcounter > 0){
+		for (i=0; i<(*Lnode)->lcounter; i++)
+			free((*Lnode)->linknode[i]);
+		
+		free((*Lnode)->linknode);
+	}
+		
 
 	free(*Lnode);
 	(*Lnode) = NULL;
@@ -144,8 +156,10 @@ int Allocate(node_t **Lnode, tmpstruct_t TMPSTR)
   /*
   * nullify all node_t pointes in the node_t list
   */
- 	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL;
+ 	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; (*Lnode)->link=NULL;
 	(*Lnode)->type=NULL; (*Lnode)->name=NULL;
+	(*Lnode)->linknode = NULL;
+	(*Lnode)->lcounter = 0;
  /*
   * Allocate pointers
   */
@@ -280,8 +294,10 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
   /*
   * nullify all node_t pointes in the node_t list
   */
-	Lnode->next=NULL; Lnode->prev=NULL; Lnode->parent=NULL; Lnode->child=NULL;  Lnode->fdim=NULL;
+	Lnode->next=NULL; Lnode->prev=NULL; Lnode->parent=NULL; Lnode->child=NULL;  Lnode->fdim=NULL; Lnode->link=NULL;
 	Lnode->type=NULL; Lnode->name=NULL;
+	Lnode->linknode = NULL;
+	Lnode->lcounter = 0;
  /*
   * Allocate pointers
   */
