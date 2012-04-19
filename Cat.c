@@ -93,7 +93,8 @@ int Cat(node_t *List, char * Options, ...)
  * get the name to look for
  */
  		search_term1 = va_arg(args, char *);
-		search_term = strdup(search_term1);
+		if ( (search_term = strdup(search_term1)) == NULL)
+			Perror("strdup");
 /*
  * end args
  */
@@ -238,6 +239,7 @@ int Cat(node_t *List, char * Options, ...)
  */
 		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
+			free(search_term);
 			return -1;
 		}		
 /*
@@ -254,7 +256,8 @@ int Cat(node_t *List, char * Options, ...)
  * get the value of the first argument, as not options are specified the argument is the name to look for
  */
 		va_start(args, Options);
-		search_term = strdup(Options);
+		if ( (search_term = strdup(Options)) == NULL)
+			Perror("strdup");
 		va_end(args);
 	}
 /*
@@ -267,8 +270,7 @@ int Cat(node_t *List, char * Options, ...)
 	if( *search_term == '*'){
 		if ( (status = cat_list(1, List, Popts)) != 0)
 			Warning("Cat");
-
-        	if(search_term != NULL) free(search_term);
+        	free(search_term);
 		return status;
 	}
 	else
@@ -283,6 +285,7 @@ int Cat(node_t *List, char * Options, ...)
 		status1 = 0;
 
 		if ( (Found_Nodes = Find_caller(List, &founds, search_term, Popts)) == NULL){
+			free(search_term);
 			return -1;
 		}
 		else
@@ -302,7 +305,7 @@ int Cat(node_t *List, char * Options, ...)
 			
 			DestroyFound(Found_Nodes, founds);
 
-			if(search_term != NULL) free(search_term);
+			free(search_term);
 
 			return status1;
 		}

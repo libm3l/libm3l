@@ -160,10 +160,9 @@ char *Path(node_t *List)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
+
 	tot_len = tot_len + len[i] + 1;
-	
-	
-	
+		
 	if ( (path = (char*)malloc( (tot_len + 1)*sizeof(char **) )) == NULL)
 		Perror("malloc");
 	
@@ -174,6 +173,10 @@ char *Path(node_t *List)
 		for(j=0; j<len[i]; j++){
 			path[tot_len1++] = segs[i][j];}
 	}
+	if( tot_len1 > tot_len)
+		Error("malloc problem in Path");
+		
+	path[tot_len1] = '\0';
 	
 	for(i=0; i<count; i++)
 		free(segs[i]);

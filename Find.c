@@ -22,14 +22,12 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 	
 	find_t **Found_Nodes;
 	node_t *Tmp1;
- 	char *word, **opt, *search_term, *search_term1;
+ 	char *word, **opt, *search_term, *search_term1, *node_path;
 	opts_t *Popts, opts;
 	size_t args_num, len, i;
 	va_list args;
 	int c;
 	int option_index;
-	
-	char path[256];
 	
 	*founds = 0;
 	option_index = 0;
@@ -84,7 +82,8 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  * get the name to look for
  */
  		search_term1 = va_arg(args, char *);
-		search_term = strdup(search_term1);
+		if ( (search_term = strdup(search_term1)) == NULL)
+			Perror("strdup");
 /*
  * end args
  */
@@ -174,18 +173,17 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 			}
 		}
 /*
+ * free array opt **
+ */
+			for(i=0; i<args_num; i++)
+				free(opt[i]);
+			free(opt);
+/*
  * check if incompatible options
  */
 		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
-/*
- * free array opt **
- */
-			if(args_num > 1){
-				for(i=0; i<args_num; i++)
-					free(opt[i]);
-				free(opt);
-			}
+			free(search_term);
 			return (find_t **)NULL;
 		}
 	}
@@ -196,7 +194,8 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  * get the value of the first argument, as not options are specified the argument is the name to look for
  */
 		va_start(args, Options);
-		search_term = strdup(Options);
+		if ( (search_term = strdup(search_term1)) == NULL)
+			Perror("strdup");
 		va_end(args);
 	}
 /*
@@ -204,6 +203,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  */
 	if(List == NULL){
 		Warning("WriteData: NULL list");
+		free(search_term);
 		return (find_t **)NULL;
 	}
 
@@ -213,6 +213,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  */
 	if( List->child == 0){
 		Warning("List in Find is not a DIR or is empty DIR, nothing to look for");
+		free(search_term);
 		return (find_t **)NULL;
 	}
 /* 
@@ -220,6 +221,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  * do not forget to free it when you do not need it
  */
 	if ( (Found_Nodes = Find_caller(List, founds, search_term, Popts)) == NULL){
+		free(search_term);
 		return (find_t **)NULL;
 	}
 	else
@@ -230,28 +232,17 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 		printf(" number of founds is %ld \n", *founds);
 		for (i=0; i<*founds; i++){
 			printf("Name of found subset is --- pointer is %p\n", Found_Nodes[i]->List);
-
-			Tmp1 = Found_Nodes[i]->List;
-
-			if( snprintf(path, 256,"%s/",Tmp1->name) < 0)
-				Perror("snprintf");
-			while(Tmp1->parent != NULL){
-				if( strncat(path, Tmp1->parent->name, strlen(Tmp1->parent->name)) < 0)
-					Perror("strcat");
-				if( strncat(path, "/",1) < 0)
-					Perror("strcat");
-				Tmp1 = Tmp1->parent;
+			
+			if( (node_path = Path(Found_Nodes[i]->List)) != NULL){
+				printf(" Path is %s \n", node_path);
+				free(node_path);
+// 				exit(0);
 			}
-			Tmp1 = Found_Nodes[i]->List;
-			printf("reversed path is %s type is %s\n", path, Tmp1->type); 
-			
-			
-			printf(" Path is %s \n", Path(Found_Nodes[i]->List));
 			
 		}
 	}	
 //		NOTE: if(word != NULL) free(word);
-		if(search_term != NULL) free(search_term);
+		free(search_term);
 
 	return Found_Nodes;
 }
