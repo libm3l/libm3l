@@ -84,7 +84,8 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  * get the name to look for
  */
  		search_term1 = va_arg(args, char *);
-		search_term = strdup(search_term1);
+		if ( (search_term = strdup(search_term1)) == NULL)
+			Perror("strdup");
 /*
  * end args
  */
@@ -174,18 +175,17 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 			}
 		}
 /*
+ * free array opt **
+ */
+			for(i=0; i<args_num; i++)
+				free(opt[i]);
+			free(opt);
+/*
  * check if incompatible options
  */
 		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
-/*
- * free array opt **
- */
-			if(args_num > 1){
-				for(i=0; i<args_num; i++)
-					free(opt[i]);
-				free(opt);
-			}
+			free(search_term);
 			return (find_t **)NULL;
 		}
 	}
@@ -196,7 +196,8 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  * get the value of the first argument, as not options are specified the argument is the name to look for
  */
 		va_start(args, Options);
-		search_term = strdup(Options);
+		if ( (search_term = strdup(search_term1)) == NULL)
+			Perror("strdup");
 		va_end(args);
 	}
 /*
@@ -204,6 +205,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  */
 	if(List == NULL){
 		Warning("WriteData: NULL list");
+		free(search_term);
 		return (find_t **)NULL;
 	}
 
@@ -213,6 +215,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  */
 	if( List->child == 0){
 		Warning("List in Find is not a DIR or is empty DIR, nothing to look for");
+		free(search_term);
 		return (find_t **)NULL;
 	}
 /* 
@@ -220,6 +223,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  * do not forget to free it when you do not need it
  */
 	if ( (Found_Nodes = Find_caller(List, founds, search_term, Popts)) == NULL){
+		free(search_term);
 		return (find_t **)NULL;
 	}
 	else
@@ -246,12 +250,12 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 			printf("reversed path is %s type is %s\n", path, Tmp1->type); 
 			
 			
-			printf(" Path is %s \n", Path(Found_Nodes[i]->List));
+		//	printf(" Path is %s \n", Path(Found_Nodes[i]->List));
 			
 		}
 	}	
 //		NOTE: if(word != NULL) free(word);
-		if(search_term != NULL) free(search_term);
+		free(search_term);
 
 	return Found_Nodes;
 }

@@ -273,7 +273,8 @@ unsigned char  EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
 /*
  * duplicate pattern and of required by option convert upper case to lower case
  */
-	Ppattern = strdup(pattern);
+	if ( (Ppattern = strdup(pattern)) == NULL)
+		Perror("strdup");
 
 	if(Popts->opt_i == 'i') 
 	       Ppattern = StrToLower(Ppattern);
