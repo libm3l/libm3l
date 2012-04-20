@@ -215,10 +215,13 @@ char *Path(node_t *List)
  */
 path_t *parse_path(const char *path)
 {
+	/*
+	 * NOTE - segmentation fault if path starts with / // // // etc noncence
+	 */
 	path_t *Path;
 	char **text;
-	char *pc;
-	size_t counter,i, j, st,k;
+	const char *pc;
+	size_t counter, j, st,k;
 
 	char abspath;
 
@@ -226,35 +229,37 @@ path_t *parse_path(const char *path)
 /*
  * parse the path
  */
-	if(path[0] == '/'){
+	pc = path;
+
+	while( *pc == '\t' || *pc == ' ' &&  *pc != '\0') pc++;
+
+	if(*pc == '/' && *pc != '\0'){
 		counter = 0;
-		i = 0;
 		abspath = 'A';
 	}
-	else if(path[0] == '.' && path[1] == '/'){
+	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
 		counter = 0;
-		i = 1;
+		pc++;
 	}
 	else{
-		i = 0;
 		counter = 1;
 	}
 
-	while(path[i] != '\0'){
+	while(*pc != '\0'){
 /*
  * if symbol is / and not the end of the string 
  */
-		if(path[i++]  == '/' && path[i] != '\0'){
+		if(*(pc++)  == '/' && *pc != '\0'){
 /*
  * remove all // spaces, tabs etc.
  */
-			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
+			while( *pc == '\t' || *pc == ' ' || *pc == '/' && *pc != '\0') pc++;
 /*
  * increase counter of the words in string
  */
 		 	counter++;
 
-			if(path[i] == '\0'){
+			if(*pc == '\0'){
 /*
  * if end of string, leave loop
  */
@@ -266,35 +271,40 @@ path_t *parse_path(const char *path)
 /*
  * allocate array for words in path
  */
-	if ( (text = (char **)malloc(counter * sizeof(char **))) == NULL)
-		perror("malloc");
+	if(counter > 0){
+		if ( (text = (char **)malloc(counter * sizeof(char **))) == NULL)
+			Perror("malloc");
 
-	for(i=0; i< counter; i++)
-		if ( (text[i] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
-			perror("malloc");
-/*
- * store individual words in array
- */
-	if(path[0] == '/'){
-		i = 2;
-	}
-	else if(path[0] == '.' && path[1] == '/'){
-		i = 2;
+		for(j=0; j< counter; j++)
+			if ( (text[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
+				Perror("malloc");
 	}
 	else
 	{
-		i= 0;
+		Error("Wrong path specification");
+		return NULL;
+	}
+/*
+ * store individual words in array
+ */
+	pc = path;
+		
+	if(*pc == '/' && *pc != '\0'){
+		pc++;
+	}
+	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
+		pc += 2;
 	}
 
 	st = 0;
 	j = 0;
 
-	while(path[i] != '\0'){
+	while(*pc != '\0'){
 /*
  * save the segment of the path
  */
 		if( st < MAX_NAME_LENGTH){
-			text[j][st++] = path[i];
+			text[j][st++] = *pc;
 		}
 		else{
 			Error(" Path too long");
@@ -304,37 +314,38 @@ path_t *parse_path(const char *path)
  * if the last symbol of the path segment is '/' replace it by '\0'
  * it occurs whent he specified path ends with / symbol
  */
-		if(path[i]  == '/' ){
+		if(*pc  == '/' ){
 			text[j][st-1] = '\0';
 /*
  * remove all // spaces, tabs etc.
  */
-			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
+			while( *pc == '\t' || *pc == ' ' || *pc == '/' && *pc != '\0') pc++;
 			text[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter) exit(0);
 			
-			if(path[i] == '\0')
+			if(*pc == '\0')
 				break;
 		}	
 /*
  * if next symbol is '/' take it away
  */
-		else if(path[i++]  == '/' && path[i] != '\0'){
+		else if(*(pc++)  == '/' && *pc != '\0'){
 /*
  * remove all // spaces, tabs etc.
  */
-			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
+			while( *pc == '\t' || *pc == ' ' || *pc == '/' && *pc != '\0') pc++;
 			text[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter) exit(0);
 			
-			if(path[i] == '\0')
+			if(*pc == '\0')
 				break;
 		}	
 	}
+
 /*
  * allocate pointer to Path structure and populate it
  */	
