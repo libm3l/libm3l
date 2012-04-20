@@ -246,7 +246,7 @@ path_t *parse_path(const char *path)
  */
 		if(path[i++]  == '/' && path[i] != '\0'){
 /*
- * ignore all / symbols following immediatelly this one
+ * remove all // spaces, tabs etc.
  */
 			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
 /*
@@ -295,7 +295,6 @@ path_t *parse_path(const char *path)
  */
 		if( st < MAX_NAME_LENGTH){
 			text[j][st++] = path[i];
-			printf("%d, %c\n", i, path[i]);
 		}
 		else{
 			Error(" Path too long");
@@ -307,6 +306,9 @@ path_t *parse_path(const char *path)
  */
 		if(path[i]  == '/' ){
 			text[j][st-1] = '\0';
+/*
+ * remove all // spaces, tabs etc.
+ */
 			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
 			text[j][st-1] = '\0';
 			st = 0;
@@ -320,9 +322,10 @@ path_t *parse_path(const char *path)
  * if next symbol is '/' take it away
  */
 		else if(path[i++]  == '/' && path[i] != '\0'){
-			printf("in cond %d, '%c'\n", i, path[i]);
-
-			while( path[i] == '/' && path[i] != '\0') i++;
+/*
+ * remove all // spaces, tabs etc.
+ */
+			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
 			text[j][st-1] = '\0';
 			st = 0;
 			j++;
