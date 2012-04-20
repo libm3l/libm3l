@@ -52,13 +52,19 @@ int main(void)
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
 		
-		parsed_path = parse_path("../../home/jka/ada");
+//		parsed_path = parse_path("../../home/jka/ada//");
 		
+		
+		parsed_path = parse_path("../../(SI_name=Wall/jka // /// ada///////   ");
+
 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
 		for (i=0; i< parsed_path->seg_count; i++)
 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
 		
 		destroy_pars_path(&parsed_path);
+		
+		
+		exit(0);
 		
 	   
 	   

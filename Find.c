@@ -13,7 +13,6 @@
 
 extern int optind;
 static int verbose_flag;
-
 /*
  * routine finds the list
  */

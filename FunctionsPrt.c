@@ -213,8 +213,6 @@ char *Path(node_t *List)
 /*
  * function segments path (./../../../home/etc/etc/
  */
-
-
 path_t *parse_path(const char *path)
 {
 	path_t *Path;
@@ -250,7 +248,7 @@ path_t *parse_path(const char *path)
 /*
  * ignore all / symbols following immediatelly this one
  */
-			while( path[i] == '/' && path[i] != '\0') i++;
+			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
 /*
  * increase counter of the words in string
  */
@@ -291,11 +289,39 @@ path_t *parse_path(const char *path)
 	st = 0;
 	j = 0;
 
-		while(path[i] != '\0'){
-		if( st < MAX_NAME_LENGTH)
+	while(path[i] != '\0'){
+/*
+ * save the segment of the path
+ */
+		if( st < MAX_NAME_LENGTH){
 			text[j][st++] = path[i];
+			printf("%d, %c\n", i, path[i]);
+		}
+		else{
+			Error(" Path too long");
+			return (path_t *)NULL ;
+		}
+/*
+ * if the last symbol of the path segment is '/' replace it by '\0'
+ * it occurs whent he specified path ends with / symbol
+ */
+		if(path[i]  == '/' ){
+			text[j][st-1] = '\0';
+			while( path[i] == '\t' || path[i] == ' ' || path[i] == '/' && path[i] != '\0') i++;
+			text[j][st-1] = '\0';
+			st = 0;
+			j++;
+			if(j > counter) exit(0);
+			
+			if(path[i] == '\0')
+				break;
+		}	
+/*
+ * if next symbol is '/' take it away
+ */
+		else if(path[i++]  == '/' && path[i] != '\0'){
+			printf("in cond %d, '%c'\n", i, path[i]);
 
-		if(path[i++]  == '/' && path[i] != '\0'){
 			while( path[i] == '/' && path[i] != '\0') i++;
 			text[j][st-1] = '\0';
 			st = 0;
@@ -304,7 +330,7 @@ path_t *parse_path(const char *path)
 			
 			if(path[i] == '\0')
 				break;
-		}
+		}	
 	}
 /*
  * allocate pointer to Path structure and populate it
@@ -312,8 +338,8 @@ path_t *parse_path(const char *path)
 	if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
 		Perror("malloc");
 	
-	Path->path = text;  		/* segments of path */
-	Path->abspath = abspath;	/* Realative (R) or absolute (A) path */
+	Path->path 	= text;  	/* segments of path */
+	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
 	Path->seg_count = counter;	/* Number of segments in path */
 		
 	return Path;

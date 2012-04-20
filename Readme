@@ -55,3 +55,5 @@ When Free called from Rm,c  check that the pointer in the main structure is NULL
 
 
  6. KO args_num in long_opt call in Find c etc.
+
+ 7. Size_t int check for overflow etc.
