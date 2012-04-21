@@ -228,7 +228,6 @@ path_t *parse_path(const char *path)
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
  */
-	
 	pc = path;
 	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
 /*
@@ -275,7 +274,7 @@ path_t *parse_path(const char *path)
  */
 		if(*(pc++)  == '/' && *pc != '\0'){
 /*
- * remove all // spaces, tabs etc.
+ * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
 /*
@@ -341,7 +340,7 @@ path_t *parse_path(const char *path)
 		if(*pc  == '/' ){
 			text[j][st-1] = '\0';
 /*
- * remove all // spaces, tabs etc.
+ * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
 			text[j][st-1] = '\0';
@@ -353,11 +352,11 @@ path_t *parse_path(const char *path)
 				break;
 		}	
 /*
- * if next symbol is '/' take it away
+ * if next symbol is '/' remove it
  */
 		else if(*(pc++)  == '/' && *pc != '\0'){
 /*
- * remove all // spaces, tabs etc.
+ * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
 			text[j][st-1] = '\0';
@@ -369,7 +368,6 @@ path_t *parse_path(const char *path)
 				break;
 		}	
 	}
-
 /*
  * allocate pointer to Path structure and populate it
  */	
@@ -382,7 +380,6 @@ path_t *parse_path(const char *path)
 		
 	return Path;
 }
-
 /*
  * function frees pointer allocated in parse_path function
  */
@@ -397,4 +394,119 @@ int destroy_pars_path(path_t **Path)
 	free( (*Path));
 	(*Path) = NULL;
 		
+}
+
+get_arg_t get_arguments(const char *text)
+{
+/*
+ * function anlysises arguments in text
+ *
+ * Arguments are: 	Letter = value
+ * 			(s) (S) Letter_name = value
+ * 
+ * if s or S is specified, the argument refers to sub-dir of the data set
+ * and is followed by the _name_ of the data set
+ */
+	const char *pc;
+	char arg;
+	int i;
+	get_arg_t argsstr;
+/*
+ * disregard empty spaces and tabs at the beginning 
+ */
+
+	printf("text is %s\n", text);
+
+	pc = text;
+	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
+/*
+ * get the first letter, check that it is not '\0'
+ */
+	if(*pc == '\0'){
+		Error("No argument");
+		argsstr.arg = '\0';
+		return;
+	}
+	else if(*pc == '\0'){
+		argsstr.arg = '*';
+		argsstr.first = '\0';
+		argsstr.s_name[0] = '\0';
+		argsstr.args[0] = '\0';
+		return argsstr;
+	}
+
+	arg = *pc++;	
+	if( arg == 's' || arg == 'S'){
+/*
+ * sub-data set will be specified
+ */
+		argsstr.first = arg;
+		if(*pc == '\0' || *pc == ' ' ){; /* make sure no empty spaces are there */
+			Error("Wrong argument");
+			argsstr.arg = '\0';
+			return;
+		}
+		argsstr.arg = *pc++;
+		if(*pc == '\0' || *pc != '_' ){; /* must be _ symbol */
+			Error("Wrong argument");
+			argsstr.arg = '\0';
+			return;
+		}
+		pc++;
+		
+		i = 0;
+		while(*pc != '\0' && *pc != '='){
+			while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.s_name[i++] = *pc++;
+		}
+		
+		argsstr.s_name[i] = '\0';
+		
+		if(*pc == '=') pc++;
+		
+		while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
+				
+		i = 0;
+		while(*pc != '\0' ){
+			while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.args[i++] = *pc++;
+		}
+		
+		argsstr.args[i] = '\0';
+		
+	}
+	else
+	{
+/*
+ * data set will be specified
+ * jump over = and spaces
+ */
+		argsstr.first = '\0';
+		argsstr.s_name[0] = '\0';
+		argsstr.arg = arg;
+
+		i = 0;
+		while(*pc != '\0' && *pc != '='){
+		while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.s_name[i++] = *pc++;
+		}
+		
+		argsstr.s_name[i] = '\0';
+		
+		if(*pc == '=') pc++;
+		
+		while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
+				
+		i = 0;
+		while(*pc != '\0' ){
+			while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.args[i++] = *pc++;
+		}
+		
+		argsstr.args[i] = '\0';
+
+	}
+	
+	return argsstr;
+	
 }

@@ -37,4 +37,14 @@ typedef struct path{
 	size_t seg_count;
 } path_t;
 
+/*
+ * get_arguments
+ */
+typedef struct get_arg{
+	char first;
+	char arg;
+	char args[MAX_NAME_LENGTH], s_name[MAX_NAME_LENGTH];
+} get_arg_t;
+
+
 #endif
