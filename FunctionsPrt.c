@@ -224,7 +224,31 @@ path_t *parse_path(const char *path)
 	size_t counter, j, st,k;
 
 	char abspath;
-
+/*
+ * check that the path makes sense, ie. no spaces tabs and newlines are in
+ * disregard empty spaces and tabs at the beginning 
+ */
+	
+	pc = path;
+	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
+/*
+ * check that if the path starts with ~ it is followed by /
+ */
+	if( *pc != '\0' && *pc == '~' && *++pc != '/'){
+			Error(" Wrong path");
+			return NULL;
+		}
+/*
+ * look for empty spaces in path, if they occur, return NULL
+ */		
+	while(*pc != '\0'){
+		if(*pc == ' ' || *pc == '\t'){
+			Error(" Wrong path");
+			return NULL;
+		}
+		pc++;
+	}
+		
 	abspath = 'R';
 /*
  * parse the path
@@ -253,7 +277,7 @@ path_t *parse_path(const char *path)
 /*
  * remove all // spaces, tabs etc.
  */
-			while( *pc == '\t' || *pc == ' ' || *pc == '/' && *pc != '\0') pc++;
+			while( *pc == '/' && *pc != '\0') pc++;
 /*
  * increase counter of the words in string
  */
@@ -319,7 +343,7 @@ path_t *parse_path(const char *path)
 /*
  * remove all // spaces, tabs etc.
  */
-			while( *pc == '\t' || *pc == ' ' || *pc == '/' && *pc != '\0') pc++;
+			while( *pc == '/' && *pc != '\0') pc++;
 			text[j][st-1] = '\0';
 			st = 0;
 			j++;
@@ -335,7 +359,7 @@ path_t *parse_path(const char *path)
 /*
  * remove all // spaces, tabs etc.
  */
-			while( *pc == '\t' || *pc == ' ' || *pc == '/' && *pc != '\0') pc++;
+			while( *pc == '/' && *pc != '\0') pc++;
 			text[j][st-1] = '\0';
 			st = 0;
 			j++;

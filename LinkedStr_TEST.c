@@ -56,7 +56,7 @@ int main(void)
 		
 		
 //		parsed_path = parse_path("../../SI_name=Wall/jka // /// ada///////   ");
-		parsed_path = parse_path("/  ///  /	/../../SI_name=Wall/jka/ada/");
+		parsed_path = parse_path("~/../../SI_name=Wall/jka/ada/");
 
 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
 		for (i=0; i< parsed_path->seg_count; i++)
