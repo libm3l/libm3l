@@ -1,4 +1,4 @@
-Main_DATA_Structure  DIR    10
+Main_DATA_Structure  DIR    11
 	ADA  I   3   2 3 4
 	11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34
 	BEDA I  1   2
@@ -32,3 +32,5 @@ Main_DATA_Structure  DIR    10
        `toto je zacatek textu na jedne radce`
        A1 I 1 2
        1 2
+       EmptyDIR DIR 0
+

@@ -44,44 +44,49 @@ int main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
-		if( (Gnode = Fread("TEST.dat"))  == NULL)
+		if( (Gnode = Fread("INPUT_TEST"))  == NULL)
 			Perror("Linked_test: Fread");
-    
-		printf("\n\n\n Umounting \n\n\n");
-
+		
+		Fwrite(Gnode, "ADA");
 
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
+		
+		socketnr =  cli_open_socket("localhost", 4096);
+		write_to_socket(1, Gnode,  socketnr);
+		close(socketnr);
+
 		
 //		parsed_path = parse_path("../../home/jka/ada//");
 		
 		
 //		parsed_path = parse_path("~/../../home/jka/ada/   ");
- 		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
-
-		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-		for (i=0; i< parsed_path->seg_count; i++)
-			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-		
-		argsstr = get_arguments(parsed_path->path[3]);
-		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-		argsstr = get_arguments(parsed_path->path[4]);
-		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-		argsstr = get_arguments(parsed_path->path[5]);
-		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-		
-		destroy_pars_path(&parsed_path);
-		
-		
-		exit(0);
-		
+//  		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
+// 
+// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
+// 		for (i=0; i< parsed_path->seg_count; i++)
+// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
+// 		
+// 		argsstr = get_arguments(parsed_path->path[3]);
+// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+// 		argsstr = get_arguments(parsed_path->path[4]);
+// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+// 		argsstr = get_arguments(parsed_path->path[5]);
+// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+// 		
+// 		destroy_pars_path(&parsed_path);
+// 		
+// 		
+// 		exit(0);
+// 		
 	   
 	   
 /*	   if( Fwrite(Gnode,  "ADA_TEST") != 0)
 		   Perror("Lin*ked_test: Fwrite");
 		   */
 	   
-	     if( ( FoundNodes = Find(Gnode, &founds , "--recursive" ,"Belonging_to_ADDDATA", (char *)NULL)) == NULL){
+// 	     if( ( FoundNodes = Find(Gnode, &founds , "--recursive" ,"Belonging_to_ADDDATA", (char *)NULL)) == NULL){
+  		if( ( FoundNodes = Find(Gnode, &founds , "--recursive" ,"boundary", (char *)NULL)) == NULL){
 
 			printf("No subset found\n"); exit(0);
 		}
@@ -94,17 +99,28 @@ int main(void)
 		DestroyFound(FoundNodes, founds);
 
 		}
+		
+		
+		
+		printf(" cut data\n");
+		if(Cat(Gnode, "--recursive", "-D", "-P", "BBB_DATA_DADA", (char *)NULL) != 0)
+			Error("CatData");
+		printf("\n\n\n");
 
 	   
-//	   printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
-//	   if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-//	                   Error("CatData");
+	   printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
+	   if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	                   Error("CatData");
 	   
+	   
+	   	socketnr =  cli_open_socket("localhost", 4096);
+		write_to_socket(1, Gnode,  socketnr);
+		close(socketnr);
 	   
 	   
 	   if(Umount(&Gnode) != 1)
                   Perror("Umount");
-// 	exit(0);
+  	exit(0);
 	   
 	}
 

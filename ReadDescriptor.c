@@ -246,11 +246,10 @@ node_t *read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp)
 	}
 
 	for(i=1;i<=TMPSTR.ndim; i++){
- 
+ 		
 		Tmpnode=NULL;	
 		if ( (Tmpnode = read_file_data(fp)) == NULL)
 			Error("ReadDirData: ReadData");
-
 /*
  * add to node
  */

@@ -80,28 +80,26 @@ SIZE_T FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 		Tmpnode = List;
 
 			if(Tmpnode != NULL){
-				while(Tmpnode != NULL){
-					if(Tmpnode->child != NULL){
+				if(Tmpnode->child != NULL){
 /*
  * recursive calling, search this DIR too
  */					
- 						FindList(2, Tmpnode, search_term, Popt);
+					FindList(2, Tmpnode, search_term, Popt);
 /*
  * go to next 
  */
-						Tmpnode = Tmpnode->next;
+					Tmpnode = Tmpnode->next;
+				}
+				else
+				{
+					if ( CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
+						if ( AddRecord(Tmpnode) != 1)
+							Warning("Error adding record to the list");
 					}
-					else
-					{
-						if ( CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
-							if ( AddRecord(Tmpnode) != 1)
-								Warning("Error adding record to the list");
-						}
 /*
  * go to next 
  */
-						Tmpnode = Tmpnode->next;
-					}
+					Tmpnode = Tmpnode->next;
 				}
 			}
 		}
@@ -123,7 +121,10 @@ SIZE_T FindList(int call, node_t *List, char *search_term, opts_t *Popt)
  * recursive calling, go to the first chld node and loop over list in the same level as child
  */
 			Tmpnode = List->child;
-			FindList(2, Tmpnode, search_term, Popt);
+			while(Tmpnode != NULL){
+				FindList(2, Tmpnode, search_term, Popt);
+				Tmpnode = Tmpnode->next;
+			}
 		}
 	return nalloc;
 	}
@@ -143,7 +144,7 @@ SIZE_T FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 			}
 		}
 /*
- * if this node has chidlren go to their level and list
+ * if this node has children go to their level and list
  */
 
 		if(List->child != NULL){
