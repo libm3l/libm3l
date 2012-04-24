@@ -37,7 +37,6 @@ int Cat(node_t *List, char * Options, ...)
 /*
  * empty list
  */
-	
 	if(List == NULL){
 		Warning("CatData: NULL list");
 		return -1;

@@ -46,98 +46,72 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 
 		if(Tmpnode != NULL){
 /*
- * node has children
+ * node is not empty (can happen if DIR is empty)
  */
-			while(Tmpnode != NULL){
-/*
- * loop over children
- */
-				if(Tmpnode->child != NULL){
+			if(Tmpnode->child != NULL){
 /*
  * if child has child, call recursively WriteData function
  */
-					if(write_to_socket(2, Tmpnode, socket_descrpt) != 0){
-						Warning("Write data problem");
-						return -1;
-					}
+				if(write_to_socket(2, Tmpnode, socket_descrpt) != 0){
+					Warning("Write data problem");
+					return -1;
+				}
 /*
  * jump to next child
  */
-
-					Tmpnode = Tmpnode->next;
-				}
-				else
-				{
+				Tmpnode = Tmpnode->next;
+			}
+			else
+			{
 /*
  * child does not have children
  *
  *
  * make sure you consider empty DIRs, their -> is NULL
  */
-					if(strncmp(Tmpnode->type, "DIR", 3) == 0)
-					{
-						bzero(buff, sizeof(buff));
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type,SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
-	      					        Perror("snprintf");
-						buff[n] = '\0';
-						if( write_buffer(buff, socket_descrpt,0,0) == 0 )
-							Error("Writing buffer");
-					}
-					else
-					{
+				if(strncmp(Tmpnode->type, "DIR", 3) == 0)
+				{
+					bzero(buff, sizeof(buff));
+					if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type,SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
+      					        Perror("snprintf");
+					buff[n] = '\0';
+					if( write_buffer(buff, socket_descrpt,0,0) == 0 )
+						Error("Writing buffer");
+				}
+				else
+				{
 /*
  * write only FILE data, if DIR is empty, it will be written in snippet above
  */
-						bzero(buff, sizeof(buff));
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type, SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
-	      					        Perror("snprintf");
-						buff[n] = '\0';
-						if( write_buffer(buff, socket_descrpt,0,0) == 0 )
-							Error("Writing buffer");
+					bzero(buff, sizeof(buff));
+					if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type, SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
+      					        Perror("snprintf");
+					buff[n] = '\0';
+					if( write_buffer(buff, socket_descrpt,0,0) == 0 )
+						Error("Writing buffer");
 /*
  * get field dimensions
  */
-						tot_dim = 1;
-						for(i=0; i<Tmpnode->ndim; i++){
-
+					tot_dim = 1;
+					for(i=0; i<Tmpnode->ndim; i++){
 							bzero(buff, sizeof(buff));
-							if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c",Tmpnode->fdim[i], SEPAR_SIGN)) < 0)
-	      						        Perror("snprintf");
-							buff[n] = '\0';
-							if( write_buffer(buff, socket_descrpt,0,0) == 0 )
-							Error("Writing buffer");
-
-							tot_dim = tot_dim * Tmpnode->fdim[i];
-						}
-/*
- * go to new line
- */
-/*						bzero(buff, sizeof(buff));
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%c", SEPAR_SIGN)) < 0)
-	      						        Perror("snprintf");
+						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c",Tmpnode->fdim[i], SEPAR_SIGN)) < 0)
+      						        Perror("snprintf");
 						buff[n] = '\0';
-						if( write_buffer(buff, socket_descrpt) == 0 )
-							Error("Writing buffer"); */
+						if( write_buffer(buff, socket_descrpt,0,0) == 0 )
+						Error("Writing buffer");
+							tot_dim = tot_dim * Tmpnode->fdim[i];
+					}
 /*
  * write data
  */
-						write_file_data_intdescprt(Tmpnode, tot_dim, socket_descrpt);
+					write_file_data_intdescprt(Tmpnode, tot_dim, socket_descrpt);
 
-/*
- * got to new line
- */
-/*						bzero(buff, sizeof(buff));
-						if( (n=snprintf(buff, MAX_WORD_LENGTH,"%c", SEPAR_SIGN)) < 0)
-	      						        Perror("snprintf");
-						buff[n] = '\0';
-						if( write_buffer(buff, socket_descrpt) == 0 )
-							Error("Writing buffer");n */
-					}
+				}
 /*
  * jump to next node
  */
-					Tmpnode = Tmpnode->next;
-				}
+				Tmpnode = Tmpnode->next;
 			}
 		}
 	}
@@ -156,11 +130,13 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
  * ... and go to its first child. Call WriteData recursivelly
  */
 		Tmpnode = List->child;
-		
-		if(write_to_socket(2, Tmpnode,socket_descrpt) != 0){
-			Warning("Write data problem");
-			return -1;
-		};
+		while(Tmpnode != NULL){
+			if(write_to_socket(2, Tmpnode,socket_descrpt) != 0){
+				Warning("Write data problem");
+				return -1;
+			}
+			Tmpnode = Tmpnode->next;
+		}
 	}
 /*
  * SEND LAST DATA TO SOCKET, do not forget to send EOMB instruction if ending initial call (ie call == 1)

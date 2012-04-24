@@ -34,66 +34,57 @@ int WriteData(node_t *List,  FILE *fp)
 	Tmpnode = List;
 
 		if(Tmpnode != NULL){
-			while(Tmpnode != NULL){
-				if(Tmpnode->child != NULL){
-					if(WriteData(Tmpnode, fp) != 0){
-						Warning("Write data problem");
-						return -1;
-					}
-
+			if(Tmpnode->child != NULL){
+				if(WriteData(Tmpnode, fp) != 0){
+					Warning("Write data problem");
+					return -1;
+				}
 					Tmpnode = Tmpnode->next;
+			}
+			else
+			{
+				if(strncmp(Tmpnode->type, "DIR", 3) == 0)
+				{
+					bzero(buff, sizeof(buff));
+					if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
+      					        Perror("snprintf");
+					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+						Perror("fwrite");
 				}
 				else
 				{
-					if(strncmp(Tmpnode->type, "DIR", 3) == 0)
-					{
-						bzero(buff, sizeof(buff));
-						if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
-	      					        Perror("snprintf");
-						if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
-							Perror("fwrite");
-					}
-					else
-					{
 /*
  * write only FILE data, if DIR is empty, it will be written here too
  */
-						bzero(buff, sizeof(buff));
-						if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld ",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
-	      					        Perror("snprintf");
-						if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
-							Perror("fwrite");
-
+					bzero(buff, sizeof(buff));
+					if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld ",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
+      					        Perror("snprintf");
+					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+						Perror("fwrite");
 						tot_dim = 1;
-						for(i=0; i<Tmpnode->ndim; i++){
-
+					for(i=0; i<Tmpnode->ndim; i++){
 							bzero(buff, sizeof(buff));
-							if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
-	      						        Perror("snprintf");
-							if (fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
-								Perror("fwrite");
-
-							tot_dim = tot_dim * Tmpnode->fdim[i];
-						}
-
-						if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
-	      						        Perror("snprintf");
-						if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+						if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
+      						        Perror("snprintf");
+						if (fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
 							Perror("fwrite");
+							tot_dim = tot_dim * Tmpnode->fdim[i];
+					}
+						if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
+      						        Perror("snprintf");
+					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+						Perror("fwrite");
 /*
  * call to function printing actual data in file
  */						
 
-						write_file_data_filedescprt(Tmpnode, tot_dim, fp);
-
-						if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
-	      						        Perror("snprintf");
-						if (fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
-							Perror("fwrite");
-					}
-
-					Tmpnode = Tmpnode->next;
+					write_file_data_filedescprt(Tmpnode, tot_dim, fp);
+					if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
+      						        Perror("snprintf");
+					if (fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+						Perror("fwrite");
 				}
+					Tmpnode = Tmpnode->next;
 			}
 		}
 	}
@@ -108,10 +99,14 @@ int WriteData(node_t *List,  FILE *fp)
 
 		Tmpnode = List->child;
 		
-		if(WriteData(Tmpnode,fp) != 0){
-			Warning("Write data problem");
-			return -1;
-		};
+		while(Tmpnode != NULL){
+		
+			if(WriteData(Tmpnode,fp) != 0){
+				Warning("Write data problem");
+				return -1;
+			}
+			Tmpnode = Tmpnode->next;
+		}
 	}
 
 	return 0;

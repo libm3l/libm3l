@@ -246,11 +246,10 @@ node_t *read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp)
 	}
 
 	for(i=1;i<=TMPSTR.ndim; i++){
- 
+ 		
 		Tmpnode=NULL;	
 		if ( (Tmpnode = read_file_data(fp)) == NULL)
 			Error("ReadDirData: ReadData");
-
 /*
  * add to node
  */
@@ -698,6 +697,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 				pc++;
 				init = 1;
+				i = 0;
 			}
 /*
  * read until end of buffer or ` symbol
@@ -718,6 +718,14 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				pc = &buff[0];
 			}
 			else if (*pc == TEXT_SEPAR_SIGN){
+/*
+ * check that string dimentions are correct
+ */
+				if( i != tot_dim ){
+					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.uc);
+					Error("Mismatch in string length");
+					return -1;
+				}
 				pc++;  /* do not count ` in the next buff analysis */
 				*pdatu = '\0';
 				return 0;
@@ -743,6 +751,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 				pc++;
 				init = 1;
+				i = 0;
 			}
 /*
  * read until end of buffer or ` symbol
@@ -763,6 +772,14 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				pc = &buff[0];
 			}
 			else if (*pc == TEXT_SEPAR_SIGN){
+/*
+ * check that string dimentions are correct
+ */
+				if( i != tot_dim ){
+					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.sc);
+					Error("Mismatch in string length");
+					return -1;
+				}
 				pc++;  /* do not count ` in the next buff analysis */
 				*pdats = '\0';
 				return 0;
@@ -776,6 +793,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 		init = 0;
 		i = 0;
+
 		while(ngotten)
 		{
 /* 
@@ -788,12 +806,14 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 				pc++;
 				init = 1;
+				i=0;
 			}
 /*
  * read until end of buffer or ` symbol
  */			
 			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN){
 				*pdat++ = *pc++;
+				i++;
 			}
 /*
  * find why while was left
@@ -810,6 +830,14 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 
 			}
 			else if (*pc == TEXT_SEPAR_SIGN){
+/*
+ * check that string dimentions are correct
+ */
+				if( i != tot_dim ){
+					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
+					Error("Mismatch in string length");
+					return -1;
+				}
 				pc++;  /* do not count ` in the next buff analysis */
 				*pdat = '\0';
 				return 0;

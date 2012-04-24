@@ -2,7 +2,6 @@
  * Header file with declarations
  * copyright � 2012 Adam Jirasek
  */
-
 #ifndef  __TMPSTRUCT_T__
 #define  __TMPSTRUCT_T__
 
@@ -27,5 +26,25 @@ typedef struct opts{
 	char opt_s, opt_S;
 	char opt_u, opt_U;
 } opts_t;
+
+
+/*
+ * parsed_path
+ */
+typedef struct path{
+	char **path;
+	char abspath;
+	size_t seg_count;
+} path_t;
+
+/*
+ * get_arguments
+ */
+typedef struct get_arg{
+	char first;
+	char arg;
+	char args[MAX_NAME_LENGTH], s_name[MAX_NAME_LENGTH];
+} get_arg_t;
+
 
 #endif

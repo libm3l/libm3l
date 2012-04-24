@@ -118,6 +118,11 @@ char *StrToUpper(char *s)
 	return cs;	
 }
 
+/*
+ * function allocates sting and saves the 
+ * path of the node in it. The string is a return parameter
+ * NOTE - needs to be feed after use
+ */
 
 char *Path(node_t *List)
 {
@@ -134,12 +139,17 @@ char *Path(node_t *List)
 		count++;
 		Tmp = Tmp->parent;
 	}
+/*
+ * allocate arrays
+ */
 
 	if ( (segs = (char**)malloc( (count)*sizeof(char **) )) == NULL)
 		Perror("malloc");
 	if ( (len = (size_t *)malloc( (count)*sizeof(size_t *) )) == NULL)
 		Perror("malloc");
-	
+/*
+ * fill segs with segments of the path
+ */
 	Tmp = List;
 	i=0;
 	tot_len = 0;
@@ -155,19 +165,28 @@ char *Path(node_t *List)
 		tot_len = tot_len + len[i] + 1;
 		i++;
 	}
+/*
+ * save length of the segment
+ */
 	len[i] = strlen(Tmp->name);
 	if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
-
+/*
+ * get total length of the path
+ */
 	tot_len = tot_len + len[i] + 1;
-		
+/*
+ * allocate string for path + 1 additional for '\0'
+ */		
 	if ( (path = (char*)malloc( (tot_len + 1)*sizeof(char **) )) == NULL)
 		Perror("malloc");
 	
 	tot_len1 = 0;
-	
+/*
+ * fill the string + last '\0'
+ */
 	for (i = count; i-- > 0; ){
 		path[tot_len1++] = '/';
 		for(j=0; j<len[i]; j++){
@@ -175,14 +194,319 @@ char *Path(node_t *List)
 	}
 	if( tot_len1 > tot_len)
 		Error("malloc problem in Path");
-		
+
 	path[tot_len1] = '\0';
-	
+/*
+ * free temporary arrays
+ */
 	for(i=0; i<count; i++)
 		free(segs[i]);
 	free(segs);
 	free(len);
-	
+/*
+ * return path
+ */
 	return path;
+}
+
+
+/*
+ * function segments path (./../../../home/etc/etc/
+ */
+path_t *parse_path(const char *path)
+{
+	/*
+	 * NOTE - segmentation fault if path starts with / // // // etc noncence
+	 */
+	path_t *Path;
+	char **text;
+	const char *pc;
+	size_t counter, j, st,k;
+
+	char abspath;
+/*
+ * check that the path makes sense, ie. no spaces tabs and newlines are in
+ * disregard empty spaces and tabs at the beginning 
+ */
+	pc = path;
+	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
+/*
+ * check that if the path starts with ~ it is followed by /
+ */
+	if( *pc != '\0' && *pc == '~' && *++pc != '/'){
+			Error(" Wrong path");
+			return NULL;
+		}
+/*
+ * look for empty spaces in path, if they occur, return NULL
+ */		
+	while(*pc != '\0'){
+		if(*pc == ' ' || *pc == '\t'){
+			Error(" Wrong path");
+			return NULL;
+		}
+		pc++;
+	}
+		
+	abspath = 'R';
+/*
+ * parse the path
+ */
+	pc = path;
+
+	while( *pc == '\t' || *pc == ' ' &&  *pc != '\0') pc++;
+
+	if(*pc == '/' && *pc != '\0'){
+		counter = 0;
+		abspath = 'A';
+	}
+	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
+		counter = 0;
+		pc++;
+	}
+	else{
+		counter = 1;
+	}
+
+	while(*pc != '\0'){
+/*
+ * if symbol is / and not the end of the string 
+ */
+		if(*(pc++)  == '/' && *pc != '\0'){
+/*
+ * remove all multiple / symbols
+ */
+			while( *pc == '/' && *pc != '\0') pc++;
+/*
+ * increase counter of the words in string
+ */
+		 	counter++;
+
+			if(*pc == '\0'){
+/*
+ * if end of string, leave loop
+ */
+				counter--;
+				break;
+			}
+		}
+	}
+/*
+ * allocate array for words in path
+ */
+	if(counter > 0){
+		if ( (text = (char **)malloc(counter * sizeof(char **))) == NULL)
+			Perror("malloc");
+
+		for(j=0; j< counter; j++)
+			if ( (text[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
+				Perror("malloc");
+	}
+	else
+	{
+		Error("Wrong path specification");
+		return NULL;
+	}
+/*
+ * store individual words in array
+ */
+	pc = path;
+		
+	if(*pc == '/' && *pc != '\0'){
+		pc++;
+	}
+	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
+		pc += 2;
+	}
+
+	st = 0;
+	j = 0;
+
+	while(*pc != '\0'){
+/*
+ * save the segment of the path
+ */
+		if( st < MAX_NAME_LENGTH){
+			text[j][st++] = *pc;
+		}
+		else{
+			Error(" Path too long");
+			return (path_t *)NULL ;
+		}
+/*
+ * if the last symbol of the path segment is '/' replace it by '\0'
+ * it occurs whent he specified path ends with / symbol
+ */
+		if(*pc  == '/' ){
+			text[j][st-1] = '\0';
+/*
+ * remove all multiple / symbols
+ */
+			while( *pc == '/' && *pc != '\0') pc++;
+			text[j][st-1] = '\0';
+			st = 0;
+			j++;
+			if(j > counter) exit(0);
+			
+			if(*pc == '\0')
+				break;
+		}	
+/*
+ * if next symbol is '/' remove it
+ */
+		else if(*(pc++)  == '/' && *pc != '\0'){
+/*
+ * remove all multiple / symbols
+ */
+			while( *pc == '/' && *pc != '\0') pc++;
+			text[j][st-1] = '\0';
+			st = 0;
+			j++;
+			if(j > counter) exit(0);
+			
+			if(*pc == '\0')
+				break;
+		}	
+	}
+/*
+ * allocate pointer to Path structure and populate it
+ */	
+	if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
+		Perror("malloc");
+	
+	Path->path 	= text;  	/* segments of path */
+	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
+	Path->seg_count = counter;	/* Number of segments in path */
+		
+	return Path;
+}
+/*
+ * function frees pointer allocated in parse_path function
+ */
+int destroy_pars_path(path_t **Path)
+{
+	size_t i;
+	
+	for (i=0; i< (*Path)->seg_count; i++)
+		free( (*Path)->path[i]);
+	free( (*Path)->path);
+	
+	free( (*Path));
+	(*Path) = NULL;
+		
+}
+
+get_arg_t get_arguments(const char *text)
+{
+/*
+ * function anlysises arguments in text
+ *
+ * Arguments are: 	Letter = value
+ * 			(s) (S) Letter_name = value
+ * 
+ * if s or S is specified, the argument refers to sub-dir of the data set
+ * and is followed by the _name_ of the data set
+ */
+	const char *pc;
+	char arg;
+	int i;
+	get_arg_t argsstr;
+/*
+ * disregard empty spaces and tabs at the beginning 
+ */
+
+	printf("text is %s\n", text);
+
+	pc = text;
+	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
+/*
+ * get the first letter, check that it is not '\0'
+ */
+	if(*pc == '\0'){
+		Error("No argument");
+		argsstr.arg = '\0';
+		return;
+	}
+	else if(*pc == '\0'){
+		argsstr.arg = '*';
+		argsstr.first = '\0';
+		argsstr.s_name[0] = '\0';
+		argsstr.args[0] = '\0';
+		return argsstr;
+	}
+
+	arg = *pc++;	
+	if( arg == 's' || arg == 'S'){
+/*
+ * sub-data set will be specified
+ */
+		argsstr.first = arg;
+		if(*pc == '\0' || *pc == ' ' ){; /* make sure no empty spaces are there */
+			Error("Wrong argument");
+			argsstr.arg = '\0';
+			return;
+		}
+		argsstr.arg = *pc++;
+		if(*pc == '\0' || *pc != '_' ){; /* must be _ symbol */
+			Error("Wrong argument");
+			argsstr.arg = '\0';
+			return;
+		}
+		pc++;
+		
+		i = 0;
+		while(*pc != '\0' && *pc != '='){
+			while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.s_name[i++] = *pc++;
+		}
+		
+		argsstr.s_name[i] = '\0';
+		
+		if(*pc == '=') pc++;
+		
+		while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
+				
+		i = 0;
+		while(*pc != '\0' ){
+			while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.args[i++] = *pc++;
+		}
+		
+		argsstr.args[i] = '\0';
+		
+	}
+	else
+	{
+/*
+ * data set will be specified
+ * jump over = and spaces
+ */
+		argsstr.first = '\0';
+		argsstr.s_name[0] = '\0';
+		argsstr.arg = arg;
+
+		i = 0;
+		while(*pc != '\0' && *pc != '='){
+		while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.s_name[i++] = *pc++;
+		}
+		
+		argsstr.s_name[i] = '\0';
+		
+		if(*pc == '=') pc++;
+		
+		while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
+				
+		i = 0;
+		while(*pc != '\0' ){
+			while(*pc == ' ' && *pc != '\0')pc++;
+			argsstr.args[i++] = *pc++;
+		}
+		
+		argsstr.args[i] = '\0';
+
+	}
+	
+	return argsstr;
 	
 }

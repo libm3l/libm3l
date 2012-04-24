@@ -288,10 +288,9 @@ node_t *read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt)
 	}
 
 	for(i=1;i<=TMPSTR.ndim; i++){ 
-		Tmpnode=NULL;	
+		Tmpnode=NULL;
 		if ( (Tmpnode = read_socket_data(descrpt)) == NULL)
 			Error("ReadDirData: ReadData");
-
 /*
  * add to node
  */
@@ -426,6 +425,7 @@ node_t *read_socket_data(int descrpt)
 					}
 				}
 				else if ( wc > 3 && strncmp(TMPSTR.Type,"DIR",3) != 0){
+
 					TMPSTR.dim[wc - 4] = Strol(type);
 					if( (wc - 3) == TMPSTR.ndim) break;
 				}
@@ -671,9 +671,6 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
 			*pptrdf++ = FCS_C2LLI(type, &err);
 		}
-
-
-//				*pi++ = atoi(type);
 /*
   * end of reading the line, number of words is the same as required, return succes
   */
@@ -710,7 +707,7 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * array was allocated with +1 to store '\0' symbol
  */
-	tot_dim--; 
+	tot_dim--;
 /*
  * what type of data
  */
@@ -746,6 +743,11 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			}
 			else if (i == tot_dim){
 				*pdatu = '\0';
+				if( EXPR ){
+					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.uc);
+					Error("Mismatch in string length");
+					return -1;
+				}
 				return 0;
 			}
 		}
@@ -782,6 +784,11 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			}
 			else if (i == tot_dim){
 				*pdats = '\0';
+				if( EXPR ){
+					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.sc);
+					Error("Mismatch in string length");
+					return -1;
+				}
 				return 0;
 			}
 		}
@@ -819,6 +826,11 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 			}
 			else if (i == tot_dim){
 				*pdat = '\0';
+				if( EXPR ){
+					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
+					Error("Mismatch in string length");
+					return -1;
+				}
 				return 0;
 			}
 		}

@@ -13,7 +13,6 @@
 
 extern int optind;
 static int verbose_flag;
-
 /*
  * routine finds the list
  */
@@ -194,7 +193,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
  * get the value of the first argument, as not options are specified the argument is the name to look for
  */
 		va_start(args, Options);
-		if ( (search_term = strdup(search_term1)) == NULL)
+		if ( (search_term = strdup(Options)) == NULL)
 			Perror("strdup");
 		va_end(args);
 	}

@@ -49,26 +49,24 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 	Tmpnode = List;
 
 		if(Tmpnode != NULL){
-			while(Tmpnode != NULL){
-				if(Tmpnode->child != NULL){
-					if(cat_list(2, Tmpnode, Popts) != 0){
-						Warning("Write data problem");
-						return -1;
-					}
-
-					Tmpnode = Tmpnode->next;
+			if(Tmpnode->child != NULL){				
+				
+				if(cat_list(2, Tmpnode, Popts) != 0){
+					Warning("Write data problem");
+					return -1;
 				}
-				else
-				{
-					PrintListInfo(Tmpnode, Popts);
+				Tmpnode = Tmpnode->next;
+			}
+			else
+			{
+				PrintListInfo(Tmpnode, Popts);
 /*
  * if the node in initial call is FILE, print just info about this node
  * and return. Avoids printing all next nodes. This is done only if node in initial
  * call is DIR type
  */
-					if(call == 1) return 0;
-					Tmpnode = Tmpnode->next;
-				}
+				if(call == 1) return 0;
+				Tmpnode = Tmpnode->next;
 			}
 		}
 	}
@@ -77,21 +75,29 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 /*
  * do not print the head node
  */
-//		if (call != 1) PrintListInfo(List, option, optionp);
 		PrintListInfo(List, Popts);
 		
 		if(call == 1){
 			Tmpnode = List->child;
-			if(cat_list(2, Tmpnode, Popts) != 0){
-				Warning("Write data problem");
-				return -1;
+			while(Tmpnode != NULL){
+				
+// 				printf(" Writing 222  %s\n", Tmpnode->name);
+	
+				if(cat_list(2, Tmpnode, Popts) != 0){
+					Warning("Write data problem");
+					return -1;
+				}
+				Tmpnode = Tmpnode->next;
 			}
 		}
 		else if(call == 2 && Popts->opt_L == 'L'){
 			Tmpnode = List->child;
-			if(cat_list(2, Tmpnode, Popts) != 0){
-				Warning("Write data problem");
-				return -1;
+			while(Tmpnode != NULL){
+				if(cat_list(2, Tmpnode, Popts) != 0){
+					Warning("Write data problem");
+					return -1;
+				}
+				Tmpnode = Tmpnode->next;
 			}
 		}
 	}

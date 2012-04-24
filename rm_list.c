@@ -152,7 +152,7 @@ SIZE_T rm_list(int call, node_t **List)
  * Free parent node
  * If initial call, do not remove
  */
-		if(call > 1){
+// 		if(call > 1){
 			if( (*List)->ndim == 0){
 				rmnodes = rmnodes + rm_list(2, List);
 			}
@@ -161,7 +161,7 @@ SIZE_T rm_list(int call, node_t **List)
 				Warning("DIR is not empty, not removing it");
 					return -2;
 			}
-		}
+// 		}
 
 		return rmnodes;
 	}

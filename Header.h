@@ -37,16 +37,16 @@
 
 // #define MAXLINE  2048               /* Max length of buffer */
 #define MAXLINE  100
-#define MAX_WORD_LENGTH  60               /* Max length of word in buffer for TCP/IP   */
+#define MAX_WORD_LENGTH  260               /* Max length of word in buffer for TCP/IP   */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
 
 #define TEXT_SEPAR_SIGN '`'              /* sign determining the beginning and end of text (C, UC, SC) in disk file */
 /*
- * node_t data specification
+ * node_t data specification - NOTE: these MUST be smaller then MAX_WORD_LENGTH
  */
 #define MAX_TYPE_LENGTH   30        /* Max length of type in format */
 #define MAX_NAME_LENGTH   255       /* Max length of list name */
 
-#define SIZE_T long int
-#define PTRDF_T long int
+#define SIZE_T size_t
+#define PTRDF_T ptrdiff_t
