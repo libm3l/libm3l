@@ -24,7 +24,7 @@ int Cat(node_t *List, char * Options, ...)
 	
  	char *word, **opt, *search_term, *search_term1;
 	size_t args_num, len, i, founds;
-	find_t **Found_Nodes;
+	find_t *Founds;
 	node_t *Tmp1;
 	opts_t *Popts, opts;
 	va_list args;
@@ -283,7 +283,7 @@ int Cat(node_t *List, char * Options, ...)
 
 		status1 = 0;
 
-		if ( (Found_Nodes = Find_caller(List, &founds, search_term, Popts)) == NULL){
+		if ( (Founds = Find_caller(List, search_term, Popts)) == NULL){
 			free(search_term);
 			return -1;
 		}
@@ -291,8 +291,8 @@ int Cat(node_t *List, char * Options, ...)
 		{
 			printf(" number of founds is %ld \n", founds);
 
-			for (i=0; i<founds; i++){
-				Tmp1 = Found_Nodes[i]->List;
+			for (i=0; i< Founds->founds; i++){
+				Tmp1 = Founds->Found_Nodes[i]->List;
 //				printf("%p, %i\n", Found_Nodes[i]->List, i);
 
 				
@@ -302,7 +302,7 @@ int Cat(node_t *List, char * Options, ...)
 				if(status < status1) status1 = status;
 			}
 			
-			DestroyFound(Found_Nodes, founds);
+			DestroyFound(&Founds);
 
 			free(search_term);
 

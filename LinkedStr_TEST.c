@@ -22,10 +22,9 @@
 int main(void) 
 {	
     node_t *Gnode=NULL, *Node, *Tmpnode, *RecNode;
-    find_t **FoundNodes;
+    find_t *Founds;
     
     int i, count,countgrp, socketnr, j;
-    size_t founds;
     
     char name[255], type[30];
     char *pc,buff[LINESZ];
@@ -53,22 +52,48 @@ int main(void)
 	                   Error("CatData");
 		
 		socketnr =  cli_open_socket("localhost", 4096);
-		write_to_socket(1, Gnode,  socketnr);
+// 		write_to_socket(1, Gnode,  socketnr);
+		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
 		close(socketnr);
+		
+		printf("printing received node RECNODE \n\n ");
+		
+		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	    	Error("CatData");
+		
+		usleep(10000);
+		
+		exit(0);
+		
+		
+		
 		
 		printf(" Looking for data set\n");
 		
-// 		if( ( FoundNodes = Find(Gnode, &founds , "Additional_directory", (char *)NULL)) == NULL){
-		if( ( FoundNodes = Find(Gnode, &founds ,  "Belonging_to_ADDDATA", (char *)NULL)) == NULL){
+		if( ( Founds = Find(Gnode, "--recursive" ,"BBB_DATA_DADA", (char *)NULL)) == NULL){
 
 			printf("No subset found\n"); exit(0);
 			}
 		else
 		{
-			for(i=0; i < founds; i++){
-			printf(" Found name is %s  %p   %s\n", FoundNodes[i]->List->name, FoundNodes[i]->List, FoundNodes[i]->List->type);
+			for(i=0; i < Founds->founds; i++){
+			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 			}
+
+		DestroyFound(&Founds);
+
 		}
+		
+		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
+
+
+		
+		if(Umount(&Gnode) != 1)
+                  Perror("Umount");
+		if(Umount(&RecNode) != 1)
+                  Perror("Umount");
+				
+	}
 		
 
 		exit(0);
@@ -102,18 +127,18 @@ int main(void)
 		   Perror("Lin*ked_test: Fwrite");
 		   */
 	   
-// 	     if( ( FoundNodes = Find(Gnode, &founds , "--recursive" ,"Belonging_to_ADDDATA", (char *)NULL)) == NULL){
-  		if( ( FoundNodes = Find(Gnode, &founds , "--recursive" ,"boundary", (char *)NULL)) == NULL){
+// 	     if( ( Found_Nodes = Find(Gnode, , "--recursive" ,"Belonging_to_ADDDATA", (char *)NULL)) == NULL){
+  		if( ( Founds = Find(Gnode,  "--recursive" ,"boundary", (char *)NULL)) == NULL){
 
 			printf("No subset found\n"); exit(0);
 		}
 		else
 		{
-			for(i=0; i < founds; i++){
-			printf(" Found name is %s  %p   %s\n", FoundNodes[i]->List->name, FoundNodes[i]->List, FoundNodes[i]->List->type);
+			for(i=0; i < Founds->founds; i++){
+			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 			}
 	
-		DestroyFound(FoundNodes, founds);
+		DestroyFound(Founds);
 
 		}
 		
@@ -139,9 +164,7 @@ int main(void)
                   Perror("Umount");
   	exit(0);
 	   
-	}
-
-	exit(0);
+// 	}
 	   
 	   
 	   
@@ -206,47 +229,43 @@ int main(void)
  */	  
 	 printf("Looking for Additional_direcotry node\n");
 
-//    if( ( FoundNodes = Find(Gnode, &founds,"-r","BEDA", (char *)NULL)) == NULL){
-   if( ( FoundNodes = Find(Gnode, &founds , "Additional_directory", (char *)NULL)) == NULL){
-//  if( ( FoundNodes = Find(Gnode, &founds, "-r",  "*", (char *)NULL)) == NULL){
+   if( ( Founds = Find(Gnode, "Additional_directory", (char *)NULL)) == NULL){
 
 	   printf("No subset found\n"); exit(0);
    }
    else
    {
-	for(i=0; i < founds; i++){
-		printf(" Found name is %s  %p   %s\n", FoundNodes[i]->List->name, FoundNodes[i]->List, FoundNodes[i]->List->type);
+	for(i=0; i < Founds->founds; i++){
+		printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 	}
    }
    
    
    	 printf("Cat Additional_direcotry node\n");
 
-        if(Cat(FoundNodes[0]->List, "-D", "-P", "-L","*", (char *)NULL) != 0)
+        if(Cat(Founds->Found_Nodes[0]->List, "-D", "-P", "-L","*", (char *)NULL) != 0)
 	    	Error("CatData");
 	
 	printf("writing to socklet\n");
-
-	sleep(5);
 	
 	   socketnr =  cli_open_socket("localhost", 4096);
-		write_to_socket(1, FoundNodes[0]->List,  socketnr);
+		write_to_socket(1, Founds->Found_Nodes[0]->List,  socketnr);
 	   close(socketnr);
 
    	 printf("Removing Additional_directory node\n");
 
-	Tmpnode = FoundNodes[0]->List;
+	Tmpnode = Founds->Found_Nodes[0]->List;
 
 //        printf("Number of removed nodes is %ld\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
 
-	printf("Number of removed nodes is %ld\n", Rm(&FoundNodes[0]->List , "--recursive" , "*", (char *)NULL) );
+	printf("Number of removed nodes is %ld\n", Rm(&Founds->Found_Nodes[0]->List , "--recursive" , "*", (char *)NULL) );
 	
-//	if(Cat(FoundNodes[0]->List, "-d", "-P", "*", (char *)NULL) != 0)
+//	if(Cat(Found_Nodes[0]->List, "-d", "-P", "*", (char *)NULL) != 0)
 //	    	Error("CatData");
 
-        printf("Freeing memory - number of founds is %ld\n", founds);
+        printf("Freeing memory - number of founds is %ld\n", Founds->founds);
    
-	DestroyFound(FoundNodes, founds);
+	DestroyFound(Founds);
 
    
 	printf("\n\n\n Cat \n\n\n");

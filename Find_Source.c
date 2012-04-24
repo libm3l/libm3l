@@ -17,7 +17,7 @@ static unsigned char EvalSearchPatt(char *, char *, opts_t *);
 
 
 size_t nalloc;
-find_t **Found_Nodes;
+find_t *Founds;
 /*
  * this function is similar to FindListPointer 
  * with an exception that all options have to be specified
@@ -25,25 +25,35 @@ find_t **Found_Nodes;
  * decalred above
  */
 
-find_t **Find_caller(node_t *List, size_t *founds, char *search_term, opts_t *Popt)
+find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
 {
 /*
- * allocate Found_Nodes ** pointer
+ * allocate find_t pointer and first element
+ * if no founds, free it
  */
 	nalloc = 0;
 
-	if ( (Found_Nodes = (find_t **) malloc( sizeof(find_t **))) == NULL)
+	if ( (Founds = (find_t *) malloc( sizeof(find_t *))) == NULL)
 		Perror("malloc");
 	
-	*founds = 0;
-	*founds = FindList(1, List, search_term, Popt);
+	if ( (Founds->Found_Nodes = (find_str_t **) malloc( sizeof(find_str_t **))) == NULL)
+		Perror("malloc");
 	
-	if ( *founds == 0){
-		free(Found_Nodes); Found_Nodes = NULL;
-		return (find_t **)NULL;
+	if ( ( Founds->Found_Nodes[0] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+		Perror("malloc");
+	
+	Founds->founds = 0;
+	Founds->founds = FindList(1, List, search_term, Popt);
+	
+	if ( Founds->founds == 0){
+		free(Founds->Found_Nodes[0]);
+		free(Founds->Found_Nodes);
+		free(Founds); 
+		Founds = NULL;
+		return (find_t *)NULL;
 	}
 	
-	return Found_Nodes;
+	return Founds;
 }
 
 /*
@@ -182,9 +192,9 @@ int AddRecord(node_t *Tmpnode)
  * Allocate first *Found_Nodes and store address of found node in it. 
  * Increase counter of found nodes by 1
  */
-		if ( ( Found_Nodes[0] =(find_t *) malloc( sizeof(find_t *))) == NULL)
-			Perror("malloc");
-		Found_Nodes[0]->List = Tmpnode;
+// 		if ( ( Founds->Found_Nodes[0] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+// 			Perror("malloc");
+		Founds->Found_Nodes[0]->List = Tmpnode;
 			nalloc++;
 	}	
 	else
@@ -195,33 +205,32 @@ int AddRecord(node_t *Tmpnode)
  */
 	{
 		nalloc++;
-//						printf("reallocating %ld\n", nalloc);
-		if ( (Found_Nodes =(find_t **) realloc(Found_Nodes, nalloc * sizeof(find_t **))) == NULL)
+		if ( (Founds->Found_Nodes =(find_str_t **) realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t **))) == NULL)
 			Perror("realloc");
-		if ( (Found_Nodes[nalloc-1] =(find_t *) malloc( sizeof(find_t *))) == NULL)
+		if ( (Founds->Found_Nodes[nalloc-1] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
 			Perror("malloc");
-		Found_Nodes[nalloc-1]->List = Tmpnode;
+		Founds->Found_Nodes[nalloc-1]->List = Tmpnode;
 	}
 	return 1;
 }
 
-void DestroyFound(find_t **FoundNodes, size_t founds)
+void DestroyFound(find_t **Founds)
 {
 /*
  * function destroys filed allocted by function Find_caller
  */
 	size_t i;
-	
-	for(i=0; i<founds; i++)
-	{
-		free(FoundNodes[i]);
+			
+	for(i=0; i< (*Founds)->founds; i++){
+		free( (*Founds)->Found_Nodes[i] );
 //		FoundNodes[i]=NULL;
 	}
 	
-	free(FoundNodes);	
-	FoundNodes = NULL; 
+	free( (*Founds)->Found_Nodes);	
+	(*Founds)->Found_Nodes = NULL; 
+	free((*Founds));	
+	(*Founds) = NULL; 
 }	
-
 
 /*
  * compares statements with options

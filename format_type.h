@@ -85,10 +85,15 @@ typedef struct node {
 /*
  * find_t structure
  */
-typedef struct find{
+typedef struct find_str{
 	node_t *List;
-} find_t;
+} find_str_t;
 
+typedef struct find{
+	find_str_t **Found_Nodes;
+	size_t founds;
+	node_t *Home_None;
+} find_t;
 
 
 #endif

@@ -23,7 +23,7 @@ static int verbose_flag;
 size_t Rm(node_t **List, char * Options, ...)
 {
 	node_t *Tmp1;
-	find_t **Found_Nodes;
+	find_t *Founds;
  	char *word, **opt, *search_term, *search_term1;
 	opts_t *Popts, opts;
 	size_t args_num, len, i, rmnodes, rm_tot_nodes, founds;
@@ -231,7 +231,7 @@ size_t Rm(node_t **List, char * Options, ...)
  * find specified names and remove them
  */
 
-		if ( (Found_Nodes = Find_caller(*List, &founds, search_term, Popts)) == NULL){
+		if ( (Founds = Find_caller(*List, search_term, Popts)) == NULL){
 			if(search_term != NULL) free(search_term);
 			return -1;
 		}
@@ -243,19 +243,19 @@ size_t Rm(node_t **List, char * Options, ...)
 			printf(" number of founds is %ld \n", founds);
 
 			for (i=0; i<founds; i++){
-				Tmp1 = Found_Nodes[i]->List;
+				Tmp1 = Founds->Found_Nodes[i]->List;
 			
 //				printf("RM    -- Removing %s\n", Tmp1->name);
 	
 				if ( (rmnodes = rm_list(1, &Tmp1)) > 0){
 					rm_tot_nodes = rm_tot_nodes + rmnodes;
-					Found_Nodes[i]->List = NULL;
+					Founds->Found_Nodes[i]->List = NULL;
 				
 				}
 /*
  * this should never happen, removing master head node done through function "unmount" == "mount -u"
  */		
-				if(*List == Found_Nodes[founds-1]->List){
+				if(*List == Founds->Found_Nodes[founds-1]->List){
 					printf("Removing Matster Head node\n");
 					*List=NULL;
 				}
@@ -268,7 +268,7 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * free structure returned by Find_caller
  */
-			DestroyFound(Found_Nodes, founds);
+			DestroyFound(&Founds);
 
 		}
 	}
