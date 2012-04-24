@@ -55,6 +55,23 @@ int main(void)
 		socketnr =  cli_open_socket("localhost", 4096);
 		write_to_socket(1, Gnode,  socketnr);
 		close(socketnr);
+		
+		printf(" Looking for data set\n");
+		
+// 		if( ( FoundNodes = Find(Gnode, &founds , "Additional_directory", (char *)NULL)) == NULL){
+		if( ( FoundNodes = Find(Gnode, &founds ,  "Belonging_to_ADDDATA", (char *)NULL)) == NULL){
+
+			printf("No subset found\n"); exit(0);
+			}
+		else
+		{
+			for(i=0; i < founds; i++){
+			printf(" Found name is %s  %p   %s\n", FoundNodes[i]->List->name, FoundNodes[i]->List, FoundNodes[i]->List->type);
+			}
+		}
+		
+
+		exit(0);
 
 		
 //		parsed_path = parse_path("../../home/jka/ada//");

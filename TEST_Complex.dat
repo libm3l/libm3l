@@ -11,7 +11,7 @@ grid1 DIR 3
 		type1 C 1 5
 		`Wa1l`
 	boundary DIR 2
-		name2 C 1 8
+		name2 C 1 9
 		`External`
 		type2 C 1 11
 		`freestream`
