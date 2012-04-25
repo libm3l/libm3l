@@ -16,10 +16,10 @@ static int verbose_flag;
 /*
  * routine finds the list
  */
-find_t **Find(node_t *List, size_t *founds, char * Options, ...)
+find_t *Find(node_t *List, char * Options, ...)
 {
 	
-	find_t **Found_Nodes;
+	find_t *Founds;
 	node_t *Tmp1;
  	char *word, **opt, *search_term, *search_term1, *node_path;
 	opts_t *Popts, opts;
@@ -28,13 +28,12 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 	int c;
 	int option_index;
 	
-	*founds = 0;
 	option_index = 0;
 /*
  * get number of options
  */	
 	if(Options == NULL)
-		return (find_t **)NULL;
+		return (find_t *)NULL;
 
 	va_start(args, Options);
 	args_num = 1;
@@ -183,7 +182,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
 			free(search_term);
-			return (find_t **)NULL;
+			return (find_t *)NULL;
 		}
 	}
 	else
@@ -203,7 +202,7 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 	if(List == NULL){
 		Warning("WriteData: NULL list");
 		free(search_term);
-		return (find_t **)NULL;
+		return (find_t *)NULL;
 	}
 
 	Popts = &opts;
@@ -213,37 +212,36 @@ find_t **Find(node_t *List, size_t *founds, char * Options, ...)
 	if( List->child == 0){
 		Warning("List in Find is not a DIR or is empty DIR, nothing to look for");
 		free(search_term);
-		return (find_t **)NULL;
+		return (find_t *)NULL;
 	}
 /* 
  * this function returns back found_t **pointer which has "founds" number of items
  * do not forget to free it when you do not need it
  */
-	if ( (Found_Nodes = Find_caller(List, founds, search_term, Popts)) == NULL){
+	if ( (Founds = Find_caller(List, search_term, Popts)) == NULL){
 		free(search_term);
-		return (find_t **)NULL;
+		return (find_t *)NULL;
 	}
 	else
 	{
 /*
  * write the values of the find result
  */
-		printf(" number of founds is %ld \n", *founds);
-		for (i=0; i<*founds; i++){
-			printf("Name of found subset is --- pointer is %p\n", Found_Nodes[i]->List);
+		printf(" number of founds is %ld \n", Founds->founds);
+		for (i=0; i< Founds->founds; i++){
+			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
 			
-			if( (node_path = Path(Found_Nodes[i]->List)) != NULL){
-				printf(" Path is %s \n", node_path);
-				free(node_path);
-// 				exit(0);
-			}
+// 			if( (node_path = Path(Founds->Found_Nodes[i]->List)) != NULL){
+// 				printf(" Path is %s \n", node_path);
+// 				free(node_path);
+// 			}
 			
 		}
 	}	
 //		NOTE: if(word != NULL) free(word);
 		free(search_term);
 
-	return Found_Nodes;
+	return Founds;
 }
 
 

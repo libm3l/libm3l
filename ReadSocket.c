@@ -30,7 +30,7 @@ static node_t *read_socket_dir_data(tmpstruct_t , int);
 static node_t *read_socket_data(int);
 
 char *pc, buff[MAXLINE];
-size_t ngotten;
+ssize_t ngotten;
 
 /*
  * Function read just one line from a socket, disregarding comments line

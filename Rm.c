@@ -23,19 +23,19 @@ static int verbose_flag;
 size_t Rm(node_t **List, char * Options, ...)
 {
 	node_t *Tmp1;
-	find_t **Found_Nodes;
+	find_t *Founds;
  	char *word, **opt, *search_term, *search_term1;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, rmnodes, rm_tot_nodes, founds;
+	size_t args_num, len, i, rmnodes, rm_tot_nodes;
 	va_list args;
-	int c;
+	int c, init_call;
 	int option_index;
 	
 	char path[256];
 	
-	founds = 0;
 	option_index = 0;
 	rm_tot_nodes=0;
+	init_call = 2;
 /*
  * check if data set exists
  */
@@ -115,12 +115,13 @@ size_t Rm(node_t **List, char * Options, ...)
 				{"FILE",       no_argument,       0, 'f'},
 				{"recursive",  no_argument,       0, 'r'},
 				{"IGNORE",     no_argument,       0, 'I'},
+				{"preserve",   no_argument,       0, 'p'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiIr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiIpr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -169,10 +170,16 @@ size_t Rm(node_t **List, char * Options, ...)
 					opts.opt_f = 'f';
 				break;
 /*
- * look for FILE only
+ * recursive
  */
 				case 'r':
 					opts.opt_r = 'r';
+				break;
+/*
+ * preserve - if removing entire tree, preserv the head node
+ */
+				case 'p':
+					init_call = 1;
 				break;
 
 				case '?':
@@ -219,7 +226,7 @@ size_t Rm(node_t **List, char * Options, ...)
  * if name of file not specified, delete nentire node
  */
 	if( *search_term == '*'){		
-		if ( (rm_tot_nodes = rm_list(1, List)) < 0){
+		if ( (rm_tot_nodes = rm_list(init_call, List)) < 0){
 			Warning("Error when removing node");
 			if(search_term != NULL) free(search_term);
 			return -1;
@@ -231,7 +238,7 @@ size_t Rm(node_t **List, char * Options, ...)
  * find specified names and remove them
  */
 
-		if ( (Found_Nodes = Find_caller(*List, &founds, search_term, Popts)) == NULL){
+		if ( (Founds = Find_caller(*List, search_term, Popts)) == NULL){
 			if(search_term != NULL) free(search_term);
 			return -1;
 		}
@@ -240,22 +247,22 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * write the values of the find result
  */
-			printf(" number of founds is %ld \n", founds);
+			printf(" number of founds is %ld \n",  Founds->founds);
 
-			for (i=0; i<founds; i++){
-				Tmp1 = Found_Nodes[i]->List;
+			for (i=0; i< Founds->founds; i++){
+				Tmp1 = Founds->Found_Nodes[i]->List;
 			
 //				printf("RM    -- Removing %s\n", Tmp1->name);
 	
-				if ( (rmnodes = rm_list(1, &Tmp1)) > 0){
+				if ( (rmnodes = rm_list(2, &Tmp1)) > 0){
 					rm_tot_nodes = rm_tot_nodes + rmnodes;
-					Found_Nodes[i]->List = NULL;
+					Founds->Found_Nodes[i]->List = NULL;
 				
 				}
 /*
  * this should never happen, removing master head node done through function "unmount" == "mount -u"
  */		
-				if(*List == Found_Nodes[founds-1]->List){
+				if(*List == Founds->Found_Nodes[ Founds->founds-1]->List){
 					printf("Removing Matster Head node\n");
 					*List=NULL;
 				}
@@ -268,7 +275,7 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * free structure returned by Find_caller
  */
-			DestroyFound(Found_Nodes, founds);
+			DestroyFound(&Founds);
 
 		}
 	}
