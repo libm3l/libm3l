@@ -52,6 +52,10 @@ find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
 		Founds = NULL;
 		return (find_t *)NULL;
 	}
+/*
+ * save the root node of the search
+ */
+	Founds->Home_Node = List;
 	
 	return Founds;
 }
@@ -227,7 +231,8 @@ void DestroyFound(find_t **Founds)
 	}
 	
 	free( (*Founds)->Found_Nodes);	
-	(*Founds)->Found_Nodes = NULL; 
+	(*Founds)->Found_Nodes = NULL;
+	(*Founds)->Home_Node = NULL; 
 	free((*Founds));	
 	(*Founds) = NULL; 
 }	

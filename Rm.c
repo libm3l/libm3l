@@ -26,14 +26,13 @@ size_t Rm(node_t **List, char * Options, ...)
 	find_t *Founds;
  	char *word, **opt, *search_term, *search_term1;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, rmnodes, rm_tot_nodes, founds;
+	size_t args_num, len, i, rmnodes, rm_tot_nodes;
 	va_list args;
 	int c;
 	int option_index;
 	
 	char path[256];
 	
-	founds = 0;
 	option_index = 0;
 	rm_tot_nodes=0;
 /*
@@ -240,9 +239,9 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * write the values of the find result
  */
-			printf(" number of founds is %ld \n", founds);
+			printf(" number of founds is %ld \n",  Founds->founds);
 
-			for (i=0; i<founds; i++){
+			for (i=0; i< Founds->founds; i++){
 				Tmp1 = Founds->Found_Nodes[i]->List;
 			
 //				printf("RM    -- Removing %s\n", Tmp1->name);
@@ -255,7 +254,7 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * this should never happen, removing master head node done through function "unmount" == "mount -u"
  */		
-				if(*List == Founds->Found_Nodes[founds-1]->List){
+				if(*List == Founds->Found_Nodes[ Founds->founds-1]->List){
 					printf("Removing Matster Head node\n");
 					*List=NULL;
 				}

@@ -51,19 +51,19 @@ int main(void)
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
 		
-		socketnr =  cli_open_socket("localhost", 4096);
-// 		write_to_socket(1, Gnode,  socketnr);
-		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
-		close(socketnr);
-		
-		printf("printing received node RECNODE \n\n ");
-		
-		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
-	    	Error("CatData");
-		
-		usleep(10000);
-		
-		exit(0);
+// 		socketnr =  cli_open_socket("localhost", 4096);
+// // 		write_to_socket(1, Gnode,  socketnr);
+// 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+// 		close(socketnr);
+// 		
+// 		printf("printing received node RECNODE \n\n ");
+// 		
+// 		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 	    	Error("CatData");
+// 		
+// 		usleep(10000);
+// 		
+// 		exit(0);
 		
 		
 		
@@ -84,14 +84,17 @@ int main(void)
 
 		}
 		
-		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
+		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
 
 
+		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	                   Error("CatData");
+				
 		
 		if(Umount(&Gnode) != 1)
                   Perror("Umount");
-		if(Umount(&RecNode) != 1)
-                  Perror("Umount");
+// 		if(Umount(&RecNode) != 1)
+//                   Perror("Umount");
 				
 	}
 		

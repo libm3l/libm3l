@@ -92,7 +92,7 @@ typedef struct find_str{
 typedef struct find{
 	find_str_t **Found_Nodes;
 	size_t founds;
-	node_t *Home_None;
+	node_t *Home_Node;
 } find_t;
 
 
