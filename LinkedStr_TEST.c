@@ -89,6 +89,8 @@ int main(void)
 
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
+		
+		exit(0);
 				
 		
 		if(Umount(&Gnode) != 1)
