@@ -80,8 +80,6 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 		if(call == 1){
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){
-				
-// 				printf(" Writing 222  %s\n", Tmpnode->name);
 	
 				if(cat_list(2, Tmpnode, Popts) != 0){
 					Warning("Write data problem");
