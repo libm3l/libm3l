@@ -72,7 +72,7 @@ typedef struct node {
  /* 
   * pointers to the next list, parent list and child list and if the list is link, the original of the link
   */
-	struct node *next, *prev, *parent, *child, *link;
+	struct node *next, *prev, *parent, *child;
  /*
   * structure used for linking information, lcounter is a number of linknode array
   */

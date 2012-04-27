@@ -91,30 +91,10 @@ SIZE_T FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 /*
  * loop over next nodes
  */
-		Tmpnode = List;
-
-			if(Tmpnode != NULL){
-				if(Tmpnode->child != NULL){
-/*
- * recursive calling, search this DIR too
- */					
-					FindList(2, Tmpnode, search_term, Popt);
-/*
- * go to next 
- */
-					Tmpnode = Tmpnode->next;
-				}
-				else
-				{
-					if ( CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
-						if ( AddRecord(Tmpnode) != 1)
-							Warning("Error adding record to the list");
-					}
-/*
- * go to next 
- */
-					Tmpnode = Tmpnode->next;
-				}
+			Tmpnode = List;
+			if ( CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
+				if ( AddRecord(Tmpnode) != 1)
+				Warning("Error adding record to the list");
 			}
 		}
 		else
@@ -136,11 +116,16 @@ SIZE_T FindList(int call, node_t *List, char *search_term, opts_t *Popt)
  */
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){
-				FindList(2, Tmpnode, search_term, Popt);
+				if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popt->opt_L == 'L'){
+					FindList(2, Tmpnode->child, search_term, Popt);
+				}
+				else{
+					FindList(2, Tmpnode, search_term, Popt);
+				}
 				Tmpnode = Tmpnode->next;
 			}
 		}
-	return nalloc;
+		return nalloc;
 	}
 	else
 	{

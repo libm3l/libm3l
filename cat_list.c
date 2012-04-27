@@ -35,7 +35,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
  *    0 of no scenario where and how to add a node was found
  *   -1 if node which is to be added (*List) is NULL
  */
-	node_t *Tmpnode; 
+	node_t *Tmpnode;
  
 	if(List == NULL){
 		Warning("WriteData: NULL list");
@@ -44,50 +44,43 @@ int cat_list(int call, node_t *List, opts_t *Popts)
  
 	if(List->child == NULL){
 /*
- * loop over next nodes
+ * print node info
  */
-	Tmpnode = List;
-
-		if(Tmpnode != NULL){
-			if(Tmpnode->child != NULL){				
-				
-				if(cat_list(2, Tmpnode, Popts) != 0){
-					Warning("Write data problem");
-					return -1;
-				}
-				Tmpnode = Tmpnode->next;
-			}
-			else
-			{
-				PrintListInfo(Tmpnode, Popts);
-/*
- * if the node in initial call is FILE, print just info about this node
- * and return. Avoids printing all next nodes. This is done only if node in initial
- * call is DIR type
- */
-				if(call == 1) return 0;
-				Tmpnode = Tmpnode->next;
-			}
-		}
+		PrintListInfo(List, Popts);
 	}
 	else
 	{
 /*
- * do not print the head node
+ * initil call
  */
 		PrintListInfo(List, Popts);
 		
 		if(call == 1){
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){
-	
-				if(cat_list(2, Tmpnode, Popts) != 0){
-					Warning("Write data problem");
-					return -1;
+/*
+ * if node is list and option specifies it, write the target node data
+ */
+				if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popts->opt_l == 'l'){
+					if(cat_list(2, Tmpnode->child, Popts) != 0){ /* list is populated by the target list where it points to */
+						Warning("Write data problem");
+						return -1;
+					}
 				}
-				Tmpnode = Tmpnode->next;
+				else{
+	
+					if(cat_list(2, Tmpnode, Popts) != 0){
+						Warning("Write data problem");
+						return -1;
+					}
+				}
+			Tmpnode = Tmpnode->next;
 			}
 		}
+/*
+ * recursive call or call with specified parameter 2
+ * if -L == --listsubdir go to lower level
+ */
 		else if(call == 2 && Popts->opt_L == 'L'){
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){

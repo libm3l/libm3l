@@ -83,7 +83,7 @@ int main(void)
 		DestroyFound(&Founds);
 
 		}
-		
+			
 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
 
 

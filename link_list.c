@@ -7,7 +7,7 @@
 #include "link_list.h"
 #include "FunctionsPrt.h"
 
-int add_list(node_t **List, node_t **WTAList, char option)
+int link_list(node_t **List, node_t **WTAList, char option)
 {
 /*
  * function links list to the list tree

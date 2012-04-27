@@ -96,18 +96,19 @@ find_t *Find(node_t *List, char * Options, ...)
 		{
 			static struct option long_options[] =
 			{
-				{"ignore",     no_argument,    0, 'i'},
-				{"DIR",        no_argument,    0, 'd'},
-				{"FILE",       no_argument,    0, 'f'},
-				{"recursive",  no_argument,    0, 'r'},
-				{"IGNORE",  no_argument,       0, 'I'},
-				{"NUMBER",  no_argument,       0, 'N'},
+				{"ignore",     	no_argument,    	0, 'i'},
+				{"DIR",        	no_argument,     	0, 'd'},
+				{"FILE",       	no_argument,    	0, 'f'},
+				{"recursive",  	no_argument,  	0, 'r'},
+				{"IGNORE",  	no_argument,    	0, 'I'},
+				{"NUMBER",  	no_argument,   	0, 'N'},
+				{"link",  		no_argument,   	0, 'L'},
 				{0, 0, 0, 0}
 			}; 
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiIrN:", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiILrN:", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -141,6 +142,14 @@ find_t *Find(node_t *List, char * Options, ...)
  */
 					opts.opt_I = 'I';
 				break;
+
+				case 'L':
+/*
+ * write target node instead of LINK
+ */
+					opts.opt_L = 'L';
+				break;
+
 /*
  * look for DIR only
  */
