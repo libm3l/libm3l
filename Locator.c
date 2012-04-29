@@ -13,13 +13,15 @@
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
+extern int optind;
+static int verbose_flag;
 
-find_t *Locator(node_t *List, char * Options, ...)
+find_t *locator(find_t *Founds, char * path, opts_t *Popt)
 {
 /*
  * function looks for subset in nodel List
  * and specified by path and location
  *
- * First it uses find to locate all 	
-	
+ */
+
 }

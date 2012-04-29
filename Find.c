@@ -21,7 +21,7 @@ find_t *Find(node_t *List, char * Options, ...)
 	
 	find_t *Founds;
 	node_t *Tmp1;
- 	char *word, **opt, *search_term, *search_term1, *node_path;
+ 	char *word, **opt, *search_term, *search_term1; //, *node_path;
 	opts_t *Popts, opts;
 	size_t args_num, len, i;
 	va_list args;
