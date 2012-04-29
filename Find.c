@@ -96,13 +96,13 @@ find_t *Find(node_t *List, char * Options, ...)
 		{
 			static struct option long_options[] =
 			{
-				{"ignore",     	no_argument,    	0, 'i'},
-				{"DIR",        	no_argument,     	0, 'd'},
-				{"FILE",       	no_argument,    	0, 'f'},
-				{"recursive",  	no_argument,  	0, 'r'},
-				{"IGNORE",  	no_argument,    	0, 'I'},
-				{"NUMBER",  	no_argument,   	0, 'N'},
-				{"link",  		no_argument,   	0, 'L'},
+				{"ignore",     	no_argument,    	0, 'i'},  /* ignore case */
+				{"DIR",        	no_argument,     	0, 'd'},  /* only DIR */
+				{"FILE",       	no_argument,    	0, 'f'},  /* only file, at the moment it means not DIR */
+				{"recursive",  	no_argument,  		0, 'r'},  /* search inside the subdirs too */
+				{"IGNORE",  	no_argument,    	0, 'I'},  /* search all but search_term */
+				{"NUMBER",  	no_argument,   		0, 'N'}, 
+				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			}; 
  /*

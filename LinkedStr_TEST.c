@@ -51,15 +51,15 @@ int main(void)
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
 		
-// 		socketnr =  cli_open_socket("localhost", 4096);
-// // 		write_to_socket(1, Gnode,  socketnr);
-// 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
-// 		close(socketnr);
-// 		
-// 		printf("printing received node RECNODE \n\n ");
-// 		
-// 		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
-// 	    	Error("CatData");
+		socketnr =  cli_open_socket("localhost", 4096);
+// 		write_to_socket(1, Gnode,  socketnr);
+		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+		close(socketnr);
+		
+		printf("printing received node RECNODE \n\n ");
+		
+		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	    	Error("CatData");
 // 		
 // 		usleep(10000);
 // 		
@@ -89,12 +89,12 @@ int main(void)
 
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
-		
-		exit(0);
-				
+						
 		
 		if(Umount(&Gnode) != 1)
                   Perror("Umount");
+		
+		exit(0);
 // 		if(Umount(&RecNode) != 1)
 //                   Perror("Umount");
 				

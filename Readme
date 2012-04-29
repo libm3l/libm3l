@@ -57,3 +57,7 @@ When Free called from Rm,c  check that the pointer in the main structure is NULL
  6. KO args_num in long_opt call in Find c etc.
 
  7. Size_t int check for overflow etc.
+
+ 8. look for circular links and give warning
+ 9. Cat,c and Rm.c - optional parameter links to Found_caller function - need to be worked on!
+

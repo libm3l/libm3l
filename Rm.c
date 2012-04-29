@@ -116,6 +116,7 @@ size_t Rm(node_t **List, char * Options, ...)
 				{"recursive",  no_argument,       0, 'r'},
 				{"IGNORE",     no_argument,       0, 'I'},
 				{"preserve",   no_argument,       0, 'p'},
+//				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*

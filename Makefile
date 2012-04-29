@@ -36,6 +36,6 @@ main: $(OBJS)
 	@rm -f $*.d.tmp
 # remove compilation products
 clean:
-	rm -f proggie *.o *.d
+	rm -f main *.o *.d
 	
 	
