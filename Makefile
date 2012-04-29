@@ -36,6 +36,6 @@ main: $(OBJS)
 	@rm -f $*.d.tmp
 # remove compilation products
 clean:
-	rm -f main *.o *.d
+	rm -f LinkedStr_TEST.out *.o *.d
 	
 	
