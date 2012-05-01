@@ -458,6 +458,10 @@ get_arg_t get_arguments(const char *text)
 		while(*pc != '\0' && *pc != '='){
 			while(*pc == ' ' && *pc != '\0')pc++;
 			argsstr.s_name[i++] = *pc++;
+			if(i > MAX_NAME_LENGTH){
+				Error(" too long argument field");
+				exit(0);
+			}
 		}
 		
 		argsstr.s_name[i] = '\0';
@@ -470,6 +474,10 @@ get_arg_t get_arguments(const char *text)
 		while(*pc != '\0' ){
 			while(*pc == ' ' && *pc != '\0')pc++;
 			argsstr.args[i++] = *pc++;
+			if(i > MAX_NAME_LENGTH){
+				Error(" too long argument field");
+				exit(0);
+			}
 		}
 		
 		argsstr.args[i] = '\0';
@@ -489,6 +497,10 @@ get_arg_t get_arguments(const char *text)
 		while(*pc != '\0' && *pc != '='){
 		while(*pc == ' ' && *pc != '\0')pc++;
 			argsstr.s_name[i++] = *pc++;
+			if(i > MAX_NAME_LENGTH){
+				Error(" too long argument field");
+				exit(0);
+			}
 		}
 		
 		argsstr.s_name[i] = '\0';
@@ -501,6 +513,10 @@ get_arg_t get_arguments(const char *text)
 		while(*pc != '\0' ){
 			while(*pc == ' ' && *pc != '\0')pc++;
 			argsstr.args[i++] = *pc++;
+			if(i > MAX_NAME_LENGTH){
+				Error(" too long argument field");
+				exit(0);
+			}
 		}
 		
 		argsstr.args[i] = '\0';

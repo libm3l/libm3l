@@ -59,5 +59,12 @@ When Free called from Rm,c  check that the pointer in the main structure is NULL
  7. Size_t int check for overflow etc.
 
  8. look for circular links and give warning
- 9. Cat,c and Rm.c - optional parameter links to Found_caller function - need to be worked on!
+
+ 9. Cat,c and Rm.c - optional parameter links to Found_caller function specifying how to search/remove
+    linked data; either cat/remove link or target - need to be worked on!
+
+ 10. Find_caller - change reallocation of Founds subset. Right now, the subset is reallcoated every time a new
+	possitive search is made; mybe allocate in chunks of ten or so and then reallocate to final field size.
+
+ 11. int call in recusrivelly called functions, should it be size_t if i is incremented upon each call?
 
