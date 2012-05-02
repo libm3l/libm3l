@@ -43,77 +43,77 @@ int main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
-		if( (Gnode = Fread("INPUT_TEST"))  == NULL)
-			Perror("Linked_test: Fread");
+// 		if( (Gnode = Fread("INPUT_TEST"))  == NULL)
+// 			Perror("Linked_test: Fread");
 		
-		Fwrite(Gnode, "ADA");
-
-		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-	                   Error("CatData");
-		
-		socketnr =  cli_open_socket("localhost", 4096);
-// 		write_to_socket(1, Gnode,  socketnr);
-		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
-		close(socketnr);
-		
-		printf("printing received node RECNODE \n\n ");
-		
-		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
-	    	Error("CatData");
+// 		Fwrite(Gnode, "ADA");
+// 
+// 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 	                   Error("CatData");
 // 		
-// 		usleep(10000);
+// 		socketnr =  cli_open_socket("localhost", 4096);
+// // 		write_to_socket(1, Gnode,  socketnr);
+// 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+// 		close(socketnr);
+// 		
+// 		printf("printing received node RECNODE \n\n ");
+// 		
+// 		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 	    	Error("CatData");
+// // 		
+// // 		usleep(10000);
+// // 		
+// // 		exit(0);
+// 		
+// 		
+// 		
+// 		
+// 		printf(" Looking for data set\n");
+// 		
+// 		if( ( Founds = Find(Gnode, "--recursive" ,"BBB_DATA_DADA", (char *)NULL)) == NULL){
+// 
+// 			printf("No subset found\n"); exit(0);
+// 			}
+// 		else
+// 		{
+// 			for(i=0; i < Founds->founds; i++){
+// 			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+// 			}
+// 
+// 		DestroyFound(&Founds);
+// 
+// 		}
+// 			
+// 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
+// 
+// 
+// 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 	                   Error("CatData");
+// 						
+// 		
+// 		if(Umount(&Gnode) != 1)
+//                   Perror("Umount");
 // 		
 // 		exit(0);
-		
-		
-		
-		
-		printf(" Looking for data set\n");
-		
-		if( ( Founds = Find(Gnode, "--recursive" ,"BBB_DATA_DADA", (char *)NULL)) == NULL){
-
-			printf("No subset found\n"); exit(0);
-			}
-		else
-		{
-			for(i=0; i < Founds->founds; i++){
-			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-			}
-
-		DestroyFound(&Founds);
-
-		}
-			
-		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
-
-
-		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-	                   Error("CatData");
-						
-		
-		if(Umount(&Gnode) != 1)
-                  Perror("Umount");
-		
-		exit(0);
-// 		if(Umount(&RecNode) != 1)
-//                   Perror("Umount");
-				
-	}
-		
-
-		exit(0);
-
-		
-//		parsed_path = parse_path("../../home/jka/ada//");
-		
-		
-//		parsed_path = parse_path("~/../../home/jka/ada/   ");
-//  		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
-// 
-// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-// 		for (i=0; i< parsed_path->seg_count; i++)
-// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
+// // 		if(Umount(&RecNode) != 1)
+// //                   Perror("Umount");
+// 				
+// 	}
 // 		
+// 
+// 		exit(0);
+
+		
+		parsed_path = parse_path("../../home/jka/ada/");
+		
+		
+// 		parsed_path = parse_path("~/../../home/jka/ada/   ");
+//  		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
+
+		printf(" Number of segments is %ld\n",parsed_path->seg_count );
+		for (i=0; i< parsed_path->seg_count; i++)
+			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
+		
 // 		argsstr = get_arguments(parsed_path->path[3]);
 // 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
 // 		argsstr = get_arguments(parsed_path->path[4]);
@@ -121,7 +121,9 @@ int main(void)
 // 		argsstr = get_arguments(parsed_path->path[5]);
 // 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
 // 		
-// 		destroy_pars_path(&parsed_path);
+		destroy_pars_path(&parsed_path);
+		
+	}
 // 		
 // 		
 // 		exit(0);

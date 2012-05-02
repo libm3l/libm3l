@@ -68,3 +68,6 @@ When Free called from Rm,c  check that the pointer in the main structure is NULL
 
  11. int call in recusrivelly called functions, should it be size_t if i is incremented upon each call?
 
+12. When reading from TCP/IP or file, add M-arker to a link, read to a node and then update Link, rather
+then removing link and making new one
+

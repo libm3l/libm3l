@@ -215,11 +215,10 @@ char *Path(node_t *List)
  */
 path_t *parse_path(const char *path)
 {
-	/*
-	 * NOTE - segmentation fault if path starts with / // // // etc noncence
-	 */
+/*
+ * NOTE - segmentation fault if path starts with / // // // etc noncence
+ */
 	path_t *Path;
-	char **text;
 	const char *pc;
 	size_t counter, j, st,k;
 
@@ -295,11 +294,14 @@ path_t *parse_path(const char *path)
  * allocate array for words in path
  */
 	if(counter > 0){
-		if ( (text = (char **)malloc(counter * sizeof(char **))) == NULL)
+		if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
+			Perror("malloc");
+		
+		if ( (Path->path = (char **)malloc(counter * sizeof(char **))) == NULL)
 			Perror("malloc");
 
 		for(j=0; j< counter; j++)
-			if ( (text[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
+			if ( (Path->path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
 				Perror("malloc");
 	}
 	else
@@ -327,10 +329,14 @@ path_t *parse_path(const char *path)
  * save the segment of the path
  */
 		if( st < MAX_NAME_LENGTH){
-			text[j][st++] = *pc;
+			Path->path[j][st++] = *pc;
 		}
 		else{
 			Error(" Path too long");
+/*
+ * free Path
+ */
+			destroy_pars_path(&Path);
 			return (path_t *)NULL ;
 		}
 /*
@@ -338,15 +344,19 @@ path_t *parse_path(const char *path)
  * it occurs whent he specified path ends with / symbol
  */
 		if(*pc  == '/' ){
-			text[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 /*
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			text[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 			st = 0;
 			j++;
-			if(j > counter) exit(0);
+			if(j > counter){
+				Error(" Path too long");
+				destroy_pars_path(&Path);
+				return (path_t *)NULL ;
+			}
 			
 			if(*pc == '\0')
 				break;
@@ -359,25 +369,24 @@ path_t *parse_path(const char *path)
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			text[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 			st = 0;
 			j++;
-			if(j > counter) exit(0);
+			if(j > counter){
+				Error(" Path too long");
+				destroy_pars_path(&Path);
+				return (path_t *)NULL ;
+			}
 			
 			if(*pc == '\0')
 				break;
 		}	
 	}
-/*
- * allocate pointer to Path structure and populate it
- */	
-	if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
-		Perror("malloc");
 	
-	Path->path 	= text;  	/* segments of path */
+//	Path->path 	= text;  	/* segments of path */
 	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
 	Path->seg_count = counter;	/* Number of segments in path */
-		
+
 	return Path;
 }
 /*
