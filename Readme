@@ -71,3 +71,6 @@ When Free called from Rm,c  check that the pointer in the main structure is NULL
 12. When reading from TCP/IP or file, add M-arker to a link, read to a node and then update Link, rather
 then removing link and making new one
 
+13. get_arguments - need to solve how to indicate unsuccesfull error from the function. 
+in Locator. c need to add testing of it
+

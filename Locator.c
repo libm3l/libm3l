@@ -1,25 +1,4 @@
-/*
- *     function Locator.c - searches subset of the Founds set according to specified loction info.
- * 
- *     Copyright (C) 2012  Adam Jirasek
- * 
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU Lesser General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- * 
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU Lesser General Public License for more details.
- * 
- *     You should have received a copy of the GNU Lesser General Public License
- *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
- *     
- *     Also add information on how to contact you by electronic and paper mail.
- *     contact: Adam.Jirasek@gmail.com
- */
+
 
 /*
  * author: Adam Jirasek
@@ -55,13 +34,18 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 	size_t i, j;
 	path_t *parsed_path_loc;
 	get_arg_t argsstr;
- 	size_t call_number;
-	
 	node_t *Tmp_node;
-/*
- * set temporarily the parent node of the search origin node to NULL
- */
-	Tmp_node = Founds->Home_Node->parent;
+	find_t *RetFound;
+	size_t tot_match;
+	
+	typedef struct tmpinfo {
+		node_t *Tmpf;
+		int found_positive;
+	} tmpinfo_t;
+	
+	tmpinfo_t *HelpNodeI;
+	
+	
 /*
  * parse path location specification; IMP: do not forget destroy_pars_path(&parsed_path) once not needed
  */
@@ -70,56 +54,87 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 		return (find_t *)NULL;
 	}
 /*
- * loop over all levels in path
+ * set initial node, if path contains ../ go to higher lever
  */
-	for(j = 0; j< Founds->founds; j++){
-
-		if(call == 1){
-			call_number = 1;
+	Tmp_node = Founds->Home_Node;
+/*
+ * NOTE - mabe this may be a part of Found and should not be here
+ */
+	for(i=0; i<parsed_path_loc->seg_count; i++){
+		if(strncmp(parsed_path_loc->path[i], "..", 2) == 0){
+			if ( (Tmp_node = Founds->Home_Node->parent) == NULL)
+				Error("Wrong path");
 		}
-		else{
-			call_number++;
+	}
+/*
+ * allocate tmp field and fill it by initial data
+ */
+	if ( (HelpNodeI = (tmpinfo_t *)malloc(Founds->founds * sizeof(tmpinfo_t *))) == NULL)
+		Perror("malloc");
+	for(i=0; i<Founds->founds; i++){
+		HelpNodeI[i].Tmpf = Tmp_node;
+		HelpNodeI[i].found_positive = 1;
+	}
+/*
+ * loop over all levels in path, segment by segment and determine
+ * if match is positive or negative
+ */
+	for(i=0; i<parsed_path_loc->seg_count; i++){
+/*
+ * get arguments for path segment
+ */
+		argsstr = get_arguments(parsed_path_loc->path[i]); /* NOTE - need to add test of succesfull return from function, of this case, do not forget to free 
+									destroy_pars_path(&parsed_path_loc) and HelpNodeI*/
+/*
+ * loop over founds and check for match
+ */
+		for(j = 0; j< Founds->founds; j++){
+		
+			if(HelpNodeI[j].found_positive == 1){
+			/* match Founds->Found_Nodes[j]->List, argstr 
+			 *
+			 * set HelpNodeI[j].found_positive == 1 if positive match 0 if negative
+			 * if match positive - set HelpNodeI[j].Tmp_node = HelpNodeI[j].Tmp_node->child
+			 */
+			}
+/*
+ * argsstr.first if S or s, deal with subset
+ * argsstr.s_name - is argsstr.first == (s||S) - specifies name of subset name
+ * argsstr.arg - type of argument to be used
+ * argsstr.args - value of argument to be used
+ */
 		}
 		
-/*
-* get lcoator arguments for each level in path
-*/
-		argsstr = get_arguments(parsed_path_loc->path[j]);
-/*
- * loop over all Founds
- */
-		for (i=0; i< Founds->founds; i++){
-			
-			
-
-		}
 	}
 /*
  * free parsed_path 
  */	
 	destroy_pars_path(&parsed_path_loc);
 /*
- * upon leave, set the Founds origin node parent to what it was before
+ * count how many matches are positive
  */
-	Founds->Home_Node->parent = Tmp_node;
-		
+	tot_match = 0;
+	for(j = 0; j< Founds->founds; j++){
+		if(HelpNodeI[j].found_positive == 1) tot_match++;
+	}
+/*
+ * allocate find_t structure and fill it
+ */
+	if ( (RetFound = (find_t *) malloc( sizeof(find_t *))) == NULL)
+		Perror("malloc");
 	
-//		parsed_path = parse_path("../../home/jka/ada//");
-		
-		
-//		parsed_path = parse_path("~/../../home/jka/ada/   ");
-//  		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
-// 
-// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-// 		for (i=0; i< parsed_path->seg_count; i++)
-// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-// 		
-// 		argsstr = get_arguments(parsed_path->path[3]);
-// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[4]);
-// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[5]);
-// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		
-// 		destroy_pars_path(&parsed_path);
+	if ( (RetFound->Found_Nodes = (find_str_t **) malloc( sizeof(find_str_t **))) == NULL)
+		Perror("malloc");
+	
+	for(j = 0; j< tot_match; j++){
+		if ( ( RetFound->Found_Nodes[j] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+			Perror("malloc");
+	}
+	
+	for(j = 0; j< Founds->founds; j++){
+		if( HelpNodeI[j].found_positive == 1)
+			RetFound->Found_Nodes[j]->List=Founds->Found_Nodes[j]->List;
+	}
+	
+	free(HelpNodeI);
 }

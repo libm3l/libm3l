@@ -104,24 +104,26 @@ int main(void)
 // 		exit(0);
 
 		
-		parsed_path = parse_path("../../home/jka/ada/");
+//		parsed_path = parse_path("../../home/jka/ada/");
 		
 		
 // 		parsed_path = parse_path("~/../../home/jka/ada/   ");
-//  		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
+  		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
 
 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
 		for (i=0; i< parsed_path->seg_count; i++)
 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
 		
-// 		argsstr = get_arguments(parsed_path->path[3]);
-// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[4]);
-// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[5]);
-// 		printf("%c  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+		argsstr = get_arguments(parsed_path->path[3]);
+		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+		argsstr = get_arguments(parsed_path->path[4]);
+		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+		argsstr = get_arguments(parsed_path->path[5]);
+		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
 // 		
 		destroy_pars_path(&parsed_path);
+		
+		exit(0);
 		
 	}
 // 		

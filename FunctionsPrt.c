@@ -216,7 +216,7 @@ char *Path(node_t *List)
 path_t *parse_path(const char *path)
 {
 /*
- * NOTE - segmentation fault if path starts with / // // // etc noncence
+ * NOTE - segmentation fault if path starts with / // // // etc nonsence
  */
 	path_t *Path;
 	const char *pc;
@@ -394,6 +394,9 @@ path_t *parse_path(const char *path)
  */
 int destroy_pars_path(path_t **Path)
 {
+/*
+ * NOTE - unsuccesfull return must be finished
+ */
 	size_t i;
 	
 	for (i=0; i< (*Path)->seg_count; i++)
@@ -453,13 +456,13 @@ get_arg_t get_arguments(const char *text)
 		if(*pc == '\0' || *pc == ' ' ){; /* make sure no empty spaces are there */
 			Error("Wrong argument");
 			argsstr.arg = '\0';
-			return;
+			return ;
 		}
 		argsstr.arg = *pc++;
 		if(*pc == '\0' || *pc != '_' ){; /* must be _ symbol */
 			Error("Wrong argument");
 			argsstr.arg = '\0';
-			return;
+			return ;
 		}
 		pc++;
 		
@@ -469,7 +472,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.s_name[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
-				exit(0);
+				return ;
 			}
 		}
 		
@@ -485,7 +488,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.args[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
-				exit(0);
+				return ;
 			}
 		}
 		
@@ -508,7 +511,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.s_name[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
-				exit(0);
+				return ;
 			}
 		}
 		
@@ -524,7 +527,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.args[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
-				exit(0);
+				return ;
 			}
 		}
 		
@@ -533,5 +536,4 @@ get_arg_t get_arguments(const char *text)
 	}
 	
 	return argsstr;
-	
 }
