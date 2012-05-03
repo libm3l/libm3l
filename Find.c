@@ -101,14 +101,13 @@ find_t *Find(node_t *List, char * Options, ...)
 				{"FILE",       	no_argument,    	0, 'f'},  /* only file, at the moment it means not DIR */
 				{"recursive",  	no_argument,  		0, 'r'},  /* search inside the subdirs too */
 				{"IGNORE",  	no_argument,    	0, 'I'},  /* search all but search_term */
-				{"NUMBER",  	no_argument,   		0, 'N'}, 
 				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			}; 
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiILrN:", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiILr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */

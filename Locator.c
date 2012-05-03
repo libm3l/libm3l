@@ -20,6 +20,8 @@
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
+static int match_test(node_t *, get_arg_t);
+
 extern int optind;
 static int verbose_flag;
 
@@ -30,14 +32,7 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
  * and specified by path and location
  * before this function is invoked, the Founds subset must be
  * created by calling Founds function
- */
-	size_t i, j;
-	path_t *parsed_path_loc;
-	get_arg_t argsstr;
-	node_t *Tmp_node;
-	find_t *RetFound;
-	size_t tot_match;
-	
+ */	
 	typedef struct tmpinfo {
 		node_t *Tmpf;
 		int found_positive;
@@ -45,7 +40,12 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 	
 	tmpinfo_t *HelpNodeI;
 	
-	
+	size_t i, j;
+	path_t *parsed_path_loc;
+	get_arg_t argsstr;
+	node_t *Tmp_node;
+	find_t *RetFound;
+	size_t tot_match;
 /*
  * parse path location specification; IMP: do not forget destroy_pars_path(&parsed_path) once not needed
  */
@@ -91,20 +91,16 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 		for(j = 0; j< Founds->founds; j++){
 		
 			if(HelpNodeI[j].found_positive == 1){
-			/* match Founds->Found_Nodes[j]->List, argstr 
-			 *
-			 * set HelpNodeI[j].found_positive == 1 if positive match 0 if negative
-			 * if match positive - set HelpNodeI[j].Tmp_node = HelpNodeI[j].Tmp_node->child
-			 */
+				if( (HelpNodeI[j].found_positive = match_test(HelpNodeI[j].Tmpf,argsstr)) == 1)
+					HelpNodeI[j].Tmpf = HelpNodeI[j].Tmpf->child;
 			}
 /*
  * argsstr.first if S or s, deal with subset
- * argsstr.s_name - is argsstr.first == (s||S) - specifies name of subset name
+ * argsstr.s_name - is argsstr.first == ('s' || 'S') - specifies name of subset name
  * argsstr.arg - type of argument to be used
  * argsstr.args - value of argument to be used
  */
 		}
-		
 	}
 /*
  * free parsed_path 
@@ -135,6 +131,31 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 		if( HelpNodeI[j].found_positive == 1)
 			RetFound->Found_Nodes[j]->List=Founds->Found_Nodes[j]->List;
 	}
-	
+	RetFound->founds = tot_match;
+		
 	free(HelpNodeI);
+}
+
+
+
+int match_test(node_t *List, get_arg_t argsstr)
+{
+/*
+ * find if what is to be comapred is set or subset
+ */
+	if( argsstr.first == ('s' || 'S')){
+	}
+	else{
+/*
+ * set
+ */
+		switch ( (int)argsstr.arg){
+	
+			case 'V':  /* Value */
+				
+			break;
+		
+		}
+	}
+	
 }
