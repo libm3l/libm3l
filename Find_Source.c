@@ -112,7 +112,7 @@ SIZE_T FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 				}
 			}
 /*
- * recursive calling, go to the first chld node and loop over list in the same level as child
+ * recursive calling, go to the first child node and loop over list in the same level as child
  */
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){

@@ -43,7 +43,6 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 	size_t i, j;
 	path_t *parsed_path_loc;
 	get_arg_t argsstr;
-	node_t *Tmp_node;
 	find_t *RetFound;
 	size_t tot_match;
 /*
@@ -54,25 +53,12 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 		return (find_t *)NULL;
 	}
 /*
- * set initial node, if path contains ../ go to higher lever
- */
-	Tmp_node = Founds->Home_Node;
-/*
- * NOTE - mabe this may be a part of Found and should not be here
- */
-	for(i=0; i<parsed_path_loc->seg_count; i++){
-		if(strncmp(parsed_path_loc->path[i], "..", 2) == 0){
-			if ( (Tmp_node = Founds->Home_Node->parent) == NULL)
-				Error("Wrong path");
-		}
-	}
-/*
  * allocate tmp field and fill it by initial data
  */
 	if ( (HelpNodeI = (tmpinfo_t *)malloc(Founds->founds * sizeof(tmpinfo_t *))) == NULL)
 		Perror("malloc");
 	for(i=0; i<Founds->founds; i++){
-		HelpNodeI[i].Tmpf = Tmp_node;
+		HelpNodeI[i].Tmpf = Founds->Home_Node;
 		HelpNodeI[i].found_positive = 1;
 	}
 /*
@@ -83,7 +69,7 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
 /*
  * get arguments for path segment
  */
-		argsstr = get_arguments(parsed_path_loc->path[i]); /* NOTE - need to add test of succesfull return from function, of this case, do not forget to free 
+		argsstr = get_arguments(parsed_path_loc->path[i]); /* NOTE - need to add test of succesfull return from function, if this is the case, do not forget to free 
 									destroy_pars_path(&parsed_path_loc) and HelpNodeI*/
 /*
  * loop over founds and check for match
@@ -144,6 +130,8 @@ int match_test(node_t *List, get_arg_t argsstr)
  * find if what is to be comapred is set or subset
  */
 	if( argsstr.first == ('s' || 'S')){
+		
+		
 	}
 	else{
 /*

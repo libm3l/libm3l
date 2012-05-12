@@ -144,7 +144,7 @@ find_t *Find(node_t *List, char * Options, ...)
 
 				case 'L':
 /*
- * write target node instead of LINK
+ * search inside the target node instead of LINK
  */
 					opts.opt_L = 'L';
 				break;
@@ -162,7 +162,7 @@ find_t *Find(node_t *List, char * Options, ...)
 					opts.opt_f = 'f';
 				break;
 /*
- * look for FILE only
+ * recursive search
  */
 				case 'r':
 					opts.opt_r = 'r';
@@ -217,8 +217,8 @@ find_t *Find(node_t *List, char * Options, ...)
 /*
  * call find function with specified options
  */
-	if( List->child == 0){
-		Warning("List in Find is not a DIR or is empty DIR, nothing to look for");
+	if( strncmp(List->type, "DIR" != 0){
+		Warning("List in Find is not DIR");
 		free(search_term);
 		return (find_t *)NULL;
 	}

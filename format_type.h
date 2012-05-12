@@ -91,8 +91,8 @@ typedef struct find_str{
 
 typedef struct find{
 	find_str_t **Found_Nodes;
-	size_t founds;
-	node_t *Home_Node;
+	size_t founds; 		/* number of founds */
+	node_t *Home_Node;  	/* node from which the found was originated */
 } find_t;
 
 
