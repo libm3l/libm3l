@@ -16,6 +16,8 @@
 #include "tcpip_socket_IOop.h"
 #include "WriteData.h"
 #include "FunctionsPrt.h"
+#include "Locate.h"
+
 
 #define LINESZ 1024
 
@@ -43,13 +45,13 @@ int main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
-// 		if( (Gnode = Fread("INPUT_TEST"))  == NULL)
-// 			Perror("Linked_test: Fread");
+ 		if( (Gnode = Fread("INPUT_TEST"))  == NULL)
+ 			Perror("Linked_test: Fread");
 		
 // 		Fwrite(Gnode, "ADA");
 // 
-// 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-// 	                   Error("CatData");
+ 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+ 	                   Error("CatData");
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
 // // 		write_to_socket(1, Gnode,  socketnr);
@@ -106,13 +108,21 @@ int main(void)
 		
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
+		printf("Going to locate %p\n", Gnode);
+		Locate(Gnode, "/main/grid1/boundary", "/*/*/*", "--link", "--ignore", (char *)NULL);
+		exit(0);
+
 		
-// 		parsed_path = parse_path("~/../../home/jka/ada/   ");
-  		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
+		
+		parsed_path = parse_path("~/home/jka/ada/");
+//   		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
 
 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
 		for (i=0; i< parsed_path->seg_count; i++)
 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
+		
+		printf(" path is %c \n ", parsed_path->abspath);
+		
 		
 		argsstr = get_arguments(parsed_path->path[3]);
 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
@@ -147,7 +157,7 @@ int main(void)
 			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 			}
 	
-		DestroyFound(Founds);
+		DestroyFound(&Founds);
 
 		}
 		
@@ -274,7 +284,7 @@ int main(void)
 
         printf("Freeing memory - number of founds is %ld\n", Founds->founds);
    
-	DestroyFound(Founds);
+	DestroyFound(&Founds);
 
    
 	printf("\n\n\n Cat \n\n\n");

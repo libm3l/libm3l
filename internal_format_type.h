@@ -45,6 +45,7 @@ typedef struct get_arg{
 	char arg;    			/* value of argument V(value), T(Type), .... */
 	char args[MAX_NAME_LENGTH];	/* argument - compared according to arg */
 	char s_name[MAX_NAME_LENGTH];   /* if sub-set - specifies name of the subset */
+	int retval;
 } get_arg_t;
 
 

@@ -217,7 +217,7 @@ find_t *Find(node_t *List, char * Options, ...)
 /*
  * call find function with specified options
  */
-	if( strncmp(List->type, "DIR" != 0){
+	if( strncmp(List->type, "DIR",3) != 0){
 		Warning("List in Find is not DIR");
 		free(search_term);
 		return (find_t *)NULL;

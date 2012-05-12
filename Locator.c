@@ -16,16 +16,14 @@
 #include "internal_format_type.h"
 
 #include "Locator.h"
-#include "Find.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
 
 static int match_test(node_t *, get_arg_t);
 
 extern int optind;
 static int verbose_flag;
 
-find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
+find_t *locator(find_t *Founds, const char *path_loc, opts_t *Popt)
 {
 /*
  * function looks for subset in nodel List
@@ -49,9 +47,12 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
  * parse path location specification; IMP: do not forget destroy_pars_path(&parsed_path) once not needed
  */
  	if ( (parsed_path_loc = parse_path(path_loc)) == NULL){
-		Error("Paths - failed");
+		Error("Path - failed");
 		return (find_t *)NULL;
 	}
+	
+		for (i=0; i< parsed_path_loc->seg_count; i++)
+		printf(" Segment_loc %d is %s\n", i, parsed_path_loc->path[i]);
 /*
  * allocate tmp field and fill it by initial data
  */
@@ -71,6 +72,9 @@ find_t *locator(size_t call, find_t *Founds, const char *path_loc, opts_t *Popt)
  */
 		argsstr = get_arguments(parsed_path_loc->path[i]); /* NOTE - need to add test of succesfull return from function, if this is the case, do not forget to free 
 									destroy_pars_path(&parsed_path_loc) and HelpNodeI*/
+		if(argsstr.retval == -1){
+			Error("argstr error");
+		}
 /*
  * loop over founds and check for match
  */

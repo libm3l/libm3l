@@ -426,9 +426,6 @@ get_arg_t get_arguments(const char *text)
 /*
  * disregard empty spaces and tabs at the beginning 
  */
-
-	printf("text is %s\n", text);
-
 	pc = text;
 	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
 /*
@@ -437,6 +434,7 @@ get_arg_t get_arguments(const char *text)
 	if(*pc == '\0'){
 		Error("No argument");
 		argsstr.arg = '\0';
+		argsstr.retval = -1;
 		return;
 	}
 	else if(*pc == '\0'){
@@ -444,6 +442,7 @@ get_arg_t get_arguments(const char *text)
 		argsstr.first = '\0';
 		argsstr.s_name[0] = '\0';
 		argsstr.args[0] = '\0';
+		argsstr.retval = 0;
 		return argsstr;
 	}
 
@@ -456,12 +455,14 @@ get_arg_t get_arguments(const char *text)
 		if(*pc == '\0' || *pc == ' ' ){; /* make sure no empty spaces are there */
 			Error("Wrong argument");
 			argsstr.arg = '\0';
+			argsstr.retval = -1;
 			return ;
 		}
 		argsstr.arg = *pc++;
 		if(*pc == '\0' || *pc != '_' ){; /* must be _ symbol */
 			Error("Wrong argument");
 			argsstr.arg = '\0';
+			argsstr.retval = -1;
 			return ;
 		}
 		pc++;
@@ -472,6 +473,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.s_name[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
+				argsstr.retval = -1;
 				return ;
 			}
 		}
@@ -488,6 +490,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.args[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
+				argsstr.retval = -1;
 				return ;
 			}
 		}
@@ -511,6 +514,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.s_name[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
+				argsstr.retval = -1;
 				return ;
 			}
 		}
@@ -527,6 +531,7 @@ get_arg_t get_arguments(const char *text)
 			argsstr.args[i++] = *pc++;
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
+				argsstr.retval = -1;
 				return ;
 			}
 		}
@@ -534,6 +539,6 @@ get_arg_t get_arguments(const char *text)
 		argsstr.args[i] = '\0';
 
 	}
-	
+	argsstr.retval = 0;
 	return argsstr;
 }
