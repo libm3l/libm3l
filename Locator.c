@@ -1,11 +1,3 @@
-
-
-/*
- * author: Adam Jirasek
- * date:   1-May-2012
- * version - 0.0
- */
-
 /*
  * Modifications:
  * version	name		date		description (event. patch number)
@@ -17,11 +9,121 @@
 
 #include "Locator.h"
 #include "FunctionsPrt.h"
+#include "Find_Source.h"
 
 static int match_test(node_t *, get_arg_t);
+static find_t *locator(find_t *, const char *, opts_t *);
 
 extern int optind;
 static int verbose_flag;
+
+find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opts_t *Popts)
+{
+	path_t *parsed_path;
+	char *search_term, *node_path;
+	size_t i;
+	find_t *Founds, *Founds_Loc;
+	node_t *Tmp_node;
+/*
+ * parse path
+ */
+	if( (parsed_path = parse_path(path)) == NULL){
+		Error("Error in path");
+		return (find_t *)NULL;
+	}
+	
+	for (i=0; i< parsed_path->seg_count; i++)
+/*
+ * call find function with specified options
+ * First look if ../ are in path or if path is absolute path
+ * set initial node, if path contains ../ go to higher lever
+ */
+	Tmp_node = List;
+	if(parsed_path->abspath == 'A'){
+		
+		while(Tmp_node->parent != NULL)Tmp_node = Tmp_node->parent;
+/*
+ * check if first segment is identical to name of initial node
+ */
+		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0){
+			Error("Wrong absolute path");
+			destroy_pars_path(&parsed_path);
+			return (find_t *)NULL;
+		}
+	}
+	else{
+
+		for(i=0; i<parsed_path->seg_count; i++){
+			if(strncmp(parsed_path->path[i], "..", 2) == 0){
+				if ( (Tmp_node = Founds->Home_Node->parent) == NULL){
+					Error("Wrong path");
+					destroy_pars_path(&parsed_path);
+					return (find_t *)NULL;
+				}
+			}
+		}
+	}
+
+	if( strncmp(Tmp_node->type, "DIR", 3) != 0){
+		Warning("List in locate is not DIR");
+		free(search_term);
+		destroy_pars_path(&parsed_path);
+		return (find_t *)NULL;
+	}
+/* 
+ * this function returns back found_t **pointer which has "founds" number of items
+ * do not forget to free it when you do not need it
+ */
+	if ( (search_term = strdup(parsed_path->path[parsed_path->seg_count-1])) == NULL)
+			Perror("strdup");
+	if(Popts->opt_i == 'i')search_term = StrToLower(search_term);
+		
+	if ( (Founds = Find_caller(Tmp_node, search_term, Popts)) == NULL){
+		free(search_term);
+		destroy_pars_path(&parsed_path);
+		free(search_term);
+		return (find_t *)NULL;
+	}
+	else
+	{
+/*
+ * write the values of the find result
+ */
+		printf(" number of founds is %ld \n", Founds->founds);
+		for (i=0; i< Founds->founds; i++){
+			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
+			
+			if( (node_path = Path(Founds->Found_Nodes[i]->List)) != NULL){
+				printf(" Path is %s \n", node_path);
+				free(node_path);
+			}
+			
+		}
+/*
+ * call locator to select sets
+ */		
+		printf(" Going to locator\n");
+		if ( (Founds_Loc = locator(Founds, path_loc, Popts)) == NULL){
+			printf(" After NULL locator\n");
+
+			DestroyFound(&Founds);
+			destroy_pars_path(&parsed_path);
+			free(search_term);
+			return (find_t *)NULL;
+		}
+		
+		printf(" After locator\n");
+
+
+	}	
+//		NOTE: if(word != NULL) free(word);
+	free(search_term);
+	DestroyFound(&Founds);
+ 	destroy_pars_path(&parsed_path);	
+	
+	
+}
+
 
 find_t *locator(find_t *Founds, const char *path_loc, opts_t *Popt)
 {
@@ -43,6 +145,7 @@ find_t *locator(find_t *Founds, const char *path_loc, opts_t *Popt)
 	get_arg_t argsstr;
 	find_t *RetFound;
 	size_t tot_match;
+	char *node_path;
 /*
  * parse path location specification; IMP: do not forget destroy_pars_path(&parsed_path) once not needed
  */
@@ -53,15 +156,29 @@ find_t *locator(find_t *Founds, const char *path_loc, opts_t *Popt)
 	
 		for (i=0; i< parsed_path_loc->seg_count; i++)
 		printf(" Segment_loc %d is %s\n", i, parsed_path_loc->path[i]);
+		printf(" number of founds is %d\n", Founds->founds );
 /*
  * allocate tmp field and fill it by initial data
  */
 	if ( (HelpNodeI = (tmpinfo_t *)malloc(Founds->founds * sizeof(tmpinfo_t *))) == NULL)
 		Perror("malloc");
-	for(i=0; i<Founds->founds; i++){
-		HelpNodeI[i].Tmpf = Founds->Home_Node;
-		HelpNodeI[i].found_positive = 1;
+	
+	for(i=0; i < Founds->founds; i++){
+		printf("i is %d \n",i);
+// 		HelpNodeI[i].Tmpf = Founds->Found_Nodes[i]->List;
+ 		HelpNodeI[i].found_positive = 1;
+		
+		printf("name of the list is %s\n",  Founds->Found_Nodes[i]->List->name);
+		
+		
+		if( (node_path = Path(Founds->Found_Nodes[i]->List)) != NULL){
+				printf(" Path is %s \n", node_path);
+			free(node_path);
+		}
 	}
+	
+	
+	printf("End of cycle\n");
 /*
  * loop over all levels in path, segment by segment and determine
  * if match is positive or negative
@@ -74,11 +191,21 @@ find_t *locator(find_t *Founds, const char *path_loc, opts_t *Popt)
 									destroy_pars_path(&parsed_path_loc) and HelpNodeI*/
 		if(argsstr.retval == -1){
 			Error("argstr error");
+			destroy_pars_path(&parsed_path_loc);
+			free(HelpNodeI);
+			return (find_t *)NULL;
 		}
 /*
  * loop over founds and check for match
  */
 		for(j = 0; j< Founds->founds; j++){
+			
+			printf(" Matching %p, %s  \n", HelpNodeI[j].Tmpf, HelpNodeI[j].Tmpf->name);
+			
+// 			if( (node_path = Path(HelpNodeI[j].Tmpf)) != NULL){
+// 				printf(" Path is %s \n", node_path);
+// 			free(node_path);
+// 			}
 		
 			if(HelpNodeI[j].found_positive == 1){
 				if( (HelpNodeI[j].found_positive = match_test(HelpNodeI[j].Tmpf,argsstr)) == 1)
@@ -91,6 +218,8 @@ find_t *locator(find_t *Founds, const char *path_loc, opts_t *Popt)
  * argsstr.args - value of argument to be used
  */
 		}
+		
+		exit(0);
 	}
 /*
  * free parsed_path 
@@ -135,7 +264,7 @@ int match_test(node_t *List, get_arg_t argsstr)
  */
 	if( argsstr.first == ('s' || 'S')){
 		
-		
+		return 0;
 	}
 	else{
 /*
@@ -148,6 +277,11 @@ int match_test(node_t *List, get_arg_t argsstr)
 			break;
 		
 		}
+		
+		return 0;
+		
 	}
+	
+	return 0;
 	
 }

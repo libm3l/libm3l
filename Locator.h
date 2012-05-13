@@ -5,6 +5,6 @@
 #ifndef __LOCATOR_H__
 #define __LOCATOR_H__
 
-find_t *locator(find_t *, const char *, opts_t *);
+find_t *locator_caller(node_t *, const char *, const char *, opts_t *);
 
 #endif

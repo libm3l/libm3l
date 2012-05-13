@@ -142,7 +142,6 @@ char *Path(node_t *List)
 /*
  * allocate arrays
  */
-
 	if ( (segs = (char**)malloc( (count)*sizeof(char **) )) == NULL)
 		Perror("malloc");
 	if ( (len = (size_t *)malloc( (count)*sizeof(size_t *) )) == NULL)
@@ -155,7 +154,6 @@ char *Path(node_t *List)
 	tot_len = 0;
 	while(Tmp->parent != NULL){
 		len[i] = strlen(Tmp->name);
-
 		if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
@@ -163,7 +161,9 @@ char *Path(node_t *List)
 		
 		Tmp = Tmp->parent;
 		tot_len = tot_len + len[i] + 1;
-		i++;
+// 		i++;
+		if(i++ > count-1)
+			Error("Count");
 	}
 /*
  * save length of the segment

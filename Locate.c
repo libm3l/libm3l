@@ -16,7 +16,7 @@
 extern int optind;
 static int verbose_flag;
 /*
- * routine finds the list
+ * routine finds the list and filters it using path_loc specifications
  */
 find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Options, ...)
 {
@@ -24,8 +24,8 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 	find_t *Founds, *Founds_Loc;
 	node_t *Tmp_node;
 	path_t *parsed_path;
-	
- 	char *word, **opt, *search_term, *node_path;
+
+	char *word, **opt;
 	opts_t *Popts, opts;
 	size_t args_num, len, i;
 	va_list args;
@@ -192,7 +192,7 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
  * get the value of the first argument, set options to default options
  */
 		opts.opt_r = 'r';
-// 		opts.opt_L = 'L';
+// 		opts.opt_L = 'L';  NOTE - needs to be specified
 	}
 /*
  * free array opt **
@@ -203,111 +203,9 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 	}
 
 	Popts = &opts;
-/*
- * parse path
- */
-	printf(" parsing path \n");
-
-	if( (parsed_path = parse_path(path)) == NULL){
-		Error("Error in path");
-		return (find_t *)NULL;
-	}
 	
-	for (i=0; i< parsed_path->seg_count; i++)
-		printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-	printf(" Paths is %c \n", parsed_path->abspath);
-/*
- * call find function with specified options
- * First look if ../ are in path or if path is absolute path
- * set initial node, if path contains ../ go to higher lever
- */
-	Tmp_node = List;
-	if(parsed_path->abspath == 'A'){
-		
-		while(Tmp_node->parent != NULL)Tmp_node = Tmp_node->parent;
-/*
- * check if first segment is identical to name of initial node
- */
-// 		printf("1 -- %p   %s  %s\n ",Tmp_node, parsed_path->path[0], Tmp_node->name);
-// 		printf(" strlen is %d   %d\n", strlen(Tmp_node->name), strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)));
-
-		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0){
-			Error("Wrong absolute path");
-			destroy_pars_path(&parsed_path);
-			return (find_t *)NULL;
-		}
-		
-// 		printf(" strlen is %d   %d\n", strlen(Tmp_node->name), strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)));
-	}
-	else{
-
-		for(i=0; i<parsed_path->seg_count; i++){
-			if(strncmp(parsed_path->path[i], "..", 2) == 0){
-				if ( (Tmp_node = Founds->Home_Node->parent) == NULL){
-					Error("Wrong path");
-					destroy_pars_path(&parsed_path);
-					return (find_t *)NULL;
-				}
-			}
-		}
-	}
-
-	if( strncmp(Tmp_node->type, "DIR", 3) != 0){
-		Warning("List in locate is not DIR");
-		free(search_term);
-		destroy_pars_path(&parsed_path);
+	if( (Founds_Loc = locator_caller(List, path, path_loc, Popts)) == NULL)
 		return (find_t *)NULL;
-	}
-/* 
- * this function returns back found_t **pointer which has "founds" number of items
- * do not forget to free it when you do not need it
- */
-	if ( (search_term = strdup(parsed_path->path[parsed_path->seg_count-1])) == NULL)
-			Perror("strdup");
-	if(opts.opt_i == 'i')search_term = StrToLower(search_term);
-		
-	if ( (Founds = Find_caller(Tmp_node, search_term, Popts)) == NULL){
-		free(search_term);
-		destroy_pars_path(&parsed_path);
-		free(search_term);
-		return (find_t *)NULL;
-	}
-	else
-	{
-/*
- * write the values of the find result
- */
-		printf(" number of founds is %ld \n", Founds->founds);
-		for (i=0; i< Founds->founds; i++){
-			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
-			
-			if( (node_path = Path(Founds->Found_Nodes[i]->List)) != NULL){
-				printf(" Path is %s \n", node_path);
-				free(node_path);
-			}
-			
-		}
-/*
- * call locator to select sets
- */		
-		printf(" Going to locator\n");
-		if ( (Founds_Loc = locator(Founds, path_loc, Popts)) == NULL){
-			printf(" After NULL locator\n");
-
-			DestroyFound(&Founds);
-			destroy_pars_path(&parsed_path);
-			free(search_term);
-			return (find_t *)NULL;
-		}
-		
-		printf(" After locator\n");
-
-
-	}	
-//		NOTE: if(word != NULL) free(word);
-	free(search_term);
-	DestroyFound(&Founds);
- 	destroy_pars_path(&parsed_path);
 
 	return Founds_Loc;
 }
