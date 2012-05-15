@@ -133,7 +133,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, const char *path_loc, opts_
  * before this function is invoked, the initial Founds subset must be
  * created by calling Founds function
  */	
-	node_t *Tmp, *Tmppar;
+	node_t *Tmp, *Tmppar, *Tm_prev;
 	size_t *HelpNodeI;
 	size_t i, j, k, counter;
 	path_t *parsed_path_loc, **parsed_path_founds;;
@@ -204,9 +204,11 @@ find_t *locator(find_t *Founds, path_t *parsed_path, const char *path_loc, opts_
 /*
  * loop over all levels in path, segment by segment and determine
  * if match is positive or negative
+ * - save parent and current node pointer in temporary values - used for couter
+ * - set counter 1
  */
-
-	Tmppar = Founds->Found_Nodes[0]->List->parent;
+	Tmppar  = Founds->Found_Nodes[0]->List->parent;
+	Tm_prev = Founds->Found_Nodes[0]->List;
 	counter = 1;
 
 	for(i=0; i<parsed_path_loc->seg_count; i++){
@@ -227,7 +229,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, const char *path_loc, opts_
 			return (find_t *)NULL;
 		}
 /*
- * loop over founds and check for match
+ * loop over founds and check for match, If HelpNodeI == 0, the node is already marked as negative match
  */
 		for(j = 0; j< Founds->founds; j++){
 
@@ -241,29 +243,35 @@ find_t *locator(find_t *Founds, path_t *parsed_path, const char *path_loc, opts_
 				if(strncmp(parsed_path->path[i], parsed_path_founds[j]->path[i], strlen(parsed_path->path[i])) == 0){
 /*
  * segments are equal, check locator
- * find node_t pointer corresponding to path segment
  */
 					Tmp = Founds->Found_Nodes[j]->List;
-
+/*
+ * find node_t pointer corresponding to path segment
+ */
 					for(k=i+1; k<parsed_path_loc->seg_count; k++)
 						Tmp = Tmp->parent;
 /*
  * get counter, increment for each in the same DIR, set 0 if different DIR
  */
-
-					printf("%s %p  %p \n", Tmp->name , Tmp->parent, Tmppar);
-
+// 					printf("%s %p  %p \n", Tmp->name , Tmp->parent, Tmppar);
+/*
+ * if parent of the node is the same as previuous node parent..
+ */
 					if(Tmppar == Tmp->parent){
-						counter++;
+ /*
+  * check if the node is the same as pevious or not, if not, increase counter (the same name, different pointer situation)
+  */
+						if (Tmp != Tm_prev)counter++;
 					}
 					else{
 						counter = 1;
 						Tmppar = Tmp->parent;
+						Tm_prev = Tmp;
 					}
 
-					printf("Counter is %d\n", counter);
+// 					printf("Counter is %d\n", counter);
 
-// 					HelpNodeI[j]  = match_test(Tmp,argsstr);
+// 					HelpNodeI[j]  = match_test(Tmp,argsstr, counter);
 /*
  * argsstr.first if S or s, deal with subset
  * argsstr.s_name - is argsstr.first == ('s' || 'S') - specifies name of subset name
@@ -337,7 +345,7 @@ int match_test(node_t *List, get_arg_t argsstr)
 		switch ( (int)argsstr.arg){
 	
 			case 'V':  /* Value */
-				
+// isgreaterequal, isgreater				
 			break;
 		
 		}
