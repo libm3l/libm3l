@@ -124,8 +124,12 @@ char *StrToUpper(char *s)
  * NOTE - needs to be feed after use
  */
 
-char *Path(node_t *List)
+char *Path(node_t *List, node_t *Orig_List)
 {
+/*
+  * function finds path of the list up to Orig_List
+ * If Orig_List == NULL, then the path goes to master head node
+ */
 	char   *path;
 	char   **segs;
 	node_t *Tmp;
@@ -136,6 +140,7 @@ char *Path(node_t *List)
 	Tmp = List;
 	count = 1;
 	while(Tmp->parent != NULL){
+		if(Tmp == Orig_List)break;
 		count++;
 		Tmp = Tmp->parent;
 	}
@@ -153,6 +158,9 @@ char *Path(node_t *List)
 	i=0;
 	tot_len = 0;
 	while(Tmp->parent != NULL){
+
+		if(Tmp == Orig_List) break;
+
 		len[i] = strlen(Tmp->name);
 		if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
 			Perror("malloc");

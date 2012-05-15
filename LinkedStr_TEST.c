@@ -50,8 +50,8 @@ int main(void)
 		
 // 		Fwrite(Gnode, "ADA");
 // 
- 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
- 	                   Error("CatData");
+//  		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+//  	                   Error("CatData");
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
 // // 		write_to_socket(1, Gnode,  socketnr);
@@ -109,7 +109,7 @@ int main(void)
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
 		printf("Going to locate %p\n", Gnode);
-		Locate(Gnode, "/main/grid1/boundary", "/*/*/*", "--link", "--ignore", (char *)NULL);
+		Locate(Gnode, "/main/grid1/boundary", "/*/*/*", (char *)NULL);
 		exit(0);
 
 		

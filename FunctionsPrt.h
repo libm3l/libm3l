@@ -17,7 +17,7 @@ SIZE_T Strol(char *);
 
 char *StrToLower(char *); 
 
-char *Path(node_t *);
+char *Path(node_t *, node_t *);
 
 path_t *parse_path(const char *);
 
