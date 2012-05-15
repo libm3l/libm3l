@@ -37,11 +37,13 @@ int main(void)
     get_arg_t argsstr;
 
     FILE *fp;
+    
+    char *node_path;
 
     printf("Going to Fread1\n");
    
 
-	for (j=0; j<1000000; j++){
+	for (j=0; j<3; j++){
 		
 		printf(" CYCLE %d\n\n", j);
 
@@ -109,7 +111,36 @@ int main(void)
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
 		printf("Going to locate %p\n", Gnode);
-		Locate(Gnode, "/main/grid1/boundary", "/*/*/*", (char *)NULL);
+		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/*/*", (char *)NULL)) != NULL){
+			for(i=0; i < Founds->founds; i++){
+				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+
+				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+					printf(" Path is %s \n", node_path);
+					free(node_path);
+				}
+			}
+		DestroyFound(&Founds);
+		}
+		else
+		{
+			printf(" No founds\n");
+		}
+// 		
+		if(Umount(&Gnode) != 1)
+                  Perror("Umount");
+		
+		
+// 		parsed_path = parse_path("/home/jka/ada/");
+// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
+// 		for (i=0; i< parsed_path->seg_count; i++)
+// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
+// 		destroy_pars_path(&parsed_path);
+		
+// 		exit(0);
+		
+	}
+			
 		exit(0);
 
 		
@@ -135,7 +166,7 @@ int main(void)
 		
 		exit(0);
 		
-	}
+	
 // 		
 // 		
 // 		exit(0);
