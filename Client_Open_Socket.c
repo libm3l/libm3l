@@ -1,7 +1,4 @@
 
-/*
- * copyright ï¿½ 2012 Adam Jirasek
- */
  
 /*
  * function opens socket for a client

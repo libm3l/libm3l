@@ -7,21 +7,25 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Find.h"
+#include "Locate.h"
+#include "Locator.h"
+
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
 extern int optind;
 static int verbose_flag;
 /*
- * routine finds the list
+ * routine finds the list and filters it using path_loc specifications
  */
-find_t *Find(node_t *List, char * Options, ...)
+find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Options, ...)
 {
 	
-	find_t *Founds;
-	node_t *Tmp1;
- 	char *word, **opt, *search_term, *search_term1; //, *node_path;
+	find_t *Founds, *Founds_Loc;
+	node_t *Tmp_node;
+	path_t *parsed_path;
+
+	char *word, **opt;
 	opts_t *Popts, opts;
 	size_t args_num, len, i;
 	va_list args;
@@ -32,22 +36,18 @@ find_t *Find(node_t *List, char * Options, ...)
 /*
  * get number of options
  */	
-	if(Options == NULL)
-		return (find_t *)NULL;
+	if(Options != NULL){
+		va_start(args, Options);
+		args_num = 1;
+		len = strlen(Options);
 
-	va_start(args, Options);
-	args_num = 1;
-	len = strlen(Options);
-
-	while((word = va_arg(args, char *)) != NULL){
-		args_num ++;
-	}
-	va_end(args);
+		while((word = va_arg(args, char *)) != NULL){
+			args_num++;
+		}
+		va_end(args);
 /*
  * get the values of option, for that, allocate opts ** array
  */
-	if(args_num > 1){
-
 		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char **) )) == NULL)
 			Perror("malloc");
 /*
@@ -68,7 +68,7 @@ find_t *Find(node_t *List, char * Options, ...)
 /*
  * get the value of other arguments
  */	
-		for(i=2; i<args_num; i++){
+		for(i=2; i<=args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
 			if ( (opt[i] = malloc( (args_num+1)*sizeof(char *) )) == NULL)
@@ -77,12 +77,6 @@ find_t *Find(node_t *List, char * Options, ...)
 			opt[i][len] = '\0';
 		}
 /*
- * get the name to look for
- */
- 		search_term1 = va_arg(args, char *);
-		if ( (search_term = strdup(search_term1)) == NULL)
-			Perror("strdup");
-/*
  * end args
  */
 		va_end(args);
@@ -90,7 +84,7 @@ find_t *Find(node_t *List, char * Options, ...)
  * get meaning of options
  * first - reset opting = 0 to reinitialize getopt_long
  */
-		opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
+		opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_L = '\0';
 		optind = 0;
 		while (1)
 		{
@@ -99,8 +93,8 @@ find_t *Find(node_t *List, char * Options, ...)
 				{"ignore",     	no_argument,    	0, 'i'},  /* ignore case */
 				{"DIR",        	no_argument,     	0, 'd'},  /* only DIR */
 				{"FILE",       	no_argument,    	0, 'f'},  /* only file, at the moment it means not DIR */
-				{"recursive",  	no_argument,  		0, 'r'},  /* search inside the subdirs too */
-				{"IGNORE",  	no_argument,    	0, 'I'},  /* search all but search_term */
+// 				{"recursive",  	no_argument,  		0, 'r'},  /* search inside the subdirs too */
+// 				{"IGNORE",  	no_argument,    	0, 'I'},  /* search all but search_term */
 				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			}; 
@@ -132,19 +126,18 @@ find_t *Find(node_t *List, char * Options, ...)
  * ignore case
  */
 					opts.opt_i = 'i';
-					search_term = StrToLower(search_term);
 				break;
 
-				case 'I':
-/*
- * ignore case
- */
-					opts.opt_I = 'I';
-				break;
+// 				case 'I':
+// /*
+//  * ignore case
+//  */
+// 					opts.opt_I = 'I';
+// 				break;
 
 				case 'L':
 /*
- * search inside the target node instead of LINK
+ * write target node instead of LINK
  */
 					opts.opt_L = 'L';
 				break;
@@ -161,12 +154,12 @@ find_t *Find(node_t *List, char * Options, ...)
 				case 'f':
 					opts.opt_f = 'f';
 				break;
-/*
- * recursive search
- */
-				case 'r':
-					opts.opt_r = 'r';
-				break;
+// /*
+//  * recursive
+//  */
+// 				case 'r':
+// 					opts.opt_r = 'r';
+// 				break;
 
 				case '?':
 /* 
@@ -189,7 +182,6 @@ find_t *Find(node_t *List, char * Options, ...)
  */
 		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
-			free(search_term);
 			return (find_t *)NULL;
 		}
 	}
@@ -197,59 +189,25 @@ find_t *Find(node_t *List, char * Options, ...)
 	{
 /*
  * no additional options provided
- * get the value of the first argument, as not options are specified the argument is the name to look for
+ * get the value of the first argument, set options to default options
  */
-		va_start(args, Options);
-		if ( (search_term = strdup(Options)) == NULL)
-			Perror("strdup");
-		va_end(args);
+		opts.opt_r = 'r';
+// 		opts.opt_L = 'L';  NOTE - needs to be specified
 	}
 /*
  * free array opt **
  */
 	if(List == NULL){
-		Warning("WriteData: NULL list");
-		free(search_term);
+		Warning("Locate: NULL list");
 		return (find_t *)NULL;
 	}
 
 	Popts = &opts;
-/*
- * call find function with specified options
- */
-	if( strncmp(List->type, "DIR",3) != 0){
-		Warning("List in Find is not DIR");
-		free(search_term);
+	
+	if( (Founds_Loc = locator_caller(List, path, path_loc, Popts)) == NULL)
 		return (find_t *)NULL;
-	}
-/* 
- * this function returns back found_t **pointer which has "founds" number of items
- * do not forget to free it when you do not need it
- */
-	if ( (Founds = Find_caller(List, search_term, Popts)) == NULL){
-		free(search_term);
-		return (find_t *)NULL;
-	}
-	else
-	{
-/*
- * write the values of the find result
- */
-		printf(" number of founds is %ld \n", Founds->founds);
-		for (i=0; i< Founds->founds; i++){
-			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
-			
-// 			if( (node_path = Path(Founds->Found_Nodes[i]->List)) != NULL){
-// 				printf(" Path is %s \n", node_path);
-// 				free(node_path);
-// 			}
-			
-		}
-	}	
-//		NOTE: if(word != NULL) free(word);
-		free(search_term);
 
-	return Founds;
+	return Founds_Loc;
 }
 
 

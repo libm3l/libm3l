@@ -18,7 +18,7 @@ static int write_file_data_filedescprt(node_t *, size_t , FILE *);
  */
 int WriteData(node_t *List,  FILE *fp)
 {
-	node_t *Tmpnode; 
+	node_t *Tmpnode, *Tmplist;
 	size_t i, tot_dim;
 	char buff[MAX_WORD_LENGTH];
  
@@ -27,83 +27,80 @@ int WriteData(node_t *List,  FILE *fp)
 		return -1;
 	} 
  
-	if(List->child == NULL){
+	if(List->child == NULL ){
 /*
  * loop over next nodes
  */
 	Tmpnode = List;
 
-		if(Tmpnode != NULL){
-			if(Tmpnode->child != NULL){
-				if(WriteData(Tmpnode, fp) != 0){
-					Warning("Write data problem");
-					return -1;
-				}
-					Tmpnode = Tmpnode->next;
-			}
-			else
-			{
-				if(strncmp(Tmpnode->type, "DIR", 3) == 0)
-				{
-					bzero(buff, sizeof(buff));
-					if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
-      					        Perror("snprintf");
-					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
-						Perror("fwrite");
-				}
-				else
-				{
+		if(strncmp(Tmpnode->type, "DIR", 3) == 0){
+			bzero(buff, sizeof(buff));
+			if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
+				Perror("snprintf");
+			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+				Perror("fwrite");
+		}
+		else
+		{
 /*
  * write only FILE data, if DIR is empty, it will be written here too
  */
+			bzero(buff, sizeof(buff));
+			if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld ",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
+    					        Perror("snprintf");
+			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				Perror("fwrite");
+				tot_dim = 1;
+			for(i=0; i<Tmpnode->ndim; i++){
 					bzero(buff, sizeof(buff));
-					if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld ",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
-      					        Perror("snprintf");
-					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
-						Perror("fwrite");
-						tot_dim = 1;
-					for(i=0; i<Tmpnode->ndim; i++){
-							bzero(buff, sizeof(buff));
-						if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
-      						        Perror("snprintf");
-						if (fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
-							Perror("fwrite");
-							tot_dim = tot_dim * Tmpnode->fdim[i];
-					}
-						if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
-      						        Perror("snprintf");
-					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
-						Perror("fwrite");
+				if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
+    						        Perror("snprintf");
+				if (fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+					Perror("fwrite");
+					tot_dim = tot_dim * Tmpnode->fdim[i];
+			}
+				if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
+    						        Perror("snprintf");
+			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				Perror("fwrite");
 /*
  * call to function printing actual data in file
  */						
-
-					write_file_data_filedescprt(Tmpnode, tot_dim, fp);
-					if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
-      						        Perror("snprintf");
-					if (fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
-						Perror("fwrite");
-				}
-					Tmpnode = Tmpnode->next;
-			}
+			write_file_data_filedescprt(Tmpnode, tot_dim, fp);
+			if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
+    						        Perror("snprintf");
+			if (fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				Perror("fwrite");
 		}
+		Tmpnode = Tmpnode->next;
 	}
 	else
 	{
 
+		Tmplist = List;
+		if( strncmp(List->type, "LINK", 4 ) == 0)
+			Tmplist = Tmplist ->child;  /* list is populated by the target list where it points to */
+
 		bzero(buff, sizeof(buff));
-		if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",List->name, List->type, List->ndim) < 0)
-	              Perror("snprintf");
+		if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmplist->name, Tmplist->type, Tmplist->ndim) < 0)
+			Perror("snprintf");
 		if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
 			Perror("fwrite");
 
-		Tmpnode = List->child;
-		
+		Tmpnode = Tmplist->child;
 		while(Tmpnode != NULL){
-		
-			if(WriteData(Tmpnode,fp) != 0){
-				Warning("Write data problem");
-				return -1;
+			if( strncmp(List->type, "LINK", 4 ) == 0){
+				Tmplist=Tmpnode->child; /* list is populated by the target list where it points to */
+				if(WriteData(Tmplist,fp) != 0){
+					Warning("Write data problem");
+					return -1;
+				}
+			}
+			else{
+				if(WriteData(Tmpnode,fp) != 0){
+					Warning("Write data problem");
+					return -1;
+				}
 			}
 			Tmpnode = Tmpnode->next;
 		}

@@ -1,7 +1,4 @@
-/*
- * function frees memory of the node 
- * copyright ï¿½ 2012 Adam Jirasek
- */
+
  
 #include "Header.h"
 #include "format_type.h"
@@ -118,7 +115,7 @@ int Cat(node_t *List, char * Options, ...)
 //				{"head",       no_argument,       0, 'h'},  /* writes path to the List node */
 //				{"HEAD",       no_argument,       0, 'H'},  /* writes paths to the master head node */
 				{"listsubdir", no_argument,       0, 'L'},  /* if item is DIR, print content af subDIRS too */
-
+				{"links",        no_argument,     0, 'l'},  /* if item is LIST, print ist content  instead of LIST*/
 /*
  * options for find_list
  */
@@ -127,12 +124,13 @@ int Cat(node_t *List, char * Options, ...)
 				{"FILE",       no_argument,       0, 'f'}, /* searches only FILE */
 				{"recursive",  no_argument,       0, 'r'}, /* searches recursively */
 				{"IGNORE",     no_argument,       0, 'I'}, /* searches all but given pattern */
+//				{"link",  	no_argument,  	  0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "adDhHfiILPqr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "adDhHfiIlLPqr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -171,6 +169,12 @@ int Cat(node_t *List, char * Options, ...)
  * List directories
  */
 					opts.opt_L = 'L';
+				break;
+/*
+ * List LIST content instead
+ */
+				case 'l':
+					opts.opt_l = 'l';
 				break;
 /*
  * quick

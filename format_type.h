@@ -72,7 +72,7 @@ typedef struct node {
  /* 
   * pointers to the next list, parent list and child list and if the list is link, the original of the link
   */
-	struct node *next, *prev, *parent, *child, *link;
+	struct node *next, *prev, *parent, *child;
  /*
   * structure used for linking information, lcounter is a number of linknode array
   */
@@ -91,8 +91,8 @@ typedef struct find_str{
 
 typedef struct find{
 	find_str_t **Found_Nodes;
-	size_t founds;
-	node_t *Home_Node;
+	size_t founds; 		/* number of founds */
+	node_t *Home_Node;  	/* node from which the found was originated */
 } find_t;
 
 

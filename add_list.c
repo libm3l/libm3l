@@ -1,6 +1,5 @@
-/*
- * copyright ï¿½ 2012 Adam Jirasek
- */
+
+
  
 #include "Header.h"
 #include "format_type.h"

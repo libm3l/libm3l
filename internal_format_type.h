@@ -41,9 +41,11 @@ typedef struct path{
  * get_arguments
  */
 typedef struct get_arg{
-	char first;
-	char arg;
-	char args[MAX_NAME_LENGTH], s_name[MAX_NAME_LENGTH];
+	char first;  			/* S,s or '\0' if S or s, indicates that the argument specifies sub-set */
+	char arg;    			/* value of argument V(value), T(Type), .... */
+	char args[MAX_NAME_LENGTH];	/* argument - compared according to arg */
+	char s_name[MAX_NAME_LENGTH];   /* if sub-set - specifies name of the subset */
+	int retval;
 } get_arg_t;
 
 
