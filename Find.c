@@ -21,12 +21,14 @@ find_t *Find(node_t *List, char * Options, ...)
 	
 	find_t *Founds;
 	node_t *Tmp1;
- 	char *word, **opt, *search_term, *search_term1; //, *node_path;
+ 	char *word, **opt, *search_term, *search_term1, *node_path;
 	opts_t *Popts, opts;
-	size_t args_num, len, i;
+	size_t args_num, len, i, j;
 	va_list args;
 	int c;
 	int option_index;
+	
+	path_t parsed_path;
 	
 	option_index = 0;
 /*
@@ -239,10 +241,22 @@ find_t *Find(node_t *List, char * Options, ...)
 		for (i=0; i< Founds->founds; i++){
 			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
 			
-// 			if( (node_path = Path(Founds->Found_Nodes[i]->List)) != NULL){
-// 				printf(" Path is %s \n", node_path);
-// 				free(node_path);
-// 			}
+			if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+				printf(" Path is %s \n", node_path);
+			
+				parsed_path = parse_path(node_path);
+					if(parsed_path.seg_count == 0){
+					Error("Error in path");
+					return (find_t *)NULL;
+				}
+				
+				for (j=0; j< parsed_path.seg_count; j++)
+					printf(" --%s--", parsed_path.path[j]);
+				printf("\n");
+							
+				destroy_pars_path(&parsed_path);
+				free(node_path);
+ 			}
 			
 		}
 	}	
