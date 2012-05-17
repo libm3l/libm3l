@@ -170,8 +170,14 @@ char *Path(node_t *List, node_t *Orig_List)
 		Tmp = Tmp->parent;
 		tot_len = tot_len + len[i] + 1;
 // 		i++;
-		if(i++ > count-1)
+		if(i++ > count-1){
 			Error("Count");
+			for(j=0; j<=i; j++)
+				free(segs[i]);
+			free(segs);
+			free(len);
+			return NULL;
+		}
 	}
 /*
  * save length of the segment
@@ -221,16 +227,18 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * function segments path (./../../../home/etc/etc/
  */
-path_t *parse_path(const char *path)
+path_t parse_path(const char *path)
 {
 /*
  * NOTE - segmentation fault if path starts with / // // // etc nonsence
  */
-	path_t *Path;
+	path_t Path;
 	const char *pc;
 	size_t counter, j, st,k;
-
 	char abspath;
+
+	Path.seg_count = 0;
+
 /*
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
@@ -242,7 +250,7 @@ path_t *parse_path(const char *path)
  */
 	if( *pc != '\0' && *pc == '~' && *++pc != '/'){
 			Error(" Wrong path");
-			return NULL;
+			return Path ;
 		}
 /*
  * look for empty spaces in path, if they occur, return NULL
@@ -250,7 +258,7 @@ path_t *parse_path(const char *path)
 	while(*pc != '\0'){
 		if(*pc == ' ' || *pc == '\t'){
 			Error(" Wrong path");
-			return NULL;
+			return Path;
 		}
 		pc++;
 	}
@@ -302,20 +310,20 @@ path_t *parse_path(const char *path)
  * allocate array for words in path
  */
 	if(counter > 0){
-		if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
-			Perror("malloc");
+// 		if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
+// 			Perror("malloc");
 		
-		if ( (Path->path = (char **)malloc(counter * sizeof(char **))) == NULL)
+		if ( (Path.path = (char **)malloc(counter * sizeof(char **))) == NULL)
 			Perror("malloc");
 
 		for(j=0; j< counter; j++)
-			if ( (Path->path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
+			if ( (Path.path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
 				Perror("malloc");
 	}
 	else
 	{
 		Error("Wrong path specification");
-		return NULL;
+		return Path;
 	}
 /*
  * store individual words in array
@@ -337,7 +345,7 @@ path_t *parse_path(const char *path)
  * save the segment of the path
  */
 		if( st < MAX_NAME_LENGTH){
-			Path->path[j][st++] = *pc;
+			Path.path[j][st++] = *pc;
 		}
 		else{
 			Error(" Path too long");
@@ -345,25 +353,25 @@ path_t *parse_path(const char *path)
  * free Path
  */
 			destroy_pars_path(&Path);
-			return (path_t *)NULL ;
+			return Path;
 		}
 /*
  * if the last symbol of the path segment is '/' replace it by '\0'
  * it occurs whent he specified path ends with / symbol
  */
 		if(*pc  == '/' ){
-			Path->path[j][st-1] = '\0';
+			Path.path[j][st-1] = '\0';
 /*
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			Path->path[j][st-1] = '\0';
+			Path.path[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter){
 				Error(" Path too long");
 				destroy_pars_path(&Path);
-				return (path_t *)NULL ;
+				return Path;
 			}
 			
 			if(*pc == '\0')
@@ -377,13 +385,13 @@ path_t *parse_path(const char *path)
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			Path->path[j][st-1] = '\0';
+			Path.path[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter){
 				Error(" Path too long");
 				destroy_pars_path(&Path);
-				return (path_t *)NULL ;
+				return Path;
 			}
 			
 			if(*pc == '\0')
@@ -391,29 +399,24 @@ path_t *parse_path(const char *path)
 		}	
 	}
 	
-//	Path->path 	= text;  	/* segments of path */
-	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
-	Path->seg_count = counter;	/* Number of segments in path */
+	Path.abspath 		= abspath;	/* Realative (R) or absolute (A) path */
+	Path.seg_count 	= counter;	/* Number of segments in path */
 
 	return Path;
 }
 /*
  * function frees pointer allocated in parse_path function
  */
-int destroy_pars_path(path_t **Path)
+int destroy_pars_path(path_t *Path)
 {
 /*
  * NOTE - unsuccesfull return must be finished
  */
 	size_t i;
 	
-	for (i=0; i< (*Path)->seg_count; i++)
-		free( (*Path)->path[i]);
-	free( (*Path)->path);
-	
-	free( (*Path));
-	(*Path) = NULL;
-		
+	for (i=0; i< Path->seg_count; i++)
+		free( Path->path[i]);
+	free( Path->path);
 }
 
 get_arg_t get_arguments(const char *text)

@@ -43,7 +43,7 @@ int main(void)
     printf("Going to Fread1\n");
    
 
-	for (j=0; j<3; j++){
+	for (j=0; j<3000000; j++){
 		
 		printf(" CYCLE %d\n\n", j);
 
@@ -111,7 +111,7 @@ int main(void)
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
 		printf("Going to locate %p\n", Gnode);
-		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/*/*", (char *)NULL)) != NULL){
+		if( (Founds = Locate(Gnode, "/main/grid2/boundary", "/*/*/*", (char *)NULL)) != NULL){
 			for(i=0; i < Founds->founds; i++){
 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 
@@ -145,24 +145,24 @@ int main(void)
 
 		
 		
-		parsed_path = parse_path("~/home/jka/ada/");
-//   		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
-
-		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-		for (i=0; i< parsed_path->seg_count; i++)
-			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-		
-		printf(" path is %c \n ", parsed_path->abspath);
-		
-		
-		argsstr = get_arguments(parsed_path->path[3]);
-		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-		argsstr = get_arguments(parsed_path->path[4]);
-		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-		argsstr = get_arguments(parsed_path->path[5]);
-		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+// 		parsed_path = parse_path("~/home/jka/ada/");
+// //   		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
+// 
+// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
+// 		for (i=0; i< parsed_path->seg_count; i++)
+// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
 // 		
-		destroy_pars_path(&parsed_path);
+// 		printf(" path is %c \n ", parsed_path->abspath);
+// 		
+// 		
+// 		argsstr = get_arguments(parsed_path->path[3]);
+// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+// 		argsstr = get_arguments(parsed_path->path[4]);
+// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+// 		argsstr = get_arguments(parsed_path->path[5]);
+// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
+// // 		
+// 		destroy_pars_path(&parsed_path);
 		
 		exit(0);
 		
