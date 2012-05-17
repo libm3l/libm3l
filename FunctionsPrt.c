@@ -351,7 +351,7 @@ path_t parse_path(const char *path)
 /*
  * free Path
  */
-			destroy_pars_path(&Path);
+			destroy_pars_path(Path);
 			return Path;
 		}
 /*
@@ -369,7 +369,7 @@ path_t parse_path(const char *path)
 			j++;
 			if(j > counter){
 				Error(" Path too long");
-				destroy_pars_path(&Path);
+				destroy_pars_path(Path);
 				return Path;
 			}
 			
@@ -389,7 +389,7 @@ path_t parse_path(const char *path)
 			j++;
 			if(j > counter){
 				Error(" Path too long");
-				destroy_pars_path(&Path);
+				destroy_pars_path(Path);
 				return Path;
 			}
 			
@@ -406,16 +406,16 @@ path_t parse_path(const char *path)
 /*
  * function frees pointer allocated in parse_path function
  */
-int destroy_pars_path(path_t *Path)
+void destroy_pars_path(path_t Path)
 {
 /*
  * NOTE - unsuccesfull return must be finished
  */
 	size_t i;
 	
-	for (i=0; i< Path->seg_count; i++)
-		free( Path->path[i]);
-	free( Path->path);
+	for (i=0; i< Path.seg_count; i++)
+		free( Path.path[i]);
+	free( Path.path);
 }
 
 get_arg_t get_arguments(const char *text)

@@ -254,7 +254,7 @@ find_t *Find(node_t *List, char * Options, ...)
 					printf(" --%s--", parsed_path.path[j]);
 				printf("\n");
 							
-				destroy_pars_path(&parsed_path);
+				destroy_pars_path(parsed_path);
 				free(node_path);
  			}
 			
