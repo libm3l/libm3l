@@ -211,65 +211,65 @@ int Allocate(node_t **Lnode, tmpstruct_t TMPSTR)
  * chars
  */
 		else if (strncmp(TMPSTR.Type,"SC",2) == 0){  /* signed char */
-			if ( ( (*Lnode)->data.sc = (signed char *)malloc((tot_dim+1)*sizeof(signed char *))) == NULL)
+			if ( ( (*Lnode)->data.sc = (signed char *)malloc((tot_dim+1)*sizeof(signed char))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"UC",2) == 0){  /* unsigned char */
-			if ( ( (*Lnode)->data.uc = (unsigned char *)malloc((tot_dim+1)*sizeof(unsigned char *))) == NULL)
+			if ( ( (*Lnode)->data.uc = (unsigned char *)malloc((tot_dim+1)*sizeof(unsigned char))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"C",1) == 0){  /* char */
-			if ( ( (*Lnode)->data.c = (char *)malloc((tot_dim+1)*sizeof(char *))) == NULL)
+			if ( ( (*Lnode)->data.c = (char *)malloc((tot_dim+1)*sizeof(char))) == NULL)
 				Perror("malloc");
 		}
 /*
  * integers
  */
 		else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
-			if ( ( (*Lnode)->data.ulli = (unsigned long long int *)malloc(tot_dim*sizeof(unsigned long long int *))) == NULL)
+			if ( ( (*Lnode)->data.ulli = (unsigned long long int *)malloc(tot_dim*sizeof(unsigned long long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
-			if ( ( (*Lnode)->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int *))) == NULL)
+			if ( ( (*Lnode)->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
-			if ( ( (*Lnode)->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int *))) == NULL)
+			if ( ( (*Lnode)->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
-			if ( ( (*Lnode)->data.uli = (unsigned long int *)malloc(tot_dim*sizeof(unsigned long int *))) == NULL)
+			if ( ( (*Lnode)->data.uli = (unsigned long int *)malloc(tot_dim*sizeof(unsigned long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
-			if ( ( (*Lnode)->data.usi = (unsigned short int *)malloc(tot_dim*sizeof(unsigned short int *))) == NULL)
+			if ( ( (*Lnode)->data.usi = (unsigned short int *)malloc(tot_dim*sizeof(unsigned short int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
-			if ( ( (*Lnode)->data.si = (short int *)malloc(tot_dim*sizeof(short int *))) == NULL)
+			if ( ( (*Lnode)->data.si = (short int *)malloc(tot_dim*sizeof(short int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
-			if ( ( (*Lnode)->data.ui = (unsigned int *)malloc(tot_dim*sizeof(unsigned int *))) == NULL)
+			if ( ( (*Lnode)->data.ui = (unsigned int *)malloc(tot_dim*sizeof(unsigned int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
-			if ( ( (*Lnode)->data.li = (long int *)malloc(tot_dim*sizeof(long int *))) == NULL)
+			if ( ( (*Lnode)->data.li = (long int *)malloc(tot_dim*sizeof(long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
-			if ( ( (*Lnode)->data.i = (int *)malloc(tot_dim*sizeof(int *))) == NULL)
+			if ( ( (*Lnode)->data.i = (int *)malloc(tot_dim*sizeof(int))) == NULL)
 				Perror("malloc");
 		}
 /*
  * counters
  */
 		else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
-			if ( ( (*Lnode)->data.st = (size_t *)malloc(tot_dim*sizeof(size_t *))) == NULL)
+			if ( ( (*Lnode)->data.st = (size_t *)malloc(tot_dim*sizeof(size_t))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-			if ( ( (*Lnode)->data.ptrdf = (ptrdiff_t *)malloc(tot_dim*sizeof(ptrdiff_t *))) == NULL)
+			if ( ( (*Lnode)->data.ptrdf = (ptrdiff_t *)malloc(tot_dim*sizeof(ptrdiff_t))) == NULL)
 				Perror("malloc");
 		}
 	}
@@ -351,65 +351,65 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
  * chars
  */
 		else if (strncmp(Lnode->type,"SC",2) == 0){  /* signed char */
-			if ( ( Lnode->data.sc = (signed char *)malloc((tot_dim+1)*sizeof(signed char *))) == NULL)
+			if ( ( Lnode->data.sc = (signed char *)malloc((tot_dim+1)*sizeof(signed char))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"UC",2) == 0){  /* unsigned char */
-			if ( ( Lnode->data.uc = (unsigned char *)malloc((tot_dim+1)*sizeof(unsigned char *))) == NULL)
+			if ( ( Lnode->data.uc = (unsigned char *)malloc((tot_dim+1)*sizeof(unsigned char))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"C",1) == 0){  /* char */
-			if ( ( Lnode->data.c = (char *)malloc((tot_dim+1)*sizeof(char *))) == NULL)
+			if ( ( Lnode->data.c = (char *)malloc((tot_dim+1)*sizeof(char))) == NULL)
 				Perror("malloc");
 		}
 /*
  * integers
  */
 		else if(strncmp(Lnode->type,"ULLI",4) == 0){  /* unsigned long long  int */
-			if ( ( Lnode->data.ulli = (unsigned long long int *)malloc(tot_dim*sizeof(unsigned long long int *))) == NULL)
+			if ( ( Lnode->data.ulli = (unsigned long long int *)malloc(tot_dim*sizeof(unsigned long long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"SLLI",4) == 0){  /* signed long long  int */
-			if ( ( Lnode->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int *))) == NULL)
+			if ( ( Lnode->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
-			if ( ( Lnode->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int *))) == NULL)
+			if ( ( Lnode->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"ULI",3) == 0){  /* unsigned long int */
-			if ( ( Lnode->data.uli = (unsigned long int *)malloc(tot_dim*sizeof(unsigned long int *))) == NULL)
+			if ( ( Lnode->data.uli = (unsigned long int *)malloc(tot_dim*sizeof(unsigned long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"USI",3) == 0){  /* unsigned short int */
-			if ( ( Lnode->data.usi = (unsigned short int *)malloc(tot_dim*sizeof(unsigned short int *))) == NULL)
+			if ( ( Lnode->data.usi = (unsigned short int *)malloc(tot_dim*sizeof(unsigned short int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"SI",2) == 0){  /* short int */
-			if ( ( Lnode->data.si = (short int *)malloc(tot_dim*sizeof(short int *))) == NULL)
+			if ( ( Lnode->data.si = (short int *)malloc(tot_dim*sizeof(short int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"UI",2) == 0){  /* unsigned int */
-			if ( ( Lnode->data.ui = (unsigned int *)malloc(tot_dim*sizeof(unsigned int *))) == NULL)
+			if ( ( Lnode->data.ui = (unsigned int *)malloc(tot_dim*sizeof(unsigned int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"LI",2) == 0){  /* long  int */
-			if ( ( Lnode->data.li = (long int *)malloc(tot_dim*sizeof(long int *))) == NULL)
+			if ( ( Lnode->data.li = (long int *)malloc(tot_dim*sizeof(long int))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"I",1) == 0){  /* int */
-			if ( ( Lnode->data.i = (int *)malloc(tot_dim*sizeof(int *))) == NULL)
+			if ( ( Lnode->data.i = (int *)malloc(tot_dim*sizeof(int))) == NULL)
 				Perror("malloc");
 		}
 /*
  * counters
  */
 		else if(strncmp(Lnode->type,"ST",2) == 0){  /* size_t */
-			if ( ( Lnode->data.st = (size_t *)malloc(tot_dim*sizeof(size_t *))) == NULL)
+			if ( ( Lnode->data.st = (size_t *)malloc(tot_dim*sizeof(size_t))) == NULL)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"PTRDF",1) == 0){  /* ptrdf_t */
-			if ( ( Lnode->data.ptrdf = (ptrdiff_t *)malloc(tot_dim*sizeof(ptrdiff_t *))) == NULL)
+			if ( ( Lnode->data.ptrdf = (ptrdiff_t *)malloc(tot_dim*sizeof(ptrdiff_t))) == NULL)
 				Perror("malloc");
 		}
 	}

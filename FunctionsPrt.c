@@ -147,9 +147,9 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * allocate arrays
  */
-	if ( (segs = (char**)malloc( (count)*sizeof(char **) )) == NULL)
+	if ( (segs = (char**)malloc( (count)*sizeof(char *) )) == NULL)
 		Perror("malloc");
-	if ( (len = (size_t *)malloc( (count)*sizeof(size_t *) )) == NULL)
+	if ( (len = (size_t *)malloc( (count)*sizeof(size_t) )) == NULL)
 		Perror("malloc");
 /*
  * fill segs with segments of the path
@@ -162,7 +162,7 @@ char *Path(node_t *List, node_t *Orig_List)
 		if(Tmp == Orig_List) break;
 
 		len[i] = strlen(Tmp->name);
-		if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
+		if ( (segs[i] = (char *)malloc( (len[i]+1)*sizeof(char) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
@@ -183,7 +183,7 @@ char *Path(node_t *List, node_t *Orig_List)
  * save length of the segment
  */
 	len[i] = strlen(Tmp->name);
-	if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
+	if ( (segs[i] = (char *)malloc( (len[i]+1)*sizeof(char) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
@@ -194,7 +194,7 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * allocate string for path + 1 additional for '\0'
  */		
-	if ( (path = (char*)malloc( (tot_len + 1)*sizeof(char **) )) == NULL)
+	if ( (path = (char *)malloc( (tot_len + 1)*sizeof(char **) )) == NULL)
 		Perror("malloc");
 	
 	tot_len1 = 0;

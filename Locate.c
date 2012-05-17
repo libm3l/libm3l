@@ -48,7 +48,7 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char **) )) == NULL)
+		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -57,11 +57,11 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = malloc( sizeof(char *) )) == NULL)
+		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = malloc( (len+1)*sizeof(char *) )) == NULL)
+		if ( (opt[1] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -71,7 +71,7 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 		for(i=2; i<=args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
-			if ( (opt[i] = malloc( (args_num+1)*sizeof(char *) )) == NULL)
+			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
