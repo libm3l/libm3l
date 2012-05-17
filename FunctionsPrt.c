@@ -147,7 +147,7 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * allocate arrays
  */
-	if ( (segs = (char**)malloc( (count)*sizeof(char *) )) == NULL)
+	if ( (segs = (char **)malloc( (count)*sizeof(char *) )) == NULL)
 		Perror("malloc");
 	if ( (len = (size_t *)malloc( (count)*sizeof(size_t) )) == NULL)
 		Perror("malloc");
@@ -194,7 +194,7 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * allocate string for path + 1 additional for '\0'
  */		
-	if ( (path = (char *)malloc( (tot_len + 1)*sizeof(char **) )) == NULL)
+	if ( (path = (char *)malloc( (tot_len + 1)*sizeof(char) )) == NULL)
 		Perror("malloc");
 	
 	tot_len1 = 0;
@@ -238,7 +238,6 @@ path_t parse_path(const char *path)
 	char abspath;
 
 	Path.seg_count = 0;
-
 /*
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
@@ -313,11 +312,11 @@ path_t parse_path(const char *path)
 // 		if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
 // 			Perror("malloc");
 		
-		if ( (Path.path = (char **)malloc(counter * sizeof(char **))) == NULL)
+		if ( (Path.path = (char **)malloc(counter * sizeof(char *))) == NULL)
 			Perror("malloc");
 
 		for(j=0; j< counter; j++)
-			if ( (Path.path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
+			if ( (Path.path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char))) == NULL)  /* NOTE this is a problem  before it was sizeof(char *) and it worked */
 				Perror("malloc");
 	}
 	else
@@ -344,7 +343,7 @@ path_t parse_path(const char *path)
 /*
  * save the segment of the path
  */
-		if( st < MAX_NAME_LENGTH){
+		if( st < MAX_NAME_LENGTH || j<counter){
 			Path.path[j][st++] = *pc;
 		}
 		else{
@@ -399,7 +398,7 @@ path_t parse_path(const char *path)
 		}	
 	}
 	
-	Path.abspath 		= abspath;	/* Realative (R) or absolute (A) path */
+	Path.abspath 	= abspath;	/* Realative (R) or absolute (A) path */
 	Path.seg_count 	= counter;	/* Number of segments in path */
 
 	return Path;
