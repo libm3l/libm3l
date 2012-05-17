@@ -21,7 +21,7 @@ char *Path(node_t *, node_t *);
 
 path_t parse_path(const char *);
 
-int destroy_pars_path(path_t *);
+void destroy_pars_path(path_t);
 
 get_arg_t get_arguments(const char *);
 
