@@ -28,7 +28,7 @@ find_t *Find(node_t *List, char * Options, ...)
 	int c;
 	int option_index;
 	
-	path_t parsed_path;
+	path_t *parsed_path;
 	
 	option_index = 0;
 /*
@@ -93,6 +93,7 @@ find_t *Find(node_t *List, char * Options, ...)
  * first - reset opting = 0 to reinitialize getopt_long
  */
 		opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
+		opts.opt_d = '\0'; opts.opt_f = '\0';
 		optind = 0;
 		while (1)
 		{
@@ -244,18 +245,27 @@ find_t *Find(node_t *List, char * Options, ...)
 			if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
 				printf(" Path is %s \n", node_path);
 			
-				parsed_path = parse_path(node_path);
-					if(parsed_path.seg_count == 0){
+				if( (parsed_path = parse_path(node_path)) == NULL){
 					Error("Error in path");
 					return (find_t *)NULL;
 				}
 				
-				for (j=0; j< parsed_path.seg_count; j++)
-					printf(" --%s--", parsed_path.path[j]);
+				printf(" \n number of segments is %ld\n", parsed_path->seg_count);
+				
+				for (j=0; j< parsed_path->seg_count; j++)
+					printf(" %ld   --%s--\n ", j, parsed_path->path[j]);
 				printf("\n");
+				
+				printf(" Destroying path\n");
 							
-				destroy_pars_path(parsed_path);
+				destroy_pars_path(&parsed_path);
+				
+				printf(" freeing node \n");
+
 				free(node_path);
+				
+				printf("going to next step \n");
+
  			}
 			
 		}

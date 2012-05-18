@@ -227,17 +227,15 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * function segments path (./../../../home/etc/etc/
  */
-path_t parse_path(const char *path)
+path_t *parse_path(const char *path)
 {
 /*
  * NOTE - segmentation fault if path starts with / // // // etc nonsence
  */
-	path_t Path;
+	path_t *Path;
 	const char *pc;
 	size_t counter, j, st,k;
 	char abspath;
-
-	Path.seg_count = 0;
 /*
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
@@ -249,7 +247,7 @@ path_t parse_path(const char *path)
  */
 	if( *pc != '\0' && *pc == '~' && *++pc != '/'){
 			Error(" Wrong path");
-			return Path ;
+			return (path_t *) NULL ;
 		}
 /*
  * look for empty spaces in path, if they occur, return NULL
@@ -257,7 +255,7 @@ path_t parse_path(const char *path)
 	while(*pc != '\0'){
 		if(*pc == ' ' || *pc == '\t'){
 			Error(" Wrong path");
-			return Path;
+			return (path_t *) NULL;
 		}
 		pc++;
 	}
@@ -309,20 +307,34 @@ path_t parse_path(const char *path)
  * allocate array for words in path
  */
 	if(counter > 0){
-// 		if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
-// 			Perror("malloc");
+ 		if ( (Path = (path_t *)malloc( sizeof(path_t) )) == NULL)
+ 			Perror("malloc");
 		
-		if ( (Path.path = (char **)malloc(counter * sizeof(char *))) == NULL)
-			Perror("malloc");
+		printf("Pointer Path %ld   %p\n,", counter, Path);
 
-		for(j=0; j< counter; j++)
-			if ( (Path.path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char))) == NULL)  /* NOTE this is a problem  before it was sizeof(char *) and it worked */
+		if ( (Path->path = (char **)malloc(counter * sizeof(char *))) == NULL)
+			Perror("malloc");
+		
+		printf("Pointer Path->path %p\n", Path->path);
+
+
+		for(j=0; j< counter; j++){
+			
+		printf("Pointer Path->path %ld %ld %p\n", j, counter, Path->path);
+
+			if ( (Path->path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char) )) == NULL)  /* NOTE this is a problem  before it was sizeof(char *) and it worked */
 				Perror("malloc");
+				
+		printf("--- Pointer Path->path %ld %ld %p\n", j, counter, Path->path[j]);
+		}
+
+		
+		Path->seg_count = 0;	
 	}
 	else
 	{
 		Error("Wrong path specification");
-		return Path;
+		return (path_t *) NULL;
 	}
 /*
  * store individual words in array
@@ -343,34 +355,35 @@ path_t parse_path(const char *path)
 /*
  * save the segment of the path
  */
-		if( st < MAX_NAME_LENGTH || j<counter){
-			Path.path[j][st++] = *pc;
+		if( st < MAX_NAME_LENGTH && j < counter){
+// 			printf("%ld %ld %ld %ld\n", st,MAX_NAME_LENGTH, j, counter);
+			Path->path[j][st++] = *pc;
 		}
 		else{
 			Error(" Path too long");
 /*
  * free Path
  */
-			destroy_pars_path(Path);
-			return Path;
+			destroy_pars_path(&Path);
+			return (path_t *)NULL;
 		}
 /*
  * if the last symbol of the path segment is '/' replace it by '\0'
  * it occurs whent he specified path ends with / symbol
  */
 		if(*pc  == '/' ){
-			Path.path[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 /*
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			Path.path[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter){
 				Error(" Path too long");
-				destroy_pars_path(Path);
-				return Path;
+				destroy_pars_path(&Path);
+				(path_t *) NULL;
 			}
 			
 			if(*pc == '\0')
@@ -384,13 +397,13 @@ path_t parse_path(const char *path)
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			Path.path[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter){
 				Error(" Path too long");
-				destroy_pars_path(Path);
-				return Path;
+				destroy_pars_path(&Path);
+				return (path_t *) NULL;
 			}
 			
 			if(*pc == '\0')
@@ -398,24 +411,31 @@ path_t parse_path(const char *path)
 		}	
 	}
 	
-	Path.abspath 	= abspath;	/* Realative (R) or absolute (A) path */
-	Path.seg_count 	= counter;	/* Number of segments in path */
+	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
+	Path->seg_count 	= counter;	/* Number of segments in path */
 
-	return Path;
+	
+	printf(" Returning path");
+	return (path_t *)Path;
 }
 /*
  * function frees pointer allocated in parse_path function
  */
-void destroy_pars_path(path_t Path)
+void destroy_pars_path(path_t **Path)
 {
 /*
  * NOTE - unsuccesfull return must be finished
  */
 	size_t i;
+		
+	for (i=0; i< (*Path)->seg_count; i++)
+		free( (*Path)->path[i]);
+	free((*Path)->path);
+
+	free(*Path) ;
+	(*Path) = NULL;
+	return;
 	
-	for (i=0; i< Path.seg_count; i++)
-		free( Path.path[i]);
-	free( Path.path);
 }
 
 get_arg_t get_arguments(const char *text)
