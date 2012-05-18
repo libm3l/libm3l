@@ -411,7 +411,7 @@ node_t *read_socket_data(int descrpt)
  */
 					if ( strncmp(TMPSTR.Type,"DIR",3) != 0){
 
-						if( (TMPSTR.dim=malloc(TMPSTR.ndim * sizeof(int))) == NULL)
+						if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
 	  						Perror("malloc");
 					}
 					else
