@@ -400,7 +400,7 @@ path_t *parse_path(const char *path)
 		}	
 	}
 /*
- * end the string
+ * end the last segment string
  */
 	if( st < MAX_NAME_LENGTH && j < counter){
 		Path->path[j][st++] = '\0';
@@ -413,8 +413,6 @@ path_t *parse_path(const char *path)
 	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
 	Path->seg_count = counter;	/* Number of segments in path */
 
-	
-	printf(" Returning path");
 	return (path_t *)Path;
 }
 /*

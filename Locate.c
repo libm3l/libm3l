@@ -33,6 +33,8 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 	int option_index;
 	
 	option_index = 0;
+	
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_L = '\0';
 /*
  * get number of options
  */	
@@ -84,7 +86,6 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
  * get meaning of options
  * first - reset opting = 0 to reinitialize getopt_long
  */
-		opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_L = '\0';
 		optind = 0;
 		while (1)
 		{

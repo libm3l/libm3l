@@ -19,7 +19,7 @@ static int verbose_flag;
 
 find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opts_t *Popts)
 {
-	path_t *parsed_path, *parsed_path_loc; // **parsed_path_founds;
+	path_t *parsed_path, *parsed_path_loc;
 	char *search_term, *node_path;
 	size_t i; // j;
 	find_t *Founds, *Founds_Loc;
@@ -27,7 +27,6 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 /*
  * parse path
  */
-
 	if( (parsed_path = parse_path(path)) == NULL){
 		Error("Error in path");
 		return (find_t *)NULL;
@@ -133,7 +132,6 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 }
 
 
-//find_t *locator(find_t *Founds, path_t *parsed_path, const char *path_loc, opts_t *Popt)
 find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, opts_t *Popt)
 {
 /*
@@ -165,7 +163,6 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 /*
  * allocate field for positive match and for segments of path for each element of Found
  */
-	printf(" Here \n");
 
 	if ( (HelpNodeI = malloc(Founds->founds * sizeof(size_t))) == NULL)
 		Perror("malloc");
@@ -319,7 +316,6 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 	for(j = 0; j< Founds->founds; j++){
 		if(HelpNodeI[j] == 1) tot_match++;
 	}
-//  	printf(" number of positive matches is %d\n", tot_match);
 
 	if(tot_match == 0){
 /*
@@ -336,22 +332,22 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 /*
  * allocate find_t structure and fill it
  */
-		if ( (RetFound = (find_t *) malloc( sizeof(find_t *))) == NULL)
+		if ( (RetFound = (find_t *) malloc( sizeof(find_t))) == NULL)
 			Perror("malloc");
 		
-		if ( (RetFound->Found_Nodes = (find_str_t **) malloc( sizeof(find_str_t **))) == NULL)
+		if ( (RetFound->Found_Nodes = (find_str_t **) malloc( tot_match * sizeof(find_str_t *))) == NULL)
 			Perror("malloc");
-		
+				
 		for(j = 0; j< tot_match; j++){
-			if ( ( RetFound->Found_Nodes[j] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+			if ( ( RetFound->Found_Nodes[j] =(find_str_t *) malloc( sizeof(find_str_t))) == NULL)
 				Perror("malloc");
 		}
 		
 		counter = 0;
 		for(j = 0; j< Founds->founds; j++){
 			if( HelpNodeI[j] == 1){
-	 			printf(" List found in match is %p  %s\n", Founds->Found_Nodes[j]->List, Founds->Found_Nodes[j]->List->name);
-				RetFound->Found_Nodes[counter++]->List=Founds->Found_Nodes[j]->List;}
+				RetFound->Found_Nodes[counter++]->List=Founds->Found_Nodes[j]->List;
+			}
 		}
 /*
  * save the number of positive founds
@@ -367,8 +363,6 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 /*
  * return list of positive mathes
  */
-	printf(" Here - returning \n");
-
 		return RetFound;
 	}
 }

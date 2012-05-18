@@ -43,7 +43,7 @@ int main(void)
     printf("Going to Fread1\n");
    
 
-	for (j=0; j<1; j++){
+	for (j=0; j<3; j++){
 		
 		printf(" CYCLE %d\n\n", j);
 
@@ -76,21 +76,21 @@ int main(void)
 // 		
 // 		
 // 		
-		printf(" Looking for data set\n");
-		
-		if( ( Founds = Find(Gnode, "--recursive" ,"BBB_DATA_DADA", (char *)NULL)) == NULL){
-
-			printf("No subset found\n"); exit(0);
-			}
-		else
-		{
-			for(i=0; i < Founds->founds; i++){
-			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-			}
-
-		DestroyFound(&Founds);
-
-		}
+// 		printf(" Looking for data set\n");
+// 		
+// 		if( ( Founds = Find(Gnode, "--recursive" ,"BBB_DATA_DADA", (char *)NULL)) == NULL){
+// 
+// 			printf("No subset found\n"); exit(0);
+// 			}
+// 		else
+// 		{
+// 			for(i=0; i < Founds->founds; i++){
+// 			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+// 			}
+// 
+// 		DestroyFound(&Founds);
+// 
+// 		}
 // 			
 // 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
 // // 
@@ -114,27 +114,27 @@ int main(void)
 		
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
-// 		printf("Going to locate %p\n", Gnode);
-// 		if( (Founds = Locate(Gnode, "/main/grid2/boundary", "/*/*/*", (char *)NULL)) != NULL){
-// 			for(i=0; i < Founds->founds; i++){
-// 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-// 
-// 				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
-// 					printf(" Path is %s \n", node_path);
-// 					free(node_path);
-// 				}
-// 			}
-// 		DestroyFound(&Founds);
-// 		}
-// 		else
-// 		{
-// 			printf(" No founds\n");
-// 		}
+		printf("Going to locate %p\n", Gnode);
+		if( (Founds = Locate(Gnode, "/main/grid2/boundary", "/*/*/*", (char *)NULL)) != NULL){
+			for(i=0; i < Founds->founds; i++){
+				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+
+				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+					printf(" Path is %s \n", node_path);
+					free(node_path);
+				}
+			}
+		DestroyFound(&Founds);
+		}
+		else
+		{
+			printf(" No founds\n");
+		}
 // 		
 		if(Umount(&Gnode) != 1)
                   Perror("Umount");
 		
-		exit(0);
+// 		exit(0);
 		
 		
 // 		parsed_path = parse_path("/home/jka/ada/");
