@@ -239,7 +239,7 @@ find_t *Find(node_t *List, char * Options, ...)
  * write the values of the find result
  */
 		printf(" number of founds is %ld \n", Founds->founds);
-		for (i=0; i< Founds->founds; i++){
+		for (i=1; i< Founds->founds; i++){
 			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
 			
 			if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
@@ -249,23 +249,13 @@ find_t *Find(node_t *List, char * Options, ...)
 					Error("Error in path");
 					return (find_t *)NULL;
 				}
-				
-				printf(" \n number of segments is %ld\n", parsed_path->seg_count);
-				
+								
 				for (j=0; j< parsed_path->seg_count; j++)
-					printf(" %ld   --%s--\n ", j, parsed_path->path[j]);
+					printf("--%s-- ", parsed_path->path[j]);
 				printf("\n");
-				
-				printf(" Destroying path\n");
-							
+											
 				destroy_pars_path(&parsed_path);
-				
-				printf(" freeing node \n");
-
 				free(node_path);
-				
-				printf("going to next step \n");
-
  			}
 			
 		}

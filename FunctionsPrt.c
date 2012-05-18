@@ -310,22 +310,12 @@ path_t *parse_path(const char *path)
  		if ( (Path = (path_t *)malloc( sizeof(path_t) )) == NULL)
  			Perror("malloc");
 		
-		printf("Pointer Path %ld   %p\n,", counter, Path);
-
 		if ( (Path->path = (char **)malloc(counter * sizeof(char *))) == NULL)
 			Perror("malloc");
-		
-		printf("Pointer Path->path %p\n", Path->path);
-
 
 		for(j=0; j< counter; j++){
-			
-		printf("Pointer Path->path %ld %ld %p\n", j, counter, Path->path);
-
 			if ( (Path->path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char) )) == NULL)  /* NOTE this is a problem  before it was sizeof(char *) and it worked */
 				Perror("malloc");
-				
-		printf("--- Pointer Path->path %ld %ld %p\n", j, counter, Path->path[j]);
 		}
 
 		
@@ -356,7 +346,6 @@ path_t *parse_path(const char *path)
  * save the segment of the path
  */
 		if( st < MAX_NAME_LENGTH && j < counter){
-// 			printf("%ld %ld %ld %ld\n", st,MAX_NAME_LENGTH, j, counter);
 			Path->path[j][st++] = *pc;
 		}
 		else{
@@ -410,9 +399,19 @@ path_t *parse_path(const char *path)
 				break;
 		}	
 	}
-	
+/*
+ * end the string
+ */
+	if( st < MAX_NAME_LENGTH && j < counter){
+		Path->path[j][st++] = '\0';
+	}
+	else{
+		Error(" Path too long - can not add terminating character");
+		destroy_pars_path(&Path);
+		(path_t *) NULL;
+	}
 	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
-	Path->seg_count 	= counter;	/* Number of segments in path */
+	Path->seg_count = counter;	/* Number of segments in path */
 
 	
 	printf(" Returning path");
