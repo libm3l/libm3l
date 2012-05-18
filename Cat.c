@@ -100,7 +100,7 @@ int Cat(node_t *List, char * Options, ...)
  * first - reset opting = 0 to reinitialize getopt_long
  */
 		optind = 0;
-		opts.opt_s = '0';opts.opt_p = '0';
+		opts.opt_s = '0';opts.opt_p = '0'; opts.opt_d = '0' ; opts.opt_f = '0';
 		while (1)
 		{
 			static struct option long_options[] =
