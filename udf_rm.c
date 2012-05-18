@@ -398,7 +398,7 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
 				Perror("malloc");
 		}
 		else if(strncmp(Lnode->type,"I",1) == 0){  /* int */
-			if ( ( Lnode->data.i = (int *)malloc(tot_dim*sizeof(int))) == NULL)
+			if ( ( Lnode->data.i = (int *)malloc(tot_dim *sizeof(int))) == NULL)
 				Perror("malloc");
 		}
 /*
