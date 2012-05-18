@@ -21,7 +21,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 {
 	path_t *parsed_path, *parsed_path_loc;
 	char *search_term, *node_path;
-	size_t i; // j;
+	size_t i;
 	find_t *Founds, *Founds_Loc;
 	node_t *Tmp_node;
 /*
@@ -31,12 +31,6 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 		Error("Error in path");
 		return (find_t *)NULL;
 	}
-
-	for (i=0; i< parsed_path->seg_count; i++)
-		printf(" --%s--", parsed_path->path[i]);
-	printf("\n");
-	
-	for (i=0; i< parsed_path->seg_count; i++)
 /*
  * call find function with specified options
  * First look if ../ are in path or if path is absolute path
@@ -94,15 +88,6 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
  * write the values of the find result
  */
 		printf(" number of founds is %ld \n", Founds->founds);
-		for (i=0; i< Founds->founds; i++){
-			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
-			
- 			if( (node_path = Path(Founds->Found_Nodes[i]->List, Founds->Home_Node)) != NULL){
-				printf(" Path is %s   %p   %p \n", node_path , Founds->Found_Nodes[i]->List, Founds->Home_Node);
-				free(node_path);
-			}
-			
-		}
 /*
  * call locator to select sets
  */		
@@ -143,31 +128,16 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 	node_t *Tmp, *Tmppar, *Tm_prev;
 	size_t *HelpNodeI;
 	size_t i, j, k, counter;
-// 	path_t *parsed_path_founds;
 	path_t **parsed_path_Ffounds;
 	get_arg_t argsstr;
 	find_t *RetFound;
 	size_t tot_match, len1, len2;
 	char *node_path;
 /*
- * parse path location specification; IMP: do not forget destroy_pars_path(&parsed_path) once not needed
- */
-//  	if ( (parsed_path_loc = parse_path(path_loc)) == NULL){
-// 		Error("Path - failed");
-// 		return (find_t *)NULL;
-// 	}
-// 
-// 	if(parsed_path->seg_count != parsed_path_loc->seg_count){
-// 		destroy_pars_path(&parsed_path_loc);
-// 		Error("Number of items in path different from location specification");  /* NOTE - in later versions, ust one symbol '*' can be used for all paths segments */
-// 	}
-/*
  * allocate field for positive match and for segments of path for each element of Found
  */
-
 	if ( (HelpNodeI = malloc(Founds->founds * sizeof(size_t))) == NULL)
 		Perror("malloc");
-
 	
 	if ( (parsed_path_Ffounds = (path_t **)malloc(Founds->founds * sizeof(path_t *))) == NULL)
 		Perror("malloc");
@@ -221,9 +191,9 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 			destroy_pars_path(&parsed_path_loc);
 			free(HelpNodeI);
 			free(node_path);
-// 			for(j=0; j <Founds->founds; j++)
-// 				destroy_pars_path(&parsed_path_founds[j]);
-// 			free(parsed_path_founds);
+			for(j=0; j <Founds->founds; j++)
+				destroy_pars_path(&parsed_path_Ffounds[j]);
+			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
 /*
@@ -232,9 +202,6 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 		for(j = 0; j< Founds->founds; j++){
 
 			if( HelpNodeI[j] == 1){
-
-// 				node_path = Path(Founds->Found_Nodes[j]->List, Founds->Home_Node);
-// 				parsed_path_founds =  parse_path(node_path);
 /*
  * node is considered as possible match
  */
@@ -280,9 +247,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 				else
 				{
 					HelpNodeI[j]  = 0;
-				}	
-// 				free(node_path);
-// 				destroy_pars_path(&parsed_path_founds);
+				}
 			}
 		}
 	}
@@ -378,5 +343,4 @@ int match_test(node_t *List, get_arg_t argsstr, size_t counter)
 	}
 	
 	return 0;
-	
 }
