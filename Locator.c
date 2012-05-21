@@ -12,6 +12,7 @@
 #include "Find_Source.h"
 
 static int match_test(node_t *, get_arg_t, size_t);
+static int match_single_test(node_t *, get_arg_t, size_t);
 static find_t *locator(find_t *, path_t *, path_t *, opts_t *);
 
 extern int optind;
@@ -185,7 +186,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
  * get arguments for path segment
  */
 		argsstr = get_arguments(parsed_path_loc->path[i]);
-
+		
 		if(argsstr.retval == -1){
 			Error("argstr error");
 			destroy_pars_path(&parsed_path_loc);
@@ -210,7 +211,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
  */				
 				len1 = strlen(parsed_path->path[i]);
 				len2 = strlen(parsed_path_Ffounds[j]->path[i]);
-								
+				
 				if(len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0){
 /*
  * segments are equal, check locator
@@ -236,6 +237,12 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 						Tmppar = Tmp->parent;
 						Tm_prev = Tmp;
 					}
+					
+					
+// 					printf(" Argument to comapre are '%s' \n",argsstr.args); 
+// 					printf(" Name Argument to comapre are '%c' \n",argsstr.arg); 
+
+					
  					HelpNodeI[j]  = match_test(Tmp,argsstr, counter);
 /*
  * argsstr.first if S or s, deal with subset
@@ -309,38 +316,93 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 	}
 }
 
-
-
 int match_test(node_t *List, get_arg_t argsstr, size_t counter)
 {
-	char c;
-	c = (int)argsstr.arg;
 /*
  * find if what is to be comapred is set or subset
  */
-	if( argsstr.first == ('s' || 'S')){
-		
-		return 0;
+	node_t *Tmpnode;
+	int retval;
+
+	if( argsstr.first == 'S' ){
+/*
+ * locator specifies subset, loop over subsets until first positive match
+ */
+		if ( (Tmpnode = List->child) == NULL){
+			Error("Wrong location - node is FILE type");
+			return 0;
+		}
+		else{
+			while(Tmpnode != NULL){
+				if( (retval = match_single_test(Tmpnode,  argsstr, counter)) == 1) return 1;
+				Tmpnode = Tmpnode->next;
+			}
+			return 0;
+		}
 	}
 	else{
 /*
  * set
  */
-		switch ( c ){
-			
-			case '*':
-				return 1;
-			break;
-	
-			case 'V':  /* Value */
-// isgreaterequal, isgreater				
-			break;
-		
-		}
-		
-		return 0;
-		
+		retval =  match_single_test(List, argsstr, counter);
+		return retval;
 	}
 	
 	return 0;
+}
+
+int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
+{
+	char c;
+	size_t len1, len2;
+	c = (int)argsstr.arg;
+
+	switch ( c ){
+			
+		case '*':
+			return 1;
+		break;
+	
+		case 'V':  /* Value */
+// isgreaterequal, isgreater
+/*
+ * get type of argument
+ */
+			if(strncmp(List->type,"C",1) == 0){
+				len1 = strlen(List->data.c);
+				len2 = strlen(argsstr.args);
+				if(len1 == len2 && strncmp(List->data.c, argsstr.args, len1) == 0 ){
+					return 1;
+				}
+				else{
+					return 0;
+				}
+			}
+			else{
+				Warning("Only chars can be used");
+				return 0;
+			}
+		break;
+			
+		case 'N':  /* Name */
+			len1 = strlen(List->name);
+			len2 = strlen(argsstr.args);
+			if(len1 == len2 &&  strncmp(List->name, argsstr.args, len1) == 0){
+				return 1;
+			}
+			else{
+				return 0;
+			}
+		break;
+
+		case 'n':  /* count */
+			len1 = Strol(&argsstr.arg);
+			if( counter == len1){
+				return 1;
+			}
+			else{
+				return 0;
+			}
+		break;
+	}
 }

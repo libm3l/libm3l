@@ -448,7 +448,7 @@ get_arg_t get_arguments(const char *text)
  */
 	const char *pc;
 	char arg;
-	int i;
+	size_t i, n;
 	get_arg_t argsstr;
 /*
  * disregard empty spaces and tabs at the beginning 
@@ -506,24 +506,41 @@ get_arg_t get_arguments(const char *text)
 		}
 		
 		argsstr.s_name[i] = '\0';
-		
-		if(*pc == '=') pc++;
-		
-		while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
-				
-		i = 0;
-		while(*pc != '\0' ){
-			while(*pc == ' ' && *pc != '\0')pc++;
-			argsstr.args[i++] = *pc++;
-			if(i > MAX_NAME_LENGTH){
-				Error(" too long argument field");
-				argsstr.retval = -1;
-				return ;
-			}
+
+/*
+ * if argument to use is name (N), copy the subsate name to argsstr.args
+ */
+		if(argsstr.arg == 'N'){
+
+			if( (n=snprintf(argsstr.args, MAX_NAME_LENGTH, "%s", argsstr.s_name)) < 0)
+				Perror("argsstr.args");
+
+			argsstr.args[n] = '\0';
+
+// 			argsstr.retval = 0;
+// 			return argsstr;
 		}
-		
-		argsstr.args[i] = '\0';
-		
+		else{
+/*
+ * parse the last argument
+ */		
+			if(*pc == '=') pc++;
+			
+			while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
+					
+			i = 0;
+			while(*pc != '\0' ){
+				while(*pc == ' ' && *pc != '\0')pc++;
+				argsstr.args[i++] = *pc++;
+				if(i > MAX_NAME_LENGTH){
+					Error(" too long argument field");
+					argsstr.retval = -1;
+					return ;
+				}
+			}
+			
+			argsstr.args[i] = '\0';
+		}
 	}
 	else
 	{
