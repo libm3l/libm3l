@@ -8,6 +8,9 @@ ctags
 sloccount
 dev-util/cscope
 pmd (java)
-l=memcheck --leak-check=full --show-reachable=yes  --track-origins=yes ./LinkedStr_TEST.out
+
+
+valgrind --tool=memcheck --leak-check=full --show-reachable=yes  --track-origins=yes ./LinkedStr_TEST.out
+
 
 

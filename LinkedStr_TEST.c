@@ -43,7 +43,7 @@ int main(void)
     printf("Going to Fread1\n");
    
 
-	for (j=0; j<3; j++){
+	for (j=0; j<1; j++){
 		
 		printf(" CYCLE %d\n\n", j);
 
@@ -115,7 +115,7 @@ int main(void)
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
 		printf("Going to locate %p\n", Gnode);
-		if( (Founds = Locate(Gnode, "/main/grid2/boundary", "/*/*/*", (char *)NULL)) != NULL){
+		if( (Founds = Locate(Gnode, "/main/grid1/boundary/", "/*/*/SN_name1", (char *)NULL)) != NULL){
 			for(i=0; i < Founds->founds; i++){
 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 

@@ -324,7 +324,7 @@ int match_test(node_t *List, get_arg_t argsstr, size_t counter)
 	node_t *Tmpnode;
 	int retval;
 
-	if( argsstr.first == 'S' ){
+	if( argsstr.first == 'S' || argsstr.first == 's' ){
 /*
  * locator specifies subset, loop over subsets until first positive match
  */
