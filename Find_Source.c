@@ -33,13 +33,13 @@ find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
  */
 	nalloc = 0;
 
-	if ( (Founds = (find_t *) malloc( sizeof(find_t *))) == NULL)
+	if ( (Founds = (find_t *)malloc( sizeof(find_t))) == NULL)
 		Perror("malloc");
 	
-	if ( (Founds->Found_Nodes = (find_str_t **) malloc( sizeof(find_str_t **))) == NULL)
+	if ( (Founds->Found_Nodes = (find_str_t **)malloc( sizeof(find_str_t *))) == NULL)
 		Perror("malloc");
 	
-	if ( ( Founds->Found_Nodes[0] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+	if ( ( Founds->Found_Nodes[0] =(find_str_t *)malloc( sizeof(find_str_t))) == NULL)
 		Perror("malloc");
 	
 	Founds->founds = 0;
@@ -181,7 +181,7 @@ int AddRecord(node_t *Tmpnode)
  * Allocate first *Found_Nodes and store address of found node in it. 
  * Increase counter of found nodes by 1
  */
-// 		if ( ( Founds->Found_Nodes[0] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+// 		if ( ( Founds->Found_Nodes[0] =(find_str_t *) malloc( sizeof(find_str_t))) == NULL)
 // 			Perror("malloc");
 		Founds->Found_Nodes[0]->List = Tmpnode;
 			nalloc++;
@@ -194,9 +194,9 @@ int AddRecord(node_t *Tmpnode)
  */
 	{
 		nalloc++;
-		if ( (Founds->Found_Nodes =(find_str_t **) realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t **))) == NULL)
+		if ( (Founds->Found_Nodes =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL)
 			Perror("realloc");
-		if ( (Founds->Found_Nodes[nalloc-1] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+		if ( (Founds->Found_Nodes[nalloc-1] =(find_str_t *)malloc( sizeof(find_str_t))) == NULL)
 			Perror("malloc");
 		Founds->Found_Nodes[nalloc-1]->List = Tmpnode;
 	}

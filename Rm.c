@@ -62,7 +62,7 @@ size_t Rm(node_t **List, char * Options, ...)
  */
 	if(args_num > 1){
 
-		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char **) )) == NULL)
+		if ( (opt = (char **)malloc( (args_num+1)*sizeof(char *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -71,11 +71,11 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = malloc( sizeof(char *) )) == NULL)
+		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = malloc( (len+1)*sizeof(char *) )) == NULL)
+		if ( (opt[1] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -85,7 +85,7 @@ size_t Rm(node_t **List, char * Options, ...)
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
-			if ( (opt[i] = malloc( (args_num+1)*sizeof(char *) )) == NULL)
+			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';

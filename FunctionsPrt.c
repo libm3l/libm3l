@@ -30,7 +30,7 @@ void Error(const char *msg)
 void Warning(const char *msg)
 {
 	printf("Warning:  %s\n", msg);
-	exit(1);
+// 	exit(1);
 }
 
 /*
@@ -147,9 +147,9 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * allocate arrays
  */
-	if ( (segs = (char**)malloc( (count)*sizeof(char **) )) == NULL)
+	if ( (segs = (char **)malloc( (count)*sizeof(char *) )) == NULL)
 		Perror("malloc");
-	if ( (len = (size_t *)malloc( (count)*sizeof(size_t *) )) == NULL)
+	if ( (len = (size_t *)malloc( (count)*sizeof(size_t) )) == NULL)
 		Perror("malloc");
 /*
  * fill segs with segments of the path
@@ -162,7 +162,7 @@ char *Path(node_t *List, node_t *Orig_List)
 		if(Tmp == Orig_List) break;
 
 		len[i] = strlen(Tmp->name);
-		if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
+		if ( (segs[i] = (char *)malloc( (len[i]+1)*sizeof(char) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
@@ -183,7 +183,7 @@ char *Path(node_t *List, node_t *Orig_List)
  * save length of the segment
  */
 	len[i] = strlen(Tmp->name);
-	if ( (segs[i] = (char*)malloc( (len[i]+1)*sizeof(char *) )) == NULL)
+	if ( (segs[i] = (char *)malloc( (len[i]+1)*sizeof(char) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
@@ -194,7 +194,7 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * allocate string for path + 1 additional for '\0'
  */		
-	if ( (path = (char*)malloc( (tot_len + 1)*sizeof(char **) )) == NULL)
+	if ( (path = (char *)malloc( (tot_len + 1)*sizeof(char) )) == NULL)
 		Perror("malloc");
 	
 	tot_len1 = 0;
@@ -227,18 +227,15 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * function segments path (./../../../home/etc/etc/
  */
-path_t parse_path(const char *path)
+path_t *parse_path(const char *path)
 {
 /*
  * NOTE - segmentation fault if path starts with / // // // etc nonsence
  */
-	path_t Path;
+	path_t *Path;
 	const char *pc;
 	size_t counter, j, st,k;
 	char abspath;
-
-	Path.seg_count = 0;
-
 /*
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
@@ -250,7 +247,7 @@ path_t parse_path(const char *path)
  */
 	if( *pc != '\0' && *pc == '~' && *++pc != '/'){
 			Error(" Wrong path");
-			return Path ;
+			return (path_t *) NULL ;
 		}
 /*
  * look for empty spaces in path, if they occur, return NULL
@@ -258,7 +255,7 @@ path_t parse_path(const char *path)
 	while(*pc != '\0'){
 		if(*pc == ' ' || *pc == '\t'){
 			Error(" Wrong path");
-			return Path;
+			return (path_t *) NULL;
 		}
 		pc++;
 	}
@@ -310,20 +307,24 @@ path_t parse_path(const char *path)
  * allocate array for words in path
  */
 	if(counter > 0){
-// 		if ( (Path = (path_t*)malloc( sizeof(path_t *) )) == NULL)
-// 			Perror("malloc");
+ 		if ( (Path = (path_t *)malloc( sizeof(path_t) )) == NULL)
+ 			Perror("malloc");
 		
-		if ( (Path.path = (char **)malloc(counter * sizeof(char **))) == NULL)
+		if ( (Path->path = (char **)malloc(counter * sizeof(char *))) == NULL)
 			Perror("malloc");
 
-		for(j=0; j< counter; j++)
-			if ( (Path.path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char *))) == NULL)
+		for(j=0; j< counter; j++){
+			if ( (Path->path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char) )) == NULL)  /* NOTE this is a problem  before it was sizeof(char *) and it worked */
 				Perror("malloc");
+		}
+
+		
+		Path->seg_count = 0;	
 	}
 	else
 	{
 		Error("Wrong path specification");
-		return Path;
+		return (path_t *) NULL;
 	}
 /*
  * store individual words in array
@@ -344,8 +345,8 @@ path_t parse_path(const char *path)
 /*
  * save the segment of the path
  */
-		if( st < MAX_NAME_LENGTH){
-			Path.path[j][st++] = *pc;
+		if( st < MAX_NAME_LENGTH && j < counter){
+			Path->path[j][st++] = *pc;
 		}
 		else{
 			Error(" Path too long");
@@ -353,25 +354,25 @@ path_t parse_path(const char *path)
  * free Path
  */
 			destroy_pars_path(&Path);
-			return Path;
+			return (path_t *)NULL;
 		}
 /*
  * if the last symbol of the path segment is '/' replace it by '\0'
  * it occurs whent he specified path ends with / symbol
  */
 		if(*pc  == '/' ){
-			Path.path[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 /*
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			Path.path[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter){
 				Error(" Path too long");
 				destroy_pars_path(&Path);
-				return Path;
+				(path_t *) NULL;
 			}
 			
 			if(*pc == '\0')
@@ -385,38 +386,53 @@ path_t parse_path(const char *path)
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			Path.path[j][st-1] = '\0';
+			Path->path[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter){
 				Error(" Path too long");
 				destroy_pars_path(&Path);
-				return Path;
+				return (path_t *) NULL;
 			}
 			
 			if(*pc == '\0')
 				break;
 		}	
 	}
-	
-	Path.abspath 		= abspath;	/* Realative (R) or absolute (A) path */
-	Path.seg_count 	= counter;	/* Number of segments in path */
+/*
+ * end the last segment string
+ */
+	if( st < MAX_NAME_LENGTH && j < counter){
+		Path->path[j][st++] = '\0';
+	}
+	else{
+		Error(" Path too long - can not add terminating character");
+		destroy_pars_path(&Path);
+		(path_t *) NULL;
+	}
+	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
+	Path->seg_count = counter;	/* Number of segments in path */
 
-	return Path;
+	return (path_t *)Path;
 }
 /*
  * function frees pointer allocated in parse_path function
  */
-int destroy_pars_path(path_t *Path)
+void destroy_pars_path(path_t **Path)
 {
 /*
  * NOTE - unsuccesfull return must be finished
  */
 	size_t i;
+		
+	for (i=0; i< (*Path)->seg_count; i++)
+		free( (*Path)->path[i]);
+	free((*Path)->path);
+
+	free(*Path) ;
+	(*Path) = NULL;
+	return;
 	
-	for (i=0; i< Path->seg_count; i++)
-		free( Path->path[i]);
-	free( Path->path);
 }
 
 get_arg_t get_arguments(const char *text)
@@ -432,7 +448,7 @@ get_arg_t get_arguments(const char *text)
  */
 	const char *pc;
 	char arg;
-	int i;
+	size_t i, n;
 	get_arg_t argsstr;
 /*
  * disregard empty spaces and tabs at the beginning 
@@ -490,24 +506,41 @@ get_arg_t get_arguments(const char *text)
 		}
 		
 		argsstr.s_name[i] = '\0';
-		
-		if(*pc == '=') pc++;
-		
-		while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
-				
-		i = 0;
-		while(*pc != '\0' ){
-			while(*pc == ' ' && *pc != '\0')pc++;
-			argsstr.args[i++] = *pc++;
-			if(i > MAX_NAME_LENGTH){
-				Error(" too long argument field");
-				argsstr.retval = -1;
-				return ;
-			}
+
+/*
+ * if argument to use is name (N), copy the subsate name to argsstr.args
+ */
+		if(argsstr.arg == 'N'){
+
+			if( (n=snprintf(argsstr.args, MAX_NAME_LENGTH, "%s", argsstr.s_name)) < 0)
+				Perror("argsstr.args");
+
+			argsstr.args[n] = '\0';
+
+// 			argsstr.retval = 0;
+// 			return argsstr;
 		}
-		
-		argsstr.args[i] = '\0';
-		
+		else{
+/*
+ * parse the last argument
+ */		
+			if(*pc == '=') pc++;
+			
+			while(*pc == ' ' && *pc != '\0'  )pc++;			/* jump over possible spaces */
+					
+			i = 0;
+			while(*pc != '\0' ){
+				while(*pc == ' ' && *pc != '\0')pc++;
+				argsstr.args[i++] = *pc++;
+				if(i > MAX_NAME_LENGTH){
+					Error(" too long argument field");
+					argsstr.retval = -1;
+					return ;
+				}
+			}
+			
+			argsstr.args[i] = '\0';
+		}
 	}
 	else
 	{

@@ -43,17 +43,21 @@ int main(void)
     printf("Going to Fread1\n");
    
 
-	for (j=0; j<3000000; j++){
+	for (j=0; j<1; j++){
 		
 		printf(" CYCLE %d\n\n", j);
 
  		if( (Gnode = Fread("INPUT_TEST"))  == NULL)
  			Perror("Linked_test: Fread");
 		
+	
+		
 // 		Fwrite(Gnode, "ADA");
+		
+		
 // 
-//  		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-//  	                   Error("CatData");
+ 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+ 	                   Error("CatData");
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
 // // 		write_to_socket(1, Gnode,  socketnr);
@@ -89,8 +93,8 @@ int main(void)
 // 		}
 // 			
 // 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
-// 
-// 
+// // 
+// // 
 // 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 	                   Error("CatData");
 // 						
@@ -111,7 +115,7 @@ int main(void)
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
 		printf("Going to locate %p\n", Gnode);
-		if( (Founds = Locate(Gnode, "/main/grid2/boundary", "/*/*/*", (char *)NULL)) != NULL){
+		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/SN_name1", (char *)NULL)) != NULL){
 			for(i=0; i < Founds->founds; i++){
 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 
@@ -119,6 +123,9 @@ int main(void)
 					printf(" Path is %s \n", node_path);
 					free(node_path);
 				}
+				
+				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+					Error("CatData");
 			}
 		DestroyFound(&Founds);
 		}
@@ -129,6 +136,8 @@ int main(void)
 // 		
 		if(Umount(&Gnode) != 1)
                   Perror("Umount");
+		
+// 		exit(0);
 		
 		
 // 		parsed_path = parse_path("/home/jka/ada/");

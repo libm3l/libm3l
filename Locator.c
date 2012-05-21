@@ -12,33 +12,26 @@
 #include "Find_Source.h"
 
 static int match_test(node_t *, get_arg_t, size_t);
-static find_t *locator(find_t *, path_t , path_t , opts_t *);
+static int match_single_test(node_t *, get_arg_t, size_t);
+static find_t *locator(find_t *, path_t *, path_t *, opts_t *);
 
 extern int optind;
 static int verbose_flag;
 
 find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opts_t *Popts)
 {
-	path_t parsed_path, parsed_path_loc; // **parsed_path_founds;
+	path_t *parsed_path, *parsed_path_loc;
 	char *search_term, *node_path;
-	size_t i; // j;
+	size_t i;
 	find_t *Founds, *Founds_Loc;
 	node_t *Tmp_node;
 /*
  * parse path
  */
-
-	parsed_path = parse_path(path);
-	if(parsed_path.seg_count == 0){
+	if( (parsed_path = parse_path(path)) == NULL){
 		Error("Error in path");
 		return (find_t *)NULL;
 	}
-
-	for (i=0; i< parsed_path.seg_count; i++)
-		printf(" --%s--", parsed_path.path[i]);
-	printf("\n");
-	
-	for (i=0; i< parsed_path.seg_count; i++)
 /*
  * call find function with specified options
  * First look if ../ are in path or if path is absolute path
@@ -46,13 +39,13 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
  */
 	Tmp_node = List;
 
-	if(parsed_path.abspath == 'A'){
+	if(parsed_path->abspath == 'A'){
 		
 		while(Tmp_node->parent != NULL)Tmp_node = Tmp_node->parent;
 /*
  * check if first segment is identical to name of initial node
  */
-		if(strncmp(Tmp_node->name, parsed_path.path[0], strlen(Tmp_node->name)) != 0){
+		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0){
 			Error("Wrong absolute path");
 			destroy_pars_path(&parsed_path);
 			return (find_t *)NULL;
@@ -60,8 +53,8 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 	}
 	else{
 
-		for(i=0; i<parsed_path.seg_count; i++){
-			if(strncmp(parsed_path.path[i], "..", 2) == 0){
+		for(i=0; i<parsed_path->seg_count; i++){
+			if(strncmp(parsed_path->path[i], "..", 2) == 0){
 				if ( (Tmp_node = Founds->Home_Node->parent) == NULL){
 					Error("Wrong path");
 					destroy_pars_path(&parsed_path);
@@ -81,7 +74,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
  * this function returns back found_t **pointer which has "founds" number of items
  * do not forget to free it when you do not need it
  */
-	if ( (search_term = strdup(parsed_path.path[parsed_path.seg_count-1])) == NULL)
+	if ( (search_term = strdup(parsed_path->path[parsed_path->seg_count-1])) == NULL)
 			Perror("strdup");
 	if(Popts->opt_i == 'i')search_term = StrToLower(search_term);
 		
@@ -95,27 +88,22 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 /*
  * write the values of the find result
  */
-		printf(" number of founds is %ld \n", Founds->founds);
-		for (i=0; i< Founds->founds; i++){
-			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
-			
- 			if( (node_path = Path(Founds->Found_Nodes[i]->List, Founds->Home_Node)) != NULL){
-				printf(" Path is %s   %p   %p \n", node_path , Founds->Found_Nodes[i]->List, Founds->Home_Node);
-				free(node_path);
-			}
-			
-		}
+// 		printf(" number of founds is %ld \n", Founds->founds);
 /*
  * call locator to select sets
  */		
-		parsed_path_loc = parse_path(path_loc);
-		if(parsed_path.seg_count == 0){
+		if( (parsed_path_loc = parse_path(path_loc)) == NULL){
+			free(search_term);
+			destroy_pars_path(&parsed_path);
 			Error("Path2 failed");
 			return (find_t *)NULL;
 		}
-		if(parsed_path.seg_count != parsed_path_loc.seg_count){
+		if(parsed_path->seg_count != parsed_path_loc->seg_count){
 			destroy_pars_path(&parsed_path_loc);
+			free(search_term);
+			destroy_pars_path(&parsed_path);
 			Error("Number of items in path different from location specification");  /* NOTE - in later versions, ust one symbol '*' can be used for all paths segments */
+			return (find_t *)NULL;
 		}
 		
  		Founds_Loc = locator(Founds, parsed_path, parsed_path_loc, Popts);
@@ -130,8 +118,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 }
 
 
-//find_t *locator(find_t *Founds, path_t *parsed_path, const char *path_loc, opts_t *Popt)
-find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts_t *Popt)
+find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, opts_t *Popt)
 {
 /*
  * function looks for subset in nodel List
@@ -142,35 +129,18 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 	node_t *Tmp, *Tmppar, *Tm_prev;
 	size_t *HelpNodeI;
 	size_t i, j, k, counter;
-	path_t parsed_path_founds;
+	path_t **parsed_path_Ffounds;
 	get_arg_t argsstr;
 	find_t *RetFound;
 	size_t tot_match, len1, len2;
 	char *node_path;
 /*
- * parse path location specification; IMP: do not forget destroy_pars_path(&parsed_path) once not needed
- */
-//  	if ( (parsed_path_loc = parse_path(path_loc)) == NULL){
-// 		Error("Path - failed");
-// 		return (find_t *)NULL;
-// 	}
-// 
-// 	if(parsed_path->seg_count != parsed_path_loc->seg_count){
-// 		destroy_pars_path(&parsed_path_loc);
-// 		Error("Number of items in path different from location specification");  /* NOTE - in later versions, ust one symbol '*' can be used for all paths segments */
-// 	}
-/*
  * allocate field for positive match and for segments of path for each element of Found
  */
-	printf(" Here \n");
-
 	if ( (HelpNodeI = malloc(Founds->founds * sizeof(size_t))) == NULL)
 		Perror("malloc");
-
-	for(i=0; i < Founds->founds; i++)
-  		HelpNodeI[i] = 1;
 	
-/*	if ( (parsed_path_founds = (path_t **)malloc(Founds->founds * sizeof(path_t **))) == NULL)
+	if ( (parsed_path_Ffounds = (path_t **)malloc(Founds->founds * sizeof(path_t *))) == NULL)
 		Perror("malloc");
 	
 	for(i=0; i < Founds->founds; i++){
@@ -181,32 +151,26 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 			free(HelpNodeI);
 			free(node_path);
 			for(j=0; j <=i; j++)
-				destroy_pars_path(&parsed_path_founds[j]);
-			free(parsed_path_founds);
+				destroy_pars_path(&parsed_path_Ffounds[j]);
+			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
-		if( (parsed_path_founds[i] =  parse_path(node_path)) == NULL){
+		if( (parsed_path_Ffounds[i] =  parse_path(node_path)) == NULL){
 			Error(" Path error");
 			destroy_pars_path(&parsed_path_loc);
 			free(HelpNodeI);
 			free(node_path);
 			for(j=0; j <=i; j++)
-				destroy_pars_path(&parsed_path_founds[j]);
-			free(parsed_path_founds);
+				destroy_pars_path(&parsed_path_Ffounds[j]);
+			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
- 		printf(" Path is %s  \n", node_path );
-		for (j=0; j< parsed_path_founds[i]->seg_count; j++)
-			printf("-%s-", parsed_path_founds[i]->path[j]);
-		printf("\n");
+//  		printf(" Path is %s  \n", node_path );
+// 		for (j=0; j< parsed_path_Ffounds[i]->seg_count; j++)
+// 			printf("-%s-", parsed_path_Ffounds[i]->path[j]);
+// 		printf("\n");
 		free(node_path);
 	}
-
-	for(i=0; i < Founds->founds; i++) destroy_pars_path(&parsed_path_founds[i]);
-	free(parsed_path_founds);
-	free(HelpNodeI);
-	destroy_pars_path(&parsed_path_loc);
-	return NULL;*/
 /*
  * loop over all levels in path, segment by segment and determine
  * if match is positive or negative
@@ -217,21 +181,20 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 	Tm_prev = Founds->Found_Nodes[0]->List;
 	counter = 1;
 
-	for(i=0; i<parsed_path_loc.seg_count; i++){
+	for(i=0; i<parsed_path_loc->seg_count; i++){
 /*
  * get arguments for path segment
  */
-//  		printf(" Segment_loc %d is %s\n", i, parsed_path_loc->path[i]);
-		argsstr = get_arguments(parsed_path_loc.path[i]);
-
+		argsstr = get_arguments(parsed_path_loc->path[i]);
+		
 		if(argsstr.retval == -1){
 			Error("argstr error");
 			destroy_pars_path(&parsed_path_loc);
 			free(HelpNodeI);
 			free(node_path);
-// 			for(j=0; j <Founds->founds; j++)
-// 				destroy_pars_path(&parsed_path_founds[j]);
-// 			free(parsed_path_founds);
+			for(j=0; j <Founds->founds; j++)
+				destroy_pars_path(&parsed_path_Ffounds[j]);
+			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
 /*
@@ -240,23 +203,16 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 		for(j = 0; j< Founds->founds; j++){
 
 			if( HelpNodeI[j] == 1){
-
-				node_path = Path(Founds->Found_Nodes[j]->List, Founds->Home_Node);
-				parsed_path_founds =  parse_path(node_path);
-
-// 				printf(" Trying to find a match %d %d \n", i,j);
 /*
  * node is considered as possible match
  */
 /*
  * compare i-th segment of the path, if match, go with tests of location, Test of length equality too
  */				
-				len1 = strlen(parsed_path.path[i]);
-				len2 = strlen(parsed_path_founds.path[i]);
+				len1 = strlen(parsed_path->path[i]);
+				len2 = strlen(parsed_path_Ffounds[j]->path[i]);
 				
-// 				printf(" parsed_path_founds %ld   %s \n", len2, parsed_path_founds->path[i]);
-				
-				if(len1 == len2 && strncmp(parsed_path.path[i], parsed_path_founds.path[i], len1) == 0){
+				if(len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0){
 /*
  * segments are equal, check locator
  */
@@ -264,13 +220,10 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 /*
  * find node_t pointer corresponding to path segment
  */
-					for(k=i+1; k<parsed_path_loc.seg_count; k++)
+					for(k=i+1; k<parsed_path_loc->seg_count; k++)
 						Tmp = Tmp->parent;
 /*
  * get counter, increment for each in the same DIR, set 0 if different DIR
- */
-// 					printf("%s %p  %p \n", Tmp->name , Tmp->parent, Tmppar);
-/*
  * if parent of the node is the same as previuous node parent..
  */
 					if(Tmppar == Tmp->parent){
@@ -284,9 +237,12 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 						Tmppar = Tmp->parent;
 						Tm_prev = Tmp;
 					}
+					
+					
+// 					printf(" Argument to comapre are '%s' \n",argsstr.args); 
+// 					printf(" Name Argument to comapre are '%c' \n",argsstr.arg); 
 
-//     					printf("Counter is %d\n", counter);
-
+					
  					HelpNodeI[j]  = match_test(Tmp,argsstr, counter);
 /*
  * argsstr.first if S or s, deal with subset
@@ -298,17 +254,10 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 				else
 				{
 					HelpNodeI[j]  = 0;
-				}	
-				free(node_path);
-				destroy_pars_path(&parsed_path_founds);
+				}
 			}
 		}
 	}
-// 	printf(" after cycle \n");
-/*
- * free parsed_path 
- */	
-// 	destroy_pars_path(&parsed_path_loc);
 /*
  * count how many matches are positive
  */
@@ -316,16 +265,15 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 	for(j = 0; j< Founds->founds; j++){
 		if(HelpNodeI[j] == 1) tot_match++;
 	}
-//  	printf(" number of positive matches is %d\n", tot_match);
 
 	if(tot_match == 0){
 /*
  * not any positive match
  */
 		free(HelpNodeI);
-// 		for(j=0; j <Founds->founds; j++)
-// 			destroy_pars_path(&parsed_path_founds[j]);
-// 		free(parsed_path_founds);
+		for(j=0; j <Founds->founds; j++)
+			destroy_pars_path(&parsed_path_Ffounds[j]);
+		free(parsed_path_Ffounds);
 		return (find_t *)NULL;
 	}
 	else{
@@ -333,22 +281,22 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
 /*
  * allocate find_t structure and fill it
  */
-		if ( (RetFound = (find_t *) malloc( sizeof(find_t *))) == NULL)
+		if ( (RetFound = (find_t *) malloc( sizeof(find_t))) == NULL)
 			Perror("malloc");
 		
-		if ( (RetFound->Found_Nodes = (find_str_t **) malloc( sizeof(find_str_t **))) == NULL)
+		if ( (RetFound->Found_Nodes = (find_str_t **) malloc( tot_match * sizeof(find_str_t *))) == NULL)
 			Perror("malloc");
-		
+				
 		for(j = 0; j< tot_match; j++){
-			if ( ( RetFound->Found_Nodes[j] =(find_str_t *) malloc( sizeof(find_str_t *))) == NULL)
+			if ( ( RetFound->Found_Nodes[j] =(find_str_t *) malloc( sizeof(find_str_t))) == NULL)
 				Perror("malloc");
 		}
 		
 		counter = 0;
 		for(j = 0; j< Founds->founds; j++){
 			if( HelpNodeI[j] == 1){
-	 			printf(" List found in match is %p  %s\n", Founds->Found_Nodes[j]->List, Founds->Found_Nodes[j]->List->name);
-				RetFound->Found_Nodes[counter++]->List=Founds->Found_Nodes[j]->List;}
+				RetFound->Found_Nodes[counter++]->List=Founds->Found_Nodes[j]->List;
+			}
 		}
 /*
  * save the number of positive founds
@@ -358,51 +306,104 @@ find_t *locator(find_t *Founds, path_t parsed_path, path_t parsed_path_loc, opts
  * free memory
  */
 		free(HelpNodeI);
-// 		for(j=0; j <Founds->founds; j++)
-// 			destroy_pars_path(&parsed_path_founds[j]);
-// 		free(parsed_path_founds);
+		for(j=0; j <Founds->founds; j++)
+			destroy_pars_path(&parsed_path_Ffounds[j]);
+		free(parsed_path_Ffounds);
 /*
  * return list of positive mathes
  */
-	printf(" Here - returning \n");
-
 		return RetFound;
 	}
 }
 
-
-
 int match_test(node_t *List, get_arg_t argsstr, size_t counter)
 {
-	char c;
-	c = (int)argsstr.arg;
 /*
  * find if what is to be comapred is set or subset
  */
-	if( argsstr.first == ('s' || 'S')){
-		
-		return 0;
+	node_t *Tmpnode;
+	int retval;
+
+	if( argsstr.first == 'S' || argsstr.first == 's' ){
+/*
+ * locator specifies subset, loop over subsets until first positive match
+ */
+		if ( (Tmpnode = List->child) == NULL){
+			Error("Wrong location - node is FILE type");
+			return 0;
+		}
+		else{
+			while(Tmpnode != NULL){
+				if( (retval = match_single_test(Tmpnode,  argsstr, counter)) == 1) return 1;
+				Tmpnode = Tmpnode->next;
+			}
+			return 0;
+		}
 	}
 	else{
 /*
  * set
  */
-		switch ( c ){
-			
-			case '*':
-				return 1;
-			break;
-	
-			case 'V':  /* Value */
-// isgreaterequal, isgreater				
-			break;
-		
-		}
-		
-		return 0;
-		
+		retval =  match_single_test(List, argsstr, counter);
+		return retval;
 	}
 	
 	return 0;
+}
+
+int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
+{
+	char c;
+	size_t len1, len2;
+	c = (int)argsstr.arg;
+
+	switch ( c ){
+			
+		case '*':
+			return 1;
+		break;
 	
+		case 'V':  /* Value */
+// isgreaterequal, isgreater
+/*
+ * get type of argument
+ */
+// 			printf(" Name of list is 
+			if(strncmp(List->type,"C",1) == 0){
+				len1 = strlen(List->data.c);
+				len2 = strlen(argsstr.args);
+				if(len1 == len2 && strncmp(List->data.c, argsstr.args, len1) == 0 ){
+					return 1;
+				}
+				else{
+					return 0;
+				}
+			}
+			else{
+// 				Warning("Only chars can be used");
+				return 0;
+			}
+		break;
+			
+		case 'N':  /* Name */
+			len1 = strlen(List->name);
+			len2 = strlen(argsstr.args);
+			if(len1 == len2 &&  strncmp(List->name, argsstr.args, len1) == 0){
+				return 1;
+			}
+			else{
+				return 0;
+			}
+		break;
+
+		case 'n':  /* count */
+			len1 = Strol(&argsstr.arg);
+			if( counter == len1){
+				return 1;
+			}
+			else{
+				return 0;
+			}
+		break;
+	}
 }

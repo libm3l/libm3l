@@ -21,12 +21,14 @@ find_t *Find(node_t *List, char * Options, ...)
 	
 	find_t *Founds;
 	node_t *Tmp1;
- 	char *word, **opt, *search_term, *search_term1; //, *node_path;
+ 	char *word, **opt, *search_term, *search_term1, *node_path;
 	opts_t *Popts, opts;
-	size_t args_num, len, i;
+	size_t args_num, len, i, j;
 	va_list args;
 	int c;
 	int option_index;
+	
+	path_t *parsed_path;
 	
 	option_index = 0;
 /*
@@ -48,7 +50,7 @@ find_t *Find(node_t *List, char * Options, ...)
  */
 	if(args_num > 1){
 
-		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char **) )) == NULL)
+		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -57,11 +59,11 @@ find_t *Find(node_t *List, char * Options, ...)
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = malloc( sizeof(char *) )) == NULL)
+		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = malloc( (len+1)*sizeof(char *) )) == NULL)
+		if ( (opt[1] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -71,7 +73,7 @@ find_t *Find(node_t *List, char * Options, ...)
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
-			if ( (opt[i] = malloc( (args_num+1)*sizeof(char *) )) == NULL)
+			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -91,6 +93,7 @@ find_t *Find(node_t *List, char * Options, ...)
  * first - reset opting = 0 to reinitialize getopt_long
  */
 		opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
+		opts.opt_d = '\0'; opts.opt_f = '\0';
 		optind = 0;
 		while (1)
 		{
@@ -236,13 +239,24 @@ find_t *Find(node_t *List, char * Options, ...)
  * write the values of the find result
  */
 		printf(" number of founds is %ld \n", Founds->founds);
-		for (i=0; i< Founds->founds; i++){
+		for (i=1; i< Founds->founds; i++){
 			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
 			
-// 			if( (node_path = Path(Founds->Found_Nodes[i]->List)) != NULL){
-// 				printf(" Path is %s \n", node_path);
-// 				free(node_path);
-// 			}
+			if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+				printf(" Path is %s \n", node_path);
+			
+				if( (parsed_path = parse_path(node_path)) == NULL){
+					Error("Error in path");
+					return (find_t *)NULL;
+				}
+								
+				for (j=0; j< parsed_path->seg_count; j++)
+					printf("--%s-- ", parsed_path->path[j]);
+				printf("\n");
+											
+				destroy_pars_path(&parsed_path);
+				free(node_path);
+ 			}
 			
 		}
 	}	
