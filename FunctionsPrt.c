@@ -30,7 +30,7 @@ void Error(const char *msg)
 void Warning(const char *msg)
 {
 	printf("Warning:  %s\n", msg);
-	exit(1);
+// 	exit(1);
 }
 
 /*

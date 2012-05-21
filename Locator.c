@@ -88,7 +88,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 /*
  * write the values of the find result
  */
-		printf(" number of founds is %ld \n", Founds->founds);
+// 		printf(" number of founds is %ld \n", Founds->founds);
 /*
  * call locator to select sets
  */		
@@ -165,10 +165,10 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
- 		printf(" Path is %s  \n", node_path );
-		for (j=0; j< parsed_path_Ffounds[i]->seg_count; j++)
-			printf("-%s-", parsed_path_Ffounds[i]->path[j]);
-		printf("\n");
+//  		printf(" Path is %s  \n", node_path );
+// 		for (j=0; j< parsed_path_Ffounds[i]->seg_count; j++)
+// 			printf("-%s-", parsed_path_Ffounds[i]->path[j]);
+// 		printf("\n");
 		free(node_path);
 	}
 /*
@@ -368,6 +368,7 @@ int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
 /*
  * get type of argument
  */
+// 			printf(" Name of list is 
 			if(strncmp(List->type,"C",1) == 0){
 				len1 = strlen(List->data.c);
 				len2 = strlen(argsstr.args);
@@ -379,7 +380,7 @@ int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
 				}
 			}
 			else{
-				Warning("Only chars can be used");
+// 				Warning("Only chars can be used");
 				return 0;
 			}
 		break;

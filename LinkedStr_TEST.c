@@ -56,8 +56,8 @@ int main(void)
 		
 		
 // 
-//  		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-//  	                   Error("CatData");
+ 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+ 	                   Error("CatData");
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
 // // 		write_to_socket(1, Gnode,  socketnr);
@@ -115,7 +115,7 @@ int main(void)
 //		parsed_path = parse_path("../../home/jka/ada/");
 		
 		printf("Going to locate %p\n", Gnode);
-		if( (Founds = Locate(Gnode, "/main/grid1/boundary/", "/*/*/SN_name1", (char *)NULL)) != NULL){
+		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/SN_name1", (char *)NULL)) != NULL){
 			for(i=0; i < Founds->founds; i++){
 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 
@@ -123,6 +123,9 @@ int main(void)
 					printf(" Path is %s \n", node_path);
 					free(node_path);
 				}
+				
+				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+					Error("CatData");
 			}
 		DestroyFound(&Founds);
 		}
