@@ -47,10 +47,11 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 			args_num++;
 		}
 		va_end(args);
+		args_num++;
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char *) )) == NULL)
+		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -63,14 +64,15 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+		printf(" Length is %ld  %ld\n", len, args_num);
+		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
 /*
  * get the value of other arguments
  */	
-		for(i=2; i<=args_num; i++){
+		for(i=2; i<args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
 			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
@@ -102,7 +104,7 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiILr", long_options, &option_index);
+ 			c = getopt_long (args_num, opt, "dfiILr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
