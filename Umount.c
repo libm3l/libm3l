@@ -5,13 +5,12 @@
  
 #include "Header.h"
 #include "format_type.h"
-#include "Mount.h"
 
 
-extern void Warning(const char *);
-extern SIZE_T rm_list(int, node_t **);
-extern int Free(node_t **);
-extern int Cat(node_t *, char * , ...);
+#include "Umount.h"
+#include "FunctionsPrt.h"
+#include "rm_list.h"
+
 
 /*
  * this function deletes the master head node.
@@ -31,7 +30,7 @@ int Umount(node_t **List)
  * In this routine, the function is supposed to remove List so it needs to be called with 2
  */ 
 	if( rm_list(2, List) < 0){
-		Error("Unable to unmount node %s at %p\n", (*List)-> name, (*List));
+		Error("Unable to unmount node \n");
 		return -1;
 	}
 	printf("Unmounting finished\n");
