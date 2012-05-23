@@ -21,10 +21,7 @@ static int verbose_flag;
 find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Options, ...)
 {
 	
-	find_t *Founds, *Founds_Loc;
-	node_t *Tmp_node;
-	path_t *parsed_path;
-
+	find_t *Founds_Loc;
 	char *word, **opt;
 	opts_t *Popts, opts;
 	size_t args_num, len, i;
@@ -35,6 +32,13 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 	option_index = 0;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_L = '\0';
+/*
+ * check if data set exists
+ */
+	if(List == NULL){
+		Warning("Locate: NULL list");
+		return (find_t *)NULL;
+	}
 /*
  * get number of options
  */	
@@ -196,13 +200,6 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
  */
 		opts.opt_r = 'r';
 // 		opts.opt_L = 'L';  NOTE - needs to be specified
-	}
-/*
- * free array opt **
- */
-	if(List == NULL){
-		Warning("Locate: NULL list");
-		return (find_t *)NULL;
 	}
 
 	Popts = &opts;
