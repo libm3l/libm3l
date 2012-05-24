@@ -68,7 +68,6 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		printf(" Length is %ld  %ld\n", len, args_num);
 		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);

@@ -362,11 +362,11 @@ path_t *parse_path(const char *path)
  */
 		if(*pc  == '/' ){
 			Path->path[j][st-1] = '\0';
+
 /*
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			Path->path[j][st-1] = '\0';
 			st = 0;
 			j++;
 			if(j > counter){
@@ -387,6 +387,7 @@ path_t *parse_path(const char *path)
  */
 			while( *pc == '/' && *pc != '\0') pc++;
 			Path->path[j][st-1] = '\0';
+
 			st = 0;
 			j++;
 			if(j > counter){
@@ -397,13 +398,14 @@ path_t *parse_path(const char *path)
 			
 			if(*pc == '\0')
 				break;
-		}	
+		}
 	}
 /*
  * end the last segment string
  */
 	if( st < MAX_NAME_LENGTH && j < counter){
 		Path->path[j][st++] = '\0';
+
 	}
 	else{
 		Error(" Path too long - can not add terminating character");
@@ -411,7 +413,7 @@ path_t *parse_path(const char *path)
 		(path_t *) NULL;
 	}
 	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
-	Path->seg_count = counter;	/* Number of segments in path */
+	Path->seg_count     = counter;	/* Number of segments in path */
 
 	return (path_t *)Path;
 }
@@ -458,19 +460,18 @@ get_arg_t get_arguments(const char *text)
 /*
  * get the first letter, check that it is not '\0'
  */
+	argsstr.arg = '*';
+	argsstr.first = '\0';
+	argsstr.s_name[0] = '\0';
+	argsstr.args[0] = '\0';
+
 	if(*pc == '\0'){
-		Error("No argument");
-		argsstr.arg = '\0';
+		Error("No argument");;
 		argsstr.retval = -1;
 		return;
 	}
-	else if(*pc == '\0'){
-		argsstr.arg = '*';
-		argsstr.first = '\0';
-		argsstr.s_name[0] = '\0';
-		argsstr.args[0] = '\0';
+	else{
 		argsstr.retval = 0;
-		return argsstr;
 	}
 
 	arg = *pc++;	
@@ -548,22 +549,20 @@ get_arg_t get_arguments(const char *text)
  * data set will be specified
  * jump over = and spaces
  */
-		argsstr.first = '\0';
-		argsstr.s_name[0] = '\0';
 		argsstr.arg = arg;
 
 		i = 0;
 		while(*pc != '\0' && *pc != '='){
-		while(*pc == ' ' && *pc != '\0')pc++;
-			argsstr.s_name[i++] = *pc++;
-			if(i > MAX_NAME_LENGTH){
-				Error(" too long argument field");
-				argsstr.retval = -1;
-				return ;
+			while(*pc == ' ' && *pc != '\0')pc++;
+				argsstr.s_name[i++] = *pc++;
+				if(i > MAX_NAME_LENGTH){
+					Error(" too long argument field");
+					argsstr.retval = -1;
+					return ;
 			}
 		}
 		
-		argsstr.s_name[i] = '\0';
+ 		argsstr.s_name[i] = '\0';
 		
 		if(*pc == '=') pc++;
 		
@@ -581,7 +580,6 @@ get_arg_t get_arguments(const char *text)
 		}
 		
 		argsstr.args[i] = '\0';
-
 	}
 	argsstr.retval = 0;
 	return argsstr;

@@ -226,18 +226,19 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
  * get counter, increment for each in the same DIR, set 0 if different DIR
  * if parent of the node is the same as previuous node parent..
  */
-					if(Tmppar == Tmp->parent){
+					if(Tmp != NULL){
+						if(Tmppar == Tmp->parent){
  /*
   * check if the node is the same as pevious or not, if not, increase counter (the same name, different pointer situation)
   */
-						if (Tmp != Tm_prev)counter++;
+							if (Tmp != Tm_prev)counter++;
+						}
+						else{
+							counter = 1;
+							Tmppar = Tmp->parent;
+							Tm_prev = Tmp;
+						}
 					}
-					else{
-						counter = 1;
-						Tmppar = Tmp->parent;
-						Tm_prev = Tmp;
-					}
-					
 					
 // 					printf(" Argument to comapre are '%s' \n",argsstr.args); 
 // 					printf(" Name Argument to comapre are '%c' \n",argsstr.arg); 
@@ -397,7 +398,7 @@ int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
 		break;
 
 		case 'n':  /* count */
-			len1 = Strol(&argsstr.arg);
+			len1 = Strol(argsstr.args);
 			if( counter == len1){
 				return 1;
 			}
