@@ -43,9 +43,10 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 		
 		while(Tmp_node->parent != NULL)Tmp_node = Tmp_node->parent;
 /*
- * check if first segment is identical to name of initial node
+ * check if first segment is identical to name of initial node or is '*'
  */
-		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0){
+		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0 && 
+	           strncmp(parsed_path->path[0], "*", 1) != 0){
 			Error("Wrong absolute path");
 			destroy_pars_path(&parsed_path);
 			return (find_t *)NULL;
@@ -77,7 +78,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 	if ( (search_term = strdup(parsed_path->path[parsed_path->seg_count-1])) == NULL)
 			Perror("strdup");
 	if(Popts->opt_i == 'i')search_term = StrToLower(search_term);
-		
+
 	if ( (Founds = Find_caller(Tmp_node, search_term, Popts)) == NULL){
 		free(search_term);
 		destroy_pars_path(&parsed_path);
@@ -105,10 +106,9 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 			Error("Number of items in path different from location specification");  /* NOTE - in later versions, ust one symbol '*' can be used for all paths segments */
 			return (find_t *)NULL;
 		}
-		
+				
  		Founds_Loc = locator(Founds, parsed_path, parsed_path_loc, Popts);
 	
-//		NOTE: if(word != NULL) free(word);
 		free(search_term);
 		DestroyFound(&Founds);
 		destroy_pars_path(&parsed_path);

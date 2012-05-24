@@ -7,8 +7,10 @@
 #include "internal_format_type.h"
 
 #include "rm_list.h"
+#include "Locator.h"
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
+#include "Find_Source.h"
 
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
@@ -16,7 +18,49 @@
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-SIZE_T rm_list(int call, node_t **List)
+size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *Popts)
+{
+	size_t i, rm_tot_nodes, rm_nodes;
+	find_t *Founds;
+	int init_call;
+/*
+ * call locator to locate nodes to be deleted
+ */
+	if ( (Founds = locator_caller( (*List), path, path_loc, Popts)) == NULL){
+		return 0;
+	}
+	else
+	{
+/*
+ * if required to keep the original node
+ */
+		if(Popts->opt_k == 'k'){
+			init_call = 1;
+		}
+		else{
+			init_call = 2;
+		}
+				
+		rm_tot_nodes = 0;
+		
+		for(i=0; i< Founds->founds; i++){
+			if( (rm_nodes = rm_list(init_call, &Founds->Found_Nodes[i]->List)) < 0){
+				Warning("problem in rm_list");
+			}
+			else{
+				rm_tot_nodes += rm_nodes;
+				rm_nodes = 0;
+			}
+		}
+				
+				
+		DestroyFound(&Founds);
+		return rm_tot_nodes;
+	}
+}
+
+
+size_t rm_list(int call, node_t **List)
 {
 /*
  * function removes all items in List

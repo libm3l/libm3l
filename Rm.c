@@ -20,18 +20,17 @@ static int verbose_flag;
 /*
  * routine finds the list
  */
-size_t Rm(node_t **List, char * Options, ...)
+size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options, ...)
 {
-	node_t *Tmp1;
-	find_t *Founds;
- 	char *word, **opt, *search_term, *search_term1;
+
+	char *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, rmnodes, rm_tot_nodes;
+	size_t args_num, len, i, rm_tot_nodes;
 	va_list args;
 	int c, init_call;
 	int option_index;
 	
-	char path[256];
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';
 	
 	option_index = 0;
 	rm_tot_nodes=0;
@@ -46,23 +45,20 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * get number of options
  */	
-	if(Options == NULL)
-		return -1;
+	if(Options != NULL){
+		va_start(args, Options);
+		args_num = 1;
+		len = strlen(Options);
 
-	va_start(args, Options);
-	args_num = 1;
-	len = strlen(Options);
-
-	while((word = va_arg(args, char *)) != NULL){
-		args_num ++;
-	}
-	va_end(args);
+		while((word = va_arg(args, char *)) != NULL){
+			args_num++;
+		}
+		va_end(args);
+		args_num++;
 /*
  * get the values of option, for that, allocate opts ** array
  */
-	if(args_num > 1){
-
-		if ( (opt = (char **)malloc( (args_num+1)*sizeof(char *) )) == NULL)
+		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -75,7 +71,7 @@ size_t Rm(node_t **List, char * Options, ...)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -91,12 +87,6 @@ size_t Rm(node_t **List, char * Options, ...)
 			opt[i][len] = '\0';
 		}
 /*
- * get the name to look for
- */
- 		search_term1 = va_arg(args, char *);
-		if ( (search_term = strdup(search_term1)) == NULL)
-			Perror("strdup");
-/*
  * end args
  */
 		va_end(args);
@@ -104,7 +94,6 @@ size_t Rm(node_t **List, char * Options, ...)
  * get meaning of options
  * first - reset opting = 0 to reinitialize getopt_long
  */
-		opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
 		optind = 0;
 		while (1)
 		{
@@ -115,14 +104,14 @@ size_t Rm(node_t **List, char * Options, ...)
 				{"FILE",       no_argument,       0, 'f'},
 				{"recursive",  no_argument,       0, 'r'},
 				{"IGNORE",     no_argument,       0, 'I'},
-				{"preserve",   no_argument,       0, 'p'},
+				{"keeporgnode",   no_argument,       0, 'k'},
 //				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiIpr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfikIr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -147,7 +136,6 @@ size_t Rm(node_t **List, char * Options, ...)
  * ignore case
  */
 					opts.opt_i = 'i';
-					search_term = StrToLower(search_term);
 				break;
 
 				case 'I':
@@ -179,8 +167,8 @@ size_t Rm(node_t **List, char * Options, ...)
 /*
  * preserve - if removing entire tree, preserv the head node
  */
-				case 'p':
-					init_call = 1;
+				case 'k':
+					opts.opt_k = 'k';
 				break;
 
 				case '?':
@@ -204,7 +192,6 @@ size_t Rm(node_t **List, char * Options, ...)
  */
 		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
-			if(search_term != NULL) free(search_term);
 			return -1;
 		}	
 	}
@@ -214,74 +201,74 @@ size_t Rm(node_t **List, char * Options, ...)
  * no additional options provided
  * get the value of the first argument, as not options are specified the argument is the name to look for
  */
-		va_start(args, Options);
-		if ( (search_term = strdup(Options)) == NULL)
-			Perror("strdup");
-		va_end(args);
+ 		opts.opt_r = 'r';
+// 		opts.opt_L = 'L';  NOTE - needs to be specified
 	}
 /*
  * locate nodes using find function
  */
 	Popts = &opts;
+	
+	rm_tot_nodes = rm_caller(List, path, path_loc, Popts);
 /*
  * if name of file not specified, delete nentire node
  */
-	if( *search_term == '*'){		
-		if ( (rm_tot_nodes = rm_list(init_call, List)) < 0){
-			Warning("Error when removing node");
-			if(search_term != NULL) free(search_term);
-			return -1;
-		}
-	}
-	else
-	{
-/*
- * find specified names and remove them
- */
-
-		if ( (Founds = Find_caller(*List, search_term, Popts)) == NULL){
-			if(search_term != NULL) free(search_term);
-			return -1;
-		}
-		else
-		{
-/*
- * write the values of the find result
- */
-			printf(" number of founds is %ld \n",  Founds->founds);
-
-			for (i=0; i< Founds->founds; i++){
-				Tmp1 = Founds->Found_Nodes[i]->List;
-			
-//				printf("RM    -- Removing %s\n", Tmp1->name);
-	
-				if ( (rmnodes = rm_list(2, &Tmp1)) > 0){
-					rm_tot_nodes = rm_tot_nodes + rmnodes;
-					Founds->Found_Nodes[i]->List = NULL;
-				
-				}
-/*
- * this should never happen, removing master head node done through function "unmount" == "mount -u"
- */		
-				if(*List == Founds->Found_Nodes[ Founds->founds-1]->List){
-					printf("Removing Matster Head node\n");
-					*List=NULL;
-				}
-/*
- * NOTE:   the fields are correcty destroyed (or at least I think) but the pointer of the deleted nodes in 
- * 		the main tree are not NULL!!!!! Need to correct it. Possibly important when the 
- * 		deleted node is List
- */
-			}
-/*
- * free structure returned by Find_caller
- */
-			DestroyFound(&Founds);
-
-		}
-	}
-//	if(word != NULL) free(word);
-	if(search_term != NULL) free(search_term);
+// 	if( *search_term == '*'){		
+// 		if ( (rm_tot_nodes = rm_list(init_call, List)) < 0){
+// 			Warning("Error when removing node");
+// 			if(search_term != NULL) free(search_term);
+// 			return -1;
+// 		}
+// 	}
+// 	else
+// 	{
+// /*
+//  * find specified names and remove them
+//  */
+// 
+// 		if ( (Founds = Find_caller(*List, search_term, Popts)) == NULL){
+// 			if(search_term != NULL) free(search_term);
+// 			return -1;
+// 		}
+// 		else
+// 		{
+// /*
+//  * write the values of the find result
+//  */
+// 			printf(" number of founds is %ld \n",  Founds->founds);
+// 
+// 			for (i=0; i< Founds->founds; i++){
+// 				Tmp1 = Founds->Found_Nodes[i]->List;
+// 			
+// //				printf("RM    -- Removing %s\n", Tmp1->name);
+// 	
+// 				if ( (rmnodes = rm_list(2, &Tmp1)) > 0){
+// 					rm_tot_nodes = rm_tot_nodes + rmnodes;
+// 					Founds->Found_Nodes[i]->List = NULL;
+// 				
+// 				}
+// /*
+//  * this should never happen, removing master head node done through function "unmount" == "mount -u"
+//  */		
+// 				if(*List == Founds->Found_Nodes[ Founds->founds-1]->List){
+// 					printf("Removing Matster Head node\n");
+// 					*List=NULL;
+// 				}
+// /*
+//  * NOTE:   the fields are correcty destroyed (or at least I think) but the pointer of the deleted nodes in 
+//  * 		the main tree are not NULL!!!!! Need to correct it. Possibly important when the 
+//  * 		deleted node is List
+//  */
+// 			}
+// /*
+//  * free structure returned by Find_caller
+//  */
+// 			DestroyFound(&Founds);
+// 
+// 		}
+// 	}
+// //	if(word != NULL) free(word);
+// 	if(search_term != NULL) free(search_term);
 
 	return rm_tot_nodes;
 }
