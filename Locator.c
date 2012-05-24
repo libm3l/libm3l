@@ -165,7 +165,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
-//  		printf(" Path is %s  \n", node_path );
+//  		printf(" Path %d is %s  \n",i, node_path );
 // 		for (j=0; j< parsed_path_Ffounds[i]->seg_count; j++)
 // 			printf("-%s-", parsed_path_Ffounds[i]->path[j]);
 // 		printf("\n");
@@ -205,54 +205,76 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 			if( HelpNodeI[j] == 1){
 /*
  * node is considered as possible match
+ * check that number of segments is larger or equal to number of segments of Founds individual
+ * if number of segments on Founds is smalle, exclude
  */
+ 				if(parsed_path_Ffounds[j]->seg_count > i){
+/*
+ * if part of path is '*' look for all matches
+ * if number of path (required and compared to) are not equal, exclude node
+ * othewise keep index unchanged
+ */
+ 					if( strncmp(parsed_path->path[i], "*", 1) == 0){
+						if(parsed_path_Ffounds[j]->seg_count != parsed_path->seg_count) HelpNodeI[j] = 0;
+					}
+					else{
 /*
  * compare i-th segment of the path, if match, go with tests of location, Test of length equality too
- */				
-				len1 = strlen(parsed_path->path[i]);
-				len2 = strlen(parsed_path_Ffounds[j]->path[i]);
-				
-				if(len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0){
+ */	
+						len1 = strlen(parsed_path->path[i]);
+						len2 = strlen(parsed_path_Ffounds[j]->path[i]);
+
+						if(len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0){
 /*
  * segments are equal, check locator
  */
-					Tmp = Founds->Found_Nodes[j]->List;
+							Tmp = Founds->Found_Nodes[j]->List;
 /*
  * find node_t pointer corresponding to path segment
  */
-					for(k=i+1; k<parsed_path_loc->seg_count; k++)
-						Tmp = Tmp->parent;
+							for(k=i+1; k<parsed_path_loc->seg_count; k++)
+								Tmp = Tmp->parent;
 /*
  * get counter, increment for each in the same DIR, set 0 if different DIR
  * if parent of the node is the same as previuous node parent..
  */
-					if(Tmppar == Tmp->parent){
+							if(Tmp != NULL){
+								if(Tmppar == Tmp->parent){
  /*
   * check if the node is the same as pevious or not, if not, increase counter (the same name, different pointer situation)
   */
-						if (Tmp != Tm_prev)counter++;
-					}
-					else{
-						counter = 1;
-						Tmppar = Tmp->parent;
-						Tm_prev = Tmp;
-					}
-					
+									if (Tmp != Tm_prev)counter++;
+								}
+								else{
+									counter = 1;
+									Tmppar = Tmp->parent;
+									Tm_prev = Tmp;
+								}
+							}
 					
 // 					printf(" Argument to comapre are '%s' \n",argsstr.args); 
 // 					printf(" Name Argument to comapre are '%c' \n",argsstr.arg); 
 
 					
- 					HelpNodeI[j]  = match_test(Tmp,argsstr, counter);
+							HelpNodeI[j]  = match_test(Tmp,argsstr, counter);
 /*
  * argsstr.first if S or s, deal with subset
  * argsstr.s_name - is argsstr.first == ('s' || 'S') - specifies name of subset name
  * argsstr.arg - type of argument to be used
  * argsstr.args - value of argument to be used
  */
+						}
+						else
+						{
+							HelpNodeI[j]  = 0;
+						}
+					}
 				}
-				else
-				{
+				else{
+/*
+ * number of segments of check path is smaller then number of segments of requested parts
+ * set HelpNodeI[j]  = 0;
+ */
 					HelpNodeI[j]  = 0;
 				}
 			}
@@ -397,7 +419,7 @@ int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
 		break;
 
 		case 'n':  /* count */
-			len1 = Strol(&argsstr.arg);
+			len1 = Strol(argsstr.args);
 			if( counter == len1){
 				return 1;
 			}
