@@ -206,20 +206,16 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 /*
  * node is considered as possible match
  * check that number of segments is larger or equal to number of segments of Founds individual
+ * if number of segments on Founds is smalle, exclude
  */
  				if(parsed_path_Ffounds[j]->seg_count > i){
-
 /*
  * if part of path is '*' look for all matches
+ * if number of path (required and compared to) are not equal, exclude node
+ * othewise keep index unchanged
  */
  					if( strncmp(parsed_path->path[i], "*", 1) == 0){
-						if(i == j){
-// 							continue;
-						}
-						else{
-							HelpNodeI[j] = 0;
-// 							continue;
-						}
+						if(parsed_path_Ffounds[j]->seg_count != parsed_path->seg_count) HelpNodeI[j] = 0;
 					}
 					else{
 /*
