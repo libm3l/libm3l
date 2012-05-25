@@ -104,7 +104,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 				{"FILE",       no_argument,       0, 'f'},
 				{"recursive",  no_argument,       0, 'r'},
 				{"IGNORE",     no_argument,       0, 'I'},
-				{"keeporgnode",   no_argument,       0, 'k'},
+				{"keepheadnode",   no_argument,       0, 'k'},
 //				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
