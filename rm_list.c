@@ -26,7 +26,7 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 /*
  * call locator to locate nodes to be deleted
  */
-	if ( (Founds = locator_caller( (*List), path, path_loc, Popts)) == NULL){
+	if ( (Founds = locator_caller( *List, path, path_loc, Popts)) == NULL){
 		return 0;
 	}
 	else

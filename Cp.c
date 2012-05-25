@@ -9,7 +9,7 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Rm.h"
+#include "Cp.h"
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
@@ -20,12 +20,12 @@ static int verbose_flag;
 /*
  * routine finds the list
  */
-size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options, ...)
+size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 
 	char *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, rm_tot_nodes;
+	size_t args_num, len, i, cp_tot_nodes;
 	va_list args;
 	int c, init_call;
 	int option_index;
@@ -33,13 +33,18 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';
 	
 	option_index = 0;
-	rm_tot_nodes=0;
+	cp_tot_nodes=0;
 	init_call = 2;
 /*
  * check if data set exists
  */
-	if(*List == NULL){
-		Warning("Rm: NULL list");
+	if(SList == NULL){
+		Warning("Cp: NULL source list");
+		return -1;
+	}
+	
+	if(*TList == NULL){
+		Warning("Cp: NULL target list");
 		return -1;
 	}
 /*
@@ -102,9 +107,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 				{"ignore",     no_argument,       0, 'i'},
 				{"DIR",        no_argument,       0, 'd'},
 				{"FILE",       no_argument,       0, 'f'},
-				{"recursive",  no_argument,       0, 'r'},
 				{"IGNORE",     no_argument,       0, 'I'},
-				{"keepheadnode",   no_argument,       0, 'k'},
 //				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
@@ -158,20 +161,6 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 				case 'f':
 					opts.opt_f = 'f';
 				break;
-/*
- * recursive
- */
-				case 'r':
-					opts.opt_r = 'r';
-				break;
-/*
- * preserve - if removing entire tree, preserv the head node
- */
-				case 'k':
-					opts.opt_k = 'k';
-				break;
-
-				case '?':
 /* 
  * Error, getopt_long already printed an error message
  */
@@ -209,7 +198,8 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
  */
 	Popts = &opts;
 	
-	rm_tot_nodes = rm_caller(List, path, path_loc, Popts);
+// 	cp_tot_nodes = cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
-	return rm_tot_nodes;
+
+	return cp_tot_nodes;
 }
