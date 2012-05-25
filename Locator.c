@@ -145,7 +145,9 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
  */
 	if ( (HelpNodeI = malloc(Founds->founds * sizeof(size_t))) == NULL)
 		Perror("malloc");
-	
+/*
+ * NOTE improve efficiency by avoiding testing elements with path different from lookup path
+ */
 	if ( (parsed_path_Ffounds = (path_t **)malloc(Founds->founds * sizeof(path_t *))) == NULL)
 		Perror("malloc");
 	
@@ -226,13 +228,14 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 					else{
 /*
  * compare i-th segment of the path, if match, go with tests of location, Test of length equality too
+ * check for special cases when path starts with ./ or ~/
  */	
 						len1 = strlen(parsed_path->path[i]);
 						len2 = strlen(parsed_path_Ffounds[j]->path[i]);
 
 						if( (len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0) || 
-						    (strncmp(parsed_path->path[i], ".", 1) == 0 && len1 == 1) ||
-						    (strncmp(parsed_path->path[i], "~", 1) == 0	)){
+						    (strncmp(parsed_path->path[i], ".", 1) == 0 && len1 == 1 && i == 0) ||
+						    (strncmp(parsed_path->path[i], "~", 1) == 0	&& i == 0)){
 /*
  * segments are equal, check locator
  */
