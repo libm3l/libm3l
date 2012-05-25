@@ -114,35 +114,37 @@ int main(void)
 				
 // 		printf("Going to locate %p\n", Gnode);
 // 		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+		if( (Founds = Locate(Gnode, "~/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+
 // // 		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
 // // 		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
 // //  		if( (Founds = Locate(Gnode, "/main/*/boundary", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
 // //  		if( (Founds = Locate(Gnode, "/*/*", "/*/*", "--ignore", (char *)NULL)) != NULL){
 // 			
-// 			for(i=0; i < Founds->founds; i++){
-// 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-// 
-// 				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
-// 					printf(" Path is %s \n", node_path);
-// 					free(node_path);
-// 				}
-// 				
-// 				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-// 					Error("CatData");
-// 			}
-// 		DestroyFound(&Founds);
-// 		}
-// 		else
-// 		{
-// 			printf(" No founds\n");
-// 		}
+			for(i=0; i < Founds->founds; i++){
+				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+
+				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+					printf(" Path is %s \n", node_path);
+					free(node_path);
+				}
+				
+				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+					Error("CatData");
+			}
+		DestroyFound(&Founds);
+		}
+		else
+		{
+			printf(" No founds\n");
+		}
 		
 		
-		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*",  "--keeporgnode", (char *)NULL) );
-		
-		
-		 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
- 	                   Error("CatData");
+// 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*",  "--keeporgnode", (char *)NULL) );
+// 		
+// 		
+// 		 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+//  	                   Error("CatData");
 // 		
 		if(Umount(&Gnode) != 1)
                   Perror("Umount");

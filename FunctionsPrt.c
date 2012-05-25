@@ -267,15 +267,27 @@ path_t *parse_path(const char *path)
 	pc = path;
 
 	while( *pc == '\t' || *pc == ' ' &&  *pc != '\0') pc++;
-
-	if(*pc == '/' && *pc != '\0'){
+/*
+ * path starts with /
+ */
+	if(*pc == '/' ){
 		counter = 0;
 		abspath = 'A';
 	}
-	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
-		counter = 0;
-		pc++;
-	}
+/*
+ * path starts with ./
+ */
+// 	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
+// 		counter = 0;
+// 		pc++;
+// 	}
+/*
+ * path starts with ~/   - Absolute path
+ */	
+	else if(*pc == '~' ){
+		counter = 1;
+		abspath = 'A';
+	}	
 	else{
 		counter = 1;
 	}
@@ -334,9 +346,9 @@ path_t *parse_path(const char *path)
 	if(*pc == '/' && *pc != '\0'){
 		pc++;
 	}
-	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
-		pc += 2;
-	}
+// 	else if(*pc == '.' && *(pc+1) == '/' && *pc != '\0' && *(pc+1) != '\0'){
+// 		pc += 2;
+// 	}
 
 	st = 0;
 	j = 0;

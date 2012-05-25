@@ -32,6 +32,12 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 		Error("Error in path");
 		return (find_t *)NULL;
 	}
+	
+// 	for( i =0; i< parsed_path->seg_count; i++)
+// 		printf(" %s\n", parsed_path->path[i]);
+// 	
+// 		printf(" %c\n", parsed_path->abspath);
+// 	exit(0);
 /*
  * call find function with specified options
  * First look if ../ are in path or if path is absolute path
@@ -43,10 +49,10 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 		
 		while(Tmp_node->parent != NULL)Tmp_node = Tmp_node->parent;
 /*
- * check if first segment is identical to name of initial node or is '*'
+ * check if first segment is identical to name of initial node or is '*' or ~
  */
 		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0 && 
-	           strncmp(parsed_path->path[0], "*", 1) != 0){
+	           strncmp(parsed_path->path[0], "*", 1) != 0 && strncmp(parsed_path->path[0], "~", 1) != 0){
 			Error("Wrong absolute path");
 			destroy_pars_path(&parsed_path);
 			return (find_t *)NULL;
@@ -56,7 +62,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 
 		for(i=0; i<parsed_path->seg_count; i++){
 			if(strncmp(parsed_path->path[i], "..", 2) == 0){
-				if ( (Tmp_node = Founds->Home_Node->parent) == NULL){
+				if ( (Tmp_node = Tmp_node->parent) == NULL){
 					Error("Wrong path");
 					destroy_pars_path(&parsed_path);
 					return (find_t *)NULL;
@@ -206,7 +212,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 /*
  * node is considered as possible match
  * check that number of segments is larger or equal to number of segments of Founds individual
- * if number of segments on Founds is smalle, exclude
+ * if number of segments on Founds is smaller, exclude
  */
  				if(parsed_path_Ffounds[j]->seg_count > i){
 /*
@@ -224,7 +230,9 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 						len1 = strlen(parsed_path->path[i]);
 						len2 = strlen(parsed_path_Ffounds[j]->path[i]);
 
-						if(len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0){
+						if( (len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0) || 
+						    (strncmp(parsed_path->path[i], ".", 1) == 0 && len1 == 1) ||
+						    (strncmp(parsed_path->path[i], "~", 1) == 0	)){
 /*
  * segments are equal, check locator
  */
