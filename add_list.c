@@ -3,10 +3,12 @@
  
 #include "Header.h"
 #include "format_type.h"
+#include "internal_format_type.h"
+
 #include "add_list.h"
 #include "FunctionsPrt.h"
 
-int add_list(node_t **List, node_t **WTAList, char option)
+int add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 {
 /*
  * function adds list to the list tree
@@ -38,14 +40,16 @@ int add_list(node_t **List, node_t **WTAList, char option)
 		Warning("add_list: : NULL list");
 		return -2;
 	}
-		Node        = *List;
-		WTAnode     = *WTAList;
+	
+	Node        = *List;
+	WTAnode     = *WTAList;
 
-	if( (*List)->child == NULL){
+// 	if( (*List)->child == NULL){
+	if(strncmp( (*List)->child->type, "DIR", 3) != 0){
 /*
- * List does not have children
+ * List is not DIR type
  */
-		if(option == 'b'){
+		if(Popt->opt_b == 'b'){
 /*
  * add node before WTAList
  */		
@@ -57,7 +61,7 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0;
+			((*WTAList)->parent)->ndim++;
 			return 1;
 		}
 		else
@@ -66,7 +70,7 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * add node after WTAList
  */
-			Node->parent = WTAnode->parent;
+			Node->parent  = WTAnode->parent;
 			Node->prev    = WTAnode;
 			Node->next    = WTAnode->next;
 
@@ -74,7 +78,7 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0; 
+			((*WTAList)->parent)->ndim++; 
 			return 1;
 		}
 	}
@@ -86,7 +90,7 @@ int add_list(node_t **List, node_t **WTAList, char option)
 
 		WTAChild = (*WTAList)->child;
 
-		if(option == 'b'){
+		if(Popt->opt_b == 'b'){
 /*
  * add node at the beginning of the line of children
  */
@@ -100,7 +104,7 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0;
+			((*WTAList)->parent)->ndim++;
 			return 1;
 		}
 		else
@@ -122,13 +126,13 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0;
+			((*WTAList)->parent)->ndim++;
 			return 1;
 		}
 	}
 /*
  * something went wrong, did not identify where to add node
  */
-return 0;
+return -3;
 }
 

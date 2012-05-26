@@ -17,6 +17,7 @@ typedef struct tmpstruct{
 
 typedef struct opts{
 	char opt_a, opt_A;
+	char opt_b, opt_B;
 	char opt_d, opt_D;
 	char opt_f, opt_F;
 	char opt_i, opt_I;
