@@ -30,7 +30,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 	int c, init_call;
 	int option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';
 	
 	option_index = 0;
 	cp_tot_nodes=0;
@@ -198,7 +198,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
  */
 	Popts = &opts;
 	
-// 	cp_tot_nodes = cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	cp_tot_nodes = cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
 
 	return cp_tot_nodes;

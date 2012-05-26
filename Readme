@@ -74,3 +74,5 @@ then removing link and making new one
 13. get_arguments - need to solve how to indicate unsuccesfull error from the function. 
 in Locator. c need to add testing of it
 
+
+14. Cp - take care of LINKS
