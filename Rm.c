@@ -30,7 +30,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 	int c, init_call;
 	int option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0';
 	
 	option_index = 0;
 	rm_tot_nodes=0;
@@ -99,19 +99,20 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 		{
 			static struct option long_options[] =
 			{
-				{"ignore",     no_argument,       0, 'i'},
-				{"DIR",        no_argument,       0, 'd'},
-				{"FILE",       no_argument,       0, 'f'},
-				{"recursive",  no_argument,       0, 'r'},
-				{"IGNORE",     no_argument,       0, 'I'},
-				{"keepheadnode",   no_argument,       0, 'k'},
+				{"ignore",     no_argument,       0, 'i'},   /* ignore case */
+				{"DIR",        no_argument,       0, 'd'},   /* look fir DIR only */
+				{"FILE",       no_argument,       0, 'f'},   /* look for FILE only */
+				{"LINK",       no_argument,       0, 'L'},   /* look fir LINK only */
+				{"recursive",  no_argument,       0, 'r'},   /* recursive */
+				{"IGNORE",     no_argument,       0, 'I'},   /* all but search term */
+				{"keepheadnode",   no_argument,       0, 'k'}, /* remove all up to head node, keep head node */
 //				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfikIr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiIkLr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
