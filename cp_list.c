@@ -12,11 +12,12 @@
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
-#include "udf_rm.h"
 
 
 static int cp_list(int , node_t *, node_t **, opts_t *);
-static node_t *cp_list_content(node_t *SList);
+static node_t *cp_crt_list(node_t *);
+int cp_recrt_list(node_t ** , node_t *);
+static int cp_list_content(node_t **, node_t *);
 
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
@@ -107,7 +108,7 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 /*
  * copy content of the list
  */
-		if ( (NewList = cp_list_content(SList)) == NULL){
+		if (  cp_recrt_list(TList, SList) != 0){
 			Error("Copying list");
 			return -1;
 		}
@@ -118,7 +119,7 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 /*
  * copy content of the list
  */
-		if ( (NewList = cp_list_content(SList)) == NULL){
+		if ( (NewList = cp_crt_list(SList)) == NULL){
 			Error("Copying list");
 			return -1;
 		}
@@ -133,7 +134,8 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 }
 
 
-node_t *cp_list_content(node_t *Slist){
+node_t *cp_crt_list(node_t *Slist)
+{
 	
 	node_t *Pnode;
 	tmpstruct_t TMPSTR;
@@ -169,88 +171,155 @@ node_t *cp_list_content(node_t *Slist){
  * NOTE - here you have to take care of link information
  */
 
+	if( cp_list_content(&Pnode, Slist) != 0){
+		Error("cp_list_content");
+		return (node_t *)NULL;
+	}
+}
 
+
+int cp_recrt_list(node_t ** Tlist, node_t *Slist){
+	
+	node_t *Pnode;
+	tmpstruct_t TMPSTR;
+	size_t i;
+/* 
+ * copy name, type, number iof dimensions, dimensions
+ */
+	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", Slist->name) < 0){
+		Perror("snprintf");
+		return -1;
+	}
+	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", Slist->type) < 0){
+		Perror("snprintf");
+		return -1;
+	}
+	TMPSTR.ndim = Slist->ndim;
+
+	if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL){
+		Perror("malloc");
+		return -1;
+	}
+	
+	for(i=0; i<TMPSTR.ndim; i++)
+		TMPSTR.dim[i] = Slist->fdim[i];
+/*
+ * re-create Tlist node
+ * first - free existing data set
+ */
+	if ( Free_data_str(Tlist) != 0){
+		Error("Free_data_str");
+		return -1;
+	}
+/*
+ * allocate new ->data in the node
+ */
+	if ( AllocateNodeData(Tlist, TMPSTR) != 0){
+		Error("AllocateNodeData");
+		return -1;
+	}
+/*
+ * NOTE - here you have to take care of link information
+ */
+
+/*
+ * copy data to new node_t
+ */
+	if( cp_list_content(Tlist, Slist) != 0)
+		Error("cp_list_content");
+}
+
+
+
+int cp_list_content(node_t **Pnode, node_t *Slist)
+{
 /*
  * copy content of the list
  */
-		if (strncmp((*Lnode)->type,"LD",2) == 0){  /* long double */
-			free( (*Lnode)->data.ldf);
-			(*Lnode)->data.ldf = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"D",1) == 0){  /* double */
-			free( (*Lnode)->data.df);
-			(*Lnode)->data.df = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"F",1) == 0){  /* float */
-			free( (*Lnode)->data.f);
-			(*Lnode)->data.f = NULL;
-		}
+	size_t i, tot_dim;
+	
+	tot_dim = 1;
+	for(i=0; i<Slist->ndim; i++)
+		tot_dim = tot_dim * Slist->fdim[i];
+	
+	
+	if (strncmp(Slist->type,"LD",2) == 0){  /* long double */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.ldf = Slist->data.ldf;
+	}
+	else if(strncmp(Slist->type,"D",1) == 0){  /* double */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.df = Slist->data.df;
+	}
+	else if(strncmp(Slist->type,"F",1) == 0){  /* float */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.f = Slist->data.f;
+	}
 /*
  * chars, do not serialize, write as they are
  */
-		else if (strncmp((*Lnode)->type,"SC",2) == 0){  /* signed char */
-			free( (*Lnode)->data.sc);
-			(*Lnode)->data.sc = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"UC",2) == 0){  /* unsigned char */
-			free( (*Lnode)->data.uc);
-			(*Lnode)->data.uc = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"C",1) == 0){  /* char */
-			free( (*Lnode)->data.c);
-			(*Lnode)->data.c = NULL;
-		}
+	else if (strncmp(Slist->type,"SC",2) == 0){  /* signed char */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.sc = Slist->data.sc;
+	}
+	else if(strncmp(Slist->type,"UC",2) == 0){  /* unsigned char */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.uc = Slist->data.uc;
+	}
+	else if(strncmp(Slist->type,"C",1) == 0){  /* char */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.c = Slist->data.c;
+	}
 /*
  * integers
  */
-		else if(strncmp((*Lnode)->type,"ULLI",4) == 0){  /* unsigned long long  int */
-			free( (*Lnode)->data.ulli);
-			(*Lnode)->data.ulli = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"SLLI",4) == 0){  /* signed long long  int */
-			free( (*Lnode)->data.slli);
-			(*Lnode)->data.slli = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"LLI",3) == 0){  /* unsigned short int */
-			free( (*Lnode)->data.lli);
-			(*Lnode)->data.lli = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"ULI",3) == 0){  /* unsigned long int */
-			free( (*Lnode)->data.uli);
-			(*Lnode)->data.uli = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"USI",3) == 0){  /* unsigned short int */
-			free( (*Lnode)->data.usi);
-			(*Lnode)->data.usi = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"SI",2) == 0){  /* short int */
-			free( (*Lnode)->data.si);
-			(*Lnode)->data.si = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"UI",2) == 0){  /* unsigned int */
-			free( (*Lnode)->data.ui);
-			(*Lnode)->data.ui = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"LI",2) == 0){  /* long  int */
-			free( (*Lnode)->data.li);
-			(*Lnode)->data.li = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"I",1) == 0){  /* int */
-			free( (*Lnode)->data.i);
-			(*Lnode)->data.i = NULL;
-		}
+	else if(strncmp(Slist->type,"ULLI",4) == 0){  /* unsigned long long  int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.ulli = Slist->data.ulli;
+	}
+	else if(strncmp(Slist->type,"SLLI",4) == 0){  /* signed long long  int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.slli = Slist->data.slli;
+	}
+	else if(strncmp(Slist->type,"LLI",3) == 0){  /* unsigned short int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.lli = Slist->data.lli;
+	}
+	else if(strncmp(Slist->type,"ULI",3) == 0){  /* unsigned long int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.uli = Slist->data.uli;
+	}
+	else if(strncmp(Slist->type,"USI",3) == 0){  /* unsigned short int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.usi = Slist->data.usi;
+	}
+	else if(strncmp(Slist->type,"SI",2) == 0){  /* short int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.si = Slist->data.si;
+	}
+	else if(strncmp(Slist->type,"UI",2) == 0){  /* unsigned int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.ui = Slist->data.ui;
+	}
+	else if(strncmp(Slist->type,"LI",2) == 0){  /* long  int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.li = Slist->data.li;
+	}
+	else if(strncmp(Slist->type,"I",1) == 0){  /* int */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.i = Slist->data.i;
+	}
 /*
  * counters
  */
-		else if(strncmp((*Lnode)->type,"ST",2) == 0){  /* size_t */
-			free( (*Lnode)->data.st);
-			(*Lnode)->data.st = NULL;
-		}
-		else if(strncmp((*Lnode)->type,"PTRDF",1) == 0){  /* ptrdf_t */
-			free( (*Lnode)->data.ptrdf);
-			(*Lnode)->data.ptrdf = NULL;
-		}
+	else if(strncmp(Slist->type,"ST",2) == 0){  /* size_t */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.st = Slist->data.st;
 	}
-
-	return Pnode;
+	else if(strncmp(Slist->type,"PTRDF",1) == 0){  /* ptrdf_t */
+		for(i=0; i<tot_dim; i++)
+			(*Pnode)->data.ptrdf = Slist->data.ptrdf;
+	}
+	
+	return 0;
 }
