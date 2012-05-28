@@ -315,11 +315,6 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
 
 	if ( ( Lnode->name  = (char *)malloc(MAX_NAME_LENGTH* sizeof(char))) == NULL)
 		Perror("malloc");
- 
-	if(strncmp(TMPSTR.Type,"DIR",3) != 0){
-		if ( ( Lnode->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
-			Perror("malloc");
-	}
 /*
  * allocating data in data union (if list is of DATA type)
  */   
@@ -347,6 +342,11 @@ int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR)
   * NOTE - when allocating sc,uc,c fields, allocate 1 element more and put it explicitely '\0' during reading
   */
 	size_t i, tot_dim;
+	
+	if(strncmp(TMPSTR.Type,"DIR",3) != 0){
+		if ( ( (*Lnode)->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
+			Perror("malloc");
+	}
 	
 	tot_dim = 1;
 	for(i=0; i<TMPSTR.ndim; i++){

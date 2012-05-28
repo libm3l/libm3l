@@ -13,10 +13,12 @@
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
+#include "Cat.h"
+
 
 static int cp_list(int , node_t *, node_t **, opts_t *);
 static node_t *cp_crt_list(node_t *);
-int cp_recrt_list(node_t ** , node_t *);
+static int cp_recrt_list(node_t ** , node_t *);
 static int cp_list_content(node_t **, node_t *);
 
 /*
@@ -72,6 +74,8 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 	}
 	
 	
+	printf(" number of found nodes is %ld   %ld\n", SFounds->founds, TFounds->founds);
+	
 	cp_tot_nodes = 0;
 		
 	for(i=0; i< SFounds->founds; i++){
@@ -108,7 +112,7 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 /*
  * copy content of the list
  */
-		if (  cp_recrt_list(TList, SList) != 0){
+		if (  cp_recrt_list(TList, SList) < 1){
 			Error("Copying list");
 			return -1;
 		}
@@ -123,6 +127,9 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 			Error("Copying list");
 			return -1;
 		}
+ 		Cat(SList, "--all", "-P", "-L", "*", (char *)NULL);
+ 				printf(" %p \n", NewList);
+ 		Cat(NewList, "--all", "-P", "-L", "*", (char *)NULL);
 /*
  * add a new node to the DIR list
  */
@@ -151,15 +158,16 @@ node_t *cp_crt_list(node_t *Slist)
 		Perror("snprintf");
 		return (node_t *)NULL;
 	}
-	TMPSTR.ndim = Slist->ndim;
-
-	if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL){
-		Perror("malloc");
-		return (node_t *)NULL;
-	}
+	if( (TMPSTR.ndim = Slist->ndim) > 0){
 	
-	for(i=0; i<TMPSTR.ndim; i++)
-		TMPSTR.dim[i] = Slist->fdim[i];
+		if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL){
+			Perror("malloc");
+			return (node_t *)NULL;
+		}
+		
+		for(i=0; i<TMPSTR.ndim; i++)
+			TMPSTR.dim[i] = Slist->fdim[i];
+	}
 /*
  * create new node
  */
@@ -171,10 +179,15 @@ node_t *cp_crt_list(node_t *Slist)
  * NOTE - here you have to take care of link information
  */
 
+	free(TMPSTR.dim);
+	TMPSTR.dim = NULL;
+
 	if( cp_list_content(&Pnode, Slist) != 0){
 		Error("cp_list_content");
 		return (node_t *)NULL;
 	}
+		
+	return Pnode;
 }
 
 
@@ -194,15 +207,19 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
 		Perror("snprintf");
 		return -1;
 	}
-	TMPSTR.ndim = Slist->ndim;
-
-	if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL){
-		Perror("malloc");
-		return -1;
+		
+	if(  (TMPSTR.ndim = Slist->ndim) > 0){
+/*
+ * if list is not DIR get dimensions
+ */
+		if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL){
+			Perror("malloc");
+			return -1;
+		}
+		
+		for(i=0; i<TMPSTR.ndim; i++)
+			TMPSTR.dim[i] = Slist->fdim[i];
 	}
-	
-	for(i=0; i<TMPSTR.ndim; i++)
-		TMPSTR.dim[i] = Slist->fdim[i];
 /*
  * re-create Tlist node
  * first - free existing data set
@@ -218,6 +235,9 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
 		Error("AllocateNodeData");
 		return -1;
 	}
+	
+	free(TMPSTR.dim);
+	TMPSTR.dim = NULL;
 /*
  * NOTE - here you have to take care of link information
  */
@@ -227,6 +247,8 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
  */
 	if( cp_list_content(Tlist, Slist) != 0)
 		Error("cp_list_content");
+
+	return 1;
 }
 
 
@@ -237,88 +259,92 @@ int cp_list_content(node_t **Pnode, node_t *Slist)
  * copy content of the list
  */
 	size_t i, tot_dim;
+		
 	
+	(*Pnode)->ndim = Slist->ndim;
+
 	tot_dim = 1;
-	for(i=0; i<Slist->ndim; i++)
+	for(i=0; i<Slist->ndim; i++){
+		(*Pnode)->fdim[i] = Slist->fdim[i];
 		tot_dim = tot_dim * Slist->fdim[i];
-	
-	
+	}
+		
 	if (strncmp(Slist->type,"LD",2) == 0){  /* long double */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.ldf = Slist->data.ldf;
+			(*Pnode)->data.ldf[i] = Slist->data.ldf[i];
 	}
 	else if(strncmp(Slist->type,"D",1) == 0){  /* double */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.df = Slist->data.df;
+			(*Pnode)->data.df[i] = Slist->data.df[i];
 	}
 	else if(strncmp(Slist->type,"F",1) == 0){  /* float */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.f = Slist->data.f;
+			(*Pnode)->data.f[i] = Slist->data.f[i];
 	}
 /*
  * chars, do not serialize, write as they are
  */
 	else if (strncmp(Slist->type,"SC",2) == 0){  /* signed char */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.sc = Slist->data.sc;
+			(*Pnode)->data.sc[i] = Slist->data.sc[i];
 	}
 	else if(strncmp(Slist->type,"UC",2) == 0){  /* unsigned char */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.uc = Slist->data.uc;
+			(*Pnode)->data.uc[i] = Slist->data.uc[i];
 	}
 	else if(strncmp(Slist->type,"C",1) == 0){  /* char */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.c = Slist->data.c;
+			(*Pnode)->data.c[i] = Slist->data.c[i];
 	}
 /*
  * integers
  */
 	else if(strncmp(Slist->type,"ULLI",4) == 0){  /* unsigned long long  int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.ulli = Slist->data.ulli;
+			(*Pnode)->data.ulli[i] = Slist->data.ulli[i];
 	}
 	else if(strncmp(Slist->type,"SLLI",4) == 0){  /* signed long long  int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.slli = Slist->data.slli;
+			(*Pnode)->data.slli[i] = Slist->data.slli[i];
 	}
 	else if(strncmp(Slist->type,"LLI",3) == 0){  /* unsigned short int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.lli = Slist->data.lli;
+			(*Pnode)->data.lli[i] = Slist->data.lli[i];
 	}
 	else if(strncmp(Slist->type,"ULI",3) == 0){  /* unsigned long int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.uli = Slist->data.uli;
+			(*Pnode)->data.uli[i] = Slist->data.uli[i];
 	}
 	else if(strncmp(Slist->type,"USI",3) == 0){  /* unsigned short int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.usi = Slist->data.usi;
+			(*Pnode)->data.usi[i] = Slist->data.usi[i];
 	}
 	else if(strncmp(Slist->type,"SI",2) == 0){  /* short int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.si = Slist->data.si;
+			(*Pnode)->data.si[i] = Slist->data.si[i];
 	}
 	else if(strncmp(Slist->type,"UI",2) == 0){  /* unsigned int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.ui = Slist->data.ui;
+			(*Pnode)->data.ui[i] = Slist->data.ui[i];
 	}
 	else if(strncmp(Slist->type,"LI",2) == 0){  /* long  int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.li = Slist->data.li;
+			(*Pnode)->data.li[i] = Slist->data.li[i];
 	}
 	else if(strncmp(Slist->type,"I",1) == 0){  /* int */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.i = Slist->data.i;
+			(*Pnode)->data.i[i] = Slist->data.i[i];
 	}
 /*
  * counters
  */
 	else if(strncmp(Slist->type,"ST",2) == 0){  /* size_t */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.st = Slist->data.st;
+			(*Pnode)->data.st[i] = Slist->data.st[i];
 	}
 	else if(strncmp(Slist->type,"PTRDF",1) == 0){  /* ptrdf_t */
 		for(i=0; i<tot_dim; i++)
-			(*Pnode)->data.ptrdf = Slist->data.ptrdf;
+			(*Pnode)->data.ptrdf[i] = Slist->data.ptrdf[i];
 	}
 	
 	return 0;
