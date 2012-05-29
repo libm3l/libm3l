@@ -17,9 +17,12 @@
 
 
 static int cp_list(int , node_t *, node_t **, opts_t *);
-static node_t *cp_crt_list(node_t *);
+static node_t *cp_crt_list(int call, node_t *, opts_t *);
+static node_t *cp_crt_list_item(node_t *);
 static int cp_recrt_list(node_t ** , node_t *);
 static int cp_list_content(node_t **, node_t *);
+
+// node_t *RetNode;
 
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
@@ -29,6 +32,9 @@ static int cp_list_content(node_t **, node_t *);
 
 size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
 {
+/*
+ * function is a caller of the cp functions
+ */
 	size_t i, cp_tot_nodes, cp_nodes;
 	find_t *SFounds, *TFounds;
 	int init_call;
@@ -96,14 +102,20 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 
 int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 {
-	int ncp;
+/*
+ * function copies list SList to a target list TList
+ * 	if the SList is FILE, TLIST has to be file too. The data sunion and ->fdim of the TList target nodes is furst freed, then reallocated
+ *	and then SList data union + ->fdim and ->ndim are copied.
+ * 	if the TList is DIR the Slist is re-created and added to the TList. In case SList is a DIR, the copying is done by 
+ *	traversing the list and copying it item-by-item
+ */
 	node_t *NewList;
 /*
  * copy source (Slist) to target (Tlist)
  */
 	if(strncmp( (*TList)->type, "DIR", 3) != 0){
 /*
- * check that source is not DIR type
+ * *Tlist is FILE, check that SList is not DIR
  */
 		if(strncmp( SList->type, "DIR", 3) == 0){
 			Warning(" cp_list: cannot overwrite non-DIR  with DIR ");
@@ -123,27 +135,146 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 /*
  * copy content of the list
  */
-		if ( (NewList = cp_crt_list(SList)) == NULL){
-			Error("Copying list");
-			return -1;
+		if(strncmp( SList->type, "DIR", 3) == 0){
+/*
+ * SList is DIR, traverese and copy item-by-item
+ */
+			if ( (NewList = cp_crt_list(1, SList, Popts)) == NULL){
+				Error("Copying list");
+				return -1;
+			}
 		}
+		else{
+/*
+ * Slist is FILE type, skip traversing and copy item directly
+ */
+			if ( (NewList = cp_crt_list_item(SList)) == NULL){
+				Error("Copying list");
+				return -1;
+			}
+		}
+
+		printf(" Cat Slist\n");
  		Cat(SList, "--all", "-P", "-L", "*", (char *)NULL);
- 				printf(" %p \n", NewList);
+ 		
+		printf(" Newlist cat %p \n", NewList);
  		Cat(NewList, "--all", "-P", "-L", "*", (char *)NULL);
+		printf(" After\n");
+		
 /*
  * add a new node to the DIR list
  */
-		if ( (ncp = add_list(&NewList, TList, Popts)) < 0){
+		if ( add_list(&NewList, TList, Popts) < 0){
 			Warning("Error cp_list copy");
 			return -1;
 		}
 	}
 }
 
-
-node_t *cp_crt_list(node_t *Slist)
+node_t *cp_crt_list(int call, node_t *List, opts_t *Popts)
 {
+/*
+ * function creates list. It is called if the target is DIR.
+ * If SList is DIR, copying is done by traversin entire SList and copying each item
+ */
+	node_t *Tmpnode, *Tmp1;
+	node_t *RetNode;
+	size_t i;
+
+	if(List == NULL){
+		Warning("WriteData: NULL list");
+		return (node_t *) NULL;
+	}
+/*
+ * if initial call, create node, per default it will be DIR
+ */
 	
+	printf(" Call %d  %p  %s   %s\n", call, List, List->name, List->type);
+
+	if( (RetNode = cp_crt_list_item(List)) == NULL){
+		Error(" cp_crt_list_item");
+		return (node_t *) NULL;
+	}
+
+	if(strncmp(List->type, "DIR", 3) != 0){
+/*
+ * create node, copy Source to it and add it to List. If child node is NULL, List is an empty DIR
+ */
+// 		if ( (Tmp1 = List->child) == NULL) return RetNode;
+// 
+ 			printf(" Copying %s node \n", List->name);
+
+		if( (Tmpnode = cp_crt_list_item(List)) == NULL){
+			Error(" cp_crt_list_item");
+			return (node_t *) NULL;
+		}
+		if (  add_list(&Tmpnode, &RetNode, Popts) < 0){
+			Warning("Error cp_list copy");
+			return (node_t *) NULL;    /* NOTE - mabe free RetNode and Tmpnode ? */;
+		}
+	}
+	else
+	{
+/*
+ * initil call
+ */
+// 		PrintListInfo(List, Popts);
+		
+		if(call == 1){
+
+			Tmpnode = List->child;
+
+			while(Tmpnode != NULL){
+
+			printf(" Node name is %p %p  '%s' \n", Tmpnode, Tmpnode->next, Tmpnode->name);
+/*
+ * if node is list and option specifies it, write the target node data
+ */
+				if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popts->opt_l == 'l'){
+// 					if(cat_list(2, Tmpnode->child, Popts) != 0){ /* list is populated by the target list where it points to */
+// 						Warning("Write data problem");
+// 						return (node_t *)NULL;
+// 					}
+				}
+				else{
+					Tmp1 = cp_crt_list(2, Tmpnode, Popts);
+				}
+
+				if (  add_list(&Tmp1, &RetNode, Popts) < 0){
+					Warning("Error cp_list copy");
+					return (node_t *) NULL;    /* NOTE - mabe free RetNode and Tmpnode ? */;
+				}
+				
+				Tmpnode = Tmpnode->next;
+ 				printf(" Nextnode  %p \n", Tmpnode);
+			}
+		}
+/*
+ * recursive call or call with specified parameter 2
+ */
+		else if(call == 2){
+			Tmpnode = List->child;
+ 			while(Tmpnode != NULL){
+
+				Tmp1 = cp_crt_list(2, Tmpnode, Popts);
+
+				if (  add_list(&Tmp1, &RetNode, Popts) < 0){
+					Warning("Error cp_list copy");
+					return (node_t *) NULL;    /* NOTE - mabe free RetNode and Tmpnode ? */;
+				}
+				Tmpnode = Tmpnode->next;
+			}
+		}
+	}
+	return RetNode;
+}
+
+
+node_t *cp_crt_list_item(node_t *Slist)
+{
+/*
+ * function creates a single list and copy the Slist into it
+ */
 	node_t *Pnode;
 	tmpstruct_t TMPSTR;
 	size_t i;
@@ -158,7 +289,11 @@ node_t *cp_crt_list(node_t *Slist)
 		Perror("snprintf");
 		return (node_t *)NULL;
 	}
-	if( (TMPSTR.ndim = Slist->ndim) > 0){
+
+	TMPSTR.ndim = Slist->ndim;
+	TMPSTR.dim  = NULL;
+	
+	if(strncmp(Slist->type, "DIR", 3) != 0){
 	
 		if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL){
 			Perror("malloc");
@@ -167,24 +302,35 @@ node_t *cp_crt_list(node_t *Slist)
 		
 		for(i=0; i<TMPSTR.ndim; i++)
 			TMPSTR.dim[i] = Slist->fdim[i];
-	}
 /*
  * create new node
  */
-	if( (Pnode = AllocateNode(TMPSTR)) == NULL){
-		Error("Allocate");
-		return (node_t *)NULL;
-	}
+		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
+			Error("Allocate");
+			return (node_t *)NULL;
+		}
 /*
  * NOTE - here you have to take care of link information
  */
 
-	free(TMPSTR.dim);
-	TMPSTR.dim = NULL;
-
-	if( cp_list_content(&Pnode, Slist) != 0){
-		Error("cp_list_content");
-		return (node_t *)NULL;
+		if(TMPSTR.dim == NULL) free(TMPSTR.dim);
+		TMPSTR.dim = NULL;
+	
+		if( cp_list_content(&Pnode, Slist) != 0){
+			Error("cp_list_content");
+			return (node_t *)NULL;
+		}
+	}
+	else{
+/*
+ * List is DIR type
+ * create new node, upon creation, initialize the number of items in DIR = 0, will be automatically updated by add_list
+ */
+ 		TMPSTR.ndim = 0;
+		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
+			Error("Allocate");
+			return (node_t *)NULL;
+		}	
 	}
 		
 	return Pnode;
@@ -192,7 +338,11 @@ node_t *cp_crt_list(node_t *Slist)
 
 
 int cp_recrt_list(node_t ** Tlist, node_t *Slist){
-	
+/*
+ * function realloc the existing list. Used if both source and target lists are FILE types
+ *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
+ *	Tlist
+ */
 	node_t *Pnode;
 	tmpstruct_t TMPSTR;
 	size_t i;
@@ -207,9 +357,12 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
 		Perror("snprintf");
 		return -1;
 	}
-		
-	if(  (TMPSTR.ndim = Slist->ndim) > 0){
+	TMPSTR.dim = NULL;
+	TMPSTR.ndim = Slist->ndim;
+
+	if(strncmp(Slist->type, "DIR", 3) != 0){
 /*
+ * Tlist node is not DIR
  * if list is not DIR get dimensions
  */
 		if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL){
@@ -219,34 +372,33 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
 		
 		for(i=0; i<TMPSTR.ndim; i++)
 			TMPSTR.dim[i] = Slist->fdim[i];
-	}
 /*
  * re-create Tlist node
  * first - free existing data set
  */
-	if ( Free_data_str(Tlist) != 0){
-		Error("Free_data_str");
-		return -1;
-	}
+		if ( Free_data_str(Tlist) != 0){
+			Error("Free_data_str");
+			return -1;
+		}
 /*
  * allocate new ->data in the node
  */
-	if ( AllocateNodeData(Tlist, TMPSTR) != 0){
-		Error("AllocateNodeData");
-		return -1;
-	}
+		if ( AllocateNodeData(Tlist, TMPSTR) != 0){
+			Error("AllocateNodeData");
+			return -1;
+		}
 	
-	free(TMPSTR.dim);
-	TMPSTR.dim = NULL;
-/*
- * NOTE - here you have to take care of link information
- */
-
+		if(TMPSTR.dim == NULL)  free(TMPSTR.dim);
+		TMPSTR.dim = NULL;
 /*
  * copy data to new node_t
  */
-	if( cp_list_content(Tlist, Slist) != 0)
-		Error("cp_list_content");
+		if( cp_list_content(Tlist, Slist) != 0)
+			Error("cp_list_content");
+/*
+ * NOTE - here you have to take care of link information
+ */
+	}
 
 	return 1;
 }
@@ -256,19 +408,30 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
 int cp_list_content(node_t **Pnode, node_t *Slist)
 {
 /*
- * copy content of the list
+ * fuction copies content of the list ie>
+ *	->ndim
+ *	->fdim[]
+ *	->data.*[]
  */
 	size_t i, tot_dim;
-		
-	
+/*
+ * copy number if dimensions and each dimension size
+ */
 	(*Pnode)->ndim = Slist->ndim;
 
 	tot_dim = 1;
+	if((*Pnode)->fdim == NULL){
+		Error("cp_list_content fdim does not exist");
+		return -1;
+	}
+
 	for(i=0; i<Slist->ndim; i++){
 		(*Pnode)->fdim[i] = Slist->fdim[i];
 		tot_dim = tot_dim * Slist->fdim[i];
 	}
-		
+/*
+ * depending on type of FILE copy fata union content
+ */		
 	if (strncmp(Slist->type,"LD",2) == 0){  /* long double */
 		for(i=0; i<tot_dim; i++)
 			(*Pnode)->data.ldf[i] = Slist->data.ldf[i];
@@ -346,6 +509,8 @@ int cp_list_content(node_t **Pnode, node_t *Slist)
 		for(i=0; i<tot_dim; i++)
 			(*Pnode)->data.ptrdf[i] = Slist->data.ptrdf[i];
 	}
-	
+/*
+ * upon success, return 0
+ */	
 	return 0;
 }
