@@ -102,7 +102,8 @@ find_t *Find(node_t *List, char * Options, ...)
 				{"ignore",     	no_argument,    	0, 'i'},  /* ignore case */
 				{"DIR",        	no_argument,     	0, 'd'},  /* only DIR */
 				{"FILE",       	no_argument,    	0, 'f'},  /* only file, at the moment it means not DIR */
-				{"recursive",  	no_argument,  		0, 'r'},  /* search inside the subdirs too */
+				{"LINK",       	no_argument,    	0, 'l'},  /* only file, at the moment it means not DIR */
+				{"recursive",  	no_argument,  	0, 'r'},  /* search inside the subdirs too */
 				{"IGNORE",  	no_argument,    	0, 'I'},  /* search all but search_term */
 				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
@@ -110,7 +111,7 @@ find_t *Find(node_t *List, char * Options, ...)
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiILr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiIlLr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -163,6 +164,12 @@ find_t *Find(node_t *List, char * Options, ...)
  */
 				case 'f':
 					opts.opt_f = 'f';
+				break;
+/*
+ * look for LINK only
+ */
+				case 'l':
+					opts.opt_l = 'l';
 				break;
 /*
  * recursive search
