@@ -102,7 +102,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 				{"ignore",     no_argument,       0, 'i'},   /* ignore case */
 				{"DIR",        no_argument,       0, 'd'},   /* look fir DIR only */
 				{"FILE",       no_argument,       0, 'f'},   /* look for FILE only */
-				{"LINK",       no_argument,       0, 'L'},   /* look fir LINK only */
+				{"LINK",       no_argument,       0, 'l'},   /* look fir LINK only */
 				{"recursive",  no_argument,       0, 'r'},   /* recursive */
 				{"IGNORE",     no_argument,       0, 'I'},   /* all but search term */
 				{"keepheadnode",   no_argument,       0, 'k'}, /* remove all up to head node, keep head node */
@@ -112,7 +112,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiIkLr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiIklr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -158,6 +158,12 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
  */
 				case 'f':
 					opts.opt_f = 'f';
+				break;
+/*
+ * look for LINK only
+ */
+				case 'l':
+					opts.opt_l = 'l';
 				break;
 /*
  * recursive
