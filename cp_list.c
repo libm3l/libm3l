@@ -261,7 +261,7 @@ node_t *cp_crt_list_item(node_t *Slist)
  * NOTE - here you have to take care of link information
  */
 
-		if(TMPSTR.dim == NULL) free(TMPSTR.dim);
+		free(TMPSTR.dim);
 		TMPSTR.dim = NULL;
 	
 		if( cp_list_content(&Pnode, Slist) != 0){
