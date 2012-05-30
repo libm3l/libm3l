@@ -32,12 +32,6 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 		Error("Error in path");
 		return (find_t *)NULL;
 	}
-	
-// 	for( i =0; i< parsed_path->seg_count; i++)
-// 		printf(" %s\n", parsed_path->path[i]);
-// 	
-// 		printf(" %c\n", parsed_path->abspath);
-// 	exit(0);
 /*
  * call find function with specified options
  * First look if ../ are in path or if path is absolute path
@@ -94,10 +88,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 	{
 /*
  * write the values of the find result
- */
-// 		printf(" number of founds is %ld \n", Founds->founds);
-/*
- * call locator to select sets
+  * call locator to select sets
  */		
 		if( (parsed_path_loc = parse_path(path_loc)) == NULL){
 			free(search_term);
@@ -184,11 +175,6 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 		{
 			HelpNodeI[i] = 0;
 		}
-		
-//  		printf(" Path %d is %s  \n",i, node_path );
-// 		for (j=0; j< parsed_path_Ffounds[i]->seg_count; j++)
-// 			printf("-%s-", parsed_path_Ffounds[i]->path[j]);
-// 		printf("\n");
 		free(node_path);
 	}
 /*
@@ -398,11 +384,9 @@ int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
 		break;
 	
 		case 'V':  /* Value */
-// isgreaterequal, isgreater
 /*
  * get type of argument
  */
-// 			printf(" Name of list is 
 			if(strncmp(List->type,"C",1) == 0){
 				len1 = strlen(List->data.c);
 				len2 = strlen(argsstr.args);
@@ -421,6 +405,17 @@ int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
 			
 		case 'N':  /* Name */
 			len1 = strlen(List->name);
+			len2 = strlen(argsstr.args);
+			if(len1 == len2 &&  strncmp(List->name, argsstr.args, len1) == 0){
+				return 1;
+			}
+			else{
+				return 0;
+			}
+		break;
+
+		case 't':  /* type */
+			len1 = strlen(List->type);
 			len2 = strlen(argsstr.args);
 			if(len1 == len2 &&  strncmp(List->name, argsstr.args, len1) == 0){
 				return 1;

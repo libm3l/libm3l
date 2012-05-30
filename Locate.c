@@ -99,6 +99,7 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 				{"ignore",     	no_argument,    	0, 'i'},  /* ignore case */
 				{"DIR",        	no_argument,     	0, 'd'},  /* only DIR */
 				{"FILE",       	no_argument,    	0, 'f'},  /* only file, at the moment it means not DIR */
+				{"LINK",       	no_argument,    	0, 'l'},  /* only file, at the moment it means not DIR */
 // 				{"recursive",  	no_argument,  		0, 'r'},  /* search inside the subdirs too */
 // 				{"IGNORE",  	no_argument,    	0, 'I'},  /* search all but search_term */
 				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
@@ -159,6 +160,12 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
  */
 				case 'f':
 					opts.opt_f = 'f';
+				break
+;/*
+ * look for LINK only
+ */
+				case 'l':
+					opts.opt_f = 'l';
 				break;
 // /*
 //  * recursive
