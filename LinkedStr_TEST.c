@@ -61,14 +61,15 @@ int main(void)
  	                   Error("CatData");
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
-// // 		write_to_socket(1, Gnode,  socketnr);
-// 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+// 		write_to_socket(1, Gnode,  socketnr);
+// // 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
 // 		close(socketnr);
-// 		
+		
 // 		printf("printing received node RECNODE \n\n ");
-// 		
+		
 // 		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 	    	Error("CatData");
+		
 // // 		
 // // 		usleep(10000);
 // // 		
@@ -118,10 +119,10 @@ int main(void)
 // 		if( (Founds = Locate(Gnode, "./grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
 
 //  		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
-// 		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+//  		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
 // //  		if( (Founds = Locate(Gnode, "/main/*/boundary", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
-// //  		if( (Founds = Locate(Gnode, "/*/*", "/*/*", "--ignore", (char *)NULL)) != NULL){
-// 			
+//  		if( (Founds = Locate(Gnode, "/*/*", "/*/*", "--ignore", (char *)NULL)) != NULL){
+			
 // 			for(i=0; i < Founds->founds; i++){
 // 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 // 
@@ -153,22 +154,14 @@ int main(void)
 		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/*", &Gnode, "/main", "/*", (char *)NULL);   
 
 // 		
-		 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
- 	                   Error("CatData");
+		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+			Error("CatData");
 // 		
 		if(Umount(&Gnode) != 1)
-                  Perror("Umount");
+			Perror("Umount");
 		
 // 		exit(0);
-		
-		
-// 		parsed_path = parse_path("/home/jka/ada/");
-// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-// 		for (i=0; i< parsed_path->seg_count; i++)
-// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-// 		destroy_pars_path(&parsed_path);
-		
-// 		exit(0);
+
 		
 	}
 			

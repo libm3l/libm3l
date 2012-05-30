@@ -9,7 +9,7 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Cp.h"
+#include "Ln.h"
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
@@ -18,7 +18,7 @@ extern int optind;
 static int verbose_flag;
 
 /*
- * routine copies Slist to Tlist
+ * routine Links Slist to Tlist
  */
 size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
@@ -30,7 +30,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 	int c, init_call;
 	int option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0'; opts.opt_l = '\0';
 	
 	option_index = 0;
 	cp_tot_nodes=0;
@@ -162,12 +162,12 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 				case 'f':
 					opts.opt_f = 'f';
 				break;
-				/*
- * look for LINK only
+/*
+ * look for FILE only
  */
 				case 'l':
 					opts.opt_l = 'l';
-				break;
+				break;				
 /* 
  * Error, getopt_long already printed an error message
  */
@@ -205,7 +205,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
  */
 	Popts = &opts;
 	
- 	cp_tot_nodes = cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
 
 	return cp_tot_nodes;
