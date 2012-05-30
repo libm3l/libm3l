@@ -30,7 +30,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 	int c, init_call;
 	int option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0';
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0'; opts.opt_l = '\0';
 	
 	option_index = 0;
 	rm_tot_nodes=0;

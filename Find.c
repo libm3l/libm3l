@@ -36,6 +36,9 @@ find_t *Find(node_t *List, char * Options, ...)
  */	
 	if(Options == NULL)
 		return (find_t *)NULL;
+	
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
+	opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_l = '\0';
 
 	va_start(args, Options);
 	args_num = 1;
@@ -92,8 +95,6 @@ find_t *Find(node_t *List, char * Options, ...)
  * get meaning of options
  * first - reset opting = 0 to reinitialize getopt_long
  */
-		opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
-		opts.opt_d = '\0'; opts.opt_f = '\0';
 		optind = 0;
 		while (1)
 		{

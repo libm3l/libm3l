@@ -76,3 +76,6 @@ in Locator. c need to add testing of it
 
 
 14. Cp - take care of LINKS
+
+15. - add type to Locator.c DIR, FILE,LINK etc.
+  nebo podivat se na to, jak mit vice parametru do Find - ie. --DIR --FILE etc. separatne pro target a source 
