@@ -148,7 +148,9 @@ int main(void)
 //  		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
 // 		Cp(Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CFD_grid/n=1/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
 //  		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/n=2", &Gnode, "/main/ADA", "/*/*", (char *)NULL);   
-		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/n=1", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
+			   
+				   
+		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/*", &Gnode, "/main", "/*", (char *)NULL);   
 
 // 		
 		 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)

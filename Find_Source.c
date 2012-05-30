@@ -25,7 +25,7 @@ find_t *Founds;
  * decalred above
  */
 
-find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
+find_t *Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
 {
 /*
  * allocate find_t pointer and first element
@@ -43,7 +43,7 @@ find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
 		Perror("malloc");
 	
 	Founds->founds = 0;
-	Founds->founds = FindList(1, List, search_term, Popt);
+	Founds->founds = FindList(call, List, search_term, Popt);
 	
 	if ( Founds->founds == 0){
 		free(Founds->Found_Nodes[0]);

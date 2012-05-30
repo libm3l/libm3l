@@ -79,9 +79,10 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 			Perror("strdup");
 	if(Popts->opt_i == 'i')search_term = StrToLower(search_term);
 
-	if ( (Founds = Find_caller(Tmp_node, search_term, Popts)) == NULL){
+	if ( (Founds = Find_caller(2, Tmp_node, search_term, Popts)) == NULL){
 		free(search_term);
 		destroy_pars_path(&parsed_path);
+		Warning("Locator: No Founds");
 		return (find_t *)NULL;
 	}
 	else

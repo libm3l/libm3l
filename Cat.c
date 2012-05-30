@@ -287,7 +287,7 @@ int Cat(node_t *List, char * Options, ...)
 
 		status1 = 0;
 
-		if ( (Founds = Find_caller(List, search_term, Popts)) == NULL){
+		if ( (Founds = Find_caller(1, List, search_term, Popts)) == NULL){
 			free(search_term);
 			return -1;
 		}

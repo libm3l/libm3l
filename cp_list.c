@@ -49,6 +49,7 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
  * call locator to locate the target node
  */
 	if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		Warning("Cp: NULL TFounds");
 		return 0;
 	}
 /*
@@ -62,8 +63,10 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 	
 	if ( (SFounds = locator_caller( SList, s_path, s_path_loc, Popts)) == NULL){
 		DestroyFound(&TFounds);
+		Warning("Cp: NULL SFounds");
 		return 0;
 	}
+	
 /*
  * check that if there is more then one source, the target node is DIR type
  */
