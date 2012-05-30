@@ -674,7 +674,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * array was allocated with +1 to store '\0' symbol
  */
-	tot_dim--;   
+	tot_dim--;
 /*
  * what type of data
  */
@@ -694,10 +694,13 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
 /*
  * once at `, disregard it and put init =1
+*  of cycle terminated bedcause of \0 do nothing
  */
-				pc++;
-				init = 1;
-				i = 0;
+				if(*pc != '\0'){
+					pc++;
+					init = 1;
+					i=0;
+				}
 			}
 /*
  * read until end of buffer or ` symbol
@@ -748,10 +751,13 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
 /*
  * once at `, disregard it and put init =1
+*  of cycle terminated bedcause of \0 do nothing
  */
-				pc++;
-				init = 1;
-				i = 0;
+				if(*pc != '\0'){
+					pc++;
+					init = 1;
+					i=0;
+				}
 			}
 /*
  * read until end of buffer or ` symbol
@@ -789,7 +795,8 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 	else if ( TMPSTR.Type[0] == 'C'){
 		pdat = (*Lnode)->data.c;
 /*
- * process buffer, set last char to \0
+ * process buffer, set last char to
+ * set init = 0 maning going to read a word, need to find initial ` symbol
  */
 		init = 0;
 		i = 0;
@@ -800,13 +807,16 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
 			if(init == 0){
-				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
+				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN)pc++;
 /*
  * once at `, disregard it and put init =1
+*  of cycle terminated bedcause of \0 do nothing
  */
-				pc++;
-				init = 1;
-				i=0;
+				if(*pc != '\0'){
+					pc++;
+					init = 1;
+					i=0;
+				}
 			}
 /*
  * read until end of buffer or ` symbol
@@ -827,14 +837,13 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
-
 			}
 			else if (*pc == TEXT_SEPAR_SIGN){
 /*
  * check that string dimentions are correct
  */
 				if( i != tot_dim ){
-					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
+					printf("Data set %s (%s): string: %s    DIAG: %ld   %ld\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c, i, tot_dim);
 					Error("Mismatch in string length");
 					return -1;
 				}
