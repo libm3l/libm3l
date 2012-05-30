@@ -13,16 +13,11 @@
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
-#include "Cat.h"
-
-
 static int cp_list(int , node_t *, node_t **, opts_t *);
-static node_t *cp_crt_list(int call, node_t *, opts_t *);
+static node_t *cp_crt_list( node_t *, opts_t *);
 static node_t *cp_crt_list_item(node_t *);
 static int cp_recrt_list(node_t ** , node_t *);
 static int cp_list_content(node_t **, node_t *);
-
-// node_t *RetNode;
 
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
@@ -80,7 +75,7 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 	}
 	
 	
-	printf(" number of found nodes is %ld   %ld\n", SFounds->founds, TFounds->founds);
+// 	printf(" number of found nodes is %ld   %ld\n", SFounds->founds, TFounds->founds);
 	
 	cp_tot_nodes = 0;
 		
@@ -139,7 +134,7 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 /*
  * SList is DIR, traverese and copy item-by-item
  */
-			if ( (NewList = cp_crt_list(1, SList, Popts)) == NULL){
+			if ( (NewList = cp_crt_list(SList, Popts)) == NULL){
 				Error("Copying list");
 				return -1;
 			}
@@ -153,14 +148,6 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 				return -1;
 			}
 		}
-
-		printf(" Cat Slist\n");
- 		Cat(SList, "--all", "-P", "-L", "*", (char *)NULL);
- 		
-		printf(" Newlist cat %p \n", NewList);
- 		Cat(NewList, "--all", "-P", "-L", "*", (char *)NULL);
-		printf(" After\n");
-		
 /*
  * add a new node to the DIR list
  */
@@ -171,14 +158,13 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 	}
 }
 
-node_t *cp_crt_list(int call, node_t *List, opts_t *Popts)
+node_t *cp_crt_list(node_t *List, opts_t *Popts)
 {
 /*
  * function creates list. It is called if the target is DIR.
  * If SList is DIR, copying is done by traversin entire SList and copying each item
  */
-	node_t *Tmpnode, *Tmp1;
-	node_t *RetNode;
+	node_t *Tmpnode, *NewList, *RetNode;
 	size_t i;
 
 	if(List == NULL){
@@ -188,92 +174,54 @@ node_t *cp_crt_list(int call, node_t *List, opts_t *Popts)
 /*
  * if initial call, create node, per default it will be DIR
  */
-	
-	printf(" Call %d  %p  %s   %s\n", call, List, List->name, List->type);
-
 	if( (RetNode = cp_crt_list_item(List)) == NULL){
 		Error(" cp_crt_list_item");
 		return (node_t *) NULL;
 	}
 
-	if(strncmp(List->type, "DIR", 3) != 0){
+	Tmpnode = List->child;
 /*
- * create node, copy Source to it and add it to List. If child node is NULL, List is an empty DIR
+ * loop over nodes
  */
-// 		if ( (Tmp1 = List->child) == NULL) return RetNode;
-// 
- 			printf(" Copying %s node \n", List->name);
-
-		if( (Tmpnode = cp_crt_list_item(List)) == NULL){
-			Error(" cp_crt_list_item");
-			return (node_t *) NULL;
+	while( Tmpnode != NULL){
+/*
+ * List is DIR, call cp_crt_list recursivelly
+ */
+		if(strncmp(Tmpnode->type, "DIR", 3) == 0){
+			if ( (NewList = cp_crt_list(Tmpnode, Popts)) == NULL){
+				Error("Copying list");
+				return (node_t *) NULL;
+			}
 		}
-		if (  add_list(&Tmpnode, &RetNode, Popts) < 0){
-			Warning("Error cp_list copy");
-			return (node_t *) NULL;    /* NOTE - mabe free RetNode and Tmpnode ? */;
-		}
-	}
-	else
-	{
+		else{
 /*
- * initil call
+ * list is nod DIR
+ * copy content
  */
-// 		PrintListInfo(List, Popts);
-		
-		if(call == 1){
-
-			Tmpnode = List->child;
-
-			while(Tmpnode != NULL){
-
-			printf(" Node name is %p %p  '%s' \n", Tmpnode, Tmpnode->next, Tmpnode->name);
-/*
- * if node is list and option specifies it, write the target node data
- */
-				if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popts->opt_l == 'l'){
-// 					if(cat_list(2, Tmpnode->child, Popts) != 0){ /* list is populated by the target list where it points to */
-// 						Warning("Write data problem");
-// 						return (node_t *)NULL;
-// 					}
-				}
-				else{
-					Tmp1 = cp_crt_list(2, Tmpnode, Popts);
-				}
-
-				if (  add_list(&Tmp1, &RetNode, Popts) < 0){
-					Warning("Error cp_list copy");
-					return (node_t *) NULL;    /* NOTE - mabe free RetNode and Tmpnode ? */;
-				}
-				
-				Tmpnode = Tmpnode->next;
- 				printf(" Nextnode  %p \n", Tmpnode);
+			if ( (NewList = cp_crt_list_item(Tmpnode)) == NULL){
+				Error("Copying list");
+				return (node_t *) NULL;
 			}
 		}
 /*
- * recursive call or call with specified parameter 2
+ * add list (RetNode) to parent (NewList)
  */
-		else if(call == 2){
-			Tmpnode = List->child;
- 			while(Tmpnode != NULL){
-
-				Tmp1 = cp_crt_list(2, Tmpnode, Popts);
-
-				if (  add_list(&Tmp1, &RetNode, Popts) < 0){
-					Warning("Error cp_list copy");
-					return (node_t *) NULL;    /* NOTE - mabe free RetNode and Tmpnode ? */;
-				}
-				Tmpnode = Tmpnode->next;
+			if ( add_list(&NewList, &RetNode, Popts) < 0){
+				Warning("Error cp_list copy");
+				return (node_t *) NULL;
 			}
-		}
+	
+		Tmpnode = Tmpnode->next;
 	}
+
 	return RetNode;
 }
-
 
 node_t *cp_crt_list_item(node_t *Slist)
 {
 /*
  * function creates a single list and copy the Slist into it
+ * List can be both DIR and FILE type
  */
 	node_t *Pnode;
 	tmpstruct_t TMPSTR;
@@ -408,7 +356,7 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
 int cp_list_content(node_t **Pnode, node_t *Slist)
 {
 /*
- * fuction copies content of the list ie>
+ * fuction copies content of the list ie.
  *	->ndim
  *	->fdim[]
  *	->data.*[]
