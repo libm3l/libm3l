@@ -9,7 +9,7 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Ln.h"
+#include "Mv.h"
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
@@ -18,22 +18,22 @@ extern int optind;
 static int verbose_flag;
 
 /*
- * routine Links Slist to Tlist
+ * routine copies Slist to Tlist
  */
-size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+size_t Mv(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 
 	char *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, ln_tot_nodes;
+	size_t args_num, len, i, mv_tot_nodes;
 	va_list args;
 	int c, init_call;
 	int option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0'; opts.opt_l = '\0';
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
 	
 	option_index = 0;
-	ln_tot_nodes=0;
+	mv_tot_nodes=0;
 	init_call = 2;
 /*
  * check if data set exists
@@ -42,7 +42,7 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 		Warning("Cp: NULL source list");
 		return -1;
 	}
-	
+
 	if(*TList == NULL){
 		Warning("Cp: NULL target list");
 		return -1;
@@ -162,12 +162,12 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 				case 'f':
 					opts.opt_f = 'f';
 				break;
-/*
- * look for FILE only
+				/*
+ * look for LINK only
  */
 				case 'l':
 					opts.opt_l = 'l';
-				break;				
+				break;
 /* 
  * Error, getopt_long already printed an error message
  */
@@ -186,7 +186,7 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 /*
  * check if incompatible options
  */
-		if( opts.opt_d == 'd' && opts.opt_f == 'f'){  /* NOTE  check for more incompatible options */
+		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
 			return -1;
 		}	
@@ -205,8 +205,7 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
  */
 	Popts = &opts;
 	
- 	ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	mv_tot_nodes = mv_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
-
-	return ln_tot_nodes;
+	return mv_tot_nodes;
 }

@@ -151,9 +151,12 @@ int main(void)
 //  		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/n=2", &Gnode, "/main/ADA", "/*/*", (char *)NULL);   
 			   
 				   
-		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/*", &Gnode, "/main", "/*", (char *)NULL);   
+  		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "/main", "/*", (char *)NULL);   
 
-// 		
+
+		Mv(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL);   /* rename node */
+
+//
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 // 		
