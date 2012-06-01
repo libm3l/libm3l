@@ -7,11 +7,12 @@
 #include "internal_format_type.h"
 
 #include "mv_list.h"
-// #include "add_list.h"
+#include "add_list.h"
 #include "Locator.h"
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
+#include "rm_list.h"
 
 static int mv_list(int , node_t **, node_t **, opts_t *);
 /*
@@ -25,6 +26,9 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * function is a caller of the cp functions
  */
+
+/* NOTE - check that Tfounds and SFounds are identical */
+ 
 	size_t i, mv_tot_nodes, mv_nodes;
 	find_t *SFounds, *TFounds;
 	int init_call;
@@ -114,7 +118,18 @@ int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
  * 	if the TList is DIR the Slist is re-created and added to the TList. In case SList is a DIR, the copying is done by 
  *	traversing the list and copying it item-by-item
  */
-	node_t *NewList;
+	node_t *Prev, *Par, *Next;
+	node_t *TPrev, *TPar, *TNext;
+/*
+ * save neighbours of the Slist
+ */
+		Next = (*SList)->next;
+		Prev = (*SList)->prev;
+		Par  = (*SList)->parent;
+
+// 		(*SList)->next = NULL;
+// 		(*SList)->prev = NULL;
+// 		(*SList)->parent = NULL;
 /*
  * copy source (Slist) to target (Tlist)
  */
@@ -127,49 +142,88 @@ int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
 			return -1;
 		}
 /*
-  * free existing data set
+ * Save neighbours of the Tlist
  */
-		if ( Free_data_str(TList) != 0){
-			Error("Free_data_str");
+		TNext = (*TList)->next;
+		TPrev = (*TList)->prev;
+		TPar  = (*TList)->parent;
+		
+		bzero((*SList)->name, sizeof((*SList)->name));
+		if( snprintf((*SList)->name, sizeof((*SList)->name),"%s", (*TList)->name) < 0){
+			Perror("snprintf");
 			return -1;
 		}
-// 		if (  cp_recrt_list(TList, SList) < 1){
-// 			Error("Copying list");
-// 			return -1;
-// 		}
+/*
+ * remove TList
+ */		
+		if ( rm_list(1, TList) < 1 ){
+			Error("mv_list: rm_list");
+			return -1;
+		}
+/*
+ * Place Slist where TList was before
+ */
+		(*SList)->next    = TNext;
+		(*SList)->prev    = TPrev;
+		(*SList)->parent  = TPar;
 		
-		return 1;
+		if((*SList)->next != NULL) TNext->prev = (*SList);
+		if((*SList)->prev != NULL) TPrev->next = (*SList);
+/*
+ * if moved node is in the same directory as target node
+ * dicrease number of items in the directory
+ */
+ 		if(Par != TPar)
+			TPar->ndim++;
 	}
 	else{
 /*
- * copy content of the list
- */
-		if(strncmp( (*SList)->type, "DIR", 3) == 0){
-/*
- * SList is DIR, traverese and copy item-by-item
- */
-// 			if ( (NewList = cp_crt_list(SList, Popts)) == NULL){
-// 				Error("Copying list");
-// 				return -1;
-// 			}
-		}
-		else{
-/*
- * Slist is FILE type, skip traversing and copy item directly
- */
-// 			if ( (NewList = cp_crt_list_item(SList)) == NULL){
-// 				Error("Copying list");
-// 				return -1;
-// 			}
-		}
-/*
  * add a new node to the DIR list
  */
-		if ( add_list(&NewList, TList, Popts) < 0){
-			Warning("Error cp_list copy");
+		if ( add_list(SList, TList, Popts) < 0){
+			Warning("Error mv_list copy");
 			return -1;
 		}
 	}
+/*
+ * connect chain after removed SList
+ * if Slist has a parent, dicrease number of nodes in it
+ */
+
+// 	printf("PPPPPPPPPP %p  %p  %p\n", Par, Prev, Next);
+
+	if(Par != NULL) Par->ndim--;
+	if(Par->ndim > 0){
+/*
+ * still nodes in directory
+ */		
+		if(Next != NULL && Prev != NULL){
+/*
+ * List is in the middle
+ */
+			Prev->next = Next;
+			Next->prev = Prev;
+		}
+		else if(Next == NULL){
+/*
+ * List is the only child in DIR (this should actually never happen as the value of Par->ndim == 0
+ */
+			Prev->next = NULL;
+			Par->child = NULL;
+			Par->ndim = 0;
+		}
+		else if(Prev == NULL){
+			Next->prev = NULL;
+			Par->child = Next;
+		}
+	}
+	else{
+/*
+ * after move, DIR is empty
+ */
+		Par->child = NULL;
+	}
+	return 1;
 }
 
 
