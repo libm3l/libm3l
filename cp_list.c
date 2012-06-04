@@ -63,6 +63,13 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 			bzero(name, sizeof(name));
 			if( snprintf(name,MAX_NAME_LENGTH,"%s",t_path) < 0)
 				Perror("snprintf");
+			
+/* NOTE - need check !!!!! */			if( (cp_nodes = (size_t) cp_list(init_call, SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
+						Warning("problem in ln_list");
+			}
+			else{
+				cp_tot_nodes += cp_nodes;
+			}
 		}
 		i = SFounds->founds;
 		DestroyFound(&SFounds);
@@ -450,9 +457,10 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist, char *NewName){
  * if list has a different name then original list, rename the list
  */			
 	if(NewName != NULL){
-		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s",NewName) < 0)
+		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s",NewName) < 0){
 			Perror("snprintf");
 			return -1;
+		}
 	}
 	else{
 		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", Slist->name) < 0){
