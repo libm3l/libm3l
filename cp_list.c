@@ -13,10 +13,10 @@
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
-static int cp_list(int , node_t *, node_t **, opts_t *);
+static int cp_list(int , node_t *, node_t **, char *, opts_t *);
 static node_t *cp_crt_list( node_t *, opts_t *);
 static node_t *cp_crt_list_item(node_t *);
-static int cp_recrt_list(node_t ** , node_t *);
+static int cp_recrt_list(node_t ** , node_t *, char *);
 static int cp_list_content(node_t **, node_t *);
 
 /*
@@ -30,9 +30,11 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 /*
  * function is a caller of the cp functions
  */
-	size_t i, cp_tot_nodes, cp_nodes;
+	size_t i,j,k,l , cp_tot_nodes, cp_nodes;
 	find_t *SFounds, *TFounds;
 	int init_call;
+	char *name, *path, *path_loc, *newname;
+	const char *pc;
 /*
  * check if data set exists
  */
@@ -45,60 +47,195 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 		Warning("Cp: NULL target list");
 		return -1;
 	}
-/*
- * call locator to locate the target node
+/* 
+ * check location of sources
  */
-	if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
-		Warning("Cp: NULL TFounds");
-		return 0;
-	}
-/*
- * check that target node is only 1
- */
-	if(TFounds->founds != 1){
-		Warning("cp: multiple target nodes");
-		DestroyFound(&TFounds);
-		return -1;
-	}
-	
 	if ( (SFounds = locator_caller( SList, s_path, s_path_loc, Popts)) == NULL){
-		DestroyFound(&TFounds);
 		Warning("Cp: NULL SFounds");
 		return 0;
 	}
+/*
+ * check only one node is to be copied to the same directory
+ */
+	if(strncmp(t_path_loc, "./", 2) == 0){
+		for(i=0; i< SFounds->founds; i++){
+			name = SFounds->Found_Nodes[i]->List->name;
+			bzero(name, sizeof(name));
+			if( snprintf(name,MAX_NAME_LENGTH,"%s",t_path) < 0)
+				Perror("snprintf");
+		}
+		i = SFounds->founds;
+		DestroyFound(&SFounds);
+		return i;
+	}
+	else{
+/*
+ * locate target; if target == NULL, just rename the node(s)
+ */
+		if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+/*
+ * check it the direcotry exist, if it does, the name is new name
+ */
+			pc = t_path;
+			i = 0;
+			k = 0;
+/*
+ * count number of '\'
+ */
+			while(*pc != '\0'){
+				if(*pc++ == '/')i++;
+				k++;
+				}
+/*
+ * if larger then 1 
+ */
+			if(i > 1){
+				pc = t_path;
 	
+				if(  ( path = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+					Perror("malloc");
+					return -1;
+				}
+				if(  (newname = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+					Perror("malloc");
+					return -1;
+				}
+/*
+ * get path up to new name
+ */
+				j = 0;
+				l = 0;
+				while(*pc != '\0'){
+					if(*pc == '/')j++;
+					if(j == i )break;
+					path[l++] = *pc++;
+				}
+				path[l] = '\0';
+/*
+ * get the last argument which is newname
+ */
+				l = 0;
+				pc++;
+				while(*pc != '\0'){
+					newname[l++] = *pc++;}
+				newname[l] = '\0';
+/*
+ * get path location
+ */
+				pc = t_path_loc;
+				while(*pc++ != '\0')k++;
+				if(  ( path_loc= (char *)malloc( (k+1)*sizeof(char))) == NULL){
+					Perror("malloc");
+					free(path);
+					free(path_loc);
+					free(newname);
+					DestroyFound(&SFounds);
+					return -1;
+				}
+				j = 0;
+				l = 0;
+				pc = t_path_loc;
+				while(*pc != '\0'){
+					if(*pc == '/')j++;
+					if(j == i )break;
+					path_loc[l++] = *pc++;
+				}
+				path_loc[l] = '\0';
+/*
+ * make new find for parent dir of the new name
+ */
+				if ( (TFounds = locator_caller( *TList, path, path_loc, Popts)) == NULL){
+					free(path);
+					free(path_loc);	
+					free(newname);
+					DestroyFound(&SFounds);
+					return -1;
+				}
+/*
+ * check the found is DIR
+ */
+				pc = TFounds->Found_Nodes[0]->List->type;
+				if(strncmp(pc, "DIR", 3) != 0 || TFounds->founds > 1){
+					Warning("Wrong or not existing target");
+					free(path);
+					free(path_loc);
+					free(newname);
+					DestroyFound(&SFounds);
+					DestroyFound(&TFounds);
+					return -1;
+				}
+	
+				cp_tot_nodes = 0;
+				for(i=0; i< SFounds->founds; i++){
+/*
+ * copy and change the name of the list
+ */
+					if( (cp_nodes = (size_t) cp_list(init_call, SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
+						Warning("problem in ln_list");
+					}
+					else{
+						cp_tot_nodes += cp_nodes;
+					}
+				}
+/*
+ * free borrowed memory
+ */
+				free(path);
+				free(path_loc);
+				free(newname);
+				DestroyFound(&SFounds);
+				DestroyFound(&TFounds);
+				return cp_tot_nodes;
+			}
+			else{
+/*
+ * target does not exist
+ */
+				DestroyFound(&SFounds);
+				return -1;
+			}
+		}
+		else{
+/*
+ * check that target node is only 1
+ */
+			if(TFounds->founds != 1){
+				Warning("cp: multiple target nodes");
+				DestroyFound(&TFounds);
+				DestroyFound(&SFounds);
+				return -1;
+			}
 /*
  * check that if there is more then one source, the target node is DIR type
  */
-	if( SFounds->founds > 1 && strncmp(TFounds->Found_Nodes[0]->List->type, "DIR", 3) != 0){
-		Warning("cp: target node is not DIR");
-		DestroyFound(&TFounds);
-		DestroyFound(&SFounds);
-		return -1;
-	}
-	
-	
-// 	printf(" number of found nodes is %ld   %ld\n", SFounds->founds, TFounds->founds);
-	
-	cp_tot_nodes = 0;
-		
-	for(i=0; i< SFounds->founds; i++){
-		
-		if( (cp_nodes = (size_t) cp_list(init_call, SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
-			Warning("problem in cp_list");
-		}
-		else{
-			cp_tot_nodes += cp_nodes;
-		}
-	}
+			if( SFounds->founds > 1 && strncmp(TFounds->Found_Nodes[0]->List->type, "DIR", 3) != 0){
+				Warning("cp: target node is not DIR");
+				DestroyFound(&TFounds);
+				DestroyFound(&SFounds);
+				return -1;
+			}
 			
-	DestroyFound(&TFounds);
-	DestroyFound(&SFounds);
-	return cp_tot_nodes;
+			cp_tot_nodes = 0;
+				
+			for(i=0; i< SFounds->founds; i++){
+				
+				if( (cp_nodes = (size_t) cp_list(init_call, SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
+					Warning("problem in cp_list");
+				}
+				else{
+					cp_tot_nodes += cp_nodes;
+				}
+			}
+					
+			DestroyFound(&TFounds);
+			DestroyFound(&SFounds);
+			return cp_tot_nodes;
+		}
+	}
 }
 
 
-int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
+int cp_list(int call, node_t *SList, node_t **TList, char *NewName, opts_t *Popts)
 {
 /*
  * function copies list SList to a target list TList
@@ -108,6 +245,7 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
  *	traversing the list and copying it item-by-item
  */
 	node_t *NewList;
+	char *name;
 /*
  * copy source (Slist) to target (Tlist)
  */
@@ -122,7 +260,7 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
 /*
  * copy content of the list
  */
-		if (  cp_recrt_list(TList, SList) < 1){
+		if (  cp_recrt_list(TList, SList, NewName) < 1){
 			Error("Copying list");
 			return -1;
 		}
@@ -148,6 +286,16 @@ int cp_list(int call, node_t *SList, node_t **TList, opts_t *Popts)
  */
 			if ( (NewList = cp_crt_list_item(SList)) == NULL){
 				Error("Copying list");
+				return -1;
+			}
+		}
+/*
+ * if list has a different name then original list, rename the list
+ */			
+		if(NewName != NULL){
+			bzero(NewList->name, sizeof(name));
+			if( snprintf(NewList->name,MAX_NAME_LENGTH,"%s",NewName) < 0){
+				Perror("snprintf");
 				return -1;
 			}
 		}
@@ -288,7 +436,7 @@ node_t *cp_crt_list_item(node_t *Slist)
 }
 
 
-int cp_recrt_list(node_t ** Tlist, node_t *Slist){
+int cp_recrt_list(node_t ** Tlist, node_t *Slist, char *NewName){
 /*
  * function realloc the existing list. Used if both source and target lists are FILE types
  *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
@@ -299,11 +447,20 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist){
 	size_t i;
 /* 
  * copy name, type, number iof dimensions, dimensions
- */
-	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", Slist->name) < 0){
-		Perror("snprintf");
-		return -1;
+ * if list has a different name then original list, rename the list
+ */			
+	if(NewName != NULL){
+		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s",NewName) < 0)
+			Perror("snprintf");
+			return -1;
 	}
+	else{
+		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", Slist->name) < 0){
+			Perror("snprintf");
+			return -1;
+		}
+	}
+
 	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", Slist->type) < 0){
 		Perror("snprintf");
 		return -1;

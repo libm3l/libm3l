@@ -29,10 +29,11 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 
 /* NOTE - check that Tfounds and SFounds are identical */
  
-	size_t i, mv_tot_nodes, mv_nodes;
+	size_t i, j,k,l,mv_tot_nodes, mv_nodes;
 	find_t *SFounds, *TFounds;
 	int init_call;
-	char *name;
+ 	char *name, *path, *path_loc, *newname;
+	const char *pc;
 /*
  * check if data set exists
  */
@@ -53,61 +54,196 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 		return 0;
 	}
 /*
+ * check only one node is to be renamed, occurs if one source and target path is ./
+ */
+	if(strncmp(t_path_loc, "./", 2) == 0){
+		for(i=0; i< SFounds->founds; i++){
+			name = SFounds->Found_Nodes[i]->List->name;
+			bzero(name, sizeof(name));
+			if( snprintf(name,MAX_NAME_LENGTH,"%s",t_path) < 0)
+				Perror("snprintf");
+		}
+		i = SFounds->founds;
+		DestroyFound(&SFounds);
+		return i;
+	}
+	else{
+/*
  * locate target; if target == NULL, just rename the node(s)
  */
 	if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
 /*
- * check that the parent direcotry is identical, if not return -1
- * check only one node is to be renamed, occurs if one source and target path is ./
+ * check it the direcotry exist, if it does, the name is new name
  */
-		if(strncmp(t_path_loc, "./", 2) == 0){
+		pc = t_path;
+		i = 0;
+		k = 0;
+/*
+ * count number of '\'
+ */
+		while(*pc != '\0'){
+			if(*pc++ == '/')i++;
+			k++;
+			}
+/*
+ * if larger then 1 
+ */
+		if(i > 1){
+			pc = t_path;
+
+			if(  ( path = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				Perror("malloc");
+				return -1;
+			}
+			if(  (newname = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				Perror("malloc");
+				return -1;
+			}
+/*
+ * get path up to new name
+ */
+			j = 0;
+			l = 0;
+			while(*pc != '\0'){
+				if(*pc == '/')j++;
+				if(j == i )break;
+				path[l++] = *pc++;
+			}
+			path[l] = '\0';
+/*
+ * get the last argument which is newname
+ */
+			l = 0;
+			pc++;
+			while(*pc != '\0'){
+				newname[l++] = *pc++;}
+			newname[l] = '\0';
+/*
+ * get path location
+ */
+			pc = t_path_loc;
+			while(*pc++ != '\0')k++;
+			if(  ( path_loc= (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				Perror("malloc");
+				free(path);
+				free(path_loc);
+				free(newname);
+				DestroyFound(&SFounds);
+				return -1;
+			}
+			j = 0;
+			l = 0;
+			pc = t_path_loc;
+			while(*pc != '\0'){
+				if(*pc == '/')j++;
+				if(j == i )break;
+				path_loc[l++] = *pc++;
+			}
+			path_loc[l] = '\0';
+/*
+ * make new find for parent dir of the new name
+ */
+			if ( (TFounds = locator_caller( *TList, path, path_loc, Popts)) == NULL){
+				free(path);
+				free(path_loc);	
+				free(newname);
+				DestroyFound(&SFounds);
+				return -1;
+			}
+/*
+ * check the found is DIR
+ */
+			pc = TFounds->Found_Nodes[0]->List->type;
+			if(strncmp(pc, "DIR", 3) != 0 || TFounds->founds > 1){
+				Warning("Wrong or not existing target");
+				free(path);
+				free(path_loc);
+				free(newname);
+				DestroyFound(&SFounds);
+				DestroyFound(&TFounds);
+				return -1;
+			}
+
+			mv_tot_nodes = 0;
 			for(i=0; i< SFounds->founds; i++){
+/*
+ * change the name of the list
+ */
 				name = SFounds->Found_Nodes[i]->List->name;
 				bzero(name, sizeof(name));
-				if( snprintf(name,sizeof(name),"%s",t_path) < 0)
+				if( snprintf(name,MAX_NAME_LENGTH,"%s",newname) < 0)
 					Perror("snprintf");
+/*
+ * check if source and target dirs are different, if different, move list to a new location
+ */
+				if( SFounds->Found_Nodes[i]->List->parent != TFounds->Found_Nodes[0]->List){
+
+					if( (mv_nodes = (size_t) mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+						Warning("problem in ln_list");
+					}
+					else{
+						mv_tot_nodes += mv_nodes;
+					}
+				}
+				else{
+					mv_tot_nodes++;
+				}
 			}
+/*
+ * free borrowed memory
+ */
+			free(path);
+			free(path_loc);
+			free(newname);
 			DestroyFound(&SFounds);
-			return 1;
+			DestroyFound(&TFounds);
+			return mv_tot_nodes;
+		}
+		else{
+/*
+ * target does not exist
+ */
+			DestroyFound(&SFounds);
+			return -1;
 		}
 	}
-	else{
+		else{
 /*
  * check that target node is only 1
  */
-		if(TFounds->founds != 1){
-			Warning("mv: multiple target nodes");
-			DestroyFound(&TFounds);
-			return -1;
-		}
+			if(TFounds->founds != 1){
+				Warning("mv: multiple target nodes");
+				DestroyFound(&TFounds);
+				return -1;
+			}
 /*
  * check that if there is more then one source, the target node is DIR type
  */
-		if( SFounds->founds > 1 && strncmp(TFounds->Found_Nodes[0]->List->type, "DIR", 3) != 0){
-			Warning("cp: target node is not DIR");
+			if( SFounds->founds > 1 && strncmp(TFounds->Found_Nodes[0]->List->type, "DIR", 3) != 0){
+				Warning("cp: target node is not DIR");
+				DestroyFound(&TFounds);
+				DestroyFound(&SFounds);
+				return -1;
+			}
+	
+			mv_tot_nodes = 0;
+				
+			for(i=0; i< SFounds->founds; i++){
+				
+				if( (mv_nodes = (size_t) mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+					Warning("problem in ln_list");
+				}
+				else{
+					mv_tot_nodes += mv_nodes;
+				}
+			}
+					
 			DestroyFound(&TFounds);
 			DestroyFound(&SFounds);
-			return -1;
+			return mv_tot_nodes;
 		}
-
-		mv_tot_nodes = 0;
-			
-		for(i=0; i< SFounds->founds; i++){
-			
-			if( (mv_nodes = (size_t) mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
-				Warning("problem in ln_list");
-			}
-			else{
-				mv_tot_nodes += mv_nodes;
-			}
-		}
-				
-		DestroyFound(&TFounds);
-		DestroyFound(&SFounds);
-		return mv_tot_nodes;
 	}
 }
-
 
 int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
 {
@@ -126,14 +262,13 @@ int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
 		Next = (*SList)->next;
 		Prev = (*SList)->prev;
 		Par  = (*SList)->parent;
-
-// 		(*SList)->next = NULL;
-// 		(*SList)->prev = NULL;
-// 		(*SList)->parent = NULL;
 /*
  * copy source (Slist) to target (Tlist)
  */
-	if(strncmp( (*TList)->type, "DIR", 3) != 0){
+	if(strncmp( (*TList)->type, "DIR", 3) != 0){  
+/*
+ * FILE to FILE -> keep original (SList) pointer, update name using TList name and remove TList name
+ */
 /*
  * *Tlist is FILE, check that SList is not DIR
  */
@@ -189,9 +324,6 @@ int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
  * connect chain after removed SList
  * if Slist has a parent, dicrease number of nodes in it
  */
-
-// 	printf("PPPPPPPPPP %p  %p  %p\n", Par, Prev, Next);
-
 	if(Par != NULL) Par->ndim--;
 	if(Par->ndim > 0){
 /*
