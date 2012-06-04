@@ -20,7 +20,43 @@ int Free(node_t **Lnode)
   *      http://cboard.cprogramming.com/c-programming/66209-struct-pointer-memory-allocation.html
  */
 	size_t i;
+	
+	if( Free_data_str(Lnode) != 0)
+		Perror("Free_data_str");
 
+	if((*Lnode)->type != NULL) {
+		free((*Lnode)->type);
+		(*Lnode)->type == NULL;
+	}  
+
+	if((*Lnode)->name != NULL) {
+		free((*Lnode)->name);
+		(*Lnode)->name == NULL;
+	}
+/*
+ * nullify node_t
+ */
+	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; 
+/*
+ * free filed of lists pointing to links
+ */
+	if((*Lnode)->lcounter > 0){
+		for (i=0; i<(*Lnode)->lcounter; i++)
+			free((*Lnode)->linknode[i]);
+		
+		free((*Lnode)->linknode);
+	}
+
+	free(*Lnode);
+	(*Lnode) = NULL;
+		
+	return 0;
+}
+
+
+
+int Free_data_str(node_t **Lnode)
+{
 	if(strncmp((*Lnode)->type,"DIR",3) != 0 && strncmp((*Lnode)->type,"LINK",4) != 0 ){
  /*
   * get the total size of field if multidimensional 
@@ -107,32 +143,6 @@ int Free(node_t **Lnode)
 			(*Lnode)->data.ptrdf = NULL;
 		}
 	}
-
-	if((*Lnode)->type != NULL) {
-		free((*Lnode)->type);
-		(*Lnode)->type == NULL;
-	}  
-
-	if((*Lnode)->name != NULL) {
-		free((*Lnode)->name);
-		(*Lnode)->name == NULL;
-	}
-/*
- * nullify node_t
- */
-	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; 
-	
-	if((*Lnode)->lcounter > 0){
-		for (i=0; i<(*Lnode)->lcounter; i++)
-			free((*Lnode)->linknode[i]);
-		
-		free((*Lnode)->linknode);
-	}
-		
-
-	free(*Lnode);
-	(*Lnode) = NULL;
-		
 	return 0;
 }
 
@@ -285,7 +295,6 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
  * allocate the main node
  */
 	node_t *Lnode=NULL;
-	size_t i, tot_dim;
 /*
  * allocate Lnode and 
  */
@@ -306,11 +315,6 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
 
 	if ( ( Lnode->name  = (char *)malloc(MAX_NAME_LENGTH* sizeof(char))) == NULL)
 		Perror("malloc");
- 
-	if(strncmp(TMPSTR.Type,"DIR",3) != 0){
-		if ( ( Lnode->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
-			Perror("malloc");
-	}
 /*
  * allocating data in data union (if list is of DATA type)
  */   
@@ -324,94 +328,110 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
  * if not DIR type, allocate field
  */
 	if(strncmp(TMPSTR.Type,"DIR",3) != 0){
+		if( AllocateNodeData(&Lnode, TMPSTR) != 0)
+			Error("AllocateNodeData");
+	}
+	return Lnode;
+}
+
+
+int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR)
+{
  /*
   * get the total size of field if multidimensional 
   * NOTE - when allocating sc,uc,c fields, allocate 1 element more and put it explicitely '\0' during reading
   */
-		tot_dim = 1;
-		for(i=0; i<TMPSTR.ndim; i++){
-			Lnode->fdim[i] = TMPSTR.dim[i];
-			tot_dim = tot_dim * TMPSTR.dim[i];
-		}
-
+	size_t i, tot_dim;
+	
+	if(strncmp(TMPSTR.Type,"DIR",3) != 0){
+		if ( ( (*Lnode)->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
+			Perror("malloc");
+	}
+	
+	tot_dim = 1;
+	for(i=0; i<TMPSTR.ndim; i++){
+		(*Lnode)->fdim[i] = TMPSTR.dim[i];
+		tot_dim = tot_dim * TMPSTR.dim[i];
+	}
 		
-		if (strncmp(Lnode->type,"LD",2) == 0){  /* long double */
-			if ( ( Lnode->data.ldf  = (long double *)malloc(tot_dim*sizeof(long double))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"D",1) == 0){  /* double */
-			if ( ( Lnode->data.df  = (double *)malloc(tot_dim*sizeof(double))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"F",1) == 0){  /* float */
-			if ( ( Lnode->data.f  = (float *)malloc(tot_dim*sizeof(float))) == NULL)
-				Perror("malloc");
-		}
+	if (strncmp((*Lnode)->type,"LD",2) == 0){  /* long double */
+		if ( ( (*Lnode)->data.ldf  = (long double *)malloc(tot_dim*sizeof(long double))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"D",1) == 0){  /* double */
+		if ( ( (*Lnode)->data.df  = (double *)malloc(tot_dim*sizeof(double))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"F",1) == 0){  /* float */
+		if ( ( (*Lnode)->data.f  = (float *)malloc(tot_dim*sizeof(float))) == NULL)
+			Perror("malloc");
+	}
 /*
  * chars
  */
-		else if (strncmp(Lnode->type,"SC",2) == 0){  /* signed char */
-			if ( ( Lnode->data.sc = (signed char *)malloc((tot_dim+1)*sizeof(signed char))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"UC",2) == 0){  /* unsigned char */
-			if ( ( Lnode->data.uc = (unsigned char *)malloc((tot_dim+1)*sizeof(unsigned char))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"C",1) == 0){  /* char */
-			if ( ( Lnode->data.c = (char *)malloc((tot_dim+1)*sizeof(char))) == NULL)
-				Perror("malloc");
-		}
+	else if (strncmp((*Lnode)->type,"SC",2) == 0){  /* signed char */
+		if ( ( (*Lnode)->data.sc = (signed char *)malloc((tot_dim+1)*sizeof(signed char))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"UC",2) == 0){  /* unsigned char */
+		if ( ( (*Lnode)->data.uc = (unsigned char *)malloc((tot_dim+1)*sizeof(unsigned char))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"C",1) == 0){  /* char */
+		if ( ( (*Lnode)->data.c = (char *)malloc((tot_dim+1)*sizeof(char))) == NULL)
+			Perror("malloc");
+	}
 /*
  * integers
  */
-		else if(strncmp(Lnode->type,"ULLI",4) == 0){  /* unsigned long long  int */
-			if ( ( Lnode->data.ulli = (unsigned long long int *)malloc(tot_dim*sizeof(unsigned long long int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"SLLI",4) == 0){  /* signed long long  int */
-			if ( ( Lnode->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
-			if ( ( Lnode->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"ULI",3) == 0){  /* unsigned long int */
-			if ( ( Lnode->data.uli = (unsigned long int *)malloc(tot_dim*sizeof(unsigned long int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"USI",3) == 0){  /* unsigned short int */
-			if ( ( Lnode->data.usi = (unsigned short int *)malloc(tot_dim*sizeof(unsigned short int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"SI",2) == 0){  /* short int */
-			if ( ( Lnode->data.si = (short int *)malloc(tot_dim*sizeof(short int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"UI",2) == 0){  /* unsigned int */
-			if ( ( Lnode->data.ui = (unsigned int *)malloc(tot_dim*sizeof(unsigned int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"LI",2) == 0){  /* long  int */
-			if ( ( Lnode->data.li = (long int *)malloc(tot_dim*sizeof(long int))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"I",1) == 0){  /* int */
-			if ( ( Lnode->data.i = (int *)malloc(tot_dim *sizeof(int))) == NULL)
-				Perror("malloc");
-		}
+	else if(strncmp((*Lnode)->type,"ULLI",4) == 0){  /* unsigned long long  int */
+		if ( ( (*Lnode)->data.ulli = (unsigned long long int *)malloc(tot_dim*sizeof(unsigned long long int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"SLLI",4) == 0){  /* signed long long  int */
+		if ( ( (*Lnode)->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
+		if ( ( (*Lnode)->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"ULI",3) == 0){  /* unsigned long int */
+		if ( ( (*Lnode)->data.uli = (unsigned long int *)malloc(tot_dim*sizeof(unsigned long int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"USI",3) == 0){  /* unsigned short int */
+		if ( ( (*Lnode)->data.usi = (unsigned short int *)malloc(tot_dim*sizeof(unsigned short int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"SI",2) == 0){  /* short int */
+		if ( ( (*Lnode)->data.si = (short int *)malloc(tot_dim*sizeof(short int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"UI",2) == 0){  /* unsigned int */
+		if ( ( (*Lnode)->data.ui = (unsigned int *)malloc(tot_dim*sizeof(unsigned int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"LI",2) == 0){  /* long  int */
+		if ( ( (*Lnode)->data.li = (long int *)malloc(tot_dim*sizeof(long int))) == NULL)
+			Perror("malloc");
+	}
+	else if(strncmp((*Lnode)->type,"I",1) == 0){  /* int */
+		if ( ( (*Lnode)->data.i = (int *)malloc(tot_dim *sizeof(int))) == NULL)
+			Perror("malloc");
+	}
 /*
  * counters
  */
-		else if(strncmp(Lnode->type,"ST",2) == 0){  /* size_t */
-			if ( ( Lnode->data.st = (size_t *)malloc(tot_dim*sizeof(size_t))) == NULL)
-				Perror("malloc");
-		}
-		else if(strncmp(Lnode->type,"PTRDF",1) == 0){  /* ptrdf_t */
-			if ( ( Lnode->data.ptrdf = (ptrdiff_t *)malloc(tot_dim*sizeof(ptrdiff_t))) == NULL)
-				Perror("malloc");
-		}
+	else if(strncmp((*Lnode)->type,"ST",2) == 0){  /* size_t */
+		if ( ( (*Lnode)->data.st = (size_t *)malloc(tot_dim*sizeof(size_t))) == NULL)
+			Perror("malloc");
 	}
-	return Lnode;
+	else if(strncmp((*Lnode)->type,"PTRDF",1) == 0){  /* ptrdf_t */
+		if ( ( (*Lnode)->data.ptrdf = (ptrdiff_t *)malloc(tot_dim*sizeof(ptrdiff_t))) == NULL)
+			Perror("malloc");
+	}
+	
+	return 0;
+
 }

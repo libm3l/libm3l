@@ -3,10 +3,12 @@
  
 #include "Header.h"
 #include "format_type.h"
+#include "internal_format_type.h"
+
 #include "add_list.h"
 #include "FunctionsPrt.h"
 
-int add_list(node_t **List, node_t **WTAList, char option)
+int add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 {
 /*
  * function adds list to the list tree
@@ -21,7 +23,7 @@ int add_list(node_t **List, node_t **WTAList, char option)
   *   -1 if node which is to be added (**List) is NULL
   *  -2 of node specifying where to add nodel (**WTAList) is NULL
  */
-	node_t *Node, *WTAnode, *WTAChild;
+	node_t *WTAChild;
 
 	if((*List) == NULL){
 /*
@@ -38,26 +40,24 @@ int add_list(node_t **List, node_t **WTAList, char option)
 		Warning("add_list: : NULL list");
 		return -2;
 	}
-		Node        = *List;
-		WTAnode     = *WTAList;
-
-	if( (*List)->child == NULL){
+		
+	if(strncmp( (*WTAList)->type, "DIR", 3) != 0){
 /*
- * List does not have children
+ * List is not DIR type
  */
-		if(option == 'b'){
+		if(Popt->opt_b == 'b'){
 /*
  * add node before WTAList
  */		
-			Node->parent  = WTAnode->parent;
-			Node->prev    = WTAnode->prev;
-			Node->next    = WTAnode;
+			(*List)->parent  = (*WTAList)->parent;
+			(*List)->prev    = (*WTAList)->prev;
+			(*List)->next    = (*WTAList);
 
-			WTAnode->prev = Node;
+			(*WTAList)->prev = (*List);
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0;
+			((*WTAList)->parent)->ndim++;
 			return 1;
 		}
 		else
@@ -66,15 +66,15 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * add node after WTAList
  */
-			Node->parent = WTAnode->parent;
-			Node->prev    = WTAnode;
-			Node->next    = WTAnode->next;
+			(*List)->parent  = (*WTAList)->parent;
+			(*List)->prev    = (*WTAList);
+			(*List)->next    = (*WTAList)->next;
 
-			WTAnode->next = Node;
+			(*WTAList)->next = (*List);
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0; 
+			((*WTAList)->parent)->ndim++; 
 			return 1;
 		}
 	}
@@ -83,24 +83,24 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * WTAList is DIR type
  */
-
 		WTAChild = (*WTAList)->child;
 
-		if(option == 'b'){
+		if(Popt->opt_b == 'b'){
 /*
  * add node at the beginning of the line of children
  */
-			Node->parent  = (*WTAList);
-			Node->prev    = NULL;
-			Node->next    = WTAChild;
+			(*List)->parent  = (*WTAList);
+			(*List)->prev    = NULL;
+			(*List)->next    = WTAChild;
 
-			WTAChild->prev = Node;
-			WTAnode->child = Node;    /* (*WTAList)->child */
+			if(WTAChild != NULL)WTAChild->prev = (*List);
+			(*WTAList)->child = (*List);
 			
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0;
+			(*WTAList)->child = (*List);
+			(*WTAList)->ndim++;
 			return 1;
 		}
 		else
@@ -108,27 +108,31 @@ int add_list(node_t **List, node_t **WTAList, char option)
 /*
  * loop until the end of line is reached
  */
-			while(WTAChild->next != NULL)
-				WTAChild = WTAChild->next;
+			if(WTAChild != NULL){
+				while(WTAChild->next != NULL)
+					WTAChild = WTAChild->next;
+				
+				WTAChild->next = (*List);
+			}
+			else{
+				(*WTAList)->child = (*List);
+			}
 /*
  * WTAChild now points at the last list in node, att new node behind it
  */
-
-			Node->prev   = WTAChild;
-			Node->next   = NULL;
-			Node->parent = WTAnode;
-
-			WTAChild->next = Node;
+			(*List)->prev   = WTAChild;
+			(*List)->next   = NULL;
+			(*List)->parent = (*WTAList);
 /*
  * increase counter of number of items in parent list
  */
-			((*WTAList)->parent)->ndim = 0;
+			(*WTAList)->ndim++;
 			return 1;
 		}
 	}
 /*
  * something went wrong, did not identify where to add node
  */
-return 0;
+return -3;
 }
 

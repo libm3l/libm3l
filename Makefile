@@ -1,5 +1,5 @@
-FILES = $(shell find ./ -name "*.c" | sed 's/.\///' )
-
+#FILES = $(shell find ./ -name "*.c" | sed 's/.\///' )
+FILES = $(shell ls  *.c )
 
 OBJS=$(FILES:%.c=%.o)
 

@@ -9,7 +9,7 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Rm.h"
+#include "Ln.h"
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
@@ -18,28 +18,33 @@ extern int optind;
 static int verbose_flag;
 
 /*
- * routine finds the list
+ * routine Links Slist to Tlist
  */
-size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options, ...)
+size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 
 	char *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, rm_tot_nodes;
+	size_t args_num, len, i, ln_tot_nodes;
 	va_list args;
 	int c, init_call;
 	int option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0'; opts.opt_l = '\0';
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0'; opts.opt_l = '\0';
 	
 	option_index = 0;
-	rm_tot_nodes=0;
+	ln_tot_nodes=0;
 	init_call = 2;
 /*
  * check if data set exists
  */
-	if(*List == NULL){
-		Warning("Rm: NULL list");
+	if(SList == NULL){
+		Warning("Cp: NULL source list");
+		return -1;
+	}
+	
+	if(*TList == NULL){
+		Warning("Cp: NULL target list");
 		return -1;
 	}
 /*
@@ -99,20 +104,18 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 		{
 			static struct option long_options[] =
 			{
-				{"ignore",     no_argument,       0, 'i'},   /* ignore case */
-				{"DIR",        no_argument,       0, 'd'},   /* look fir DIR only */
-				{"FILE",       no_argument,       0, 'f'},   /* look for FILE only */
-				{"LINK",       no_argument,       0, 'l'},   /* look fir LINK only */
-				{"recursive",  no_argument,       0, 'r'},   /* recursive */
-				{"IGNORE",     no_argument,       0, 'I'},   /* all but search term */
-				{"keepheadnode",   no_argument,       0, 'k'}, /* remove all up to head node, keep head node */
+				{"ignore",     no_argument,       0, 'i'},
+				{"DIR",        no_argument,       0, 'd'},
+				{"FILE",       no_argument,       0, 'f'},
+				{"LINK",       no_argument,       0, 'l'},
+				{"IGNORE",     no_argument,       0, 'I'},
 //				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiIklr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiklI", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -160,25 +163,11 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 					opts.opt_f = 'f';
 				break;
 /*
- * look for LINK only
+ * look for FILE only
  */
 				case 'l':
 					opts.opt_l = 'l';
-				break;
-/*
- * recursive
- */
-				case 'r':
-					opts.opt_r = 'r';
-				break;
-/*
- * preserve - if removing entire tree, preserv the head node
- */
-				case 'k':
-					opts.opt_k = 'k';
-				break;
-
-				case '?':
+				break;				
 /* 
  * Error, getopt_long already printed an error message
  */
@@ -197,7 +186,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 /*
  * check if incompatible options
  */
-		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
+		if( opts.opt_d == 'd' && opts.opt_f == 'f'){  /* NOTE  check for more incompatible options */
 			Warning("Incompatible options -d -f");
 			return -1;
 		}	
@@ -216,7 +205,8 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
  */
 	Popts = &opts;
 	
-	rm_tot_nodes = rm_caller(List, path, path_loc, Popts);
+ 	ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
-	return rm_tot_nodes;
+
+	return ln_tot_nodes;
 }

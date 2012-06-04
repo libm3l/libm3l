@@ -10,7 +10,7 @@
 #include "Find_Source.h"
 #include "FunctionsPrt.h"
 
-static SIZE_T FindList(int, node_t *, char *, opts_t *);
+static size_t FindList(int, node_t *, char *, opts_t *);
 static AddRecord(node_t *);
 static unsigned char CompStatement(char *, char *, char *, opts_t *);
 static unsigned char EvalSearchPatt(char *, char *, opts_t *);
@@ -25,7 +25,7 @@ find_t *Founds;
  * decalred above
  */
 
-find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
+find_t *Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
 {
 /*
  * allocate find_t pointer and first element
@@ -43,7 +43,7 @@ find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
 		Perror("malloc");
 	
 	Founds->founds = 0;
-	Founds->founds = FindList(1, List, search_term, Popt);
+	Founds->founds = FindList(call, List, search_term, Popt);
 	
 	if ( Founds->founds == 0){
 		free(Founds->Found_Nodes[0]);
@@ -63,7 +63,7 @@ find_t *Find_caller(node_t *List, char *search_term, opts_t *Popt)
 /*
  * function is a pointer to pointer type 
  */
-SIZE_T FindList(int call, node_t *List, char *search_term, opts_t *Popt)
+size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 {
 /*
  * function looks for items with given pattern and option
@@ -203,25 +203,6 @@ int AddRecord(node_t *Tmpnode)
 	return 1;
 }
 
-void DestroyFound(find_t **Founds)
-{
-/*
- * function destroys filed allocted by function Find_caller
- */
-	size_t i;
-			
-	for(i=0; i< (*Founds)->founds; i++){
-		free( (*Founds)->Found_Nodes[i] );
-//		FoundNodes[i]=NULL;
-	}
-	
-	free( (*Founds)->Found_Nodes);	
-	(*Founds)->Found_Nodes = NULL;
-	(*Founds)->Home_Node = NULL; 
-	free((*Founds));	
-	(*Founds) = NULL; 
-}	
-
 /*
  * compares statements with options
  */
@@ -243,6 +224,18 @@ unsigned char CompStatement(char *search_term, char *pattern, char *type, opts_t
 			else
 			{
 				return '0';
+			}
+		}
+/*
+ * LINKS types only
+ */
+		else if (Popts->opt_l == 'l'){
+			if( strncmp("LINK",type, 4) == 0 ){
+				return '0';
+			}
+			else
+			{
+				return '1';
 			}
 		}
 /*
@@ -307,3 +300,26 @@ unsigned char  EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
 		}	
 	}
 }
+
+
+
+
+
+void DestroyFound(find_t **Founds)
+{
+/*
+ * function destroys filed allocted by function Find_caller
+ */
+	size_t i;
+			
+	for(i=0; i< (*Founds)->founds; i++){
+		free( (*Founds)->Found_Nodes[i] );
+//		FoundNodes[i]=NULL;
+	}
+	
+	free( (*Founds)->Found_Nodes);	
+	(*Founds)->Found_Nodes = NULL;
+	(*Founds)->Home_Node = NULL; 
+	free((*Founds));	
+	(*Founds) = NULL; 
+}	

@@ -2,16 +2,18 @@ main DIR 15
 grid1 DIR 4
 	name_of_grid C 1 9
 	`CSM_grid`
-	boundary DIR 2
+	boundary DIR 3 
 		name C 1 5
 		`Wing`
 		type C 1 5 
-		`Wall`
+		`Wall`  
+  		BBB_DATA_DADA I 2 2 2
+		8001  8002 8003 8004
 	boundary DIR 2
 		name1 C 1 9
 		`Fuselage`
-		type1 C 1 5
-		`Wa1l`
+		type C 1 5
+		`Wall`
 	boundary DIR 2
 		name2 C 1 9
 		`External`

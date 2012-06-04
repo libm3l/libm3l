@@ -17,6 +17,7 @@
 #include "WriteData.h"
 #include "FunctionsPrt.h"
 #include "Locate.h"
+#include "Cp.h"
 
 
 #define LINESZ 1024
@@ -60,14 +61,15 @@ int main(void)
  	                   Error("CatData");
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
-// // 		write_to_socket(1, Gnode,  socketnr);
-// 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+// 		write_to_socket(1, Gnode,  socketnr);
+// // 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
 // 		close(socketnr);
-// 		
+		
 // 		printf("printing received node RECNODE \n\n ");
-// 		
+		
 // 		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 	    	Error("CatData");
+		
 // // 		
 // // 		usleep(10000);
 // // 		
@@ -111,46 +113,65 @@ int main(void)
 // 
 // 		exit(0);
 
-		
-//		parsed_path = parse_path("../../home/jka/ada/");
-		
-		printf("Going to locate %p\n", Gnode);
-// 		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
-// 		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
-// 		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
- 		if( (Founds = Locate(Gnode, "/main/*/boundary/", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
-			
-			for(i=0; i < Founds->founds; i++){
-				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-
-				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
-					printf(" Path is %s \n", node_path);
-					free(node_path);
-				}
 				
-				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-					Error("CatData");
-			}
-		DestroyFound(&Founds);
-		}
-		else
-		{
-			printf(" No founds\n");
-		}
+// 		printf("Going to locate %p\n", Gnode);
+// 		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+// 		if( (Founds = Locate(Gnode, "./grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+
+//  		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
+//  		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+// //  		if( (Founds = Locate(Gnode, "/main/*/boundary", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
+//  		if( (Founds = Locate(Gnode, "/*/*", "/*/*", "--ignore", (char *)NULL)) != NULL){
+			
+// 			for(i=0; i < Founds->founds; i++){
+// 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+// 
+// 				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+// 					printf(" Path is %s \n", node_path);
+// 					free(node_path);
+// 				}
+// 				
+// 				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 					Error("CatData");
+// 			}
+// 		DestroyFound(&Founds);
+// 		}
+// 		else
+// 		{
+// 			printf(" No founds\n");
+// 		}
+		
+		
+// 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*",  "--keepheadnode", (char *)NULL) );
+// 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/n=2",  "--keepheadnode", (char *)NULL) );
+
+			   
+//  		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
+//  		Cp(Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CFD_grid/n=1/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
+//  		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/n=2", &Gnode, "/main/ADA", "/*/*", (char *)NULL);   
+//     		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3/BBDD_NEWName", "/*/*/*", (char *)NULL);
+// 		Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/grid1/GRID_grid1", "/*/SV_name_of_grid=CFD_grid/*", (char *)NULL);   /* rename node */
+// 		Cp(Gnode, "/main/grid1/name_of_grid", "/*/SV_name_of_grid=CSM_grid/N=name_of_grid", &Gnode, "/main/grid1/name_GRID_grid1", "/*/SV_name_of_grid=CSM_grid/*", (char *)NULL); 
+		Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/ADD_grid1", "/*/*", (char *)NULL);   /* rename node */
+
+
+				   
+//   		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "/main", "/*", (char *)NULL);   
+
+
+// 		Mv(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL);   /* rename node */
+// 		Mv(&Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/grid1", "/*/SV_name_of_grid=CFD_grid", (char *)NULL);   /* rename node */
+// 		Mv(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=2/n=1", (char *)NULL);   /* rename node */
+// 		Mv(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/name_new", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+
+
+//
+		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+			Error("CatData");
 // 		
 		if(Umount(&Gnode) != 1)
-                  Perror("Umount");
+			Perror("Umount");
 		
-// 		exit(0);
-		
-		
-// 		parsed_path = parse_path("/home/jka/ada/");
-// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-// 		for (i=0; i< parsed_path->seg_count; i++)
-// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-// 		destroy_pars_path(&parsed_path);
-		
-// 		exit(0);
 		
 	}
 			
