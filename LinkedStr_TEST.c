@@ -60,10 +60,10 @@ int main(void)
  		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
  	                   Error("CatData");
 // 		
-// 		socketnr =  cli_open_socket("localhost", 4096);
-// 		write_to_socket(1, Gnode,  socketnr);
+		socketnr =  cli_open_socket("localhost", 4096);
+		write_to_socket(1, Gnode,  socketnr);
 // // 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
-// 		close(socketnr);
+		close(socketnr);
 		
 // 		printf("printing received node RECNODE \n\n ");
 		
