@@ -35,6 +35,7 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 	int init_call;
 	char *name, *path, *path_loc, *newname;
 	const char *pc;
+	node_t *Tmpnode, *TmpnodePar;
 /*
  * check if data set exists
  */
@@ -58,17 +59,26 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
  * check only one node is to be copied to the same directory
  */
 	if(strncmp(t_path_loc, "./", 2) == 0){
+		
+		
 		for(i=0; i< SFounds->founds; i++){
-			name = SFounds->Found_Nodes[i]->List->name;
-			bzero(name, sizeof(name));
-			if( snprintf(name,MAX_NAME_LENGTH,"%s",t_path) < 0)
-				Perror("snprintf");
-			
-/* NOTE - need check !!!!! */			if( (cp_nodes = (size_t) cp_list(init_call, SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
-						Warning("problem in ln_list");
+/*
+ * check if the parent directory exist
+ */			
+			TmpnodePar = SFounds->Found_Nodes[i]->List->parent;
+
+			if(TmpnodePar == NULL){
+				Warning("can not copy to NULL dir");
 			}
 			else{
+				Tmpnode = SFounds->Found_Nodes[i]->List;			
+			
+				if( (cp_nodes = (size_t) cp_list(init_call, Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
+					Warning("problem in ln_list");
+				}
+				else{
 				cp_tot_nodes += cp_nodes;
+				}
 			}
 		}
 		i = SFounds->founds;
