@@ -96,7 +96,7 @@ node_t *read_socket(int descrpt)
 /*
  * process the string, in case it returned anything
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -233,7 +233,7 @@ node_t *read_socket(int descrpt)
  * if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
  * sure the socket is empty
  */								
-								while(ngotten){
+								while(*pc != '\0') /*  while(ngotten) */{
 									bzero(buff,sizeof(buff));
 									if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 										Perror("read");
@@ -327,7 +327,7 @@ node_t *read_socket_data(int descrpt)
  */
 	if(*pc != '\0'){/* NOTE - this condition added in this routine becase *pc increment is NOT synchronized with ngotten
 			so what happened is that *pc == '\0' while ngotten was still larger then 0, Need to synchronize it */
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 			bzero(type,sizeof(type));
 			i = 0;
@@ -581,7 +581,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -733,7 +733,7 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  */
 		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /*
  * read until end of buffer or until end of array dimension reached
@@ -774,7 +774,7 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  */
 		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /*
  * read until end of buffer or end of array dimension reached
@@ -816,7 +816,7 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
  */
 		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /*
  * read until end of buffer or end of array dimension reached

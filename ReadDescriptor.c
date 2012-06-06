@@ -87,7 +87,7 @@ node_t *read_file(FILE *fp)
 /*
  * process the string, in case it returned anything
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -283,7 +283,7 @@ node_t *read_file_data(FILE *fp)
  */
 	if(*pc != '\0'){  /* NOTE - this condition added in this routine becase *pc increment is NOT synchronized with ngotten
 			so what happened is that *pc == '\0' while ngotten was still larger then 0, Need to synchronize it */
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 			bzero(type,sizeof(type));
 			i = 0;
@@ -544,7 +544,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * process buffer
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -703,7 +703,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /* 
  * if reading the very begining of the text, disregard everything before \`\ symbol
@@ -762,7 +762,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /* 
  * if reading the very begining of the text, disregard everything before \`\ symbol
@@ -823,7 +823,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		init = 0;
 		i = 0;
 
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /* 
  * if reading the very begining of the text, disregard everything before \`\ symbol
