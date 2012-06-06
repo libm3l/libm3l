@@ -15,7 +15,6 @@
 
 size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
 
-
 /*
  * function links list. If the list has children, it deletes them before removing list.
  * called recursivelly
@@ -32,6 +31,7 @@ size_t ln_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 	int init_call;
 	char *name, *path, *path_loc, *newname;
 	const char *pc;
+	node_t *Tmpnode, *TmpnodePar;
 /*
  * check if data set exists
  */
@@ -55,18 +55,27 @@ size_t ln_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
  * check only one node is to be copied to the same directory
  */
 	if(strncmp(t_path_loc, "./", 2) == 0){
+		
+		
 		for(i=0; i< SFounds->founds; i++){
-			name = SFounds->Found_Nodes[i]->List->name;
-			bzero(name, sizeof(name));
-			if( snprintf(name,MAX_NAME_LENGTH,"%s",t_path) < 0)
-				Perror("snprintf");
+/*
+ * check if the parent directory exist
+ */			
+			TmpnodePar = SFounds->Found_Nodes[i]->List->parent;
+
+			if(TmpnodePar == NULL){
+				Warning("can not copy to NULL dir");
+			}
+			else{
+				Tmpnode = SFounds->Found_Nodes[i]->List;			
 			
-// 			if( (ln_nodes = (size_t) ln_list(init_call, SFounds->Found_Nodes[i]->List, SFounds->Found_Nodes[i]->List->parent,  newname, Popts ) ) < 0){
-// 				Warning("problem in ln_list");
-// 			}
-// 			else{
-// 				ln_tot_nodes += ln_nodes;
-// 			}
+				if( (ln_nodes = (size_t) ln_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
+					Warning("problem in ln_list");
+				}
+				else{
+				ln_tot_nodes += ln_nodes;
+				}
+			}
 		}
 		i = SFounds->founds;
 		DestroyFound(&SFounds);
@@ -174,12 +183,12 @@ size_t ln_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 /*
  * copy and change the name of the list
  */
-// 					if( (ln_nodes = (size_t) ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
-// 						Warning("problem in ln_list");
-// 					}
-// 					else{
-// 						ln_tot_nodes += ln_nodes;
-// 					}
+					if( (ln_nodes = (size_t) ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
+						Warning("problem in ln_list");
+					}
+					else{
+						ln_tot_nodes += ln_nodes;
+					}
 				}
 /*
  * free borrowed memory
@@ -223,12 +232,12 @@ size_t ln_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 				
 			for(i=0; i< SFounds->founds; i++){
 				
-// 				if( (ln_nodes = (size_t) ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
-// 					Warning("problem in ln_list");
-// 				}
-// 				else{
-// 					ln_tot_nodes += ln_nodes;
-// 				}
+				if( (ln_nodes = (size_t) ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
+					Warning("problem in ln_list");
+				}
+				else{
+					ln_tot_nodes += ln_nodes;
+				}
 			}
 					
 			DestroyFound(&TFounds);
