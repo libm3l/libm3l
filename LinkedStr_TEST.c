@@ -48,12 +48,12 @@ int main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
- 		if( (Gnode = Fread("INPUT_TEST"))  == NULL)
+ 		if( (Gnode = Fread("ADA1"))  == NULL)
  			Perror("Linked_test: Fread");
 		
 	
 		
-// 		Fwrite(Gnode, "ADA");
+ 		Fwrite(Gnode, "ADA");
 		
 		
 // 

@@ -21,10 +21,10 @@ size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t ln_caller(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
 {
 /*
- * function is a caller of the cp functions
+ * function is a caller of the ln functions
  */
 	size_t i,j,k,l , ln_tot_nodes, ln_nodes;
 	find_t *SFounds, *TFounds;
@@ -35,7 +35,7 @@ size_t ln_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 /*
  * check if data set exists
  */
-	if(SList == NULL){
+	if(*SList == NULL){
 		Warning("Cp: NULL source list");
 		return -1;
 	}
@@ -47,7 +47,7 @@ size_t ln_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 /* 
  * check location of sources
  */
-	if ( (SFounds = locator_caller( SList, s_path, s_path_loc, Popts)) == NULL){
+	if ( (SFounds = locator_caller( *SList, s_path, s_path_loc, Popts)) == NULL){
 		Warning("Cp: NULL SFounds");
 		return 0;
 	}

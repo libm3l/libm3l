@@ -82,3 +82,7 @@ in Locator. c need to add testing of it
 
 16 ./* NOTE - check that Tfounds and SFounds are identical
  */
+
+ 17.  if(*pc != '\0'){  /* NOTE - this condition added in this routine becase *pc increment is NOT synchronized with ngotten
+ 			so what happened is that *pc == '\0' while ngotten was still larger then 0, Need to synchronize it */
+	the best would be upon each pc++ decrement ngotten--
