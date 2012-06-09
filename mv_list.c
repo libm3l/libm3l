@@ -29,7 +29,7 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 
 /* NOTE - check that Tfounds and SFounds are identical */
  
-	size_t i, j,k,l,mv_tot_nodes, mv_nodes;
+	size_t i, j,k,l,mv_tot_nodes, mv_nodes,len;
 	find_t *SFounds, *TFounds;
 	int init_call;
  	char *name, *path, *path_loc, *newname;
@@ -54,9 +54,10 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 		return 0;
 	}
 /*
- * check only one node is to be renamed, occurs if one source and target path is ./
+ * check only one node is to be copied to the same directory  (ie. path is onlu ./ (dotslash)
  */
-	if(strncmp(t_path_loc, "./", 2) == 0){
+	len = strlen(t_path_loc);
+	if(strncmp(t_path_loc, "./", 2) == 0 && len == 2){
 		for(i=0; i< SFounds->founds; i++){
 			name = SFounds->Found_Nodes[i]->List->name;
 			bzero(name, sizeof(name));

@@ -38,8 +38,13 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 		Warning("WriteData: NULL list");
 		return -1;
 	}
+	
+	if(strncmp(List->name, "LINK",4) != 0){
+/*
+ * List is not linke
+ */
  
-	if(List->child == NULL){
+	if(List->child == NULL ){
 /*
  * print node info
  */
@@ -70,7 +75,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 						Warning("Write data problem");
 						return -1;
 					}
-				}
+ 				}
 			Tmpnode = Tmpnode->next;
 			}
 		}
@@ -78,7 +83,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
  * recursive call or call with specified parameter 2
  * if -L == --listsubdir go to lower level
  */
-		else if(call == 2 && Popts->opt_L == 'L'){
+		else if(call == 2 && Popts->opt_L == 'L' && strncmp(List->type, "LINK", 4 ) != 0   ){
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){
 				if(cat_list(2, Tmpnode, Popts) != 0){
@@ -90,6 +95,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 		}
 	}
 	return 0;
+	}
 }
 
 
@@ -128,7 +134,7 @@ node_t *Tmp;
 			tabs++;
 		}
 		printf(" %s \t\t %ld\t", List->name, List->ndim);
-		if(strncmp(List->type,"DIR",3) != 0){
+		if(strncmp(List->type,"DIR",3) != 0 && strncmp(List->type,"LINK",4) != 0 ){
 			maxdim = 1;
 			for (i=0; i<List->ndim; i++){
 				printf("%ld   ", List->fdim[i]);
@@ -174,7 +180,7 @@ node_t *Tmp;
 			Tmp = Tmp->parent;
 		}
 		printf(" %s \t\t %ld\t", List->name, List->ndim);
-		if(strncmp(List->type,"DIR",3) != 0){
+		if(strncmp(List->type,"DIR",3) != 0 && strncmp(List->type,"LINK",4) != 0 ){
 			for (i=0; i<List->ndim; i++)
 				printf("%ld   ", List->fdim[i]);
 			}

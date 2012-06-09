@@ -13,7 +13,9 @@
 #include "FunctionsPrt.h"
 #include "Find_Source.h"
 
-size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
+static size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
+static node_t *link_crt_(node_t **, node_t **, char *);
+static int ln_recrt_list(node_t **, node_t **, char *);
 
 /*
  * function links list. If the list has children, it deletes them before removing list.
@@ -26,7 +28,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * function is a caller of the ln functions
  */
-	size_t i,j,k,l , ln_tot_nodes, ln_nodes;
+	size_t i,j,k,l , ln_tot_nodes, ln_nodes,len;
 	find_t *SFounds, *TFounds;
 	int init_call;
 	char *name, *path, *path_loc, *newname;
@@ -52,11 +54,10 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 		return 0;
 	}
 /*
- * check only one node is to be copied to the same directory
+ * check only one node is to be copied to the same directory  (ie. path is onlu ./ (dotslash)
  */
-	if(strncmp(t_path_loc, "./", 2) == 0){
-		
-		
+	len = strlen(t_path_loc);
+	if(strncmp(t_path_loc, "./", 2) == 0 && len == 2){
 		for(i=0; i< SFounds->founds; i++){
 /*
  * check if the parent directory exist
@@ -67,7 +68,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				Warning("can not copy to NULL dir");
 			}
 			else{
-				Tmpnode = SFounds->Found_Nodes[i]->List;			
+				Tmpnode = SFounds->Found_Nodes[i]->List;
 			
 				if( (ln_nodes = (size_t) ln_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
 					Warning("problem in ln_list");
@@ -247,13 +248,82 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 	}
 }
 
-size_t ln_list(int call, node_t **Slist, node_t **Tlist, char* NewName, opts_t *Popts){
-	
+size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *Popts){
+/*
+ * function copies list SList to a target list TList
+ * 	if the SList is FILE, TLIST has to be file too. The data sunion and ->fdim of the TList target nodes is furst freed, then reallocated
+ *	and then SList data union + ->fdim and ->ndim are copied.
+ * 	if the TList is DIR the Slist is re-created and added to the TList. In case SList is a DIR, the copying is done by 
+ *	traversing the list and copying it item-by-item
+ */
+	node_t *NewList;
+	char *name;
+/*
+ * copy source (Slist) to target (Tlist)
+ */
+	if(strncmp( (*TList)->type, "DIR", 3) != 0){
+/*
+ * *Tlist is FILE, check that SList is not DIR
+ */
+		if(strncmp( (*SList)->type, "DIR", 3) == 0){
+			Warning(" cp_list: cannot overwrite non-DIR  with DIR ");
+			return -1;
+		}
+/*
+ * copy content of the list
+ */
+		if (  ln_recrt_list(TList, SList, NewName) < 1){
+			Error("Copying list");
+			return -1;
+		}
+
+		return 1;
+	}
+	else{
+/*
+ * copy content of the list
+ */
+		if(strncmp( (*SList)->type, "DIR", 3) == 0){
+/*
+ * SList is DIR, traverese and copy item-by-item
+ */
+// 			if ( (NewList = ln_crt_list(SList, Popts)) == NULL){
+// 				Error("Copying list");
+// 				return -1;
+// 			}
+		}
+// 		else{
+// /*
+//  * Slist is FILE type, skip traversing and copy item directly
+//  */
+// 			if ( (NewList = ln_crt_list_item(SList)) == NULL){
+// 				Error("Copying list");
+// 				return -1;
+// 			}
+// 		}
+/*
+ * if list has a different name then original list, rename the list
+ */			
+		if(NewName != NULL){
+			bzero(NewList->name, sizeof(name));
+			if( snprintf(NewList->name,MAX_NAME_LENGTH,"%s",NewName) < 0){
+				Perror("snprintf");
+				return -1;
+			}
+		}
+/*
+ * add a new node to the DIR list
+ */
+		if ( add_list(&NewList, TList, Popts) < 0){
+			Warning("Error cp_list copy");
+			return -1;
+		}
+	}
 	return 1;
 }
 
 
-node_t *ctr_link_node(node_t **Slist, node_t **Tlist, char *NewName){
+node_t *link_crt_list(node_t **Slist, node_t **Tlist, char *NewName){
 /*
  * function creates link node, 
  * parent of the node is Tlist, child of the node is Slist (Link)
@@ -275,7 +345,7 @@ node_t *ctr_link_node(node_t **Slist, node_t **Tlist, char *NewName){
 		}
 	}
 
-	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", (*Slist)->type) < 0){
+	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"LINK") < 0){
 		Perror("snprintf");
 		return (node_t *) NULL;
 	}
@@ -292,8 +362,74 @@ node_t *ctr_link_node(node_t **Slist, node_t **Tlist, char *NewName){
 	Pnode->child  = (*Slist);
 	
 	(*Tlist)->ndim++;
-// 	(*Slist)->linknode.......
+// 	(*Slist)->linknode
 	
 	return Pnode;
-	
+}
+
+
+
+int ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
+/*
+ *      function frees the existing list. Used if both source and target lists are FILE types
+ *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
+ *	Tlist
+ */
+	node_t *Pnode;
+	size_t i;
+/* 
+ * copy name, type, number iof dimensions, dimensions
+ * if list has a different name then original list, rename the list
+ */
+// 	if( (*Tlist) == NULL){
+// 		Error("Null Tlist ");	
+// 		return -1;
+// 	}
+// 	
+// 	if( (*Slist) == NULL){
+// 		Error("Null Slist ");	
+// 		return -1;
+// 	}
+
+
+ 	printf(" NODES ARE %p   %p \n", (*Tlist), (*Slist));
+
+	bzero( (*Tlist)->name, MAX_NAME_LENGTH);
+	bzero( (*Tlist)->type, MAX_TYPE_LENGTH);
+
+	if(NewName != NULL){
+		if( snprintf((*Tlist)->name, MAX_NAME_LENGTH,"%s",NewName) < 0){
+			Perror("snprintf");
+			return -1;
+		}
+	}
+	else{
+		if( snprintf((*Tlist)->name, MAX_NAME_LENGTH,"%s", (*Slist)->name) < 0){
+			Perror("snprintf");
+			return -1;
+		}
+	}
+
+	if( snprintf( (*Tlist)->type, MAX_TYPE_LENGTH,"%s", "LINK") < 0){
+		Perror("snprintf");
+		return -1;
+	}
+/*
+ * re-create Tlist node
+ * first - free existing data set, keep the List itself
+ */
+	if ( Free_data_str(Tlist) != 0){
+		Error("Free_data_str");
+		return -1;
+	}
+/*
+ * set child of the node to the link source
+ */
+	(*Tlist)->child = (*Slist);
+	(*Tlist)->ndim = 1;
+/*
+ * NOTE - here you have to take care of link information in SList
+ */
+
+	return 1;
 }

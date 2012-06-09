@@ -63,7 +63,7 @@ int Free_data_str(node_t **Lnode)
   */
 		free((*Lnode)->fdim);
 		(*Lnode)->fdim = NULL;
-
+		(*Lnode)->ndim = 0;
 		
 		if (strncmp((*Lnode)->type,"LD",2) == 0){  /* long double */
 			free( (*Lnode)->data.ldf);
@@ -286,12 +286,10 @@ int Allocate(node_t **Lnode, tmpstruct_t TMPSTR)
 	return 0;
 }
 
-node_t *AllocateNode(tmpstruct_t TMPSTR)
+node_t *AllocateNode(tmpstruct_t TMPSTR){
 /*
  * function allocates node 
- */
-{
-/*
+ *
  * allocate the main node
  */
 	node_t *Lnode=NULL;
@@ -323,6 +321,9 @@ node_t *AllocateNode(tmpstruct_t TMPSTR)
 
 	if( snprintf(Lnode->name, MAX_TYPE_LENGTH,"%s",TMPSTR.Name_Of_List) < 0)
 		Perror("snprintf");
+/*
+ * filling Lnode->ndim, if List is not DIR, this will be re-filled again with the same value of AllocateNodeData
+ */
 	Lnode->ndim = TMPSTR.ndim;
 /*
  * if not DIR type, allocate field
@@ -347,6 +348,10 @@ int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR)
 		if ( ( (*Lnode)->fdim  = (size_t *)malloc(TMPSTR.ndim* sizeof(size_t))) == NULL)
 			Perror("malloc");
 	}
+/*
+ * filling Lnode->ndim, if List is not DIR, this has already been filled with in AllocateNode
+ */
+	(*Lnode)->ndim = TMPSTR.ndim;
 	
 	tot_dim = 1;
 	for(i=0; i<TMPSTR.ndim; i++){

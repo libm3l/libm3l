@@ -30,7 +30,7 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 /*
  * function is a caller of the cp functions
  */
-	size_t i,j,k,l , cp_tot_nodes, cp_nodes;
+	size_t i,j,k,l , cp_tot_nodes, cp_nodes, len;
 	find_t *SFounds, *TFounds;
 	int init_call;
 	char *name, *path, *path_loc, *newname;
@@ -56,9 +56,10 @@ size_t cp_caller(node_t *SList, const char *s_path, const char *s_path_loc, node
 		return 0;
 	}
 /*
- * check only one node is to be copied to the same directory
+ * check only one node is to be copied to the same directory  (ie. path is onlu ./ (dotslash)
  */
-	if(strncmp(t_path_loc, "./", 2) == 0){
+	len = strlen(t_path_loc);
+	if(strncmp(t_path_loc, "./", 2) == 0   &&  len == 2){
 		
 		
 		for(i=0; i< SFounds->founds; i++){
@@ -524,6 +525,10 @@ int cp_recrt_list(node_t ** Tlist, node_t *Slist, char *NewName){
 /*
  * NOTE - here you have to take care of link information
  */
+	}
+	else{
+		Warning("Can not copy DIR to FILE");
+		return -1;
 	}
 
 	return 1;

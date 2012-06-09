@@ -60,10 +60,10 @@ int main(void)
  		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
  	                   Error("CatData");
 // 		
-		socketnr =  cli_open_socket("localhost", 4096);
-		write_to_socket(1, Gnode,  socketnr);
+// 		socketnr =  cli_open_socket("localhost", 4096);
+// 		write_to_socket(1, Gnode,  socketnr);
 // // 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
-		close(socketnr);
+// 		close(socketnr);
 		
 // 		printf("printing received node RECNODE \n\n ");
 		
@@ -153,7 +153,8 @@ int main(void)
 // 		Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/grid1/GRID_grid1", "/*/SV_name_of_grid=CFD_grid/*", (char *)NULL);   /* rename node */
 // 		Cp(Gnode, "/main/grid1/name_of_grid", "/*/SV_name_of_grid=CSM_grid/N=name_of_grid", &Gnode, "/main/grid1/name_GRID_grid1", "/*/SV_name_of_grid=CSM_grid/*", (char *)NULL); 
 // 		Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/ADD_grid1", "/*/*", (char *)NULL);   /* rename node */
-		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
+// 		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
+// 		Cp(Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/BouNdaRy", "/*/n=1/n=1/*", (char *)NULL); 
 // 		Cp(Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
 
 				   
@@ -166,6 +167,7 @@ int main(void)
 // 		Mv(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/name_new", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
 
+ 		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=2/n=1", (char *)NULL);   /* rename node */
 //
 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
