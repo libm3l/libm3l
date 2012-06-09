@@ -32,14 +32,14 @@ int cat_list(int call, node_t *List, opts_t *Popts)
  *    0 of no scenario where and how to add a node was found
  *   -1 if node which is to be added (*List) is NULL
  */
-	node_t *Tmpnode;
+	node_t *Tmpnode, *Tmpcld;
  
 	if(List == NULL){
 		Warning("WriteData: NULL list");
 		return -1;
 	}
 	
-	if(strncmp(List->name, "LINK",4) != 0){
+	if(strncmp(List->type, "LINK",4) != 0){
 /*
  * List is not linke
  */
@@ -48,54 +48,89 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 /*
  * print node info
  */
-		PrintListInfo(List, Popts);
-	}
-	else
-	{
+			PrintListInfo(List, Popts);
+		}
+		else
+		{
 /*
  * initil call
  */
-		PrintListInfo(List, Popts);
-		
-		if(call == 1){
-			Tmpnode = List->child;
-			while(Tmpnode != NULL){
+			PrintListInfo(List, Popts);
+			
+			if(call == 1){
+				Tmpnode = List->child;
+				while(Tmpnode != NULL){
 /*
  * if node is list and option specifies it, write the target node data
  */
-				if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popts->opt_l == 'l'){
-					if(cat_list(2, Tmpnode->child, Popts) != 0){ /* list is populated by the target list where it points to */
-						Warning("Write data problem");
-						return -1;
+					if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popts->opt_l == 'l'){
+						if(cat_list(2, Tmpnode->child, Popts) != 0){ /* list is populated by the target list where it points to */
+							Warning("Write data problem");
+							return -1;
+						}
 					}
+					else{
+		
+						if(cat_list(2, Tmpnode, Popts) != 0){
+							Warning("Write data problem");
+							return -1;
+						}
+					}
+				Tmpnode = Tmpnode->next;
 				}
-				else{
-	
-					if(cat_list(2, Tmpnode, Popts) != 0){
-						Warning("Write data problem");
-						return -1;
-					}
- 				}
-			Tmpnode = Tmpnode->next;
 			}
-		}
 /*
  * recursive call or call with specified parameter 2
  * if -L == --listsubdir go to lower level
  */
-		else if(call == 2 && Popts->opt_L == 'L' && strncmp(List->type, "LINK", 4 ) != 0   ){
-			Tmpnode = List->child;
-			while(Tmpnode != NULL){
-				if(cat_list(2, Tmpnode, Popts) != 0){
-					Warning("Write data problem");
-					return -1;
+			else if(call == 2 && Popts->opt_L == 'L' && strncmp(List->type, "LINK", 4 ) != 0   ){
+				Tmpnode = List->child;
+				while(Tmpnode != NULL){
+					if(cat_list(2, Tmpnode, Popts) != 0){
+						Warning("Write data problem");
+						return -1;
+					}
+					Tmpnode = Tmpnode->next;
 				}
-				Tmpnode = Tmpnode->next;
 			}
 		}
+		return 0;
 	}
-	return 0;
+	else{
+/*
+ * list is LINK
+ */
+		PrintListInfo(List, Popts);		
+		if(Popts->opt_l == 'l'){
+/*
+ * List Linked list too
+ */
+			printf("--->");
+/* 
+ * set Tmp node to link source address
+ * and nullify temporarily the next node
+ */
+			Tmpnode = List->child;
+			Tmpcld = Tmpnode->next;
+			Tmpnode->next = NULL;
+			
+			if(cat_list(2, Tmpnode, Popts) != 0){
+				Warning("Write data problem");
+/*
+ * set next node to its original value
+ */
+				Tmpnode->next = Tmpcld;
+				return -1;
+			}
+/*
+ * set next node to its original value
+ */
+			Tmpnode->next = Tmpcld;
+		}
+		
+		return 0;
 	}
+	
 }
 
 

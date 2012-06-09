@@ -169,7 +169,11 @@ int main(void)
 
  		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=2/n=1", (char *)NULL);   /* rename node */
 //
-		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+		if(Cat(Gnode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
+			Error("CatData");
+		
+		printf("\n\n\n\n");
+				if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 // 		
 		if(Umount(&Gnode) != 1)
