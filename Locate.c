@@ -78,7 +78,7 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';

@@ -24,7 +24,7 @@
 
 int main(void) 
 {	
-    node_t *Gnode=NULL, *Node, *Tmpnode, *RecNode;
+    node_t *Gnode=NULL, *RecNode, *Anode, *Tmpnode;
     find_t *Founds;
     
     int i, count,countgrp, socketnr, j;
@@ -51,14 +51,22 @@ int main(void)
  		if( (Gnode = Fread("ADA1"))  == NULL)
  			Perror("Linked_test: Fread");
 		
-	
+		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+ 	                   Error("CatData");
 		
- 		Fwrite(Gnode, "ADA");
+		printf("\n\n\n\n");
 		
+ 		if( (Anode = Fread("TEST.dat"))  == NULL)
+ 			Perror("Linked_test: Fread");	
+		
+//  		Fwrite(Gnode, "ADA");
 		
 // 
- 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+ 		if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
  	                   Error("CatData");
+		
+		printf("\n\n\n\n");
+
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
 // 		write_to_socket(1, Gnode,  socketnr);
@@ -156,6 +164,7 @@ int main(void)
 // 		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
 // 		Cp(Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/BouNdaRy", "/*/n=1/n=1/*", (char *)NULL); 
 // 		Cp(Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
+  		Cp(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
 				   
 //   		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "/main", "/*", (char *)NULL);   
@@ -169,10 +178,19 @@ int main(void)
 
 //  		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=2/n=1", (char *)NULL);   /* rename node */
 //  		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
- 		Ln(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+//  		Ln(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+//  		Ln(&Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
-		if(Cat(Gnode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
+		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
+		
+		
+		printf("\n\n\n\n");
+
+// 		 if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+//  	                   Error("CatData");
+// 		
+// 		printf("\n\n\n\n");
 		
 // 		printf("\n\n\n\n");
 // 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
@@ -180,7 +198,8 @@ int main(void)
 // 		
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");
-		
+		if(Umount(&Anode) != 1)
+			Perror("Umount");		
 		
 	}
 			
