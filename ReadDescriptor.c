@@ -913,6 +913,9 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * NOTE - need to add here that if the word is ending i == tot_dim and next char is separ sign, leave - see ReadSocket.c
+ */
 			}
 			else if (*pc == TEXT_SEPAR_SIGN){
 /*

@@ -726,7 +726,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 	char 		*pdat;
 	unsigned char 	*pdatu;
 	signed char   	*pdats;
-	int 		init;
 
 	tot_dim = 1;
 	
@@ -744,7 +743,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer, set last char to \0
  */
-		init = 0;
 		i = 0;
 		while(*pc != '\0') /*  while(ngotten) */
 		{
@@ -767,6 +765,10 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
+ */
+				if(i == tot_dim && IFEXPR) return 0;
 
 			}
 			else if (i == tot_dim){
@@ -802,7 +804,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer, set last char to \0
  */
-		init = 0;
 		i = 0;
 		while(*pc != '\0') /*  while(ngotten) */
 		{
@@ -825,6 +826,10 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
+ */
+				if(i == tot_dim && IFEXPR) return 0;
 
 			}
 			else if (i == tot_dim){
@@ -861,7 +866,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer, set last char to \0
  */
-		init = 0;
 		i = 0;
 		while(*pc != '\0') /*  while(ngotten) */
 		{
@@ -884,6 +888,10 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
+ */
+				if(i == tot_dim && IFEXPR) return 0;
 
 			}
 			else if (i == tot_dim){
