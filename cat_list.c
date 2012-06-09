@@ -105,7 +105,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 /*
  * List Linked list too
  */
-			printf("--->");
+			printf("--->\n");
 /* 
  * set Tmp node to link source address
  * and nullify temporarily the next node
@@ -122,6 +122,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 				Tmpnode->next = Tmpcld;
 				return -1;
 			}
+			printf("<---\n");
 /*
  * set next node to its original value
  */
