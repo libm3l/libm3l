@@ -117,7 +117,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 			if(cat_list(2, Tmpnode, Popts) != 0){
 				Warning("Write data problem");
 /*
- * set next node to its original value
+ * restore the previuous state - set next node to its original value
  */
 				Tmpnode->next = Tmpcld;
 				return -1;

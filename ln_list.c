@@ -14,9 +14,8 @@
 #include "Find_Source.h"
 
 static size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
-static node_t *link_crt_(node_t **, node_t **, char *);
 static int ln_recrt_list(node_t **, node_t **, char *);
-
+static node_t *ln_crt_list(node_t **, char *);
 /*
  * function links list. If the list has children, it deletes them before removing list.
  * called recursivelly
@@ -270,7 +269,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 			return -1;
 		}
 /*
- * copy content of the list
+ * link list to the source list
  */
 		if (  ln_recrt_list(TList, SList, NewName) < 1){
 			Error("Copying list");
@@ -281,29 +280,15 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 	}
 	else{
 /*
- * copy content of the list
+ * link list to the directory, first make a new lits
  */
-		if(strncmp( (*SList)->type, "DIR", 3) == 0){
-/*
- * SList is DIR, traverese and copy item-by-item
- */
-// 			if ( (NewList = ln_crt_list(SList, Popts)) == NULL){
-// 				Error("Copying list");
-// 				return -1;
-// 			}
+		if ( (NewList = ln_crt_list(SList, NewName)) == NULL){
+			Error("Copying list");
+			return -1;
 		}
-// 		else{
-// /*
-//  * Slist is FILE type, skip traversing and copy item directly
-//  */
-// 			if ( (NewList = ln_crt_list_item(SList)) == NULL){
-// 				Error("Copying list");
-// 				return -1;
-// 			}
-// 		}
 /*
  * if list has a different name then original list, rename the list
- */			
+ */
 		if(NewName != NULL){
 			bzero(NewList->name, sizeof(name));
 			if( snprintf(NewList->name,MAX_NAME_LENGTH,"%s",NewName) < 0){
@@ -314,6 +299,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 /*
  * add a new node to the DIR list
  */
+		printf(" Adding new list\n");
 		if ( add_list(&NewList, TList, Popts) < 0){
 			Warning("Error cp_list copy");
 			return -1;
@@ -323,7 +309,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 }
 
 
-node_t *link_crt_list(node_t **Slist, node_t **Tlist, char *NewName){
+node_t *ln_crt_list(node_t **Slist, char *NewName){
 /*
  * function creates link node, 
  * parent of the node is Tlist, child of the node is Slist (Link)
@@ -349,6 +335,7 @@ node_t *link_crt_list(node_t **Slist, node_t **Tlist, char *NewName){
 		Perror("snprintf");
 		return (node_t *) NULL;
 	}
+	TMPSTR.ndim = 1;
 	TMPSTR.dim = NULL;	
 /*
  * create new node
@@ -357,11 +344,9 @@ node_t *link_crt_list(node_t **Slist, node_t **Tlist, char *NewName){
 		Error("Allocate");
 		return (node_t *)NULL;
 	}
-	
-	Pnode->parent = (*Tlist);
+
 	Pnode->child  = (*Slist);
 	
-	(*Tlist)->ndim++;
 // 	(*Slist)->linknode
 	
 	return Pnode;
@@ -390,10 +375,6 @@ int ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
 // 		Error("Null Slist ");	
 // 		return -1;
 // 	}
-
-
- 	printf(" NODES ARE %p   %p \n", (*Tlist), (*Slist));
-
 	bzero( (*Tlist)->name, MAX_NAME_LENGTH);
 	bzero( (*Tlist)->type, MAX_TYPE_LENGTH);
 
