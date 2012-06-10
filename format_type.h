@@ -76,10 +76,10 @@ typedef struct node {
  /*
   * structure used for linking information, lcounter is a number of linknode array
   */
-	struct node_t **linknode;
+	struct node **linknode;
 	size_t lcounter;
 
-} node_t;
+}node_t;
 
 
 /*

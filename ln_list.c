@@ -16,6 +16,8 @@
 static size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
 static int ln_recrt_list(node_t **, node_t **, char *);
 static node_t *ln_crt_list(node_t **, char *);
+int AllocateLinkInfo(node_t **, node_t *);
+
 /*
  * function links list. If the list has children, it deletes them before removing list.
  * called recursivelly
@@ -347,8 +349,11 @@ node_t *ln_crt_list(node_t **Slist, char *NewName){
 
 	Pnode->child  = (*Slist);
 	
-// 	(*Slist)->linknode
-	
+	if( AllocateLinkInfo(Slist, Pnode) < 0){
+		Error("AllocateLinkInfo");
+		return (node_t *) NULL;
+	}
+		
 	return Pnode;
 }
 
@@ -408,9 +413,51 @@ int ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
  */
 	(*Tlist)->child = (*Slist);
 	(*Tlist)->ndim = 1;
+	
+	if( AllocateLinkInfo(Slist, (*Tlist)) < 0){
+		Error("AllocateLinkInfo");
+		return -1;
+	}
 /*
  * NOTE - here you have to take care of link information in SList
  */
 
 	return 1;
+}
+
+
+int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
+/*
+ * function allocates the linknode structure in the source node (Slist) and fills it with 
+ * address if link target (Tlist)
+ */
+	size_t lcounter; 
+	
+	if( (*Slist)->linknode == NULL){
+/*
+ * first link
+ * structure is not yet allocated
+ */
+		if( ( (*Slist)->linknode = (node_t **)malloc(sizeof(node_t *))) == NULL)
+			Perror("linknode malloc");
+		
+		if( ( (*Slist)->linknode[0] = (node_t *)malloc(sizeof(node_t))) == NULL)
+			Perror("linknode malloc");
+		
+		(*Slist)->linknode[0] = Tlist;
+		(*Slist)->lcounter = 1;
+		return 1;
+	}
+	else{
+/*
+ * structure already exist
+ */
+		lcounter = (*Slist)->lcounter;
+		if( ( (*Slist)->linknode[lcounter] = (node_t *)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(node_t))) == NULL)
+			Perror("linknode malloc");
+		(*Slist)->linknode[lcounter] = Tlist;
+		(*Slist)->lcounter++;
+		return 1;
+	}
+	return -1;
 }
