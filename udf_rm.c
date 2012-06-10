@@ -41,6 +41,8 @@ int Free(node_t **Lnode)
  * free filed of lists pointing to links
  */
 	if((*Lnode)->lcounter > 0){
+		
+		printf(" freeing memory of node %p  %s  %d\n", *Lnode, (*Lnode)->name,(*Lnode)->lcounter);
 		for (i=0; i<(*Lnode)->lcounter; i++)
 			free((*Lnode)->linknode[i]);
 		

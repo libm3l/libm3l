@@ -20,7 +20,7 @@ static int verbose_flag;
 /*
  * routine copies Slist to Tlist
  */
-size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+size_t Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 
 	char *word, **opt;
@@ -39,7 +39,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 /*
  * check if data set exists
  */
-	if(SList == NULL){
+	if((*SList) == NULL){
 		Warning("Cp: NULL source list");
 		return -1;
 	}

@@ -451,10 +451,15 @@ int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
  * structure already exist
  */
 		lcounter = (*Slist)->lcounter;
-		if( ( (*Slist)->linknode[lcounter] = (node_t *)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(node_t))) == NULL)
+		
+		if( ( (*Slist)->linknode = (node_t **)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(node_t *))) == NULL)
+			Perror("linknode malloc");
+		
+		if( ( (*Slist)->linknode[lcounter] = (node_t *)malloc(sizeof(node_t))) == NULL)
 			Perror("linknode malloc");
 		(*Slist)->linknode[lcounter] = Tlist;
 		(*Slist)->lcounter++;
+		
 		return 1;
 	}
 	return -1;
