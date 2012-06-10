@@ -74,7 +74,7 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
  * if called with recursive option, it traveres entire tree, otherwise it lists the current node children only
  */
 	node_t *Tmpnode;
- 
+	 
 	if(Popt->opt_r == 'r'){
 /*
  * List entire tree
@@ -263,6 +263,7 @@ unsigned char  EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
 {
 
 	char *Ppattern;
+	size_t len1, len2;
 /*
  * duplicate pattern and of required by option convert upper case to lower case
  */
@@ -271,12 +272,15 @@ unsigned char  EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
 
 	if(Popts->opt_i == 'i') 
 	       Ppattern = StrToLower(Ppattern);
+	
+	len1 = strlen(Ppattern);
+	len2 = strlen(search_term);
 /*
  * find if search term metches patter and return 0
  * if IGNORE (I) specified, reverese retrun value
  * upon leaving, free *Ppattern 
  */
-	if( strncmp(search_term, Ppattern, strlen(Ppattern)) == 0   ||  *search_term == '*'){
+	if( (strncmp(search_term, Ppattern, strlen(Ppattern)) == 0 && len1 == len2)   ||  *search_term == '*'){
 		if(Popts->opt_I == 'I'){
 			free(Ppattern);
 			return '0';

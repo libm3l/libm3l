@@ -16,7 +16,6 @@
 static size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
 static int ln_recrt_list(node_t **, node_t **, char *);
 static node_t *ln_crt_list(node_t **, char *);
-int AllocateLinkInfo(node_t **, node_t *);
 
 /*
  * function links list. If the list has children, it deletes them before removing list.
