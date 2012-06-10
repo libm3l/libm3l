@@ -64,8 +64,8 @@ int main(void)
 //  		Fwrite(Gnode, "ADA");
 		
 // 
- 		if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
- 	                   Error("CatData");
+//  		if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+//  	                   Error("CatData");
 		
 		printf("\n\n\n\n");
 
@@ -181,18 +181,44 @@ int main(void)
 //  		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=2/n=1", (char *)NULL);   /* rename node */
 //   		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 //  		Ln(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
-//   		Ln(&Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNewLINK", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+  		Ln(&Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNewLINK", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
-		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
-			Error("CatData");
+// 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+// 			Error("CatData");
 		
-		
-// 		Cp(Gnode, "/main/grid1/boundary/typeNewLINK", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL); 
+		printf(" \n\n\n Copying link \n\n\n");
+		Cp(Gnode, "/main/grid1/boundary/typeNewLINK", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL); 
 // 		Cp(Gnode, "/main/grid1/boundary/typeNewLINK", "/*/SV_name_of_grid=CSM_grid/n=1/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL); 
 
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 		
+		
+		if( (Founds = Locate(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", "--ignore", (char *)NULL)) != NULL){
+			
+			for(i=0; i < Founds->founds; i++){
+				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+
+				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+					printf(" Path is %s \n", node_path);
+					free(node_path);
+				}
+				
+				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+					Error("CatData");
+				 
+				 printf("Number of links is %d\n", Founds->Found_Nodes[i]->List->lcounter);
+				 for(j=0; j < Founds->Found_Nodes[i]->List->lcounter; j++)
+					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]);
+			}
+		DestroyFound(&Founds);
+		}
+		else
+		{
+			printf(" No founds\n");
+		}
+		
+		exit(0);
 		Fwrite(Gnode, "ADA");
 		printf("\n\n\n\n");
 		

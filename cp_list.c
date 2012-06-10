@@ -494,7 +494,7 @@ node_t *cp_crt_list_item(node_t *Slist)
 		if(strncmp(Slist->type, "LINK", 4) == 0){
 			Pnode->ndim = 1;
 			Pnode->child = Slist->child;
-			if( AllocateLinkInfo(&Slist, Pnode) < 0){
+			if( AllocateLinkInfo(&Slist->child, Pnode) < 0){
 				Error("AllocateLinkInfo");
 				return (node_t *)NULL;
 			}

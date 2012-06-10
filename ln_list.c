@@ -300,7 +300,6 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 /*
  * add a new node to the DIR list
  */
-		printf(" Adding new list\n");
 		if ( add_list(&NewList, TList, Popts) < 0){
 			Warning("Error cp_list copy");
 			return -1;
