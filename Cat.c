@@ -6,7 +6,7 @@
 
 #include "Cat.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
+#include "find_list.h"
 
 
 
@@ -279,10 +279,7 @@ int Cat(node_t *List, char * Options, ...)
 	else
 	{
 /*
- * removed specified lists
- */
-/*
- * find specified names and remove them
+ * cat specified names and remove them
  */
 
 		status1 = 0;

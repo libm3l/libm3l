@@ -10,7 +10,7 @@
 #include "Locator.h"
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
+#include "find_list.h"
 
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
