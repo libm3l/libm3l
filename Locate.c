@@ -8,7 +8,7 @@
 #include "internal_format_type.h"
 
 #include "Locate.h"
-#include "Locator.h"
+#include "locate_list.h"
 
 #include "FunctionsPrt.h"
 #include "find_list.h"

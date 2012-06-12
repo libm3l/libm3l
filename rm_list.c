@@ -7,7 +7,7 @@
 #include "internal_format_type.h"
 
 #include "rm_list.h"
-#include "Locator.h"
+#include "locate_list.h"
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
 #include "find_list.h"
