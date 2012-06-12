@@ -58,14 +58,14 @@ int main(void)
 		
 		printf("\n\n\n\n");
 		
-//  		if( (Anode = Fread("TEST.dat"))  == NULL)
-//  			Perror("Linked_test: Fread");	
- 		if( (Anode = Fread("ADA_EMPTYLINK"))  == NULL)
+ 		if( (Anode = Fread("TEST.dat"))  == NULL)
  			Perror("Linked_test: Fread");	
+//  		if( (Anode = Fread("ADA_EMPTYLINK"))  == NULL)
+//  			Perror("Linked_test: Fread");	
 
  		if(Cat(Anode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
  	                   Error("CatData");
-exit(0);
+// exit(0);
 		
 //  		Fwrite(Gnode, "ADA");
 		
@@ -242,13 +242,20 @@ exit(0);
 // 		
 
 
-	if(Umount(&Anode) != 1)
+		if(Umount(&Anode) != 1)
 			Perror("Umount");		
 
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 		Fwrite(Gnode, "ADA_EMPTYLINK");
 		printf("\n\n\n\n");
+		
+		
+		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
+		
+		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
+		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+			Error("CatData");
 
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");

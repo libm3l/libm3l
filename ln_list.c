@@ -12,6 +12,9 @@
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
 #include "find_list.h"
+#include "find_list.h"
+#include "rm_list.h"
+
 
 static size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
 static int ln_recrt_list(node_t **, node_t **, char *);
@@ -461,6 +464,55 @@ int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
 		(*Slist)->lcounter++;
 		
 		return 1;
+	}
+	return -1;
+}
+
+
+size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
+/*
+ * function traverses entire list and look for empty links. 
+ * Once it finds them it removes them
+ *
+ * if called with recursive option, it traveres entire tree, otherwise it lists the current node children only
+ */
+	node_t *Tmpnode, *Tmpnode1;
+	size_t rm_nodes, cleaned_nodes;
+		
+	if( (*List) == NULL){
+/*
+ * Node is FILE type, loop over next nodes
+ */
+		Warning("WriteData: NULL list");
+		return -1;
+	}
+/*
+ * List entire tree
+ */ 
+	if((*List)->child == NULL){
+/*
+ * check if list is empty link
+ */
+		rm_nodes = 0;
+		if( strncmp( (*List)->type, "LINK", 4) == 0  && (*List)->ndim == 0)
+			rm_nodes = rm_list(2, List);
+		return rm_nodes;
+		
+	}
+	else
+	{
+/*
+ * recursive calling, go to the first child node and loop over list in the same level as child
+ */
+		Tmpnode = (*List)->child;
+		cleaned_nodes = 0;
+		
+		while(Tmpnode != NULL){
+			Tmpnode1 = Tmpnode->next;
+			cleaned_nodes = cleaned_nodes + ln_cleanempytlinks(&Tmpnode,  Popt);
+			Tmpnode = Tmpnode1;
+		}
+		return cleaned_nodes;
 	}
 	return -1;
 }

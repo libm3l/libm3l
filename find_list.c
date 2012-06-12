@@ -74,19 +74,19 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
  * if called with recursive option, it traveres entire tree, otherwise it lists the current node children only
  */
 	node_t *Tmpnode;
+	
+	if(List == NULL){
+/*
+ * Node is FILE type, loop over next nodes
+ */
+		Warning("WriteData: NULL list");
+			return -1;
+	}
 	 
 	if(Popt->opt_r == 'r'){
 /*
  * List entire tree
- */
-		if(List == NULL){
-/*
- * Node is FILE type, loop over next nodes
- */
-			Warning("WriteData: NULL list");
-			return -1;
-		}
- 
+ */ 
 		if(List->child == NULL){
 /*
  * loop over next nodes
