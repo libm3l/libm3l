@@ -58,14 +58,19 @@ int main(void)
 		
 		printf("\n\n\n\n");
 		
- 		if( (Anode = Fread("TEST.dat"))  == NULL)
+//  		if( (Anode = Fread("TEST.dat"))  == NULL)
+//  			Perror("Linked_test: Fread");	
+ 		if( (Anode = Fread("ADA_EMPTYLINK"))  == NULL)
  			Perror("Linked_test: Fread");	
+
+ 		if(Cat(Anode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
+ 	                   Error("CatData");
+exit(0);
 		
 //  		Fwrite(Gnode, "ADA");
 		
 // 
-//  		if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-//  	                   Error("CatData");
+
 		
 		printf("\n\n\n\n");
 
@@ -209,7 +214,7 @@ int main(void)
 				 
 				 printf("Number of links is %d\n", Founds->Found_Nodes[i]->List->lcounter);
 				 for(j=0; j < Founds->Found_Nodes[i]->List->lcounter; j++)
-					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]);
+					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]->List);
 			}
 		DestroyFound(&Founds);
 		}
@@ -235,10 +240,46 @@ int main(void)
 // 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 			Error("CatData");
 // 		
+
+
+	if(Umount(&Anode) != 1)
+			Perror("Umount");		
+
+		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+			Error("CatData");
+		Fwrite(Gnode, "ADA_EMPTYLINK");
+		printf("\n\n\n\n");
+
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");
-		if(Umount(&Anode) != 1)
-			Perror("Umount");		
+
+
+
+// 		if( (Founds = Locate(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", "--ignore", (char *)NULL)) != NULL){
+// 			
+// 			for(i=0; i < Founds->founds; i++){
+// 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
+// 
+// 				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+// 					printf(" Path is %s \n", node_path);
+// 					free(node_path);
+// 				}
+// 				
+// 				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 					Error("CatData");
+// 				 
+// 				 printf("Number of links is %d\n", Founds->Found_Nodes[i]->List->lcounter);
+// 				 for(j=0; j < Founds->Found_Nodes[i]->List->lcounter; j++)
+// 					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]->List);
+// 			}
+// 		DestroyFound(&Founds);
+// 		}
+// 		else
+// 		{
+// 			printf(" No founds\n");
+// 		}
+// 		if(Umount(&Anode) != 1)
+// 			Perror("Umount");		
 		
 	}
 			

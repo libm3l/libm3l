@@ -76,7 +76,7 @@ typedef struct node {
  /*
   * structure used for linking information, lcounter is a number of linknode array
   */
-	struct node **linknode;
+	struct find_str **linknode;
 	size_t lcounter;
 
 }node_t;

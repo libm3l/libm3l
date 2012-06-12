@@ -436,13 +436,13 @@ int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
  * first link
  * structure is not yet allocated
  */
-		if( ( (*Slist)->linknode = (node_t **)malloc(sizeof(node_t *))) == NULL)
+		if( ( (*Slist)->linknode = (find_str_t **)malloc(sizeof(find_str_t *))) == NULL)
 			Perror("linknode malloc");
 		
-		if( ( (*Slist)->linknode[0] = (node_t *)malloc(sizeof(node_t))) == NULL)
+		if( ( (*Slist)->linknode[0] = (find_str_t *)malloc(sizeof(find_str_t))) == NULL)
 			Perror("linknode malloc");
 		
-		(*Slist)->linknode[0] = Tlist;
+		(*Slist)->linknode[0]->List = Tlist;
 		(*Slist)->lcounter = 1;
 		return 1;
 	}
@@ -452,12 +452,12 @@ int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
  */
 		lcounter = (*Slist)->lcounter;
 		
-		if( ( (*Slist)->linknode = (node_t **)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(node_t *))) == NULL)
+		if( ( (*Slist)->linknode = (find_str_t **)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(find_str_t *))) == NULL)
 			Perror("linknode malloc");
 		
-		if( ( (*Slist)->linknode[lcounter] = (node_t *)malloc(sizeof(node_t))) == NULL)
+		if( ( (*Slist)->linknode[lcounter] = (find_str_t *)malloc(sizeof(find_str_t))) == NULL)
 			Perror("linknode malloc");
-		(*Slist)->linknode[lcounter] = Tlist;
+		(*Slist)->linknode[lcounter]->List = Tlist;
 		(*Slist)->lcounter++;
 		
 		return 1;

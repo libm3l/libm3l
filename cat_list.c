@@ -105,33 +105,49 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 /*
  * List Linked list too
  */
-			printf("--->\n");
+			printf("--->");
 /* 
  * set Tmp node to link source address
  * and nullify temporarily the next node
  */
 			Tmpnode = List->child;
-			Tmpcld = Tmpnode->next;
-			Tmpnode->next = NULL;
-			
-			if(cat_list(2, Tmpnode, Popts) != 0){
-				Warning("Write data problem");
+
+			if(Tmpnode != NULL){
+				printf("\n");
+/*
+ * LINK is not empty link
+ */
+				Tmpcld = Tmpnode->next;
+				Tmpnode->next = NULL;
+				
+				if(cat_list(2, Tmpnode, Popts) != 0){
+					Warning("Write data problem");
 /*
  * restore the previuous state - set next node to its original value
  */
-				Tmpnode->next = Tmpcld;
-				return -1;
-			}
-			printf("<---\n");
+					Tmpnode->next = Tmpcld;
+					return -1;
+				}
+				printf("<---\n");
 /*
  * set next node to its original value
  */
-			Tmpnode->next = Tmpcld;
+				Tmpnode->next = Tmpcld;
+			}
+			else{
+/*
+ * LINK is empty link
+ */
+				printf("empty link ");
+				printf("<---\n");
+			}
 		}
-		
 		return 0;
 	}
-	
+/*
+ * if you end up here from whatever reason, return error value
+ */
+	return -1;
 }
 
 

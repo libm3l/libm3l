@@ -365,8 +365,9 @@ node_t *read_file_data(FILE *fp)
 					TMPSTR.dim=NULL;
 /*
  * if type is FILE, allocate field for its dimensions
+ * if the type is LINK, the dimensions will always be 0, if the dimensions is 1, IO operation dereference link
  */
-					if ( strncmp(TMPSTR.Type,"DIR",3) != 0){
+					if ( strncmp(TMPSTR.Type,"DIR",3) != 0 &&  strncmp(TMPSTR.Type,"LINK",4) != 0 ){
 						if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
 							Perror("malloc");
 					}
