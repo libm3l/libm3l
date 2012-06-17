@@ -18,7 +18,7 @@ static int write_file_data_filedescprt(node_t *, size_t , FILE *);
  */
 int WriteData(node_t *List,  FILE *fp)
 {
-	node_t *Tmpnode, *Tmplist;
+	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
 	size_t i, tot_dim;
 	char buff[MAX_WORD_LENGTH];
  
@@ -27,6 +27,8 @@ int WriteData(node_t *List,  FILE *fp)
 		return -1;
 	} 
  
+// 	printf(" name of node is %s, type is %s child is %p ndim is %ld\n", List->name, List->type, List->child, List->ndim);
+
 	if(List->child == NULL ){
 /*
  * loop over next nodes
@@ -50,23 +52,28 @@ int WriteData(node_t *List,  FILE *fp)
     					        Perror("snprintf");
 			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
 				Perror("fwrite");
+
+			if(Tmpnode->ndim > 0){
+
 				tot_dim = 1;
-			for(i=0; i<Tmpnode->ndim; i++){
-					bzero(buff, sizeof(buff));
-				if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
-    						        Perror("snprintf");
-				if (fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+				for(i=0; i<Tmpnode->ndim; i++){
+						bzero(buff, sizeof(buff));
+					if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
+								Perror("snprintf");
+					if (fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+						Perror("fwrite");
+						tot_dim = tot_dim * Tmpnode->fdim[i];
+				}
+					if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
+								Perror("snprintf");
+				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
-					tot_dim = tot_dim * Tmpnode->fdim[i];
-			}
-				if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
-    						        Perror("snprintf");
-			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
-				Perror("fwrite");
 /*
  * call to function printing actual data in file
  */						
 			write_file_data_filedescprt(Tmpnode, tot_dim, fp);
+			}
+
 			if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
     						        Perror("snprintf");
 			if (fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
@@ -76,10 +83,12 @@ int WriteData(node_t *List,  FILE *fp)
 	}
 	else
 	{
-
+/*
+ * list has children
+ */
 		Tmplist = List;
-		if( strncmp(List->type, "LINK", 4 ) == 0)
-			Tmplist = Tmplist ->child;  /* list is populated by the target list where it points to */
+// 		if( strncmp(List->type, "LINK", 4 ) == 0)
+// 			Tmplist = Tmplist ->child;  /* list is populated by the target list where it points to */
 
 		bzero(buff, sizeof(buff));
 		if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmplist->name, Tmplist->type, Tmplist->ndim) < 0)
@@ -89,11 +98,44 @@ int WriteData(node_t *List,  FILE *fp)
 
 		Tmpnode = Tmplist->child;
 		while(Tmpnode != NULL){
-			if( strncmp(List->type, "LINK", 4 ) == 0){
-				Tmplist=Tmpnode->child; /* list is populated by the target list where it points to */
-				if(WriteData(Tmplist,fp) != 0){
-					Warning("Write data problem");
-					return -1;
+
+			if( strncmp(Tmpnode->type, "LINK", 4 ) == 0){
+/*
+ * List is link, write the target
+ */
+				Tmplist=Tmpnode->child;
+				if(Tmplist != NULL){
+/*
+ * save connectivity data and nullify them temporarily
+ */
+					Tmpnext = Tmplist->next;
+					Tmpprev = Tmplist->prev;
+					Tmplist->next = NULL;
+					Tmplist->prev = NULL;
+					
+					if(WriteData(Tmplist,fp) != 0){
+						Warning("Write data problem");
+/*
+ * restore original state
+ */
+						Tmplist->next = Tmpnext;
+						Tmplist->prev = Tmpprev;
+						return -1;
+					}
+/*
+ * restore original state
+ */
+					Tmplist->next = Tmpnext;
+					Tmplist->prev = Tmpprev;
+				}
+				else{
+/*
+ * empty LINK
+ */					
+					if(WriteData(Tmpnode,fp) != 0){
+						Warning("Write data problem");
+						return -1;
+					}
 				}
 			}
 			else{

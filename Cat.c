@@ -6,7 +6,7 @@
 
 #include "Cat.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
+#include "find_list.h"
 
 
 
@@ -27,8 +27,9 @@ int Cat(node_t *List, char * Options, ...)
 	va_list args;
 	int c, status, status1;
 	int option_index;
-	
-	char path[256];
+		
+	opts.opt_s = '0';opts.opt_p = '0'; opts.opt_d = '0' ; opts.opt_f = '0';opts.opt_l = '0';
+
 	
 	option_index = 0;
 /*
@@ -80,7 +81,7 @@ int Cat(node_t *List, char * Options, ...)
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -100,7 +101,6 @@ int Cat(node_t *List, char * Options, ...)
  * first - reset opting = 0 to reinitialize getopt_long
  */
 		optind = 0;
-		opts.opt_s = '0';opts.opt_p = '0'; opts.opt_d = '0' ; opts.opt_f = '0';
 		while (1)
 		{
 			static struct option long_options[] =
@@ -279,10 +279,7 @@ int Cat(node_t *List, char * Options, ...)
 	else
 	{
 /*
- * removed specified lists
- */
-/*
- * find specified names and remove them
+ * cat specified names and remove them
  */
 
 		status1 = 0;

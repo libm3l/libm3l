@@ -21,7 +21,7 @@ ssize_t bitcount;
  */
 int write_to_socket(int call, node_t *List,  int socket_descrpt)
 {
-	node_t *Tmpnode, *Tmplist;
+	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
 	size_t i, tot_dim, n;
 	char buff[MAX_WORD_LENGTH+1];	
 /*
@@ -68,20 +68,22 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 /*
  * get field dimensions
  */
-			tot_dim = 1;
-			for(i=0; i<Tmpnode->ndim; i++){
-					bzero(buff, sizeof(buff));
-				if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c",Tmpnode->fdim[i], SEPAR_SIGN)) < 0)
-    						        Perror("snprintf");
-				buff[n] = '\0';
-				if( write_buffer(buff, socket_descrpt,0,0) == 0 )
-				Error("Writing buffer");
-					tot_dim = tot_dim * Tmpnode->fdim[i];
-			}
+			if(Tmpnode->ndim > 0){
+				tot_dim = 1;
+				for(i=0; i<Tmpnode->ndim; i++){
+						bzero(buff, sizeof(buff));
+					if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c",Tmpnode->fdim[i], SEPAR_SIGN)) < 0)
+								Perror("snprintf");
+					buff[n] = '\0';
+					if( write_buffer(buff, socket_descrpt,0,0) == 0 )
+					Error("Writing buffer");
+						tot_dim = tot_dim * Tmpnode->fdim[i];
+				}
 /*
  * write data
  */
-			write_file_data_intdescprt(Tmpnode, tot_dim, socket_descrpt);
+				write_file_data_intdescprt(Tmpnode, tot_dim, socket_descrpt);
+			}
 		}
 /*
  * jump to next node
@@ -93,8 +95,8 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
  * node has children, it is type DIR, write its head 
  */
 		Tmplist = List;
-		if( strncmp(List->type, "LINK", 4 ) == 0) 
-			Tmplist = Tmplist ->child;  /* list is populated by the target list where it points to */
+// 		if( strncmp(List->type, "LINK", 4 ) == 0) 
+// 			Tmplist = Tmplist ->child;  /* list is populated by the target list where it points to */
 
 		bzero(buff, sizeof(buff));
 		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmplist->name, SEPAR_SIGN, Tmplist->type, SEPAR_SIGN, Tmplist->ndim, SEPAR_SIGN)) < 0)
@@ -110,11 +112,43 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 /*
  * if list is LINK, use the target node (saved in ->child) as a source of data
  */
-			if( strncmp(List->type, "LINK", 4 ) == 0){    /* NOTE change  */
-				Tmplist=Tmpnode->child; /* list is populated by the target list where it points to */
-				if(write_to_socket(2, Tmplist,socket_descrpt) != 0){
-					Warning("Write data problem");
-					return -1;
+			if( strncmp(Tmpnode->type, "LINK", 4 ) == 0){    /* NOTE change  */
+/*
+ * List is link, write the target
+ */
+				Tmplist=Tmpnode->child;
+				if(Tmplist != NULL){
+/*
+ * save connectivity data and nullify them temporarily
+ */
+					Tmpnext = Tmplist->next;
+					Tmpprev = Tmplist->prev;
+					Tmplist->next = NULL;
+					Tmplist->prev = NULL;				
+					
+					if(write_to_socket(2, Tmplist,socket_descrpt) != 0){
+/*
+ * restore original state
+ */
+						Tmplist->next = Tmpnext;
+						Tmplist->prev = Tmpprev;
+						Warning("Write data problem");
+						return -1;
+					}
+/*
+ * restore original state
+ */
+					Tmplist->next = Tmpnext;
+					Tmplist->prev = Tmpprev;
+				}
+				else{
+/*
+ * empty LINK
+ */					
+					if(write_to_socket(2, Tmplist,socket_descrpt) != 0){
+						Warning("Write data problem");
+						return -1;
+					}
 				}
 			}				
 			else{

@@ -96,7 +96,7 @@ node_t *read_socket(int descrpt)
 /*
  * process the string, in case it returned anything
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -233,7 +233,7 @@ node_t *read_socket(int descrpt)
  * if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
  * sure the socket is empty
  */								
-								while(ngotten){
+								while(*pc != '\0') /*  while(ngotten) */{
 									bzero(buff,sizeof(buff));
 									if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 										Perror("read");
@@ -320,10 +320,12 @@ node_t *read_socket_data(int descrpt)
 	size_t   wc, i, hi;
 	tmpstruct_t TMPSTR;
 	node_t *Pnode;
+	
+	Pnode = NULL;
 /*
  * process the string - the algorithm is the same as in ReadDir1, comments reduced
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -350,7 +352,6 @@ node_t *read_socket_data(int descrpt)
  * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
  * otherwise the buffer ended in the middle of word
  */
-
 			if(*pc == '\0'){
 				hi =0;
 			}
@@ -365,7 +366,6 @@ node_t *read_socket_data(int descrpt)
 /*
  * read next chunk of text file, complete the word by the rest from next chunk
  */
-
 				bzero(buff,sizeof(buff));
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
@@ -376,20 +376,18 @@ node_t *read_socket_data(int descrpt)
 
 				if(LASTEXPR)continue;
 			}
-
-			
 /*
  * if word is longer then 0
  */			
 			if(strlen(type) >0){
- 				wc++;
+				wc++;
 /*
  * get the name of the list
  */
 				if(wc == 1){
 					bzero(TMPSTR.Name_Of_List,sizeof(TMPSTR.Name_Of_List));
 					if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", type) < 0)
-		   				Perror("snprintf");
+						Perror("snprintf");
 				}
 /*
  * get the type of the list
@@ -397,7 +395,7 @@ node_t *read_socket_data(int descrpt)
 				else if (wc == 2 ){
 					bzero(TMPSTR.Type,sizeof(TMPSTR.Type));
 					if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", type) < 0)
-		   				Perror("snprintf");
+						Perror("snprintf");
 				}
 /*
  * get the number, in case of DIR number is a number of items in DIR, in case of DATA, number is a number of dimensions
@@ -405,14 +403,14 @@ node_t *read_socket_data(int descrpt)
 				else if (wc == 3){
 					TMPSTR.ndim = Strol(type);
 					TMPSTR.dim=NULL;
-
 /*
  * if type is FILE, allocate field for its dimensions
+ * if the type is LINK, the dimensions will always be 0, if the dimensions is 1, IO operation dereference link
  */
-					if ( strncmp(TMPSTR.Type,"DIR",3) != 0){
+					if ( strncmp(TMPSTR.Type,"DIR",3) != 0 &&  strncmp(TMPSTR.Type,"LINK",4) != 0 ){
 
 						if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
-	  						Perror("malloc");
+							Perror("malloc");
 					}
 					else
 					{
@@ -436,7 +434,7 @@ node_t *read_socket_data(int descrpt)
 			i = 0;
 			lastchar = '\0';
 		}		
-		
+			
 		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
 			Error("Allocate");}
 	
@@ -456,8 +454,7 @@ node_t *read_socket_data(int descrpt)
 				Error("Error reading data");
 		}
 
-		if(TMPSTR.dim!=NULL)
-		{
+		if(TMPSTR.dim!=NULL){
 			free(TMPSTR.dim);
 			TMPSTR.dim = NULL;
 		}
@@ -469,6 +466,21 @@ node_t *read_socket_data(int descrpt)
   * end of reading the lists in DIR list   - while(ngotten)
   */
 	}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+	bzero(buff,sizeof(buff));
+	if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+		Perror("read");
+		return NULL;
+	}
+	
+	buff[ngotten] = '\0';
+	pc = &buff[0];
+	if ( (Pnode = read_socket_data(descrpt)) == NULL)
+		Error("ReadDirData: ReadData");
+		
+	return Pnode;
 /*
  * If you get here something is wrong
  */
@@ -566,7 +578,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -684,6 +696,23 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 		}
 	}
 /*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+	bzero(buff,sizeof(buff));
+	if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+		Perror("read");
+		return -1;
+	}
+	
+	buff[ngotten] = '\0';
+	pc = &buff[0];
+	if( read_socket_data_line(Lnode, TMPSTR, descrpt) != 0){
+		Error("Error reading data");
+		return -1;
+	}
+		
+	return 0;
+/*
   * if you get here something went wrong
   */	
 	return -1;
@@ -698,7 +727,6 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 	char 		*pdat;
 	unsigned char 	*pdatu;
 	signed char   	*pdats;
-	int 		init;
 
 	tot_dim = 1;
 	
@@ -716,9 +744,8 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer, set last char to \0
  */
-		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /*
  * read until end of buffer or until end of array dimension reached
@@ -739,6 +766,10 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
+ */
+				if(i == tot_dim && IFEXPR) return 0;
 
 			}
 			else if (i == tot_dim){
@@ -751,15 +782,31 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				return 0;
 			}
 		}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+		bzero(buff,sizeof(buff));
+		if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+			Perror("read");
+			return -1;
+		}
+		
+		buff[ngotten] = '\0';
+		pc = &buff[0];
+		if( read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
+				Error("Error reading data");
+			return -1;
+		}
+			
+		return 0;
 	}
 	else if ( strncmp(TMPSTR.Type,"SC",2) == 0 ){
 		pdats = (*Lnode)->data.sc;
 /*
  * process buffer, set last char to \0
  */
-		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /*
  * read until end of buffer or end of array dimension reached
@@ -780,6 +827,10 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
+ */
+				if(i == tot_dim && IFEXPR) return 0;
 
 			}
 			else if (i == tot_dim){
@@ -792,6 +843,23 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				return 0;
 			}
 		}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+		bzero(buff,sizeof(buff));
+		if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+			Perror("read");
+			return -1;
+		}
+		
+		buff[ngotten] = '\0';
+		pc = &buff[0];
+		if( read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
+				Error("Error reading data");
+			return -1;
+		}
+			
+		return 0;
 	}
 	else if ( TMPSTR.Type[0] == 'C'){
 
@@ -799,9 +867,8 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 /*
  * process buffer, set last char to \0
  */
-		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /*
  * read until end of buffer or end of array dimension reached
@@ -822,6 +889,10 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
+ */
+				if(i == tot_dim && IFEXPR) return 0;
 
 			}
 			else if (i == tot_dim){
@@ -834,6 +905,23 @@ int read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 				return 0;
 			}
 		}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+		bzero(buff,sizeof(buff));
+		if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+			Perror("read");
+			return -1;
+		}
+		
+		buff[ngotten] = '\0';
+		pc = &buff[0];
+		if( read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
+				Error("Error reading data");
+			return -1;
+		}
+			
+		return 0;
 	}
 	else{
 		Error("char data type wrong");

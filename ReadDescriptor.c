@@ -76,6 +76,7 @@ node_t *read_file(FILE *fp)
  * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the fiield
  */
 	bzero(buff, strlen(buff));
+	ngotten = 0;
 	if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
 		if(ferror(fp))
 			Perror("fread");
@@ -86,7 +87,7 @@ node_t *read_file(FILE *fp)
 /*
  * process the string, in case it returned anything
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -136,6 +137,7 @@ node_t *read_file(FILE *fp)
  * read next chunk of text file, complete the word by the rest from next chunk and put pointer at it's beggining
  */
 				bzero(buff,sizeof(buff));
+				ngotten = 0;
 				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
 					if(ferror(fp))
 						Perror("fread");
@@ -248,6 +250,7 @@ node_t *read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp)
 	for(i=1;i<=TMPSTR.ndim; i++){
  		
 		Tmpnode=NULL;	
+				
 		if ( (Tmpnode = read_file_data(fp)) == NULL)
 			Error("ReadDirData: ReadData");
 /*
@@ -269,10 +272,6 @@ node_t *read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp)
 	return Dnode;
 }
 
-
-
-
-
 node_t *read_file_data(FILE *fp)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
@@ -282,7 +281,7 @@ node_t *read_file_data(FILE *fp)
 /*
  * process the string - the algorithm is the same as in ReadDir1, comments reduced
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -304,7 +303,7 @@ node_t *read_file_data(FILE *fp)
 				if(i == (MAX_WORD_LENGTH-1))
 					Perror("read_socket - word too long");
 			}
-			type[i] = '\0';
+			type[i] = '\0';	
 /*
  * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
  * otherwise the buffer ended in the middle of word
@@ -324,8 +323,8 @@ node_t *read_file_data(FILE *fp)
 /*
  * read next chunk of text file, complete the word by the rest from next chunk
  */
-
 				bzero(buff,sizeof(buff));
+				ngotten = 0;
 				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
 					if(ferror(fp))
 						Perror("fread");
@@ -337,20 +336,18 @@ node_t *read_file_data(FILE *fp)
 
 				if(LASTEXPR)continue;
 			}
-
-			
 /*
  * if word is longer then 0
- */			
+ */
 			if(strlen(type) >0){
- 				wc++;
+				wc++;
 /*
  * get the name of the list
  */
 				if(wc == 1){
 					bzero(TMPSTR.Name_Of_List,sizeof(TMPSTR.Name_Of_List));
 					if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", type) < 0)
-		   				Perror("snprintf");
+						Perror("snprintf");
 				}
 /*
  * get the type of the list
@@ -358,23 +355,21 @@ node_t *read_file_data(FILE *fp)
 				else if (wc == 2 ){
 					bzero(TMPSTR.Type,sizeof(TMPSTR.Type));
 					if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", type) < 0)
-		   				Perror("snprintf");
+						Perror("snprintf");
 				}
 /*
  * get the number, in case of DIR number is a number of items in DIR, in case of DATA, number is a number of dimensions
  */
 				else if (wc == 3){
-
 					TMPSTR.ndim = Strol(type);
 					TMPSTR.dim=NULL;
-
 /*
  * if type is FILE, allocate field for its dimensions
+ * if the type is LINK, the dimensions will always be 0, if the dimensions is 1, IO operation dereference link
  */
-					if ( strncmp(TMPSTR.Type,"DIR",3) != 0){
-
+					if ( strncmp(TMPSTR.Type,"DIR",3) != 0 &&  strncmp(TMPSTR.Type,"LINK",4) != 0 ){
 						if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
-	  						Perror("malloc");
+							Perror("malloc");
 					}
 					else
 					{
@@ -396,26 +391,30 @@ node_t *read_file_data(FILE *fp)
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';
-		}		
-		
+		}
+					
 		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
 			Error("Allocate");}
-	
- 		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C'){
+		
+		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C'){
 /*
  * data is Char type
  */ 
- 			if( read_file_data_charline(&Pnode, TMPSTR, fp) != 0)
- 				Error("Error reading data");
- 		}
- 		else
- 		{
+			if( read_file_data_charline(&Pnode, TMPSTR, fp) != 0){
+				Error("Error reading data");
+				return NULL;
+			}
+		}
+		else
+		{
 /*
  * data are numbers
  */
-			if( read_file_data_line(&Pnode, TMPSTR, fp) != 0)
+			if( read_file_data_line(&Pnode, TMPSTR, fp) != 0){
 				Error("Error reading data");
- 		}
+				return NULL;
+			}
+		}
 
 		if(TMPSTR.dim!=NULL)
 		{
@@ -426,10 +425,27 @@ node_t *read_file_data(FILE *fp)
  * Return main list
  */
 		return Pnode;
+	}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+	bzero(buff,sizeof(buff));
+	if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+		if(ferror(fp)){
+			Perror("fread");
+			return NULL;
+		}
+	}
+	buff[ngotten] = '\0';
+	pc = &buff[0];
+	if ( (Pnode = read_file_data(fp)) == NULL)
+		Error("ReadDirData: ReadData");
+	
+	return Pnode;
  /*
   * end of reading the lists in DIR list   - while(ngotten)
   */
-	}
+	
 /*
  * If you get here something is wrong
  */
@@ -527,7 +543,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 /*
  * process buffer
  */
-	while(ngotten)
+	while(*pc != '\0') /*  while(ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -567,6 +583,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read next chunk of text file, complete the word by the rest from next chunk
  */
 				bzero(buff,sizeof(buff));
+				ngotten = 0;
 				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
 					if(ferror(fp))
 						Perror("fread");
@@ -650,6 +667,24 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		}
 	}
 /*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+	bzero(buff,sizeof(buff));
+	if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+		if(ferror(fp)){
+			Perror("fread");
+			return 0;
+		}
+	}
+	buff[ngotten] = '\0';
+	pc = &buff[0];
+	if( read_file_data_line(Lnode, TMPSTR, fp) != 0){
+		Error("Error reading data");
+		return -1;
+	}
+	
+	return 0;
+/*
   * if you get here something went wrong
   */	
 	return -1;
@@ -685,7 +720,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /* 
  * if reading the very begining of the text, disregard everything before \`\ symbol
@@ -712,10 +747,12 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
+				ngotten = 0;
 				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
 					if(ferror(fp))
 						Perror("fread");
 				}
+
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
@@ -734,6 +771,23 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				return 0;
 			}
 		}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+		bzero(buff,sizeof(buff));
+		if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+			if(ferror(fp))
+				Perror("fread");
+		}
+		
+		buff[ngotten] = '\0';
+		pc = &buff[0];
+		if( read_file_data_charline(Lnode, TMPSTR, fp) != 0){
+			Error("Error reading data");
+			return -1;
+		}	
+		return 0;		
+		
 	}
 	else if ( strncmp(TMPSTR.Type,"SC",2) == 0 ){
 		pdats = (*Lnode)->data.sc;
@@ -742,7 +796,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 		init = 0;
 		i = 0;
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /* 
  * if reading the very begining of the text, disregard everything before \`\ symbol
@@ -769,10 +823,12 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
+				ngotten = 0;
 				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
 					if(ferror(fp))
 						Perror("fread");
 				}
+
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
@@ -791,6 +847,24 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				return 0;
 			}
 		}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+		bzero(buff,sizeof(buff));
+		if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+			if(ferror(fp))
+				Perror("fread");
+		}
+		
+		buff[ngotten] = '\0';
+		pc = &buff[0];
+		if( read_file_data_charline(Lnode, TMPSTR, fp) != 0){
+			Error("Error reading data");
+			return -1;
+		}	
+		return 0;
+		
+		
 	}
 	else if ( TMPSTR.Type[0] == 'C'){
 		pdat = (*Lnode)->data.c;
@@ -801,7 +875,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		init = 0;
 		i = 0;
 
-		while(ngotten)
+		while(*pc != '\0') /*  while(ngotten) */
 		{
 /* 
  * if reading the very begining of the text, disregard everything before \`\ symbol
@@ -822,6 +896,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read until end of buffer or ` symbol
  */			
 			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN){
+				
 				*pdat++ = *pc++;
 				i++;
 			}
@@ -830,13 +905,18 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  */
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
+				ngotten = 0;
 				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
 					if(ferror(fp))
 						Perror("fread");
 				}
+
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+/*
+ * NOTE - need to add here that if the word is ending i == tot_dim and next char is separ sign, leave - see ReadSocket.c
+ */
 			}
 			else if (*pc == TEXT_SEPAR_SIGN){
 /*
@@ -852,6 +932,22 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 				return 0;
 			}
 		}
+/*
+ * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+ */
+		bzero(buff,sizeof(buff));
+		if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
+			if(ferror(fp))
+				Perror("fread");
+		}
+		
+		buff[ngotten] = '\0';
+		pc = &buff[0];
+		if( read_file_data_charline(Lnode, TMPSTR, fp) != 0){
+			Error("Error reading data");
+			return -1;
+		}	
+		return 0;
 	}
 	else{
 		Error("char data type wrong");

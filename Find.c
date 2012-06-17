@@ -9,7 +9,7 @@
 
 #include "Find.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
+#include "find_list.h"
 
 extern int optind;
 static int verbose_flag;
@@ -76,7 +76,7 @@ find_t *Find(node_t *List, char * Options, ...)
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';

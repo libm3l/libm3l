@@ -7,10 +7,10 @@
 #include "internal_format_type.h"
 
 #include "rm_list.h"
-#include "Locator.h"
+#include "locate_list.h"
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
+#include "find_list.h"
 
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
@@ -68,8 +68,8 @@ size_t rm_list(int call, node_t **List)
  * as a parent directory. When removing List is required (as in case of umount) 
  * the value of call during initial call has to be larger then 1
  */
-	node_t *PAR, *CLD, *NEXT, *PREV, *Tmpnode, *Tmpnode1;
-	size_t rmnodes;
+	node_t *PAR, *CLD, *NEXT, *PREV, *CURR,  *Tmpnode, *Tmpnode1, *TmpH;
+	size_t rmnodes, i;
 
 	if((*List) == NULL){
 /*
@@ -79,14 +79,19 @@ size_t rm_list(int call, node_t **List)
 		return -1;
 	}
 
-	if( (*List)->child == NULL){
+// 	if(strncmp(List->type, "LINK",4) != 0){
+/*
+ * List is not LINK
+ */
+	if( (*List)->child == NULL || strncmp((*List)->type, "LINK", 4) == 0){
 /*
  * List does not have children
  */
 		PAR  =  (*List)->parent;
-		CLD  =  (*List)->child;
+ 		CLD  =  (*List)->child;
 		NEXT =  (*List)->next;
 		PREV =  (*List)->prev;
+		CURR = (*List);
 
 		if(PREV == NULL && NEXT == NULL){
 /*
@@ -144,6 +149,28 @@ size_t rm_list(int call, node_t **List)
 			NEXT->prev = PREV;
 		}
 /*
+ * if list is not empty LINK, nullify it's child and send info to link target about it
+ */
+		if( (*List)->child != NULL){
+/*
+ * NOTE - the linknode info is just NULLed but not freed
+ */
+			for(i=0; i<CLD->lcounter; i++){
+				if(CLD->linknode[i]->List == CURR) CLD->linknode[i]->List = NULL;
+			}
+			(*List)->child = NULL;
+		}
+/*
+ * if node is linked to other nodes, get the info about it to links
+ */
+		for(i=0; i<(*List)->lcounter; i++){
+			TmpH =  (*List)->linknode[i]->List;
+			if(  TmpH != NULL){
+				 TmpH->child = NULL;
+				 TmpH->ndim = 0;
+			}
+		}
+/*
  * free the node and substract 1 from number of items in the parent node
  */
 		(*List)->parent->ndim--;
@@ -166,7 +193,7 @@ size_t rm_list(int call, node_t **List)
 		
 		if(strncmp( (*List)->type, "LINK", 4) == 0){
 			Tmpnode =  *List;
-			(*List)->child = NULL;
+// 			(*List)->child = NULL;
 		}
 		else{;	
 			Tmpnode =  (*List)->child;
@@ -197,6 +224,7 @@ size_t rm_list(int call, node_t **List)
 
 		return rmnodes;
 	}
+// 	}
 /*
  * if, from whatever reason, the function gets here
  * return back unspecified error  (-2)

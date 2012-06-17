@@ -7,9 +7,9 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Locator.h"
+#include "locate_list.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
+#include "find_list.h"
 
 static int match_test(node_t *, get_arg_t, size_t);
 static int match_single_test(node_t *, get_arg_t, size_t);
@@ -82,7 +82,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 	if ( (Founds = Find_caller(2, Tmp_node, search_term, Popts)) == NULL){
 		free(search_term);
 		destroy_pars_path(&parsed_path);
-		Warning("Locator: No Founds");
+		/*Warning*/("Locator: No Founds");
 		return (find_t *)NULL;
 	}
 	else
@@ -101,10 +101,10 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 			destroy_pars_path(&parsed_path_loc);
 			free(search_term);
 			destroy_pars_path(&parsed_path);
-			Error("Number of items in path different from location specification");  /* NOTE - in later versions, ust one symbol '*' can be used for all paths segments */
+			Error("Number of items in path different from location specification");  /* NOTE - in later versions, use one symbol '*' can be used for all paths segments */
 			return (find_t *)NULL;
 		}
-				
+			
  		Founds_Loc = locator(Founds, parsed_path, parsed_path_loc, Popts);
 	
 		free(search_term);
@@ -228,7 +228,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
  */	
 					len1 = strlen(parsed_path->path[i]);
 					len2 = strlen(parsed_path_Ffounds[j]->path[i]);
-
+					
 					if( (len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0) || 
 					    (strncmp(parsed_path->path[i], ".", 1) == 0 && len1 == 1 && i == 0) ||
 					    (strncmp(parsed_path->path[i], "~", 1) == 0	&& i == 0)){

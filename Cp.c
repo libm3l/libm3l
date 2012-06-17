@@ -11,7 +11,6 @@
 
 #include "Cp.h"
 #include "FunctionsPrt.h"
-#include "Find_Source.h"
 
 
 extern int optind;
@@ -20,7 +19,7 @@ static int verbose_flag;
 /*
  * routine copies Slist to Tlist
  */
-size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+size_t Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 
 	char *word, **opt;
@@ -31,6 +30,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+	opts.opt_L = '\0';
 	
 	option_index = 0;
 	cp_tot_nodes=0;
@@ -38,7 +38,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 /*
  * check if data set exists
  */
-	if(SList == NULL){
+	if((*SList) == NULL){
 		Warning("Cp: NULL source list");
 		return -1;
 	}
@@ -86,7 +86,7 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, char *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (args_num+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -109,13 +109,13 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 				{"FILE",       no_argument,       0, 'f'},
 				{"LINK",       no_argument,       0, 'l'},
 				{"IGNORE",     no_argument,       0, 'I'},
-//				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
+				{"link",       no_argument,       0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiklI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiklLI", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -162,11 +162,17 @@ size_t Cp(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 				case 'f':
 					opts.opt_f = 'f';
 				break;
-				/*
+/*
  * look for LINK only
  */
 				case 'l':
 					opts.opt_l = 'l';
+				break;
+/*
+ * dereference link
+ */
+				case 'L':
+					opts.opt_L = 'L';
 				break;
 /* 
  * Error, getopt_long already printed an error message
