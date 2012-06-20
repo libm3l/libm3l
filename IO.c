@@ -1,6 +1,4 @@
-/*
- * IO operations
- */
+
  
 #include "Header.h"
 #include "format_type.h"

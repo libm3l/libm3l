@@ -1,7 +1,4 @@
-/*
- * Modifications:
- * version	name		date		description (event. patch number)
- */
+
 
 #include "Header.h"
 #include "format_type.h"

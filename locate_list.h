@@ -1,6 +1,4 @@
-/*
- *     header file for Locator.c function
- */
+
 
 #ifndef __LOCATOR_H__
 #define __LOCATOR_H__

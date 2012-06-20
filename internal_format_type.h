@@ -1,7 +1,4 @@
-/*
- * Header file with declarations
- * copyright � 2012 Adam Jirasek
- */
+
 #ifndef  __TMPSTRUCT_T__
 #define  __TMPSTRUCT_T__
 
