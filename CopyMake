@@ -6,18 +6,14 @@
 	echo $DIR
 	
 	
-	echo "/*" >AOA
-	echo " *"  function $DIR >> AOA
-	echo "/*" >> AOA
-	
-	echo  >> AOA	
-	
-	sed '/opyright /d' $DIR >> AOA
-	
-	stop
-	
-	cat COPYRIGHT_NOTICE AOA  > CO_$DIR 
+	set date=`ls -l $DIR | awk '{printf 2012"-"$6"-"$7}'`
 
+	sed 's/NAME_OF_FUNCTION/Function '$DIR'/' MODINFO > AOA1
+	sed 's/Date:/Date: '$date'/' AOA1 > AOA2
+	
+	cat COPYRIGHT_NOTICE AOA2 $DIR > CO_$DIR 
+	rm AOA1 AOA2
+	stop
 
         end
 
@@ -28,15 +24,10 @@
 	echo $DIR
 	
 	
-	echo "/*" >AOA
-	echo " *"  header file $DIR >> AOA
-	echo "/*" >> AOA	
-	sed '/opyright /d' $DIR >> AOA
+	sed 's/NAME_OF_FUNCTION/Header file '$DIR'/' MODINFO > AOA1
 	
-	
-	stop
-	
-	cat COPYRIGHT_NOTICE AOA  > CO_$DIR 
+	cat COPYRIGHT_NOTICE AOA1 $DIR > CO_$DIR 
+	rm AOA1
 
 
         end

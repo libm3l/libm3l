@@ -14,7 +14,7 @@ static int verbose_flag;
 /*
  * Adds Slist to specified location in Tlist
  */
-size_t Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+int Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 	char *word, **opt;
 	opts_t *Popts, opts;
