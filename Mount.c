@@ -21,12 +21,12 @@ node_t *Mount(const char *name)
  * copy name of the node to the TMPSTR
  */
 	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", name) < 0)
-	   				Perror("snprintf");
+		Perror("snprintf");
 /*
  * set type of node DIR
  */
 	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", "DIR") < 0)
-	   				Perror("snprintf");
+		Perror("snprintf");
 /*
  * node does not contain any data, set ndim = 0
  */

@@ -6,6 +6,7 @@
 
 #include "Mklist.h"
 #include "udf_rm.h"
+#include "rm_list.h"
 
 extern int optind;
 static int verbose_flag;
@@ -13,7 +14,7 @@ static int verbose_flag;
 /*
  * routine Links Slist to Tlist
  */
-node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, char * Options, ...)
+node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, node_t **WTAList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 	node_t *List;
 	char *word, **opt;
@@ -24,7 +25,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, cha
 	int option_index;
 	tmpstruct_t TMPSTR;
 	
-	opts.opt_n = '\0';
+	opts.opt_n = '\0'; opts.opt_b = '\0';
 	
 	option_index = 0;
 /*
@@ -85,12 +86,14 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, cha
 			static struct option long_options[] =
 			{
 				{"nullify",     no_argument,       0, 'n'},
+				{"beginning",     no_argument,       0, 'b'},
+
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "i", long_options, &option_index);
+			c = getopt_long (args_num, opt, "bn", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -110,11 +113,18 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, cha
 					printf ("\n");
 					break;
 
+				case 'b':
+/*
+ * add node at the beginning of the list
+ */
+					opts.opt_b = 'b';
+				break;
+				
 				case 'n':
 /*
  * nullify field
  */
-					opts.opt_i = 'n';
+					opts.opt_n = 'n';
 				break;
 
 				default:
@@ -140,6 +150,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, cha
 //  		opts.opt_r = 'r';
 // 		opts.opt_L = 'L';  NOTE - needs to be specified
 	}
+	Popts = &opts;
 
 	if(name == NULL){
 		Warning("Missing name of list");
@@ -188,5 +199,23 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, cha
 		Error("Allocate");
 		return (node_t *) NULL;
 	}
+/*
+ * if specified list where a new list is to be added, 
+ * add it
+ */
+	if( WTAList != NULL){
+		
+		if( add_caller(&List, WTAList, t_path, t_path_loc, Popts) < 0){
+/*
+ * list could not be added, remove list and give warning
+ */
+			if( rm_list(2, &List) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *) NULL;
+			}
+		}
+	}
+	
+	
 	return List;
 }

@@ -263,7 +263,8 @@ int main(void)
 
 		dim = (size_t *) malloc( 1* sizeof(size_t));
 		dim[0] = 10;
-	 	if(  (NewList = Mklist("MADE_LIST", "I", 1, dim, (char *)NULL)) == 0)
+// 		if(  (NewList = Mklist("MADE_LIST", "I", 1, dim, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
+	 	if(  (NewList = Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main", "./", (char *)NULL)) == 0)
 			Error("Mklist");
 		free(dim);
 		for (i=0; i<10; i++)
@@ -272,7 +273,7 @@ int main(void)
  		if(Cat(NewList,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
  			Error("CatData");
 // 		Add(&NewList, &Gnode, "/main/grid3", "/*/*", (char *)NULL);
-		Add(&NewList, &Gnode, "/main", "./", (char *)NULL);
+// 		Add(&NewList, &Gnode, "/main", "./", (char *)NULL);
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 
