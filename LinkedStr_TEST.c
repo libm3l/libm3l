@@ -76,6 +76,8 @@ int main(void)
 
 		
 		printf("\n\n\n\n");
+		
+// 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
 
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
@@ -244,7 +246,6 @@ int main(void)
 // 			Error("CatData");
 // 		
 
-
 		if(Umount(&Anode) != 1)
 			Perror("Umount");		
 
@@ -253,7 +254,8 @@ int main(void)
 		Fwrite(Gnode, "ADA_EMPTYLINK", (char *)NULL);
 		printf("\n\n\n\n");
 		
-		
+		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
+
 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
 		
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
