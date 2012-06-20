@@ -9,31 +9,29 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Mv.h"
+#include "Add.h"
+#include "add_list.h"
 #include "FunctionsPrt.h"
-
 
 extern int optind;
 static int verbose_flag;
 
 /*
- * routine copies Slist to Tlist
+ * Adds Slist to specified location in Tlist
  */
-size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+size_t Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
-
 	char *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, mv_tot_nodes;
+	size_t args_num, len, i;
+	int addlist;
 	va_list args;
-	int c, init_call;
+	int c;
 	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
 	
 	option_index = 0;
-	mv_tot_nodes=0;
-	init_call = 2;
 /*
  * check if data set exists
  */
@@ -104,17 +102,13 @@ size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
 			static struct option long_options[] =
 			{
 				{"ignore",     no_argument,       0, 'i'},
-				{"DIR",        no_argument,       0, 'd'},
-				{"FILE",       no_argument,       0, 'f'},
-				{"LINK",       no_argument,       0, 'l'},
-				{"IGNORE",     no_argument,       0, 'I'},
 //				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiklI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "i", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -141,37 +135,6 @@ size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
 					opts.opt_i = 'i';
 				break;
 
-				case 'I':
-/*
- * ignore name
- */
-					opts.opt_I = 'I';
-					printf(" This option is not implemented correctly");
-					exit(0);
-				break;
-/*
- * look for DIR only
- */
-				case 'd':
-					opts.opt_d = 'd';
-				break;
-/*
- * look for FILE only
- */
-				case 'f':
-					opts.opt_f = 'f';
-				break;
-				/*
- * look for LINK only
- */
-				case 'l':
-					opts.opt_l = 'l';
-				break;
-/* 
- * Error, getopt_long already printed an error message
- */
-				break;
-
 				default:
 				abort ();
 			}
@@ -196,15 +159,14 @@ size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
  * no additional options provided
  * get the value of the first argument, as not options are specified the argument is the name to look for
  */
- 		opts.opt_r = 'r';
-// 		opts.opt_L = 'L';  NOTE - needs to be specified
+//  		opts.opt_r = 'r';
 	}
 /*
  * locate nodes using find function
  */
 	Popts = &opts;
 	
- 	mv_tot_nodes = mv_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	addlist = add_caller(SList, TList, t_path, t_path_loc, Popts);
 
-	return mv_tot_nodes;
+	return addlist;
 }

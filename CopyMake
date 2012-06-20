@@ -1,0 +1,42 @@
+#/bin/csh
+
+        set DIR_list=`ls *.c  `
+
+        foreach DIR ($DIR_list)
+	echo $DIR
+	
+	
+	echo "/*" >AOA
+	echo " *"  function $DIR >> AOA
+	echo "/*" >> AOA
+	
+	echo  >> AOA	
+	
+	sed '/opyright /d' $DIR >> AOA
+	
+	stop
+	
+	cat COPYRIGHT_NOTICE AOA  > CO_$DIR 
+
+
+        end
+
+
+        set DIR_list=`ls *.h  `
+
+        foreach DIR ($DIR_list)
+	echo $DIR
+	
+	
+	echo "/*" >AOA
+	echo " *"  header file $DIR >> AOA
+	echo "/*" >> AOA	
+	sed '/opyright /d' $DIR >> AOA
+	
+	
+	stop
+	
+	cat COPYRIGHT_NOTICE AOA  > CO_$DIR 
+
+
+        end

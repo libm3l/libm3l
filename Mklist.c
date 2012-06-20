@@ -9,43 +9,29 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Mv.h"
-#include "FunctionsPrt.h"
-
+#include "Mklist.h"
+#include "udf_rm.h"
 
 extern int optind;
 static int verbose_flag;
 
 /*
- * routine copies Slist to Tlist
+ * routine Links Slist to Tlist
  */
-size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, char * Options, ...)
 {
-
+	node_t *List;
 	char *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, mv_tot_nodes;
+	size_t args_num, len, i;
 	va_list args;
-	int c, init_call;
+	int c;
 	int option_index;
+	tmpstruct_t TMPSTR;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+	opts.opt_n = '\0';
 	
 	option_index = 0;
-	mv_tot_nodes=0;
-	init_call = 2;
-/*
- * check if data set exists
- */
-	if(*SList == NULL){
-		Warning("Cp: NULL source list");
-		return -1;
-	}
-
-	if(*TList == NULL){
-		Warning("Cp: NULL target list");
-		return -1;
-	}
 /*
  * get number of options
  */	
@@ -103,18 +89,13 @@ size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
 		{
 			static struct option long_options[] =
 			{
-				{"ignore",     no_argument,       0, 'i'},
-				{"DIR",        no_argument,       0, 'd'},
-				{"FILE",       no_argument,       0, 'f'},
-				{"LINK",       no_argument,       0, 'l'},
-				{"IGNORE",     no_argument,       0, 'I'},
-//				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
+				{"nullify",     no_argument,       0, 'n'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiklI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "i", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -134,42 +115,11 @@ size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
 					printf ("\n");
 					break;
 
-				case 'i':
+				case 'n':
 /*
- * ignore case
+ * nullify field
  */
-					opts.opt_i = 'i';
-				break;
-
-				case 'I':
-/*
- * ignore name
- */
-					opts.opt_I = 'I';
-					printf(" This option is not implemented correctly");
-					exit(0);
-				break;
-/*
- * look for DIR only
- */
-				case 'd':
-					opts.opt_d = 'd';
-				break;
-/*
- * look for FILE only
- */
-				case 'f':
-					opts.opt_f = 'f';
-				break;
-				/*
- * look for LINK only
- */
-				case 'l':
-					opts.opt_l = 'l';
-				break;
-/* 
- * Error, getopt_long already printed an error message
- */
+					opts.opt_i = 'n';
 				break;
 
 				default:
@@ -185,10 +135,6 @@ size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
 /*
  * check if incompatible options
  */
-		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
-			Warning("Incompatible options -d -f");
-			return -1;
-		}	
 	}
 	else
 	{
@@ -196,15 +142,56 @@ size_t Mv(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
  * no additional options provided
  * get the value of the first argument, as not options are specified the argument is the name to look for
  */
- 		opts.opt_r = 'r';
+//  		opts.opt_r = 'r';
 // 		opts.opt_L = 'L';  NOTE - needs to be specified
+	}
+
+	if(name == NULL){
+		Warning("Missing name of list");
+		return (node_t *) NULL;
+	}
+	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", name) < 0)
+		   Perror("snprintf");
+	
+	if(type == NULL){
+		Warning("Missing type of list");
+		return (node_t *) NULL;
+	}
+	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", type) < 0)
+		   Perror("snprintf");
+
+	if (strncmp(TMPSTR.Type,"LINK",4) == 0){
+		Warning("can not create LINK");
+		return (node_t *) NULL;
+	}
+	
+	TMPSTR.ndim = ndim;
+	TMPSTR.dim=NULL;
+
+	if(strncmp(TMPSTR.Type,"DIR",3) != 0 ){
+		if(ndim == 0){
+			Warning("missing number of dimensions");
+			return (node_t *) NULL;
+		}
+		else{
+			if(dim != NULL){
+				TMPSTR.dim=dim;
+			}
+			else{
+				Warning("missing dimensions");
+				return (node_t *) NULL;
+			}
+		}
 	}
 /*
  * locate nodes using find function
  */
-	Popts = &opts;
-	
- 	mv_tot_nodes = mv_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
-
-	return mv_tot_nodes;
+ /*
+ * two ways of allocating pointer - through reference pointer or as a function returning pointer
+ */	
+	if( (List = AllocateNode(TMPSTR)) == NULL){
+		Error("Allocate");
+		return (node_t *) NULL;
+	}
+	return List;
 }

@@ -6,7 +6,83 @@
 #include "internal_format_type.h"
 
 #include "add_list.h"
+#include "locate_list.h"
 #include "FunctionsPrt.h"
+
+int add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+{
+/*
+ * function is a caller of the cp functions
+ */
+
+/* NOTE - check that Tfounds and SFounds are identical */
+
+	if(*SList == *TList){
+		Warning("add_list: can not add node to itself");
+		return -1;
+	}
+
+	size_t addlist, len;
+	find_t *TFounds;
+/*
+ * check if data set exists
+ */
+	if(*SList == NULL){
+		Warning("ln: NULL source list");
+		return -1;
+	}
+
+	if(*TList == NULL){
+		Warning("ln: NULL target list");
+		return -1;
+	}
+/*
+ * check only one node is to be moved to the Tlist
+ */
+	len = strlen(t_path_loc);
+	if(strncmp(t_path_loc, "./", 2) == 0 && len == 2){
+		if( strncmp( (*TList)->type, "DIR", 3) == 0){
+			addlist = add_list(SList, TList,Popts);
+			return addlist;
+		}
+		else{
+			Warning("add_list: List is not DIR");
+			return -1;
+		}
+	}
+	else{
+/*
+ * locate target; if target == NULL, just rename the node(s)
+ */
+		if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+			Warning("add_list: no correct target specified");
+			return -1;
+		}
+		else{
+/*
+ * check that target node is only 1
+ */
+			if(TFounds->founds != 1){
+				Warning("mv: multiple target nodes");
+				DestroyFound(&TFounds);
+				return -1;
+			}
+					
+			if( (addlist = add_list(SList, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+				Warning("problem in ladd_list");
+			}
+					
+			DestroyFound(&TFounds);
+			return addlist;
+		}
+	}
+}
+
+
+
+
+
+
 
 int add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 {
@@ -32,6 +108,13 @@ int add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 		Warning("add_list: : NULL list");
 		return -1;
 	}
+/*
+ * check that the list does not have parent
+ */
+	if( (*List)->parent != NULL){;
+		Warning("add_list: list already a member");
+		return -1;
+	}
 
 	if((*WTAList) == NULL){
 /*
@@ -45,7 +128,7 @@ int add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 /*
  * List is not DIR type
  */
-		if(Popt->opt_b == 'b'){
+		if(Popt != NULL && Popt->opt_b == 'b'){
 /*
  * add node before WTAList
  */		
@@ -85,7 +168,7 @@ int add_list(node_t **List, node_t **WTAList, opts_t *Popt)
  */
 		WTAChild = (*WTAList)->child;
 
-		if(Popt->opt_b == 'b'){
+		if(Popt != NULL && Popt->opt_b == 'b'){
 /*
  * add node at the beginning of the line of children
  */
