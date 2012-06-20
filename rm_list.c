@@ -37,20 +37,25 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 		}
 		else{
 			init_call = 2;
+/* 
+ * if number of founds = 1 and found list is idenital to List, then 
+ * remove entire list tree. In that case put *List = NULL
+ * identical to Umount
+ */
+			if(Founds->founds == 1 && Founds->Found_Nodes[0]->List == (*List)) (*List) = NULL;
 		}
 				
 		rm_tot_nodes = 0;
 		
 		for(i=0; i< Founds->founds; i++){
+						
 			if( (rm_nodes = rm_list(init_call, &Founds->Found_Nodes[i]->List)) < 0){
 				Warning("problem in rm_list");
 			}
 			else{
 				rm_tot_nodes += rm_nodes;
-				rm_nodes = 0;
 			}
-		}
-				
+		}				
 				
 		DestroyFound(&Founds);
 		return rm_tot_nodes;

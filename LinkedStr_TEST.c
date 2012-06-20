@@ -230,11 +230,6 @@ int main(void)
 		
 		Fwrite(Gnode, "ADA", (char *)NULL);
 		printf("\n\n\n\n");
-		
-				
-// 		socketnr =  cli_open_socket("localhost", 4096);
-// 		write_to_socket(1, Gnode,  socketnr);
-// 		close(socketnr);
 
 // 		 if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 //  	                   Error("CatData");
@@ -246,8 +241,13 @@ int main(void)
 // 			Error("CatData");
 // 		
 
-		if(Umount(&Anode) != 1)
-			Perror("Umount");		
+// 		if(Umount(&Anode) != 1)
+// 			Perror("Umount");
+		
+		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "/*", (char *)NULL) );
+				 if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+//  	                   Error("CatData");
+// 			   exit(0);
 
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
