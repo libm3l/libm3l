@@ -103,7 +103,7 @@ find_t *Find(node_t *List, char * Options, ...)
 				{"LINK",       	no_argument,    	0, 'l'},  /* only file, at the moment it means not DIR */
 				{"recursive",  	no_argument,  	0, 'r'},  /* search inside the subdirs too */
 				{"IGNORE",  	no_argument,    	0, 'I'},  /* search all but search_term */
-				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
+				{"inside_link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			}; 
  /*

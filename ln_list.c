@@ -493,7 +493,7 @@ size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
  */
 		rm_nodes = 0;
 		if( strncmp( (*List)->type, "LINK", 4) == 0  && (*List)->ndim == 0)
-			rm_nodes = rm_list(2, List);
+			rm_nodes = rm_list(2, List, Popt);
 		return rm_nodes;
 		
 	}
@@ -513,4 +513,108 @@ size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
 		return cleaned_nodes;
 	}
 	return -1;
+}
+
+
+int ln_cleanempytlinksref(node_t **List){
+/*
+ * function cleans empty references in  
+ * (*Slist)->linknode structure
+ */
+	size_t i, counter, old_counter;
+	counter = 0;
+	
+	find_str_t **TMP;
+	
+	if( (*List) != NULL){
+		Warning("ln_cleanempytlinksref Empty node");
+		return -1;
+	}
+	
+	if((*List)->lcounter > 0){
+		
+		if( (TMP = (find_str_t **)malloc( (*List)->lcounter * sizeof(find_str_t *))) == NULL)
+			Perror("ln_cleanempytlinksref malloc");
+/*
+ * find number of non-NULL links
+ */
+		old_counter = (*List)->lcounter;
+		
+		for(i=0; i< (*List)->lcounter; i++){
+			
+			TMP[i] = NULL;
+			
+			if( (*List)->linknode[i]->List != 0){
+/* 
+ * link is not empty info
+ * increase counter
+ * allocate TMP field and save the content of (*List)->linknode[i]->List in it
+ */
+				counter++;
+				if( (TMP[i] = (find_str_t *)malloc( sizeof(find_str_t))) == NULL)
+					Perror("ln_cleanempytlinksref malloc");
+				TMP[i]->List = (*List)->linknode[i]->List;
+			}
+		}
+		
+		if(counter < (*List)->lcounter && counter > 0){
+/*
+ * there were NULL nodes saved in the structure
+ * but node is still linked to some of the original nodes
+ */
+	
+			for(i=0; i< (*List)->lcounter; i++)
+				free((*List)->linknode[i]);
+			
+			for(i=0; i< counter; i++){
+				if( ((*List)->linknode[i] = (find_str_t *)malloc( sizeof(find_str_t))) == NULL)
+					Perror("ln_cleanempytlinksref malloc");
+				
+				(*List)->linknode[i]->List = 	TMP[i]->List ;
+			}
+			(*List)->lcounter = counter;
+/*
+ * free TMP
+ */
+			for(i=0; i< (*List)->lcounter; i++){
+				if(TMP[i] != NULL)free(TMP[i]);
+			}
+			free(TMP);
+			
+			return 1;
+			
+		}
+		else if(counter > (*List)->lcounter){
+/*
+ * counter is larger then (*List)->lcounter which is impossible
+ * return error
+ */
+			return -2;
+		}
+		else if(counter == 0){
+/*
+ * link is not linked to any other node
+ */
+			for(i=0; i< (*List)->lcounter; i++){
+				free((*List)->linknode[i]);
+				if(TMP[i] != NULL)free(TMP[i]);
+			}
+			free((*List)->linknode);
+			free(TMP);
+			(*List)->lcounter = 0;
+			return 1;
+		}
+		else{
+/*
+ * unspecified error, return -3
+ */
+			for(i=0; i< (*List)->lcounter; i++){
+				if(TMP[i] != NULL)free(TMP[i]);
+			}
+			free(TMP);
+			return -3;
+		}
+	}	
+	
+	return 0;
 }

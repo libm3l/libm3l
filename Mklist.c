@@ -209,7 +209,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 /*
  * list could not be added, remove list and give warning
  */
-			if( rm_list(2, &List) < 0){
+			if( rm_list(2, &List, Popts) < 0){
 				Error("Unable to unmount node \n");
 				return (node_t *) NULL;
 			}

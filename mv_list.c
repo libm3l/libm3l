@@ -300,7 +300,7 @@ int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
 /*
  * remove TList
  */		
-		if ( rm_list(1, TList) < 1 ){
+		if ( rm_list(1, TList, Popts) < 1 ){
 			Error("mv_list: rm_list");
 			return -1;
 		}

@@ -244,7 +244,7 @@ int main(void)
 // 		if(Umount(&Anode) != 1)
 // 			Perror("Umount");
 		
-		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "/*", (char *)NULL) );
+		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "clean_refs_to_links", "/*", (char *)NULL) );
 				 if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 //  	                   Error("CatData");
 // 			   exit(0);
@@ -254,7 +254,7 @@ int main(void)
 		Fwrite(Gnode, "ADA_EMPTYLINK", (char *)NULL);
 		printf("\n\n\n\n");
 		
-		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
+// 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
 
 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
 		
@@ -279,57 +279,12 @@ int main(void)
 
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");
-
-// 		if( (Founds = Locate(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", "--ignore", (char *)NULL)) != NULL){
-// 			
-// 			for(i=0; i < Founds->founds; i++){
-// 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-// 
-// 				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
-// 					printf(" Path is %s \n", node_path);
-// 					free(node_path);
-// 				}
-// 				
-// 				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-// 					Error("CatData");
-// 				 
-// 				 printf("Number of links is %d\n", Founds->Found_Nodes[i]->List->lcounter);
-// 				 for(j=0; j < Founds->Found_Nodes[i]->List->lcounter; j++)
-// 					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]->List);
-// 			}
-// 		DestroyFound(&Founds);
-// 		}
-// 		else
-// 		{
-// 			printf(" No founds\n");
-// 		}
-// 		if(Umount(&Anode) != 1)
-// 			Perror("Umount");		
+		
+		if(Umount(&Anode) != 1)
+			Perror("Umount");	
 		
 	}
-			
-		exit(0);
-
 		
-		
-// 		parsed_path = parse_path("~/home/jka/ada/");
-// //   		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
-// 
-// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-// 		for (i=0; i< parsed_path->seg_count; i++)
-// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-// 		
-// 		printf(" path is %c \n ", parsed_path->abspath);
-// 		
-// 		
-// 		argsstr = get_arguments(parsed_path->path[3]);
-// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[4]);
-// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[5]);
-// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// // 		
-// 		destroy_pars_path(&parsed_path);
 		
 		exit(0);
 		

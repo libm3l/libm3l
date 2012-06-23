@@ -26,7 +26,7 @@ int Umount(node_t **List)
  * When called initially, the function consideres List as a parent dir and does not remove it
  * In this routine, the function is supposed to remove List so it needs to be called with 2
  */ 
-	if( rm_list(2, List) < 0){
+	if( rm_list(2, List, (opts_t *)NULL) < 0){
 		Error("Unable to unmount node \n");
 		return -1;
 	}

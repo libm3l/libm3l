@@ -49,7 +49,7 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 		
 		for(i=0; i< Founds->founds; i++){
 						
-			if( (rm_nodes = rm_list(init_call, &Founds->Found_Nodes[i]->List)) < 0){
+			if( (rm_nodes = rm_list(init_call, &Founds->Found_Nodes[i]->List, Popts)) < 0){
 				Warning("problem in rm_list");
 			}
 			else{
@@ -63,7 +63,7 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 }
 
 
-size_t rm_list(int call, node_t **List)
+size_t rm_list(int call, node_t **List, opts_t *Popts)
 {
 /*
  * function removes all items in List
@@ -160,6 +160,10 @@ size_t rm_list(int call, node_t **List)
  */
 			for(i=0; i<CLD->lcounter; i++){
 				if(CLD->linknode[i]->List == CURR) CLD->linknode[i]->List = NULL;
+/*
+ * if required, clean-up the reference field
+ */
+				if(Popts != NULL && Popts->opt_c == 'c' && CLD != NULL) ln_cleanempytlinksref(&CLD);
 			}
 			(*List)->child = NULL;
 		}
@@ -207,7 +211,7 @@ size_t rm_list(int call, node_t **List)
  */
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
-			rmnodes = rmnodes + rm_list(2, &Tmpnode);
+			rmnodes = rmnodes + rm_list(2, &Tmpnode, Popts);
 			Tmpnode = Tmpnode1;
 		}
 /*
@@ -216,7 +220,7 @@ size_t rm_list(int call, node_t **List)
  */
  		if(call > 1){
 			if( (*List)->ndim == 0){
-				rmnodes = rmnodes + rm_list(2, List);
+				rmnodes = rmnodes + rm_list(2, List, Popts);
 			}
 			else
 			{
