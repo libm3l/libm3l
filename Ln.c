@@ -213,19 +213,8 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
  */
 	Popts = &opts;		
 
-	if (opts.opt_e == 'e'){
-		ln_tot_nodes = ln_cleanempytlinks(TList,  Popts);
-	}
-	else if(opts.opt_c == 'c'){
-		ln_tot_nodes = ln_cleanempytlinksref(TList);
-	}
-	else{
-		if(SList == NULL){
-			Warning("Cp: NULL source list");
-			return -1;
-		}
-		ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);	
-	}
+	ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);	
+	
 
 	return ln_tot_nodes;
 }

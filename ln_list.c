@@ -37,16 +37,27 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 	node_t *Tmpnode, *TmpnodePar;
 /*
  * check if data set exists
- */
+ */	
+	if(*TList == NULL){
+		Warning("Cp: NULL target list");
+		return -1;
+	}
+	
+	if (Popts->opt_e == 'e'){
+		ln_tot_nodes = ln_cleanempytlinks(TList,  Popts);
+		return ln_tot_nodes;
+	}
+	else if(Popts->opt_c == 'c'){
+		ln_tot_nodes = ln_cleanempytlinksref(TList);
+		return ln_tot_nodes;
+	}
+		
 	if(*SList == NULL){
 		Warning("Cp: NULL source list");
 		return -1;
 	}
 	
-	if(*TList == NULL){
-		Warning("Cp: NULL target list");
-		return -1;
-	}
+	
 /* 
  * check location of sources
  */
