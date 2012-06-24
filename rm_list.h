@@ -2,7 +2,6 @@
 #define __RM_LIST_H__
 
 extern size_t rm_caller(node_t **, const char *, const char *, opts_t *);
-
-extern size_t rm_list(int , node_t **);
+extern size_t rm_list(int , node_t **, opts_t *);
 
 #endif

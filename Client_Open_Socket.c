@@ -1,8 +1,4 @@
 
- 
-/*
- * function opens socket for a client
- */
 #include "Header.h"
 #include "format_type.h"
 #include "Client_Open_Socket.h"

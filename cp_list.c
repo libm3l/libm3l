@@ -1,6 +1,4 @@
-/*
- * copyright ï¿½ 2012 Adam Jirasek
- */
+
  
 #include "Header.h"
 #include "format_type.h"
@@ -71,13 +69,18 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				Warning("can not copy to NULL dir");
 			}
 			else{
-				Tmpnode = SFounds->Found_Nodes[i]->List;	
-							
-				if( (cp_nodes = (size_t) cp_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
-					Warning("problem in ln_list");
+				Tmpnode = SFounds->Found_Nodes[i]->List;
+				
+				if(Tmpnode == TmpnodePar){
+					Warning("mv_list: can not move node to itself");
 				}
 				else{
-				cp_tot_nodes += cp_nodes;
+					if( (cp_nodes = (size_t) cp_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
+						Warning("problem in ln_list");
+					}
+					else{
+					cp_tot_nodes += cp_nodes;
+					}
 				}
 			}
 		}
@@ -187,11 +190,16 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * copy and change the name of the list
  */
-					if( (cp_nodes = (size_t) cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
-						Warning("problem in ln_list");
+					if(SFounds->Found_Nodes[i]->List == TFounds->Found_Nodes[0]->List){
+						Warning("mv_list: can not move node to itself");
 					}
 					else{
-						cp_tot_nodes += cp_nodes;
+						if( (cp_nodes = (size_t) cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
+							Warning("problem in ln_list");
+						}
+						else{
+							cp_tot_nodes += cp_nodes;
+						}
 					}
 				}
 /*
@@ -235,12 +243,18 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 			cp_tot_nodes = 0;
 				
 			for(i=0; i< SFounds->founds; i++){
+					
 				
-				if( (cp_nodes = (size_t) cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
-					Warning("problem in cp_list");
+				if(SFounds->Found_Nodes[i]->List == TFounds->Found_Nodes[0]->List){
+					Warning("mv_list: can not move node to itself");
 				}
 				else{
-					cp_tot_nodes += cp_nodes;
+					if( (cp_nodes = (size_t) cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
+						Warning("problem in cp_list");
+					}
+					else{
+						cp_tot_nodes += cp_nodes;
+					}
 				}
 			}
 					

@@ -1,9 +1,4 @@
-/*
- * function frees memory of the node 
- * copyright ï¿½ 2012 Adam Jirasek
- *
- *
- */
+
  
 #include "Header.h"
 #include "format_type.h"
@@ -30,6 +25,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0'; opts.opt_l = '\0';
+	opts.opt_c = '\0'; 
 	
 	option_index = 0;
 	rm_tot_nodes=0;
@@ -98,6 +94,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 		{
 			static struct option long_options[] =
 			{
+				{"clean_empty_refs_to_links",     no_argument,       0, 'c'},   /* for LINK: free rather then nulify linkedlist structure in referenced nodes */
 				{"ignore",     no_argument,       0, 'i'},   /* ignore case */
 				{"DIR",        no_argument,       0, 'd'},   /* look fir DIR only */
 				{"FILE",       no_argument,       0, 'f'},   /* look for FILE only */
@@ -106,6 +103,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 				{"IGNORE",     no_argument,       0, 'I'},   /* all but search term */
 				{"keepheadnode",   no_argument,       0, 'k'}, /* remove all up to head node, keep head node */
 //				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
+				
 				{0, 0, 0, 0}
 			};
  /*
@@ -131,13 +129,22 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 					printf ("\n");
 					break;
 
+				case 'c':
+/*
+ * for LINK: if link is being removed, the algorithm searches in the target of the link
+ * and set the linked list to NULL, rather then free the memory
+ * it is faster but can allocate memory of used way too much
+ * to clean it, specify c
+ */
+					opts.opt_c = 'c';
+				break;
+				
 				case 'i':
 /*
  * ignore case
  */
 					opts.opt_i = 'i';
-				break;
-
+				break; 
 				case 'I':
 /*
  * ignore name

@@ -1,10 +1,9 @@
 #ifndef __TCPIP_SOCKET_OP_H__
 #define __TCPIP_SOCKET_OP_H__
 
-int sent_to_tcpipsocket(node_t *, const char *, int );
-
-node_t *send_receive_tcpipsocket(node_t *, const char *, int );
-
-node_t *receive_send_tcpipsocket(node_t *, const char *, int );
+int Sent_to_tcpipsocket(node_t *, const char *, int , char * , ...);
+node_t *Send_receive_tcpipsocket(node_t *, const char *, int, char * , ... );
+node_t *Receive_send_tcpipsocket(node_t *, const char *, int , char * , ...);
+node_t *Receive_tcpipsocket(const char *, int , char *, ...);
 
 #endif

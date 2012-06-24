@@ -1,6 +1,4 @@
-/*
- * copyright ï¿½ 2012 Adam Jirasek
- */
+
  
 #include "Header.h"
 #include "format_type.h"
@@ -39,20 +37,25 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 		}
 		else{
 			init_call = 2;
+/* 
+ * if number of founds = 1 and found list is idenital to List, then 
+ * remove entire list tree. In that case put *List = NULL
+ * identical to Umount
+ */
+			if(Founds->founds == 1 && Founds->Found_Nodes[0]->List == (*List)) (*List) = NULL;
 		}
 				
 		rm_tot_nodes = 0;
 		
 		for(i=0; i< Founds->founds; i++){
-			if( (rm_nodes = rm_list(init_call, &Founds->Found_Nodes[i]->List)) < 0){
+						
+			if( (rm_nodes = rm_list(init_call, &Founds->Found_Nodes[i]->List, Popts)) < 0){
 				Warning("problem in rm_list");
 			}
 			else{
 				rm_tot_nodes += rm_nodes;
-				rm_nodes = 0;
 			}
-		}
-				
+		}				
 				
 		DestroyFound(&Founds);
 		return rm_tot_nodes;
@@ -60,7 +63,7 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 }
 
 
-size_t rm_list(int call, node_t **List)
+size_t rm_list(int call, node_t **List, opts_t *Popts)
 {
 /*
  * function removes all items in List
@@ -81,7 +84,7 @@ size_t rm_list(int call, node_t **List)
 
 // 	if(strncmp(List->type, "LINK",4) != 0){
 /*
- * List is not LINK
+ * List is LINK or does not have children
  */
 	if( (*List)->child == NULL || strncmp((*List)->type, "LINK", 4) == 0){
 /*
@@ -157,6 +160,10 @@ size_t rm_list(int call, node_t **List)
  */
 			for(i=0; i<CLD->lcounter; i++){
 				if(CLD->linknode[i]->List == CURR) CLD->linknode[i]->List = NULL;
+/*
+ * if required, clean-up the reference field
+ */
+				if(Popts != NULL && Popts->opt_c == 'c' && CLD != NULL) ln_cleanempytlinksref(&CLD);
 			}
 			(*List)->child = NULL;
 		}
@@ -193,7 +200,6 @@ size_t rm_list(int call, node_t **List)
 		
 		if(strncmp( (*List)->type, "LINK", 4) == 0){
 			Tmpnode =  *List;
-// 			(*List)->child = NULL;
 		}
 		else{;	
 			Tmpnode =  (*List)->child;
@@ -204,7 +210,7 @@ size_t rm_list(int call, node_t **List)
  */
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
-			rmnodes = rmnodes + rm_list(2, &Tmpnode);
+			rmnodes = rmnodes + rm_list(2, &Tmpnode, Popts);
 			Tmpnode = Tmpnode1;
 		}
 /*
@@ -213,7 +219,7 @@ size_t rm_list(int call, node_t **List)
  */
  		if(call > 1){
 			if( (*List)->ndim == 0){
-				rmnodes = rmnodes + rm_list(2, List);
+				rmnodes = rmnodes + rm_list(2, List, Popts);
 			}
 			else
 			{

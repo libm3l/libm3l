@@ -18,19 +18,21 @@
 #include "FunctionsPrt.h"
 #include "Locate.h"
 #include "Cp.h"
+#include "Mklist.h"
+#include "Add.h"
 
-
-#define LINESZ 1024
 
 int main(void) 
 {	
-    node_t *Gnode=NULL, *RecNode, *Anode, *Tmpnode;
+    node_t *Gnode=NULL, *RecNode, *Anode, *Tmpnode, *NewList=NULL;
     find_t *Founds;
     
     int i, count,countgrp, socketnr, j;
+
+	size_t *dim;
     
     char name[255], type[30];
-    char *pc,buff[LINESZ];
+    char *pc;
     
     path_t *parsed_path;
 
@@ -48,17 +50,18 @@ int main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
- 		if( (Gnode = Fread("ADA1"))  == NULL)
+ 		if( (Gnode = Fread("ADA1" , "--clean_empy_links", (char *)NULL))  == NULL)
  			Perror("Linked_test: Fread");
+
+//  		if( (Gnode = Fread("ADA_EMPTYLINK" ,   (char *)NULL))  == NULL)
+//  			Perror("Linked_test: Fread");
 		
-		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+		if(Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
  	                   Error("CatData");
-		
-// 		exit(0);
-		
+					
 		printf("\n\n\n\n");
 		
- 		if( (Anode = Fread("TEST.dat"))  == NULL)
+ 		if( (Anode = Fread("TEST.dat", (char *)NULL))  == NULL)
  			Perror("Linked_test: Fread");	
 //  		if( (Anode = Fread("ADA_EMPTYLINK"))  == NULL)
 //  			Perror("Linked_test: Fread");	
@@ -73,11 +76,13 @@ int main(void)
 
 		
 		printf("\n\n\n\n");
+		
+// 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
 
 // 		
 // 		socketnr =  cli_open_socket("localhost", 4096);
 // 		write_to_socket(1, Gnode,  socketnr);
-// // 		 RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
+// // 		 RecNode = Send_receive_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
 // 		close(socketnr);
 		
 // 		printf("printing received node RECNODE \n\n ");
@@ -223,13 +228,8 @@ int main(void)
 			printf(" No founds\n");
 		}
 		
-		Fwrite(Gnode, "ADA");
+		Fwrite(Gnode, "ADA", (char *)NULL);
 		printf("\n\n\n\n");
-		
-				
-// 		socketnr =  cli_open_socket("localhost", 4096);
-// 		write_to_socket(1, Gnode,  socketnr);
-// 		close(socketnr);
 
 // 		 if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 //  	                   Error("CatData");
@@ -241,77 +241,54 @@ int main(void)
 // 			Error("CatData");
 // 		
 
-
 		if(Umount(&Anode) != 1)
-			Perror("Umount");		
+			Perror("Umount");
+		
+// 		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "--clean_empty_refs_to_links", "/*", (char *)NULL) );
+		
+		
+		if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+//  	                   Error("CatData");
+// 			   exit(0);
 
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
-		Fwrite(Gnode, "ADA_EMPTYLINK");
+		Fwrite(Gnode, "ADA_EMPTYLINK", (char *)NULL);
 		printf("\n\n\n\n");
 		
-		
-		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
+// 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
+
+// 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
+		printf(" Number of empty links is %ld \n", Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (char *)NULL));	
+		printf(" Number of empty links is %ld \n", Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (char *)NULL));	
 		
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
+
+
+		dim = (size_t *) malloc( 1* sizeof(size_t));
+		dim[0] = 10;
+// 		if(  (NewList = Mklist("MADE_LIST", "I", 1, dim, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
+	 	if(  (NewList = Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main", "./", (char *)NULL)) == 0)
+			Error("Mklist");
+		free(dim);
+		for (i=0; i<10; i++)
+ 			NewList->data.i[i]=2*i;
+
+ 		if(Cat(NewList,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+ 			Error("CatData");
+// 		Add(&NewList, &Gnode, "/main/grid3", "/*/*", (char *)NULL);
+// 		Add(&NewList, &Gnode, "/main", "./", (char *)NULL);
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");
-
-
-
-// 		if( (Founds = Locate(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", "--ignore", (char *)NULL)) != NULL){
-// 			
-// 			for(i=0; i < Founds->founds; i++){
-// 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-// 
-// 				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
-// 					printf(" Path is %s \n", node_path);
-// 					free(node_path);
-// 				}
-// 				
-// 				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
-// 					Error("CatData");
-// 				 
-// 				 printf("Number of links is %d\n", Founds->Found_Nodes[i]->List->lcounter);
-// 				 for(j=0; j < Founds->Found_Nodes[i]->List->lcounter; j++)
-// 					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]->List);
-// 			}
-// 		DestroyFound(&Founds);
-// 		}
-// 		else
-// 		{
-// 			printf(" No founds\n");
-// 		}
+		
 // 		if(Umount(&Anode) != 1)
-// 			Perror("Umount");		
+// 			Perror("Umount");	
 		
 	}
-			
-		exit(0);
-
 		
-		
-// 		parsed_path = parse_path("~/home/jka/ada/");
-// //   		parsed_path = parse_path("~/../../*/N=1-3,5/SI_name=Wall/");
-// 
-// 		printf(" Number of segments is %ld\n",parsed_path->seg_count );
-// 		for (i=0; i< parsed_path->seg_count; i++)
-// 			printf(" Segment %d is %s\n", i, parsed_path->path[i]);
-// 		
-// 		printf(" path is %c \n ", parsed_path->abspath);
-// 		
-// 		
-// 		argsstr = get_arguments(parsed_path->path[3]);
-// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[4]);
-// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// 		argsstr = get_arguments(parsed_path->path[5]);
-// 		printf("'%c'  %c   '%s'  '%s'\n", argsstr.first, argsstr.arg, argsstr.s_name, argsstr.args);
-// // 		
-// 		destroy_pars_path(&parsed_path);
 		
 		exit(0);
 		
@@ -478,33 +455,6 @@ int main(void)
 	    Perror("Umount");
     
     printf("\n %p", Gnode);
-
-
-	exit(0);
-   	
-	printf(" name of directory");
-	scanf("%s", name);
-	printf("name is %s\n", name); 
-	
-	i=0;
-	count = 0;
-	countgrp = 0;
-	while(name[i] != '\0'){
-	while(name[i++] == '.'){
-	
-        count++;
-
-	  if(count > 2) perror("Counter");
-
-	  if(name[i+1] == '/'){
-             countgrp++;
-             count = 0;
-          }
-
-	  }
-	}
-	  
-	  printf("length of the name is %d,  groups %d \n", i-1,  countgrp);	
 	
   return 0;
 

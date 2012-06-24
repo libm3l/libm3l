@@ -1,7 +1,4 @@
-/*
- * Modifications:
- * version	name		date		description (event. patch number)
- */
+
 
 #include "Header.h"
 #include "format_type.h"
@@ -67,7 +64,6 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 
 	if( strncmp(Tmp_node->type, "DIR", 3) != 0){
 		Warning("List in locate is not DIR");
-		free(search_term);
 		destroy_pars_path(&parsed_path);
 		return (find_t *)NULL;
 	}

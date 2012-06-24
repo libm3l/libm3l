@@ -1,7 +1,4 @@
-/*
- * function frees memory of the node 
- * copyright � 2012 Adam Jirasek
- */
+
  
 #include "Header.h"
 #include "format_type.h"

@@ -1,8 +1,4 @@
 
-/*
- * function frees memory of the node 
- * copyright ï¿½ 2012 Adam Jirasek
- */
  
 #include "Header.h"
 #include "format_type.h"
@@ -31,7 +27,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 		bitcount = 0;
  
 	if(List == NULL){
-		Warning("WriteData: NULL list");
+		Warning("WriteData2Socket: NULL list");
 		return -1;
 	} 
  
@@ -145,7 +141,7 @@ int write_to_socket(int call, node_t *List,  int socket_descrpt)
 /*
  * empty LINK
  */					
-					if(write_to_socket(2, Tmplist,socket_descrpt) != 0){
+					if(write_to_socket(2, Tmpnode,socket_descrpt) != 0){
 						Warning("Write data problem");
 						return -1;
 					}

@@ -1,11 +1,4 @@
-/*
- * copyright � 2012 Adam Jirasek
- */
- 
-/* ssl_server.c
- * some of the parts of this routine done according to 
- * Sean Walton http://www.cs.utah.edu/~swalton/listings/sockets/programs/
- */
+
 /*
  * function opens, binds and listen socket for a server
  */

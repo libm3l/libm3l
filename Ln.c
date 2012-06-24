@@ -1,9 +1,4 @@
-/*
- * function frees memory of the node 
- * copyright ï¿½ 2012 Adam Jirasek
- *
- *
- */
+
  
 #include "Header.h"
 #include "format_type.h"
@@ -29,6 +24,7 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0'; opts.opt_l = '\0';
+	opts.opt_c = '\0'; opts.opt_e = '\0';
 	
 	option_index = 0;
 	ln_tot_nodes=0;
@@ -36,10 +32,10 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 /*
  * check if data set exists
  */
-	if(SList == NULL){
-		Warning("Cp: NULL source list");
-		return -1;
-	}
+// 	if(SList == NULL){
+// 		Warning("Cp: NULL source list");
+// 		return -1;
+// 	}
 	
 	if(*TList == NULL){
 		Warning("Cp: NULL target list");
@@ -102,18 +98,19 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 		{
 			static struct option long_options[] =
 			{
+				{"clean_empty_refs_to_links",     no_argument,       0, 'c'},   /* for LINK: free rather then nulify linkedlist structure in referenced nodes */
+				{"clean_empty_links",     no_argument,       0, 'e'},   /* for LINK: free rather then nulify linkedlist structure in referenced nodes */
 				{"ignore",     no_argument,       0, 'i'},
 				{"DIR",        no_argument,       0, 'd'},
 				{"FILE",       no_argument,       0, 'f'},
 				{"LINK",       no_argument,       0, 'l'},
 				{"IGNORE",     no_argument,       0, 'I'},
-//				{"link",  	no_argument,   		0, 'L'},  /* search in linked targets */
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiklI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "cdefiklI", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -133,13 +130,26 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 					printf ("\n");
 					break;
 
+				case 'c':
+/*
+ * clean empty links references
+ */
+					opts.opt_c = 'c';
+				break;
+				
+				case 'e':
+/*
+ * clean empty links references
+ */
+					opts.opt_e = 'e';
+				break;
+				
 				case 'i':
 /*
  * ignore case
  */
 					opts.opt_i = 'i';
 				break;
-
 				case 'I':
 /*
  * ignore name
@@ -201,10 +211,10 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
 /*
  * locate nodes using find function
  */
-	Popts = &opts;
-	
- 	ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+	Popts = &opts;		
 
+	ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);	
+	
 
 	return ln_tot_nodes;
 }
