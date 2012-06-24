@@ -27,7 +27,7 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
 	int c;
 	int option_index;
 	
-	opts.opt_c = '\0';
+	opts.opt_e = '\0';
 	
 	option_index = 0;
 /*
@@ -87,13 +87,13 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'c'},
+				{"clean_empy_links",     no_argument,       0, 'e'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "c", long_options, &option_index);
+			c = getopt_long (args_num, opt, "e", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -113,11 +113,11 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
 					printf ("\n");
 					break;
 
-				case 'c':
+				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'c';
+					opts.opt_e = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -173,7 +173,7 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_c = '\0';
+	opts.opt_e = '\0';
 	
 	option_index = 0;
 /*
@@ -233,13 +233,13 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'c'},
+				{"clean_empy_links",     no_argument,       0, 'e'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "c", long_options, &option_index);
+			c = getopt_long (args_num, opt, "e", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -259,11 +259,11 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 					printf ("\n");
 					break;
 
-				case 'c':
+				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'c';
+					opts.opt_e = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -319,7 +319,7 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_c = '\0';
+	opts.opt_e = '\0';
 	
 	option_index = 0;
 /*
@@ -379,13 +379,13 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'c'},
+				{"clean_empy_links",     no_argument,       0, 'e'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "c", long_options, &option_index);
+			c = getopt_long (args_num, opt, "e", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -405,11 +405,11 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 					printf ("\n");
 					break;
 
-				case 'c':
+				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'c';
+					opts.opt_c = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -461,7 +461,7 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
 	int c;
 	int option_index;
 	
-	opts.opt_c = '\0';
+	opts.opt_e = '\0';
 	
 	option_index = 0;
 /*
@@ -521,13 +521,13 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'c'},
+				{"clean_empy_links",     no_argument,       0, 'e'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "c", long_options, &option_index);
+			c = getopt_long (args_num, opt, "e", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -547,11 +547,11 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
 					printf ("\n");
 					break;
 
-				case 'c':
+				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'c';
+					opts.opt_c = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -609,8 +609,8 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')
-		 ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) ;
+	if(Popts->opt_e == 'e')
+		 ln_cleanempytlinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -624,8 +624,8 @@ int send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opt
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')
-		 ln_cleanempytlinks(&Lnode,  (opts_t *)NULL) ;	
+	if(Popts->opt_e == 'e')
+		 ln_cleanempytlinks(&Lnode,  Popts) ;	
 	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
 		Error("Could not open socket");
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
@@ -647,8 +647,8 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')
-		 ln_cleanempytlinks(&Lnode,  (opts_t *)NULL) ;
+	if(Popts->opt_e == 'e')
+		 ln_cleanempytlinks(&Lnode,  Popts) ;
 
 	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
 		Error("Could not open socket");
@@ -662,8 +662,8 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')
-		 ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) ;
+	if(Popts->opt_e == 'e')
+		 ln_cleanempytlinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -680,8 +680,8 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')			
-		ln_cleanempytlinks(&Lnode,  (opts_t *)NULL) ;
+	if(Popts->opt_e == 'e')			
+		ln_cleanempytlinks(&Lnode,  Popts) ;
 
 	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
 		Error("Could not open socket");
@@ -696,8 +696,8 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')
-		 ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) ;
+	if(Popts->opt_e == 'e')
+		 ln_cleanempytlinks(&Gnode,  Popts) ;
 
 	
 	return Gnode;

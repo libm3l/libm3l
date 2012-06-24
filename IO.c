@@ -26,7 +26,7 @@ node_t *Fread(const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_c = '\0';
+	opts.opt_e = '\0';
 	
 	option_index = 0;
 /*
@@ -86,13 +86,13 @@ node_t *Fread(const char *name, char * Options, ...)
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'c'},
+				{"clean_empy_links",     no_argument,       0, 'e'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "c", long_options, &option_index);
+			c = getopt_long (args_num, opt, "e", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -112,11 +112,11 @@ node_t *Fread(const char *name, char * Options, ...)
 					printf ("\n");
 					break;
 
-				case 'c':
+				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'c';
+					opts.opt_e = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -181,8 +181,8 @@ node_t *Read_list(const char *name, opts_t *Popts)
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')
-		 ln_cleanempytlinks(&Lnode,  (opts_t *)NULL) ;
+	if(Popts->opt_e == 'e')
+		 ln_cleanempytlinks(&Lnode,  Popts) ;
 
 	return Lnode;
 }
@@ -204,7 +204,7 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_c = '\0';
+	opts.opt_e = '\0';
 	
 	option_index = 0;
 /*
@@ -264,13 +264,13 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'c'},
+				{"clean_empy_links",     no_argument,       0, 'e'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "c", long_options, &option_index);
+			c = getopt_long (args_num, opt, "e", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -290,11 +290,11 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 					printf ("\n");
 					break;
 
-				case 'c':
+				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'c';
+					opts.opt_e = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -345,8 +345,8 @@ int Write_list(node_t *Lnode, const char *name, opts_t * Popts)
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_c == 'c')
-		 ln_cleanempytlinks(&Lnode,  (opts_t *)NULL) ;
+	if(Popts->opt_e == 'e')
+		 ln_cleanempytlinks(&Lnode,  Popts) ;
 
 	if ( (fp = fopen(name,"w")) == NULL)
 		Perror("fopen");

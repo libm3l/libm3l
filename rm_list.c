@@ -84,7 +84,7 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
 
 // 	if(strncmp(List->type, "LINK",4) != 0){
 /*
- * List is not LINK
+ * List is LINK or does not have children
  */
 	if( (*List)->child == NULL || strncmp((*List)->type, "LINK", 4) == 0){
 /*
@@ -200,7 +200,6 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
 		
 		if(strncmp( (*List)->type, "LINK", 4) == 0){
 			Tmpnode =  *List;
-// 			(*List)->child = NULL;
 		}
 		else{;	
 			Tmpnode =  (*List)->child;

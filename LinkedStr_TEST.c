@@ -50,7 +50,7 @@ int main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
- 		if( (Gnode = Fread("ADA1" ,"--clean_empy_links",  (char *)NULL))  == NULL)
+ 		if( (Gnode = Fread("ADA1" , "--clean_empy_links", (char *)NULL))  == NULL)
  			Perror("Linked_test: Fread");
 
 //  		if( (Gnode = Fread("ADA_EMPTYLINK" ,   (char *)NULL))  == NULL)
@@ -58,7 +58,7 @@ int main(void)
 		
 		if(Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
  	                   Error("CatData");
-				
+					
 		printf("\n\n\n\n");
 		
  		if( (Anode = Fread("TEST.dat", (char *)NULL))  == NULL)

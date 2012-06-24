@@ -43,12 +43,8 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 		return -1;
 	}
 	
-	if (Popts->opt_e == 'e'){
-		ln_tot_nodes = ln_cleanempytlinks(TList,  Popts);
-		return ln_tot_nodes;
-	}
-	else if(Popts->opt_c == 'c'){
-		ln_tot_nodes = ln_cleanempytlinksref(TList);
+	if (Popts->opt_e == 'e' || Popts->opt_c == 'c'){
+ 		ln_tot_nodes = ln_cleanempytlinks(TList,  Popts);
 		return ln_tot_nodes;
 	}
 		
@@ -500,11 +496,19 @@ size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
  */ 
 	if((*List)->child == NULL){
 /*
- * check if list is empty link
+ * check if list is LINK
+ * if empty link and Popt->opt_e == 'e' remove empty link
+ * if not link and Popt->opt_c == 'c' check if list is linked to another LIST and 
+ * remove NULL references 
  */
 		rm_nodes = 0;
-		if( strncmp( (*List)->type, "LINK", 4) == 0  && (*List)->ndim == 0)
-			rm_nodes = rm_list(2, List, Popt);
+		if( strncmp( (*List)->type, "LINK", 4) == 0){
+			if(Popt != NULL && (*List)->ndim == 0 && Popt->opt_e == 'e') rm_nodes = rm_list(2, List, Popt);
+		}
+		else if	(Popt != NULL && Popt->opt_c == 'c'){
+			rm_nodes = rm_nodes + ln_cleanempytlinksref(List);
+		}
+
 		return rm_nodes;
 		
 	}
@@ -519,12 +523,14 @@ size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
 			cleaned_nodes = cleaned_nodes + ln_cleanempytlinks(&Tmpnode,  Popt);
+			if(Popt != NULL && Popt->opt_c == 'c') cleaned_nodes = cleaned_nodes + ln_cleanempytlinksref(&Tmpnode);
 			Tmpnode = Tmpnode1;
 		}
 		return cleaned_nodes;
 	}
 	return -1;
 }
+
 
 
 int ln_cleanempytlinksref(node_t **List){
@@ -536,6 +542,8 @@ int ln_cleanempytlinksref(node_t **List){
 	counter = 0;
 	
 	find_str_t **TMP;
+	
+	return 0;
 	
 	if( (*List) == NULL){
 		Warning("ln_cleanempytlinksref: Empty node");
