@@ -241,11 +241,13 @@ int main(void)
 // 			Error("CatData");
 // 		
 
-// 		if(Umount(&Anode) != 1)
-// 			Perror("Umount");
+		if(Umount(&Anode) != 1)
+			Perror("Umount");
 		
-		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "clean_refs_to_links", "/*", (char *)NULL) );
-				 if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "--clean_empty_refs_to_links", "/*", (char *)NULL) );
+		
+		
+		if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 //  	                   Error("CatData");
 // 			   exit(0);
 
@@ -256,7 +258,9 @@ int main(void)
 		
 // 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
 
-		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
+// 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
+		printf(" Number of empty links is %ld \n", Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (char *)NULL));	
+		printf(" Number of empty links is %ld \n", Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (char *)NULL));	
 		
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
 
@@ -280,8 +284,8 @@ int main(void)
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");
 		
-		if(Umount(&Anode) != 1)
-			Perror("Umount");	
+// 		if(Umount(&Anode) != 1)
+// 			Perror("Umount");	
 		
 	}
 		

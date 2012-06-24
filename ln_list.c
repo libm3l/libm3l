@@ -526,8 +526,8 @@ int ln_cleanempytlinksref(node_t **List){
 	
 	find_str_t **TMP;
 	
-	if( (*List) != NULL){
-		Warning("ln_cleanempytlinksref Empty node");
+	if( (*List) == NULL){
+		Warning("ln_cleanempytlinksref: Empty node");
 		return -1;
 	}
 	
@@ -540,7 +540,7 @@ int ln_cleanempytlinksref(node_t **List){
 /*
  * no link info exist
  */
-		return 1;
+		return 0;
 	}
 	
 	if(counter > 0){
@@ -629,5 +629,5 @@ int ln_cleanempytlinksref(node_t **List){
 		return 1;
 	}	
 	
-	return 0;
+	return -1;
 }

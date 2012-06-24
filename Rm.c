@@ -94,7 +94,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
 		{
 			static struct option long_options[] =
 			{
-				{"clean_refs_to_links",     no_argument,       0, 'c'},   /* for LINK: free rather then nulify linkedlist structure in referenced nodes */
+				{"clean_empty_refs_to_links",     no_argument,       0, 'c'},   /* for LINK: free rather then nulify linkedlist structure in referenced nodes */
 				{"ignore",     no_argument,       0, 'i'},   /* ignore case */
 				{"DIR",        no_argument,       0, 'd'},   /* look fir DIR only */
 				{"FILE",       no_argument,       0, 'f'},   /* look for FILE only */
