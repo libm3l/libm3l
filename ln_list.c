@@ -531,33 +531,42 @@ int ln_cleanempytlinksref(node_t **List){
 		return -1;
 	}
 	
-	if((*List)->lcounter > 0){
+	if((*List)->lcounter > 0 ){
+		old_counter = (*List)->lcounter;
+		for(i=0; i< (*List)->lcounter; i++)
+			if( (*List)->linknode[i]->List != 0)counter++;
+	}
+	else{
+/*
+ * no link info exist
+ */
+		return 1;
+	}
+	
+	if(counter > 0){
 		
 		if( (TMP = (find_str_t **)malloc( (*List)->lcounter * sizeof(find_str_t *))) == NULL)
 			Perror("ln_cleanempytlinksref malloc");
 /*
  * find number of non-NULL links
  */
-		old_counter = (*List)->lcounter;
 		
 		for(i=0; i< (*List)->lcounter; i++){
-			
 			TMP[i] = NULL;
 			
-			if( (*List)->linknode[i]->List != 0){
+			if( (*List)->linknode[i]->List != NULL){
 /* 
  * link is not empty info
  * increase counter
  * allocate TMP field and save the content of (*List)->linknode[i]->List in it
  */
-				counter++;
 				if( (TMP[i] = (find_str_t *)malloc( sizeof(find_str_t))) == NULL)
 					Perror("ln_cleanempytlinksref malloc");
 				TMP[i]->List = (*List)->linknode[i]->List;
 			}
 		}
 		
-		if(counter < (*List)->lcounter && counter > 0){
+		if(counter < (*List)->lcounter){
 /*
  * there were NULL nodes saved in the structure
  * but node is still linked to some of the original nodes
@@ -565,6 +574,10 @@ int ln_cleanempytlinksref(node_t **List){
 	
 			for(i=0; i< (*List)->lcounter; i++)
 				free((*List)->linknode[i]);
+			free((*List)->linknode);
+			
+			if( ((*List)->linknode = (find_str_t **)malloc( counter * sizeof(find_str_t *))) == NULL)
+				Perror("ln_cleanempytlinksref malloc");
 			
 			for(i=0; i< counter; i++){
 				if( ((*List)->linknode[i] = (find_str_t *)malloc( sizeof(find_str_t))) == NULL)
@@ -591,19 +604,6 @@ int ln_cleanempytlinksref(node_t **List){
  */
 			return -2;
 		}
-		else if(counter == 0){
-/*
- * link is not linked to any other node
- */
-			for(i=0; i< (*List)->lcounter; i++){
-				free((*List)->linknode[i]);
-				if(TMP[i] != NULL)free(TMP[i]);
-			}
-			free((*List)->linknode);
-			free(TMP);
-			(*List)->lcounter = 0;
-			return 1;
-		}
 		else{
 /*
  * unspecified error, return -3
@@ -614,6 +614,19 @@ int ln_cleanempytlinksref(node_t **List){
 			free(TMP);
 			return -3;
 		}
+	}
+	else if(counter == 0){
+/*
+ * link is not linked to any other node
+ */
+		for(i=0; i< (*List)->lcounter; i++){
+			free((*List)->linknode[i]);
+			if(TMP[i] != NULL)free(TMP[i]);
+		}
+		free((*List)->linknode);
+		free(TMP);
+		(*List)->lcounter = 0;
+		return 1;
 	}	
 	
 	return 0;
