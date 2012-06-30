@@ -30,7 +30,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 	option_index = 0;
 /*
  * get number of options
- */	
+ */
 	if(Options != NULL){
 		va_start(args, Options);
 		args_num = 1;
@@ -54,12 +54,12 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  * array member [0] will be empty
  */
 		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
-				Perror("malloc");
+			Perror("malloc");
 	
- 		len = strlen(Options);	
+ 		len = strlen(Options);
 		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
-				Perror("malloc");
-		strncpy(opt[1], Options, len);
+			Perror("malloc");
+		strncpy(opt[1], Options, len);		
 		opt[1][len] = '\0';
 /*
  * get the value of other arguments
@@ -85,7 +85,8 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 		{
 			static struct option long_options[] =
 			{
-				{"nullify",     no_argument,       0, 'n'},
+				{"no_malloc",     no_argument,       0, 'a'},
+				{"nullify",       no_argument,       0, 'n'},
 				{"beginning",     no_argument,       0, 'b'},
 
 				{0, 0, 0, 0}
@@ -93,7 +94,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "bn", long_options, &option_index);
+			c = getopt_long (args_num, opt, "abn", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -113,13 +114,19 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 					printf ("\n");
 					break;
 
+				case 'a':
+/*
+ * if specified as a, do not malloc data structure in the node_t*
+ */
+					opts.opt_a = 'n';
+				break;
+				
 				case 'b':
 /*
  * add node at the beginning of the list
  */
 					opts.opt_b = 'b';
 				break;
-				
 				case 'n':
 /*
  * nullify field

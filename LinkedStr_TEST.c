@@ -278,8 +278,24 @@ int main(void)
 
  		if(Cat(NewList,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
  			Error("CatData");
+		
 // 		Add(&NewList, &Gnode, "/main/grid3", "/*/*", (char *)NULL);
 // 		Add(&NewList, &Gnode, "/main", "./", (char *)NULL);
+			
+// 		NewList = NULL;
+		dim = (size_t *) malloc( 1* sizeof(size_t));
+		dim[0] = 5;
+		ada = (int *)malloc(5 * sizeof(int));
+		for (i=0; i<5; i++)
+ 			ada[i]=2*i;
+		
+		if(  (NewList = Mklist("MADE_LIST_ADA", "I", 1, dim, &Gnode, "/main", "./", "--no_malloc", (char *)NULL)) == 0)
+			Error("Mklist");
+		free(dim);
+// 		for (i=0; i<5; i++)
+//  			NewList->data.i[i]=2*i;
+ 		NewList->data.i = ada;
+		
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 

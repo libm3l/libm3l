@@ -210,16 +210,16 @@ int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
  * filling Lnode->ndim, if List is not DIR, this has already been filled with in AllocateNode
  */
 	(*Lnode)->ndim = TMPSTR.ndim;
-/*
- * if not required to malloc field, return now
- */
-	if(Popt->opt_a == 'n')return 0;
 	
 	tot_dim = 1;
 	for(i=0; i<TMPSTR.ndim; i++){
 		(*Lnode)->fdim[i] = TMPSTR.dim[i];
 		tot_dim = tot_dim * TMPSTR.dim[i];
 	}
+/*
+ * if not required to malloc field, return now
+ */	
+	if(Popt->opt_a == 'n')return 0;
 		
 	if (strncmp((*Lnode)->type,"LD",2) == 0){  /* long double */
 		if ( ( (*Lnode)->data.ldf  = (long double *)malloc(tot_dim*sizeof(long double))) == NULL)
