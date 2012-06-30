@@ -26,7 +26,7 @@ node_t *Fread(const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_a = '\0'; opts.opt_c = '\0';
 	
 	option_index = 0;
 /*
@@ -171,7 +171,7 @@ node_t *Read_list(const char *name, opts_t *Popts)
 	if ( (fp = fopen(name,"r")) == NULL)
 		Perror("fopen");
 
-	if( (Lnode = read_file(fp)) == NULL)
+	if( (Lnode = read_file(fp, Popts)) == NULL)
 		Perror("read_file");
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop
@@ -182,7 +182,7 @@ node_t *Read_list(const char *name, opts_t *Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;
+		 ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	return Lnode;
 }
@@ -204,7 +204,7 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_a = '\0';
 	
 	option_index = 0;
 /*
@@ -346,7 +346,7 @@ int Write_list(node_t *Lnode, const char *name, opts_t * Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;
+		 ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	if ( (fp = fopen(name,"w")) == NULL)
 		Perror("fopen");

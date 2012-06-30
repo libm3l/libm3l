@@ -25,7 +25,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 	int option_index;
 	tmpstruct_t TMPSTR;
 	
-	opts.opt_n = '\0'; opts.opt_b = '\0';
+	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_a = '\0';
 	
 	option_index = 0;
 /*
@@ -195,7 +195,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  /*
  * two ways of allocating pointer - through reference pointer or as a function returning pointer
  */	
-	if( (List = AllocateNode(TMPSTR)) == NULL){
+	if( (List = AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 		return (node_t *) NULL;
 	}

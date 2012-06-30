@@ -21,10 +21,10 @@
 #define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN 
 */
 
-static int read_socket_data_line(node_t **, tmpstruct_t, int);
+static int read_socket_data_line(node_t **, tmpstruct_t, int, opts_t *);
 static int read_socket_data_charline(node_t **, tmpstruct_t, int);
-static node_t *read_socket_dir_data(tmpstruct_t , int);
-static node_t *read_socket_data(int);
+static node_t *read_socket_dir_data(tmpstruct_t , int, opts_t *);
+static node_t *read_socket_data(int, opts_t *);
 
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
@@ -41,7 +41,7 @@ ssize_t ngotten;
  * words, although the algorithm should be able to take spaces, tabs and new lines too.
  * For C, UC and SC fields, spaces, \t and \n are taken as valid characters
  */ 
-node_t *read_socket(int descrpt)
+node_t *read_socket(int descrpt, opts_t *Popts)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t   wc, i, hi, tmpi;
@@ -184,7 +184,7 @@ node_t *read_socket(int descrpt)
  * read data in DIR
  */
 
-					if( (Dnode = read_socket_dir_data(TMPSTR, descrpt)) == NULL)
+					if( (Dnode = read_socket_dir_data(TMPSTR, descrpt, Popts)) == NULL)
 						Perror("ReadDirData - ReadDir");
 /*
  * Return main list
@@ -271,22 +271,20 @@ node_t *read_socket(int descrpt)
 /*
  * reads data after line identifying DIR
  */
-
-
-node_t *read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt)
+node_t *read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt, opts_t *Popts)
 {
 	size_t i;
 	node_t *Dnode, *Tmpnode, *Pnode;
  /*
  * two ways of allocating pointer - through reference pointer or as a function returning pointer
  */	
-	if( (Dnode = AllocateNode(TMPSTR)) == NULL){
+	if( (Dnode = AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 	}
 
 	for(i=1;i<=TMPSTR.ndim; i++){ 
 		Tmpnode=NULL;
-		if ( (Tmpnode = read_socket_data(descrpt)) == NULL)
+		if ( (Tmpnode = read_socket_data(descrpt, Popts)) == NULL)
 			Error("ReadDirData: ReadData");
 /*
  * add to node
@@ -311,7 +309,7 @@ node_t *read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt)
 
 
 
-node_t *read_socket_data(int descrpt)
+node_t *read_socket_data(int descrpt, opts_t *Popts)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t   wc, i, hi;
@@ -414,7 +412,7 @@ node_t *read_socket_data(int descrpt)
 /*
  * if type is DIR, read it
  */
-						if( (Pnode = read_socket_dir_data(TMPSTR, descrpt)) == NULL)
+						if( (Pnode = read_socket_dir_data(TMPSTR, descrpt, Popts)) == NULL)
 							Perror("ReadSocketData - ReadDir");
 						return Pnode;
 					}
@@ -432,7 +430,7 @@ node_t *read_socket_data(int descrpt)
 			lastchar = '\0';
 		}		
 			
-		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
+		if( (Pnode = AllocateNode(TMPSTR, Popts)) == NULL){
 			Error("Allocate");}
 	
 		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C'){
@@ -447,7 +445,7 @@ node_t *read_socket_data(int descrpt)
 /*
  * data are numbers
  */
-			if( read_socket_data_line(&Pnode, TMPSTR, descrpt) != 0)
+			if( read_socket_data_line(&Pnode, TMPSTR, descrpt, Popts) != 0)
 				Error("Error reading data");
 		}
 
@@ -474,7 +472,7 @@ node_t *read_socket_data(int descrpt)
 	
 	buff[ngotten] = '\0';
 	pc = &buff[0];
-	if ( (Pnode = read_socket_data(descrpt)) == NULL)
+	if ( (Pnode = read_socket_data(descrpt, Popts)) == NULL)
 		Error("ReadDirData: ReadData");
 		
 	return Pnode;
@@ -486,7 +484,7 @@ node_t *read_socket_data(int descrpt)
 
 
 
-int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
+int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, opts_t *Popts)
 {
 /* 
  * function reads data from FILE
@@ -703,7 +701,7 @@ int read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt)
 	
 	buff[ngotten] = '\0';
 	pc = &buff[0];
-	if( read_socket_data_line(Lnode, TMPSTR, descrpt) != 0){
+	if( read_socket_data_line(Lnode, TMPSTR, descrpt, Popts) != 0){
 		Error("Error reading data");
 		return -1;
 	}

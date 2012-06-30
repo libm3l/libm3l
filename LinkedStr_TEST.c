@@ -52,6 +52,10 @@ int main(void)
 
  		if( (Gnode = Fread("ADA1" , "--clean_empy_links", (char *)NULL))  == NULL)
  			Perror("Linked_test: Fread");
+		
+// 		Fwrite(Gnode, "ADA", (char *)NULL);
+// 		printf("\n\n\n\n");
+// 		exit(0);
 
 //  		if( (Gnode = Fread("ADA_EMPTYLINK" ,   (char *)NULL))  == NULL)
 //  			Perror("Linked_test: Fread");
@@ -69,9 +73,7 @@ int main(void)
  		if(Cat(Anode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
  	                   Error("CatData");
 // exit(0);
-		
-//  		Fwrite(Gnode, "ADA");
-		
+	
 // 
 
 		

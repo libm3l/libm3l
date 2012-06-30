@@ -16,7 +16,7 @@
 
 static size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
 static int ln_recrt_list(node_t **, node_t **, char *);
-static node_t *ln_crt_list(node_t **, char *);
+static node_t *ln_crt_list(node_t **, char *, opts_t *);
 
 /*
  * function links list. If the list has children, it deletes them before removing list.
@@ -44,7 +44,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 	}
 	
 	if (Popts->opt_e == 'e' || Popts->opt_c == 'c'){
- 		ln_tot_nodes = ln_cleanempytlinks(TList,  Popts);
+ 		ln_tot_nodes = ln_cleanemptylinks(TList,  Popts);
 		return ln_tot_nodes;
 	}
 		
@@ -291,7 +291,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 /*
  * link list to the directory, first make a new lits
  */
-		if ( (NewList = ln_crt_list(SList, NewName)) == NULL){
+		if ( (NewList = ln_crt_list(SList, NewName, Popts)) == NULL){
 			Error("Copying list");
 			return -1;
 		}
@@ -317,7 +317,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 }
 
 
-node_t *ln_crt_list(node_t **Slist, char *NewName){
+node_t *ln_crt_list(node_t **Slist, char *NewName, opts_t *Popts){
 /*
  * function creates link node, 
  * parent of the node is Tlist, child of the node is Slist (Link)
@@ -348,7 +348,7 @@ node_t *ln_crt_list(node_t **Slist, char *NewName){
 /*
  * create new node
  */
-	if( (Pnode = AllocateNode(TMPSTR)) == NULL){
+	if( (Pnode = AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 		return (node_t *)NULL;
 	}
@@ -474,7 +474,7 @@ int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
 }
 
 
-size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
+size_t ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 /*
  * function traverses entire list and look for empty links. 
  * Once it finds them it removes them
@@ -506,7 +506,7 @@ size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
 			if(Popt != NULL && (*List)->ndim == 0 && Popt->opt_e == 'e') rm_nodes = rm_list(2, List, Popt);
 		}
 		else if	(Popt != NULL && Popt->opt_c == 'c'){
-			rm_nodes = rm_nodes + ln_cleanempytlinksref(List);
+			rm_nodes = rm_nodes + ln_cleanemptylinksref(List);
 		}
 
 		return rm_nodes;
@@ -522,8 +522,8 @@ size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
 		
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
-			cleaned_nodes = cleaned_nodes + ln_cleanempytlinks(&Tmpnode,  Popt);
-			if(Popt != NULL && Popt->opt_c == 'c') cleaned_nodes = cleaned_nodes + ln_cleanempytlinksref(&Tmpnode);
+			cleaned_nodes = cleaned_nodes + ln_cleanemptylinks(&Tmpnode,  Popt);
+			if(Popt != NULL && Popt->opt_c == 'c') cleaned_nodes = cleaned_nodes + ln_cleanemptylinksref(&Tmpnode);
 			Tmpnode = Tmpnode1;
 		}
 		return cleaned_nodes;
@@ -533,7 +533,7 @@ size_t ln_cleanempytlinks(node_t **List,  opts_t *Popt){
 
 
 
-int ln_cleanempytlinksref(node_t **List){
+int ln_cleanemptylinksref(node_t **List){
 /*
  * function cleans empty references in  
  * (*Slist)->linknode structure
@@ -546,7 +546,7 @@ int ln_cleanempytlinksref(node_t **List){
 	return 0;
 	
 	if( (*List) == NULL){
-		Warning("ln_cleanempytlinksref: Empty node");
+		Warning("ln_cleanemptylinksref: Empty node");
 		return -1;
 	}
 	
@@ -565,7 +565,7 @@ int ln_cleanempytlinksref(node_t **List){
 	if(counter > 0){
 		
 		if( (TMP = (find_str_t **)malloc( (*List)->lcounter * sizeof(find_str_t *))) == NULL)
-			Perror("ln_cleanempytlinksref malloc");
+			Perror("ln_cleanemptylinksref malloc");
 /*
  * find number of non-NULL links
  */
@@ -580,7 +580,7 @@ int ln_cleanempytlinksref(node_t **List){
  * allocate TMP field and save the content of (*List)->linknode[i]->List in it
  */
 				if( (TMP[i] = (find_str_t *)malloc( sizeof(find_str_t))) == NULL)
-					Perror("ln_cleanempytlinksref malloc");
+					Perror("ln_cleanemptylinksref malloc");
 				TMP[i]->List = (*List)->linknode[i]->List;
 			}
 		}
@@ -596,11 +596,11 @@ int ln_cleanempytlinksref(node_t **List){
 			free((*List)->linknode);
 			
 			if( ((*List)->linknode = (find_str_t **)malloc( counter * sizeof(find_str_t *))) == NULL)
-				Perror("ln_cleanempytlinksref malloc");
+				Perror("ln_cleanemptylinksref malloc");
 			
 			for(i=0; i< counter; i++){
 				if( ((*List)->linknode[i] = (find_str_t *)malloc( sizeof(find_str_t))) == NULL)
-					Perror("ln_cleanempytlinksref malloc");
+					Perror("ln_cleanemptylinksref malloc");
 				
 				(*List)->linknode[i]->List = 	TMP[i]->List ;
 			}

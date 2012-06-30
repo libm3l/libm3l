@@ -36,7 +36,9 @@ int WriteData(node_t *List,  FILE *fp)
 			bzero(buff, sizeof(buff));
 			if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
 				Perror("snprintf");
-			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+			
+// 			if ( fwrite (&buff ,strlen(buff)*sizeof(char),  1 , fp ) < 1)
+ 			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
 				Perror("fwrite");
 		}
 		else

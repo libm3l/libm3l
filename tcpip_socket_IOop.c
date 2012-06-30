@@ -27,7 +27,7 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_a = '\0'; opts.opt_c = '\0';
 	
 	option_index = 0;
 /*
@@ -173,7 +173,7 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_a = '\0';
 	
 	option_index = 0;
 /*
@@ -319,7 +319,7 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_a = '\0';
 	
 	option_index = 0;
 /*
@@ -461,7 +461,7 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_a = '\0';
 	
 	option_index = 0;
 /*
@@ -602,7 +602,7 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 
 	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
 		Error("Could not open socket");
-	if( (Gnode = read_socket(socketnr)) == NULL)
+	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -610,7 +610,7 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Gnode,  Popts) ;
+		 ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -625,7 +625,7 @@ int send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opt
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;	
+		 ln_cleanemptylinks(&Lnode,  Popts) ;	
 	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
 		Error("Could not open socket");
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
@@ -648,14 +648,14 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;
+		 ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
 		Error("Could not open socket");
 
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
 		Error("Error during writing data to socket");
-	if( (Gnode = read_socket(socketnr)) == NULL)
+	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -663,7 +663,7 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Gnode,  Popts) ;
+		 ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -681,11 +681,11 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')			
-		ln_cleanempytlinks(&Lnode,  Popts) ;
+		ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
 		Error("Could not open socket");
-	if( (Gnode = read_socket(socketnr)) == NULL)
+	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
@@ -697,7 +697,7 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Gnode,  Popts) ;
+		 ln_cleanemptylinks(&Gnode,  Popts) ;
 
 	
 	return Gnode;

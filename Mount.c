@@ -34,7 +34,7 @@ node_t *Mount(const char *name)
 /*
  * allocate node and if success, return it otherwise return NULL
  */	
-	if( (Dnode = AllocateNode(TMPSTR)) == NULL){
+	if( (Dnode = AllocateNode(TMPSTR, NULL)) == NULL){
 		Error("Allocate");
 		return NULL;
 	}
