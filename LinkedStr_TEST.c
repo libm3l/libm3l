@@ -36,7 +36,9 @@ int main(void)
     
     path_t *parsed_path;
 
-    int *ada, num, wc;
+    int  num, wc;
+//     int *ada;
+    int ada[5];
     get_arg_t argsstr;
 
     FILE *fp;
@@ -285,7 +287,7 @@ int main(void)
 // 		NewList = NULL;
 		dim = (size_t *) malloc( 1* sizeof(size_t));
 		dim[0] = 5;
-		ada = (int *)malloc(5 * sizeof(int));
+// 		ada = (int *)malloc(5 * sizeof(int));
 		for (i=0; i<5; i++)
  			ada[i]=2*i;
 		
@@ -301,6 +303,8 @@ int main(void)
 
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");
+		
+// 		free(ada);
 		
 // 		if(Umount(&Anode) != 1)
 // 			Perror("Umount");	

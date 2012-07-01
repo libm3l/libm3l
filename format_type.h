@@ -75,6 +75,8 @@ typedef struct node {
   */
 	struct find_str **linknode;
 	size_t lcounter;
+	
+	char no_malloc;
 
 }node_t;
 

@@ -61,6 +61,11 @@ int Free_data_str(node_t **Lnode)
 		free((*Lnode)->fdim);
 		(*Lnode)->fdim = NULL;
 		(*Lnode)->ndim = 0;
+/*
+ * if data field was nota malloced and used only as a pointer, 
+ * do not free
+ */
+		if((*Lnode)->no_malloc == 'n') return 0;
 		
 		if (strncmp((*Lnode)->type,"LD",2) == 0){  /* long double */
 			free( (*Lnode)->data.ldf);
@@ -163,6 +168,8 @@ node_t *AllocateNode(tmpstruct_t TMPSTR, opts_t *Popt){
 	Lnode->type=NULL; Lnode->name=NULL;
 	Lnode->linknode = NULL;
 	Lnode->lcounter = 0;
+	
+	Lnode->no_malloc = '\0';
  /*
   * Allocate pointers
   */
@@ -219,7 +226,10 @@ int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 /*
  * if not required to malloc field, return now
  */	
-	if(Popt->opt_a == 'n')return 0;
+	if(Popt->opt_a == 'n'){
+		(*Lnode)->no_malloc = 'n';
+		return 0;
+	}
 		
 	if (strncmp((*Lnode)->type,"LD",2) == 0){  /* long double */
 		if ( ( (*Lnode)->data.ldf  = (long double *)malloc(tot_dim*sizeof(long double))) == NULL)
