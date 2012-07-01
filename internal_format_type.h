@@ -17,6 +17,7 @@ typedef struct opts{
 	char opt_i, opt_I;
 	char opt_k, opt_K;
 	char opt_l, opt_L;	
+	char opt_m, opt_M;
 	char opt_n, opt_N;
 	char opt_p, opt_P;
 	char opt_r, opt_R;

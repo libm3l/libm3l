@@ -226,7 +226,7 @@ int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 /*
  * if not required to malloc field, return now
  */	
-	if(Popt->opt_a == 'n'){
+	if(Popt->opt_m == 'm'){
 		(*Lnode)->no_malloc = 'n';
 		return 0;
 	}

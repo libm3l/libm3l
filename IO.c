@@ -26,7 +26,7 @@ node_t *Fread(const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_a = '\0'; opts.opt_c = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0'; opts.opt_c = '\0';
 	
 	option_index = 0;
 /*
@@ -204,7 +204,7 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_a = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*

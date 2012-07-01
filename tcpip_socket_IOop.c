@@ -27,7 +27,7 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_a = '\0'; opts.opt_c = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0'; opts.opt_c = '\0';
 	
 	option_index = 0;
 /*
@@ -173,7 +173,7 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_a = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
@@ -319,7 +319,7 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_a = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
@@ -461,7 +461,7 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_a = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*

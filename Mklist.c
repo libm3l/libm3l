@@ -25,7 +25,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 	int option_index;
 	tmpstruct_t TMPSTR;
 	
-	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_a = '\0';
+	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
@@ -85,7 +85,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 		{
 			static struct option long_options[] =
 			{
-				{"no_malloc",     no_argument,       0, 'a'},
+				{"no_malloc",     no_argument,       0, 'm'},
 				{"nullify",       no_argument,       0, 'n'},
 				{"beginning",     no_argument,       0, 'b'},
 
@@ -94,7 +94,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "abn", long_options, &option_index);
+			c = getopt_long (args_num, opt, "bmn", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -114,11 +114,11 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 					printf ("\n");
 					break;
 
-				case 'a':
+				case 'm':
 /*
  * if specified as a, do not malloc data structure in the node_t*
  */
-					opts.opt_a = 'n';
+					opts.opt_m = 'm';
 				break;
 				
 				case 'b':

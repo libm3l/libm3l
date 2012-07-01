@@ -1,4 +1,5 @@
-
+#ifndef __HEADER_H__
+#define __HEADER_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +28,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <arpa/inet.h>
+#include <float.h>
              
 /*
  * TCP/IP communication option
@@ -34,7 +36,7 @@
 
 // #define MAXLINE  2048               /* Max length of buffer */
 #define MAXLINE  100
-#define MAX_WORD_LENGTH  260               /* Max length of word in buffer for TCP/IP   */
+#define MAX_WORD_LENGTH  260               /* Max length of word in buffer for TCP/IP, determining mainly for how many digits can be sent over */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
 
@@ -47,3 +49,6 @@
 
 #define SIZE_T size_t
 #define PTRDF_T ptrdiff_t
+
+
+#endif

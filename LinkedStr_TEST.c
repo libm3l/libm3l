@@ -40,6 +40,11 @@ int main(void)
 //     int *ada;
     int ada[5];
     get_arg_t argsstr;
+    
+    char dummy[1];
+    double value = 42.000042; /* or anything else */
+    int siz;
+
 
     FILE *fp;
     
@@ -47,6 +52,14 @@ int main(void)
 
     printf("Going to Fread1\n");
    
+//     printf("%p\n ",  __builtin_return_address(0));  /" gives pointer to return address */
+
+//     siz = snprintf(dummy, sizeof(dummy), "%lf", value);
+//     printf("exact length needed to represent 'value' "
+//            "(without the '\\0' terminator) is %d.\n", siz);
+//         printf("%f\n\n\n", -DBL_MAX);
+	printf("%d\n", snprintf(NULL, 0, "%.10f", value));
+//     exit(0);
 
 	for (j=0; j<1; j++){
 		
@@ -59,8 +72,6 @@ int main(void)
 // 		printf("\n\n\n\n");
 // 		exit(0);
 
-//  		if( (Gnode = Fread("ADA_EMPTYLINK" ,   (char *)NULL))  == NULL)
-//  			Perror("Linked_test: Fread");
 		
 		if(Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
  	                   Error("CatData");
@@ -289,7 +300,7 @@ int main(void)
 		dim[0] = 5;
 // 		ada = (int *)malloc(5 * sizeof(int));
 		for (i=0; i<5; i++)
- 			ada[i]=2*i;
+ 			ada[i]=3*i;
 		
 		if(  (NewList = Mklist("MADE_LIST_ADA", "I", 1, dim, &Gnode, "/main", "./", "--no_malloc", (char *)NULL)) == 0)
 			Error("Mklist");
