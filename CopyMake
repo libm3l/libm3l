@@ -15,6 +15,7 @@
 		sed 's/Date:/Date: '$date'/' AOA1 > AOA2
 	
 		cat COPYRIGHT_NOTICE AOA2 $DIR > CO_$DIR 
+		mv CO_$DIR $DIR
 		rm AOA1 AOA2
 	endif
 	
@@ -35,6 +36,7 @@
 		sed 's/Date:/Date: '$date'/' AOA1 > AOA2
 	
 		cat COPYRIGHT_NOTICE AOA2 $DIR > CO_$DIR 
+		mv CO_$DIR $DIR
 		rm AOA1 AOA2
 	endif
 
