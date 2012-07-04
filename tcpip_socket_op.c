@@ -14,7 +14,7 @@
  *     You should have received a copy of the GNU Lesser General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *     
- *     contact: clibm3l@gmail.com
+ *     contact: libm3l@gmail.com
  * 
  */
 
@@ -57,7 +57,7 @@
 int openbindlistensocket(int portno)
 {
 /*
- * function opens, binds socket and makes it listening
+ * function opens, binds socket and makes it listening (for server)
  */
 	int sockfd, on, status;
 	struct sockaddr_in serv_addr, cli_addr;

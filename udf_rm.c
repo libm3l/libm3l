@@ -14,7 +14,7 @@
  *     You should have received a copy of the GNU Lesser General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *     
- *     contact: clibm3l@gmail.com
+ *     contact: libm3l@gmail.com
  * 
  */
 
@@ -272,7 +272,7 @@ int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 /*
  * if not required to malloc field, return now
  */	
-	if(Popt->opt_m == 'm'){
+	if(Popt != NULL && Popt->opt_m == 'm'){
 		(*Lnode)->no_malloc = 'n';
 		return 0;
 	}
