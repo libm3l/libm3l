@@ -1,3 +1,49 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
+
+
+
+/*
+ *     Function Mklist.c
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-07-01
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
 
  
 #include "Header.h"
@@ -25,12 +71,12 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 	int option_index;
 	tmpstruct_t TMPSTR;
 	
-	opts.opt_n = '\0'; opts.opt_b = '\0';
+	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
  * get number of options
- */	
+ */
 	if(Options != NULL){
 		va_start(args, Options);
 		args_num = 1;
@@ -54,12 +100,12 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  * array member [0] will be empty
  */
 		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
-				Perror("malloc");
+			Perror("malloc");
 	
- 		len = strlen(Options);	
+ 		len = strlen(Options);
 		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
-				Perror("malloc");
-		strncpy(opt[1], Options, len);
+			Perror("malloc");
+		strncpy(opt[1], Options, len);		
 		opt[1][len] = '\0';
 /*
  * get the value of other arguments
@@ -85,7 +131,8 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 		{
 			static struct option long_options[] =
 			{
-				{"nullify",     no_argument,       0, 'n'},
+				{"no_malloc",     no_argument,       0, 'm'},
+				{"nullify",       no_argument,       0, 'n'},
 				{"beginning",     no_argument,       0, 'b'},
 
 				{0, 0, 0, 0}
@@ -93,7 +140,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "bn", long_options, &option_index);
+			c = getopt_long (args_num, opt, "bmn", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -113,13 +160,19 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
 					printf ("\n");
 					break;
 
+				case 'm':
+/*
+ * if specified as a, do not malloc data structure in the node_t*
+ */
+					opts.opt_m = 'm';
+				break;
+				
 				case 'b':
 /*
  * add node at the beginning of the list
  */
 					opts.opt_b = 'b';
 				break;
-				
 				case 'n':
 /*
  * nullify field
@@ -195,7 +248,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  /*
  * two ways of allocating pointer - through reference pointer or as a function returning pointer
  */	
-	if( (List = AllocateNode(TMPSTR)) == NULL){
+	if( (List = AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 		return (node_t *) NULL;
 	}

@@ -1,3 +1,49 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
+
+
+
+/*
+ *     Function rm_list.c
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-06-30
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
 
  
 #include "Header.h"
@@ -163,7 +209,7 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
 /*
  * if required, clean-up the reference field
  */
-				if(Popts != NULL && Popts->opt_c == 'c' && CLD != NULL) ln_cleanempytlinksref(&CLD);
+				if(Popts != NULL && Popts->opt_c == 'c' && CLD != NULL) ln_cleanemptylinksref(&CLD);
 			}
 			(*List)->child = NULL;
 		}

@@ -1,3 +1,49 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
+
+
+
+/*
+ *     Function IO.c
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-07-01
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
 
  
 #include "Header.h"
@@ -26,7 +72,7 @@ node_t *Fread(const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0'; opts.opt_c = '\0';
 	
 	option_index = 0;
 /*
@@ -171,7 +217,7 @@ node_t *Read_list(const char *name, opts_t *Popts)
 	if ( (fp = fopen(name,"r")) == NULL)
 		Perror("fopen");
 
-	if( (Lnode = read_file(fp)) == NULL)
+	if( (Lnode = read_file(fp, Popts)) == NULL)
 		Perror("read_file");
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop
@@ -182,7 +228,7 @@ node_t *Read_list(const char *name, opts_t *Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;
+		 ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	return Lnode;
 }
@@ -204,7 +250,7 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
@@ -346,7 +392,7 @@ int Write_list(node_t *Lnode, const char *name, opts_t * Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;
+		 ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	if ( (fp = fopen(name,"w")) == NULL)
 		Perror("fopen");

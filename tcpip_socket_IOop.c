@@ -1,3 +1,49 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
+
+
+
+/*
+ *     Function tcpip_socket_IOop.c
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-07-01
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
 
 #include "Header.h"
 #include "format_type.h"
@@ -27,7 +73,7 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0'; opts.opt_c = '\0';
 	
 	option_index = 0;
 /*
@@ -173,7 +219,7 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
@@ -319,7 +365,7 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
@@ -461,7 +507,7 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0';
+	opts.opt_e = '\0'; opts.opt_m = '\0';
 	
 	option_index = 0;
 /*
@@ -600,9 +646,9 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 	node_t *Gnode;
 	int socketnr;
 
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
-	if( (Gnode = read_socket(socketnr)) == NULL)
+	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -610,7 +656,7 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Gnode,  Popts) ;
+		 ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -625,8 +671,8 @@ int send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opt
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;	
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+		 ln_cleanemptylinks(&Lnode,  Popts) ;	
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
 		Error("Error during writing data to socket");
@@ -648,14 +694,14 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Lnode,  Popts) ;
+		 ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
 		Error("Error during writing data to socket");
-	if( (Gnode = read_socket(socketnr)) == NULL)
+	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -663,7 +709,7 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Gnode,  Popts) ;
+		 ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -681,11 +727,11 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')			
-		ln_cleanempytlinks(&Lnode,  Popts) ;
+		ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
-	if( (Gnode = read_socket(socketnr)) == NULL)
+	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
@@ -697,7 +743,7 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanempytlinks(&Gnode,  Popts) ;
+		 ln_cleanemptylinks(&Gnode,  Popts) ;
 
 	
 	return Gnode;

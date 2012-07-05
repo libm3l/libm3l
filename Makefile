@@ -10,14 +10,17 @@ LFLAGS = -fbounds-check -fstack-check -g
 
 #Autodependencies with GNU make
 #Scott McPeak, November 2001 
-
+#
 # link
+#
 main: $(OBJS)
 	gcc $(OBJS) -o LinkedStr_TEST.out
-
+#
 # pull in dependency info for *existing* .o files
+#
 -include $(OBJS:.o=.d)
 
+#
 # compile and generate dependency info;
 # more complicated dependency computation, so all prereqs listed
 # will also become command-less, prereq-less targets
@@ -26,6 +29,7 @@ main: $(OBJS)
 #   fmt -1: list words one per line
 #   sed:    strip leading spaces
 #   sed:    add trailing colons
+#
 %.o: %.c
 	gcc -c $(CFLAGS) $*.c -o $*.o
 	gcc -MM $(CFLAGS) $*.c > $*.d
@@ -34,8 +38,26 @@ main: $(OBJS)
 	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
 	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
 	@rm -f $*.d.tmp
+#
 # remove compilation products
+#
 clean:
 	rm -f LinkedStr_TEST.out *.o *.d
-	
-	
+
+#
+#  make shared library
+#clibm3l.so.1.0
+lib: $(OBJS)
+	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS) 
+	ln -sf libm3l.so.1.0 libm3l.so
+
+-include $(OBJS:.o=.d)
+
+%.o: %.c
+	gcc -c -fPIC $*.c -o $*.o
+	gcc -MM -fPIC $*.c > $*.d
+	@mv -f $*.d $*.d.tmp
+	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
+	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
+	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
+	@rm -f $*.d.tmp

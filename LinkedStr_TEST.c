@@ -1,3 +1,49 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
+
+
+
+/*
+ *     Function LinkedStr_TEST.c
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-07-01
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
 
 /*
  * Array examples
@@ -36,8 +82,15 @@ int main(void)
     
     path_t *parsed_path;
 
-    int *ada, num, wc;
+    int  num, wc;
+//     int *ada;
+    int ada[5];
     get_arg_t argsstr;
+    
+    char dummy[1];
+    double value = 42.000042; /* or anything else */
+    int siz;
+
 
     FILE *fp;
     
@@ -45,6 +98,14 @@ int main(void)
 
     printf("Going to Fread1\n");
    
+//     printf("%p\n ",  __builtin_return_address(0));  /" gives pointer to return address */
+
+//     siz = snprintf(dummy, sizeof(dummy), "%lf", value);
+//     printf("exact length needed to represent 'value' "
+//            "(without the '\\0' terminator) is %d.\n", siz);
+//         printf("%f\n\n\n", -DBL_MAX);
+	printf("%d\n", snprintf(NULL, 0, "%.10f", value));
+//     exit(0);
 
 	for (j=0; j<1; j++){
 		
@@ -52,9 +113,11 @@ int main(void)
 
  		if( (Gnode = Fread("ADA1" , "--clean_empy_links", (char *)NULL))  == NULL)
  			Perror("Linked_test: Fread");
+		
+// 		Fwrite(Gnode, "ADA", (char *)NULL);
+// 		printf("\n\n\n\n");
+// 		exit(0);
 
-//  		if( (Gnode = Fread("ADA_EMPTYLINK" ,   (char *)NULL))  == NULL)
-//  			Perror("Linked_test: Fread");
 		
 		if(Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
  	                   Error("CatData");
@@ -69,9 +132,7 @@ int main(void)
  		if(Cat(Anode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
  	                   Error("CatData");
 // exit(0);
-		
-//  		Fwrite(Gnode, "ADA");
-		
+	
 // 
 
 		
@@ -276,13 +337,31 @@ int main(void)
 
  		if(Cat(NewList,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
  			Error("CatData");
+		
 // 		Add(&NewList, &Gnode, "/main/grid3", "/*/*", (char *)NULL);
 // 		Add(&NewList, &Gnode, "/main", "./", (char *)NULL);
+			
+// 		NewList = NULL;
+		dim = (size_t *) malloc( 1* sizeof(size_t));
+		dim[0] = 5;
+// 		ada = (int *)malloc(5 * sizeof(int));
+		for (i=0; i<5; i++)
+ 			ada[i]=3*i;
+		
+		if(  (NewList = Mklist("MADE_LIST_ADA", "I", 1, dim, &Gnode, "/main", "./", "--no_malloc", (char *)NULL)) == 0)
+			Error("Mklist");
+		free(dim);
+// 		for (i=0; i<5; i++)
+//  			NewList->data.i[i]=2*i;
+ 		NewList->data.i = ada;
+		
 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 
 		if(Umount(&Gnode) != 1)
 			Perror("Umount");
+		
+// 		free(ada);
 		
 // 		if(Umount(&Anode) != 1)
 // 			Perror("Umount");	

@@ -1,3 +1,49 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
+
+
+
+/*
+ *     Function cp_list.c
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-06-30
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
 
  
 #include "Header.h"
@@ -13,8 +59,8 @@
 
 static int cp_list(int , node_t **, node_t **, char *, opts_t *);
 static node_t *cp_crt_list( node_t **, opts_t *);
-static node_t *cp_crt_list_item(node_t **);
-static int cp_recrt_list(node_t ** , node_t **, char *);
+static node_t *cp_crt_list_item(node_t **, opts_t *);
+static int cp_recrt_list(node_t ** , node_t **, char *, opts_t *);
 static int cp_list_content(node_t **, node_t *);
 
 /*
@@ -295,7 +341,7 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * node is not link
  */
-			if (  cp_recrt_list(TList, SList, NewName) < 1){
+			if (  cp_recrt_list(TList, SList, NewName, Popts) < 1){
 				Error("Copying list");
 				return -1;
 			}
@@ -314,14 +360,14 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 				Tmpnode->next = NULL;
 				Tmpnode->prev = NULL;
 				
-				if (  cp_recrt_list(TList, &Tmpnode, NewName) < 1){
+				if (  cp_recrt_list(TList, &Tmpnode, NewName, Popts) < 1){
 					Error("Copying list");
 					return -1;
 				}
 				Tmpnode->next = TmpnodeNext;
 				Tmpnode->prev = TmpnodePrev;
 				
-				if( AllocateLinkInfo(&((*SList)->child), TList) < 0){
+				if( AllocateLinkInfo(&((*SList)->child), TList, Popts) < 0){
 					Error("AllocateLinkInfo");
 					return -1;
 				}
@@ -330,7 +376,7 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * copy node as usual
  */
-				if (  cp_recrt_list(TList, SList, NewName) < 1){
+				if (  cp_recrt_list(TList, SList, NewName, Popts) < 1){
 					Error("Copying list");
 					return -1;
 				}	
@@ -356,7 +402,7 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * Slist is FILE type, skip traversing and copy item directly
  */
-			if ( (NewList = cp_crt_list_item(SList)) == NULL){
+			if ( (NewList = cp_crt_list_item(SList, Popts)) == NULL){
 				Error("Copying list");
 				return -1;
 			}
@@ -397,7 +443,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
 /*
  * if initial call, create node, per default it will be DIR
  */
-	if( (RetNode = cp_crt_list_item(List)) == NULL){
+	if( (RetNode = cp_crt_list_item(List,Popts)) == NULL){
 		Error(" cp_crt_list_item");
 		return (node_t *) NULL;
 	}
@@ -421,7 +467,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
  * list is nod DIR
  * copy content
  */
-			if ( (NewList = cp_crt_list_item(&Tmpnode)) == NULL){
+			if ( (NewList = cp_crt_list_item(&Tmpnode, Popts)) == NULL){
 				Error("Copying list");
 				return (node_t *) NULL;
 			}
@@ -440,7 +486,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
 	return RetNode;
 }
 
-node_t *cp_crt_list_item(node_t **Slist)
+node_t *cp_crt_list_item(node_t **Slist, opts_t *Popts)
 {
 /*
  * function creates a single list and copy the Slist into it
@@ -476,7 +522,7 @@ node_t *cp_crt_list_item(node_t **Slist)
 /*
  * create new node
  */
-		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
+		if( (Pnode = AllocateNode(TMPSTR, Popts)) == NULL){
 			Error("Allocate");
 			return (node_t *)NULL;
 		}
@@ -500,7 +546,7 @@ node_t *cp_crt_list_item(node_t **Slist)
  */
 		TMPSTR.ndim = 0;
 		
-		if( (Pnode = AllocateNode(TMPSTR)) == NULL){
+		if( (Pnode = AllocateNode(TMPSTR,Popts)) == NULL){
 			Error("Allocate");
 			return (node_t *)NULL;
 		}
@@ -520,7 +566,7 @@ node_t *cp_crt_list_item(node_t **Slist)
 }
 
 
-int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName){
+int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
 /*
  * function realloc the existing list. Used if both source and target lists are FILE types
  *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
@@ -578,7 +624,7 @@ int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName){
 /*
  * allocate new ->data in the node
  */
-		if ( AllocateNodeData(Tlist, TMPSTR) != 0){
+		if ( AllocateNodeData(Tlist, TMPSTR,Popts) != 0){
 			Error("AllocateNodeData");
 			return -1;
 		}

@@ -1,3 +1,49 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
+
+
+
+/*
+ *     Function WriteData.c
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-06-28
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
 
  
 #include "Header.h"
@@ -36,7 +82,9 @@ int WriteData(node_t *List,  FILE *fp)
 			bzero(buff, sizeof(buff));
 			if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
 				Perror("snprintf");
-			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+			
+// 			if ( fwrite (&buff ,strlen(buff)*sizeof(char),  1 , fp ) < 1)
+ 			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
 				Perror("fwrite");
 		}
 		else

@@ -1,4 +1,41 @@
+/*
+ *     Copyright (C) 2012  Adam Jirasek
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: libm3l@gmail.com
+ * 
+ */
 
+
+
+/*
+ *     Header file Header.h
+ *
+ *     Author: Adam Jirasek
+ *     Date: 2012-07-01
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		Author			Descritpion
+ *
+ */
+
+
+
+#ifndef __HEADER_H__
+#define __HEADER_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +64,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <arpa/inet.h>
+#include <float.h>
              
 /*
  * TCP/IP communication option
@@ -34,7 +72,7 @@
 
 // #define MAXLINE  2048               /* Max length of buffer */
 #define MAXLINE  100
-#define MAX_WORD_LENGTH  260               /* Max length of word in buffer for TCP/IP   */
+#define MAX_WORD_LENGTH  260               /* Max length of word in buffer for TCP/IP, determining mainly for how many digits can be sent over */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
 
@@ -47,3 +85,6 @@
 
 #define SIZE_T size_t
 #define PTRDF_T ptrdiff_t
+
+
+#endif
