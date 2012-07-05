@@ -38,5 +38,6 @@
 #define __TCPIP_SOCKET_OP_H__
 
 int openbindlistensocket(int );
+int cli_open_socket(const char *, int );
 
 #endif

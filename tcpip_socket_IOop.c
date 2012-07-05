@@ -646,7 +646,7 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 	node_t *Gnode;
 	int socketnr;
 
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
@@ -672,7 +672,7 @@ int send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opt
  */
 	if(Popts->opt_e == 'e')
 		 ln_cleanemptylinks(&Lnode,  Popts) ;	
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
 		Error("Error during writing data to socket");
@@ -696,7 +696,7 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	if(Popts->opt_e == 'e')
 		 ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 
 	if ( write_to_socket(1, Lnode,  socketnr) < 0)
@@ -729,7 +729,7 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 	if(Popts->opt_e == 'e')			
 		ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  cli_open_socket("localhost", portnumber)) < 0)
+	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
