@@ -57,11 +57,11 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
-static int cp_list(int , node_t **, node_t **, char *, opts_t *);
-static node_t *cp_crt_list( node_t **, opts_t *);
-static node_t *cp_crt_list_item(node_t **, opts_t *);
-static int cp_recrt_list(node_t ** , node_t **, char *, opts_t *);
-static int cp_list_content(node_t **, node_t *);
+static int m3l_cp_list(int , node_t **, node_t **, char *, opts_t *);
+static node_t *m3l_cp_crt_list( node_t **, opts_t *);
+static node_t *m3l_cp_crt_list_item(node_t **, opts_t *);
+static int m3l_cp_recrt_list(node_t ** , node_t **, char *, opts_t *);
+static int m3l_cp_list_content(node_t **, node_t *);
 
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
@@ -69,7 +69,7 @@ static int cp_list_content(node_t **, node_t *);
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a caller of the cp functions
@@ -95,7 +95,7 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /* 
  * check location of sources
  */
-	if ( (SFounds = locator_caller( (*SList), s_path, s_path_loc, Popts)) == NULL){
+	if ( (SFounds = m3l_locator_caller( (*SList), s_path, s_path_loc, Popts)) == NULL){
 		Warning("Cp: NULL SFounds");
 		return 0;
 	}
@@ -121,7 +121,7 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					Warning("mv_list: can not move node to itself");
 				}
 				else{
-					if( (cp_nodes = (size_t) cp_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
+					if( (cp_nodes = (size_t) m3l_cp_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
 						Warning("problem in ln_list");
 					}
 					else{
@@ -131,14 +131,14 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 			}
 		}
 		i = SFounds->founds;
-		DestroyFound(&SFounds);
+		m3l_DestroyFound(&SFounds);
 		return i;
 	}
 	else{
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -195,7 +195,7 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					free(path);
 					free(path_loc);
 					free(newname);
-					DestroyFound(&SFounds);
+					m3l_DestroyFound(&SFounds);
 					return -1;
 				}
 				j = 0;
@@ -210,11 +210,11 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = locator_caller( *TList, path, path_loc, Popts)) == NULL){
+				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);
-					DestroyFound(&SFounds);
+					m3l_DestroyFound(&SFounds);
 					return -1;
 				}
 /*
@@ -226,8 +226,8 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					free(path);
 					free(path_loc);
 					free(newname);
-					DestroyFound(&SFounds);
-					DestroyFound(&TFounds);
+					m3l_DestroyFound(&SFounds);
+					m3l_DestroyFound(&TFounds);
 					return -1;
 				}
 	
@@ -240,7 +240,7 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 						Warning("mv_list: can not move node to itself");
 					}
 					else{
-						if( (cp_nodes = (size_t) cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
+						if( (cp_nodes = (size_t) m3l_cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
 							Warning("problem in ln_list");
 						}
 						else{
@@ -254,15 +254,15 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				free(path);
 				free(path_loc);
 				free(newname);
-				DestroyFound(&SFounds);
-				DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
 				return cp_tot_nodes;
 			}
 			else{
 /*
  * target does not exist
  */
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 		}
@@ -272,8 +272,8 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
  */
 			if(TFounds->founds != 1){
 				Warning("cp: multiple target nodes");
-				DestroyFound(&TFounds);
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 /*
@@ -281,8 +281,8 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
  */
 			if( SFounds->founds > 1 && strncmp(TFounds->Found_Nodes[0]->List->type, "DIR", 3) != 0){
 				Warning("cp: target node is not DIR");
-				DestroyFound(&TFounds);
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 			
@@ -295,7 +295,7 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					Warning("mv_list: can not move node to itself");
 				}
 				else{
-					if( (cp_nodes = (size_t) cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
+					if( (cp_nodes = (size_t) m3l_cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
 						Warning("problem in cp_list");
 					}
 					else{
@@ -304,15 +304,15 @@ size_t cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				}
 			}
 					
-			DestroyFound(&TFounds);
-			DestroyFound(&SFounds);
+			m3l_DestroyFound(&TFounds);
+			m3l_DestroyFound(&SFounds);
 			return cp_tot_nodes;
 		}
 	}
 }
 
 
-int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Popts)
+int m3l_cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Popts)
 {
 /*
  * function copies list SList to a target list TList
@@ -341,7 +341,7 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * node is not link
  */
-			if (  cp_recrt_list(TList, SList, NewName, Popts) < 1){
+			if (  m3l_cp_recrt_list(TList, SList, NewName, Popts) < 1){
 				Error("Copying list");
 				return -1;
 			}
@@ -360,14 +360,14 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 				Tmpnode->next = NULL;
 				Tmpnode->prev = NULL;
 				
-				if (  cp_recrt_list(TList, &Tmpnode, NewName, Popts) < 1){
+				if (  m3l_cp_recrt_list(TList, &Tmpnode, NewName, Popts) < 1){
 					Error("Copying list");
 					return -1;
 				}
 				Tmpnode->next = TmpnodeNext;
 				Tmpnode->prev = TmpnodePrev;
 				
-				if( AllocateLinkInfo(&((*SList)->child), TList, Popts) < 0){
+				if( m3l_AllocateLinkInfo(&((*SList)->child), TList, Popts) < 0){
 					Error("AllocateLinkInfo");
 					return -1;
 				}
@@ -376,7 +376,7 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * copy node as usual
  */
-				if (  cp_recrt_list(TList, SList, NewName, Popts) < 1){
+				if (  m3l_cp_recrt_list(TList, SList, NewName, Popts) < 1){
 					Error("Copying list");
 					return -1;
 				}	
@@ -393,7 +393,7 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * SList is DIR, traverese and copy item-by-item
  */
-			if ( (NewList = cp_crt_list(SList, Popts)) == NULL){
+			if ( (NewList = m3l_cp_crt_list(SList, Popts)) == NULL){
 				Error("Copying list");
 				return -1;
 			}
@@ -402,7 +402,7 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * Slist is FILE type, skip traversing and copy item directly
  */
-			if ( (NewList = cp_crt_list_item(SList, Popts)) == NULL){
+			if ( (NewList = m3l_cp_crt_list_item(SList, Popts)) == NULL){
 				Error("Copying list");
 				return -1;
 			}
@@ -420,14 +420,14 @@ int cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Pop
 /*
  * add a new node to the DIR list
  */
-		if ( add_list(&NewList, TList, Popts) < 0){
+		if ( m3l_add_list(&NewList, TList, Popts) < 0){
 			Warning("Error cp_list copy");
 			return -1;
 		}
 	}
 }
 
-node_t *cp_crt_list(node_t **List, opts_t *Popts)
+node_t *m3l_cp_crt_list(node_t **List, opts_t *Popts)
 {
 /*
  * function creates list. It is called if the target is DIR.
@@ -443,7 +443,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
 /*
  * if initial call, create node, per default it will be DIR
  */
-	if( (RetNode = cp_crt_list_item(List,Popts)) == NULL){
+	if( (RetNode = m3l_cp_crt_list_item(List,Popts)) == NULL){
 		Error(" cp_crt_list_item");
 		return (node_t *) NULL;
 	}
@@ -457,7 +457,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
  * List is DIR, call cp_crt_list recursivelly
  */
 		if(strncmp(Tmpnode->type, "DIR", 3) == 0){
-			if ( (NewList = cp_crt_list(&Tmpnode, Popts)) == NULL){
+			if ( (NewList = m3l_cp_crt_list(&Tmpnode, Popts)) == NULL){
 				Error("Copying list");
 				return (node_t *) NULL;
 			}
@@ -467,7 +467,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
  * list is nod DIR
  * copy content
  */
-			if ( (NewList = cp_crt_list_item(&Tmpnode, Popts)) == NULL){
+			if ( (NewList = m3l_cp_crt_list_item(&Tmpnode, Popts)) == NULL){
 				Error("Copying list");
 				return (node_t *) NULL;
 			}
@@ -475,7 +475,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
 /*
  * add list (RetNode) to parent (NewList)
  */
-			if ( add_list(&NewList, &RetNode, Popts) < 0){
+			if ( m3l_add_list(&NewList, &RetNode, Popts) < 0){
 				Warning("Error cp_list copy");
 				return (node_t *) NULL;
 			}
@@ -486,7 +486,7 @@ node_t *cp_crt_list(node_t **List, opts_t *Popts)
 	return RetNode;
 }
 
-node_t *cp_crt_list_item(node_t **Slist, opts_t *Popts)
+node_t *m3l_cp_crt_list_item(node_t **Slist, opts_t *Popts)
 {
 /*
  * function creates a single list and copy the Slist into it
@@ -522,7 +522,7 @@ node_t *cp_crt_list_item(node_t **Slist, opts_t *Popts)
 /*
  * create new node
  */
-		if( (Pnode = AllocateNode(TMPSTR, Popts)) == NULL){
+		if( (Pnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 			Error("Allocate");
 			return (node_t *)NULL;
 		}
@@ -533,7 +533,7 @@ node_t *cp_crt_list_item(node_t **Slist, opts_t *Popts)
 		free(TMPSTR.dim);
 		TMPSTR.dim = NULL;
 	
-		if( cp_list_content(&Pnode, (*Slist)) != 0){
+		if( m3l_cp_list_content(&Pnode, (*Slist)) != 0){
 			Error("cp_list_content");
 			return (node_t *)NULL;
 		}
@@ -546,7 +546,7 @@ node_t *cp_crt_list_item(node_t **Slist, opts_t *Popts)
  */
 		TMPSTR.ndim = 0;
 		
-		if( (Pnode = AllocateNode(TMPSTR,Popts)) == NULL){
+		if( (Pnode = m3l_AllocateNode(TMPSTR,Popts)) == NULL){
 			Error("Allocate");
 			return (node_t *)NULL;
 		}
@@ -554,7 +554,7 @@ node_t *cp_crt_list_item(node_t **Slist, opts_t *Popts)
 		if(strncmp((*Slist)->type, "LINK", 4) == 0){
 			Pnode->ndim = 1;
 			Pnode->child = (*Slist)->child;
-			if( AllocateLinkInfo(&(*Slist)->child, Pnode) < 0){
+			if( m3l_AllocateLinkInfo(&(*Slist)->child, Pnode) < 0){
 				Error("AllocateLinkInfo");
 				return (node_t *)NULL;
 			}
@@ -566,7 +566,7 @@ node_t *cp_crt_list_item(node_t **Slist, opts_t *Popts)
 }
 
 
-int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
+int m3l_cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
 /*
  * function realloc the existing list. Used if both source and target lists are FILE types
  *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
@@ -616,7 +616,7 @@ int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
  * re-create Tlist node
  * first - free existing data set
  */
-			if ( Free_data_str(Tlist) != 0){
+			if ( m3l_Free_data_str(Tlist) != 0){
 				Error("Free_data_str");
 				return -1;
 			}
@@ -624,7 +624,7 @@ int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
 /*
  * allocate new ->data in the node
  */
-		if ( AllocateNodeData(Tlist, TMPSTR,Popts) != 0){
+		if ( m3l_AllocateNodeData(Tlist, TMPSTR,Popts) != 0){
 			Error("AllocateNodeData");
 			return -1;
 		}
@@ -635,7 +635,7 @@ int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
  * copy data to new node_t
  */
 		if(strncmp((*Slist)->type, "LINK", 4) != 0){
-			if( cp_list_content(Tlist, (*Slist)) != 0)
+			if( m3l_cp_list_content(Tlist, (*Slist)) != 0)
 				Error("cp_list_content");
 		}
 		else{
@@ -643,7 +643,7 @@ int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
  * list is LINK, copy address of source child to target child
  */
 			(*Tlist)->child = (*Slist)->child;
-			if( AllocateLinkInfo(Slist, (*Tlist)) < 0){
+			if( m3l_AllocateLinkInfo(Slist, (*Tlist)) < 0){
 				Error("AllocateLinkInfo");
 				return -1;
 			}
@@ -660,9 +660,9 @@ int cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
 	return 1;
 }
 
+	
 
-
-int cp_list_content(node_t **Pnode, node_t *Slist)
+int m3l_cp_list_content(node_t **Pnode, node_t *Slist)
 {
 /*
  * fuction copies content of the list ie.

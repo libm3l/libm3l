@@ -37,10 +37,10 @@
 #ifndef  __FREE_H__
 #define  __FREE_H__
 
-int Free(node_t **);
-int Free_data_str(node_t **);
+extern int m3l_Free(node_t **);
+extern int m3l_Free_data_str(node_t **);
 
-node_t *AllocateNode(tmpstruct_t, opts_t *);
-int AllocateNodeData(node_t **, tmpstruct_t, opts_t *);
+extern node_t *m3l_AllocateNode(tmpstruct_t, opts_t *);
+extern int m3l_AllocateNodeData(node_t **, tmpstruct_t, opts_t *);
 
 #endif

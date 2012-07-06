@@ -54,7 +54,7 @@
 #include "udf_rm.h"
 
 
-int Free(node_t **Lnode)
+int m3l_Free(node_t **Lnode)
 {
 /*
  * NOTE: This routine would not need to be necessarily written 
@@ -64,7 +64,7 @@ int Free(node_t **Lnode)
  */
 	size_t i;
 	
-	if( Free_data_str(Lnode) != 0)
+	if( m3l_Free_data_str(Lnode) != 0)
 		Perror("Free_data_str");
 
 	if((*Lnode)->type != NULL) {
@@ -98,7 +98,7 @@ int Free(node_t **Lnode)
 
 
 
-int Free_data_str(node_t **Lnode)
+int m3l_Free_data_str(node_t **Lnode)
 {
 	if(strncmp((*Lnode)->type,"DIR",3) != 0 && strncmp((*Lnode)->type,"LINK",4) != 0 ){
  /*
@@ -195,7 +195,7 @@ int Free_data_str(node_t **Lnode)
 }
 
 
-node_t *AllocateNode(tmpstruct_t TMPSTR, opts_t *Popt){
+node_t *m3l_AllocateNode(tmpstruct_t TMPSTR, opts_t *Popt){
 /*
  * function allocates node 
  *
@@ -240,14 +240,14 @@ node_t *AllocateNode(tmpstruct_t TMPSTR, opts_t *Popt){
  * if not DIR type, allocate field
  */
 	if(strncmp(TMPSTR.Type,"DIR",3) != 0 && strncmp(TMPSTR.Type,"LINK",4) != 0 ){
-		if( AllocateNodeData(&Lnode, TMPSTR, Popt) != 0)
+		if( m3l_AllocateNodeData(&Lnode, TMPSTR, Popt) != 0)
 			Error("AllocateNodeData");
 	}
 	return Lnode;
 }
 
 
-int AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
+int m3l_AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 {
  /*
   * get the total size of field if multidimensional 

@@ -59,7 +59,7 @@ static int verbose_flag;
 /*
  * routine finds the list
  */
-find_t *Find(node_t *List, char * Options, ...)
+find_t *m3l_Find(node_t *List, char * Options, ...)
 {
 	
 	find_t *Founds;
@@ -280,7 +280,7 @@ find_t *Find(node_t *List, char * Options, ...)
  * this function returns back found_t **pointer which has "founds" number of items
  * do not forget to free it when you do not need it
  */
-	if ( (Founds = Find_caller(2, List, search_term, Popts)) == NULL){
+	if ( (Founds = m3l_Find_caller(2, List, search_term, Popts)) == NULL){
 		free(search_term);
 		return (find_t *)NULL;
 	}
@@ -293,10 +293,10 @@ find_t *Find(node_t *List, char * Options, ...)
 		for (i=1; i< Founds->founds; i++){
 			printf("Name of found subset is --- pointer is %p\n", Founds->Found_Nodes[i]->List);
 			
-			if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+			if( (node_path = m3l_Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
 				printf(" Path is %s \n", node_path);
 			
-				if( (parsed_path = parse_path(node_path)) == NULL){
+				if( (parsed_path = m3l_parse_path(node_path)) == NULL){
 					Error("Error in path");
 					return (find_t *)NULL;
 				}
@@ -305,7 +305,7 @@ find_t *Find(node_t *List, char * Options, ...)
 					printf("--%s-- ", parsed_path->path[j]);
 				printf("\n");
 											
-				destroy_pars_path(&parsed_path);
+				m3l_destroy_pars_path(&parsed_path);
 				free(node_path);
  			}
 			

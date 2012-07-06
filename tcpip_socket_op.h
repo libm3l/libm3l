@@ -37,7 +37,7 @@
 #ifndef __TCPIP_SOCKET_OP_H__
 #define __TCPIP_SOCKET_OP_H__
 
-int openbindlistensocket(int );
-int cli_open_socket(const char *, int );
+extern int m3l_server_openbindlistensocket(int );
+extern int m3l_cli_open_socket(const char *, int );
 
 #endif

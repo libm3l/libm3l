@@ -53,10 +53,10 @@
 #include "find_list.h"
 #include "FunctionsPrt.h"
 
-static size_t FindList(int, node_t *, char *, opts_t *);
-static AddRecord(node_t *);
-static unsigned char CompStatement(char *, char *, char *, opts_t *);
-static unsigned char EvalSearchPatt(char *, char *, opts_t *);
+static size_t m3l_FindList(int, node_t *, char *, opts_t *);
+static m3l_AddRecord(node_t *);
+static unsigned char m3l_CompStatement(char *, char *, char *, opts_t *);
+static unsigned char m3l_EvalSearchPatt(char *, char *, opts_t *);
 
 
 size_t nalloc;
@@ -68,7 +68,7 @@ find_t *Founds;
  * decalred above
  */
 
-find_t *Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
+find_t *m3l_Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
 {
 /*
  * allocate find_t pointer and first element
@@ -86,7 +86,7 @@ find_t *Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
 		Perror("malloc");
 	
 	Founds->founds = 0;
-	Founds->founds = FindList(call, List, search_term, Popt);
+	Founds->founds = m3l_FindList(call, List, search_term, Popt);
 	
 	if ( Founds->founds == 0){
 		free(Founds->Found_Nodes[0]);
@@ -106,7 +106,7 @@ find_t *Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
 /*
  * function is a pointer to pointer type 
  */
-size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
+size_t m3l_FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 {
 /*
  * function looks for items with given pattern and option
@@ -135,8 +135,8 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
  * loop over next nodes
  */
 			Tmpnode = List;
-			if ( CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
-				if ( AddRecord(Tmpnode) != 1)
+			if ( m3l_CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
+				if ( m3l_AddRecord(Tmpnode) != 1)
 				Warning("Error adding record to the list");
 			}
 		}
@@ -149,8 +149,8 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 /*
  * not initial call, ie. do not list the main parent node, you want to list what is in it
  */
-				if ( CompStatement(search_term, List->name, List->type, Popt) == '1'){
-					if ( AddRecord(List) != 1)
+				if ( m3l_CompStatement(search_term, List->name, List->type, Popt) == '1'){
+					if ( m3l_AddRecord(List) != 1)
 						Warning("Error adding record to the list");	
 				}
 			}
@@ -160,10 +160,10 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){
 				if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popt->opt_L == 'L'){
-					FindList(2, Tmpnode->child, search_term, Popt);
+					m3l_FindList(2, Tmpnode->child, search_term, Popt);
 				}
 				else{
-					FindList(2, Tmpnode, search_term, Popt);
+					m3l_FindList(2, Tmpnode, search_term, Popt);
 				}
 				Tmpnode = Tmpnode->next;
 			}
@@ -180,8 +180,8 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 /*
  * if initial call, do not list the main parent node, you want to list what is in it
  */
-			if ( CompStatement(search_term, List->name, List->type, Popt) == '1'){
-				if ( AddRecord(List) != 1)
+			if ( m3l_CompStatement(search_term, List->name, List->type, Popt) == '1'){
+				if ( m3l_AddRecord(List) != 1)
 					Warning("Error adding record to the list");	
 			}
 		}
@@ -195,8 +195,8 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 /*
  * List first one
  */
-				if ( CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
-					if ( AddRecord(Tmpnode) != 1)
+				if ( m3l_CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
+					if ( m3l_AddRecord(Tmpnode) != 1)
 						Warning("Error adding record to the list");
 				}
 /*
@@ -210,7 +210,7 @@ size_t FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 }
 
 
-int AddRecord(node_t *Tmpnode)
+int m3l_AddRecord(node_t *Tmpnode)
 {
 /*
  * function adds new record (*Tmpnode) to list of found records - Found_Nodes
@@ -250,9 +250,9 @@ int AddRecord(node_t *Tmpnode)
  * compares statements with options
  */
 
-unsigned char CompStatement(char *search_term, char *pattern, char *type, opts_t *Popts)
+unsigned char m3l_CompStatement(char *search_term, char *pattern, char *type, opts_t *Popts)
 {
-	if ( EvalSearchPatt(search_term, pattern, Popts) == '1'){
+	if ( m3l_EvalSearchPatt(search_term, pattern, Popts) == '1'){
 /*
  * patterns are identical
  * check if additional otpions are required
@@ -302,7 +302,7 @@ unsigned char CompStatement(char *search_term, char *pattern, char *type, opts_t
 	return '0';
 }
 
-unsigned char  EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
+unsigned char  m3l_EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
 {
 
 	char *Ppattern;
@@ -352,7 +352,7 @@ unsigned char  EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
 
 
 
-void DestroyFound(find_t **Founds)
+void m3l_DestroyFound(find_t **Founds)
 {
 /*
  * function destroys filed allocted by function Find_caller

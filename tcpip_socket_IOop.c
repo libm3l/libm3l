@@ -55,15 +55,15 @@
 #include "ReadSocket.h"
 #include "ln_list.h"
 
-static int send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
-static node_t *send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
-static node_t *receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
-static node_t *receive_tcpipsocket(const char *, int, opts_t *);
+static int m3l_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
+static node_t *m3l_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
+static node_t *m3l_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
+static node_t *m3l_receive_tcpipsocket(const char *, int, opts_t *);
 
 /*
  * routine Links Slist to Tlist
  */
-int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
+int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
 
 	node_t *List;
 	char *word, **opt;
@@ -195,7 +195,7 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
  */
 	Popts = &opts;
 	
- 	if( send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
+ 	if( m3l_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
 		return -1;
 	}
 	else{
@@ -208,7 +208,7 @@ int Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, cha
 /*
  * routine Links Slist to Tlist
  */
-node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -341,7 +341,7 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  */
 	Popts = &opts;
 	
- 	if( (List = send_receive_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
+ 	if( (List = m3l_send_receive_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -354,7 +354,7 @@ node_t *Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 /*
  * routine Links Slist to Tlist
  */
-node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -487,7 +487,7 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  */
 	Popts = &opts;
 	
- 	if( (List = receive_send_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
+ 	if( (List =m3l_receive_send_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -496,7 +496,7 @@ node_t *Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 }
 
 
-node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -629,7 +629,7 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
  */
 	Popts = &opts;
 	
- 	if( (List = receive_tcpipsocket(hostname, portnumber, Popts)) == NULL){
+ 	if( (List = m3l_receive_tcpipsocket(hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -641,14 +641,14 @@ node_t *Receive_tcpipsocket(const char *hostname, int portnumber, char * Options
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 {
 	node_t *Gnode;
 	int socketnr;
 
-	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
+	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
-	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
+	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -656,7 +656,7 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanemptylinks(&Gnode,  Popts) ;
+		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -664,17 +664,17 @@ node_t *receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 /*
  * function opens socket, writes data to it and close the socket
  */
-int send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	int socketnr;
 /*
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanemptylinks(&Lnode,  Popts) ;	
-	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
+		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;	
+	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
-	if ( write_to_socket(1, Lnode,  socketnr) < 0)
+	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
 		Error("Error during writing data to socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -684,7 +684,7 @@ int send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opt
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	
 	
@@ -694,14 +694,14 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanemptylinks(&Lnode,  Popts) ;
+		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
+	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 
-	if ( write_to_socket(1, Lnode,  socketnr) < 0)
+	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
 		Error("Error during writing data to socket");
-	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
+	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -709,7 +709,7 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanemptylinks(&Gnode,  Popts) ;
+		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
 }
@@ -717,7 +717,7 @@ node_t *send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
 /*
  * function opens socket, reads data from it , writes data to it and close the socket
  */
-node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	
 	
@@ -727,14 +727,14 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')			
-		ln_cleanemptylinks(&Lnode,  Popts) ;
+		m3l_ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  cli_open_socket(hostname, portnumber)) < 0)
+	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
-	if( (Gnode = read_socket(socketnr, Popts)) == NULL)
+	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 
-	if ( write_to_socket(1, Lnode,  socketnr) < 0)
+	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
 		Error("Error during writing data to socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -743,7 +743,7 @@ node_t *receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnu
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanemptylinks(&Gnode,  Popts) ;
+		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 
 	
 	return Gnode;

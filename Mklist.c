@@ -60,7 +60,7 @@ static int verbose_flag;
 /*
  * routine Links Slist to Tlist
  */
-node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, node_t **WTAList, const char *t_path, const char *t_path_loc, char * Options, ...)
+node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim, node_t **WTAList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 	node_t *List;
 	char *word, **opt;
@@ -248,7 +248,7 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  /*
  * two ways of allocating pointer - through reference pointer or as a function returning pointer
  */	
-	if( (List = AllocateNode(TMPSTR, Popts)) == NULL){
+	if( (List = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 		return (node_t *) NULL;
 	}
@@ -258,11 +258,11 @@ node_t *Mklist(const char *name, const char *type, size_t ndim, size_t *dim, nod
  */
 	if( WTAList != NULL){
 		
-		if( add_caller(&List, WTAList, t_path, t_path_loc, Popts) < 0){
+		if( m3l_add_caller(&List, WTAList, t_path, t_path_loc, Popts) < 0){
 /*
  * list could not be added, remove list and give warning
  */
-			if( rm_list(2, &List, Popts) < 0){
+			if( m3l_rm_list(2, &List, Popts) < 0){
 				Error("Unable to unmount node \n");
 				return (node_t *) NULL;
 			}

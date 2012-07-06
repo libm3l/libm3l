@@ -40,7 +40,7 @@
  * used in WriteData and Write2Socket
  */
 #define FCS_W_LD(A,B)   snprintf(buff, MAX_WORD_LENGTH,"%Lf%c", A, B)
-#define FCS_W_D(A,B)    snprintf(buff, MAX_WORD_LENGTH,"%lf%c", A, B)
+#define FCS_W_D(A,B)    snprintf(buff, MAX_WORD_LENGTH,"%.16lf%c", A, B)
 #define FCS_W_F(A,B)    snprintf(buff, MAX_WORD_LENGTH,"%f%c",  A, B)
 
 #define FCS_W_ULLI(A,B) snprintf(buff, MAX_WORD_LENGTH,"%lld%c", A, B)
@@ -62,7 +62,7 @@
  */
 
 #define FCS_C_LD(A)   if( printf("%Lf ", A ) < 0) Perror("printf");
-#define FCS_C_D(A)    if( printf("%lf ", A ) < 0) Perror("printf");
+#define FCS_C_D(A)    if( printf("%.16lf ", A ) < 0) Perror("printf");
 #define FCS_C_F(A)    if( printf("%f ",  A ) < 0) Perror("printf");
 
 #define FCS_C_ULLI(A) if( printf("%lld ", A ) < 0) Perror("printf");

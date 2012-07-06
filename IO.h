@@ -37,7 +37,7 @@
 #ifndef __FREAD_H__
 #define __FREAD_H__
 
-node_t *Fread(const char *, char * , ...);
-int Fwrite(node_t *, const char *, char * , ...);
+node_t *m3l_Fread(const char *, char * , ...);
+int m3l_Fwrite(node_t *, const char *, char * , ...);
 
 #endif

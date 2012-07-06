@@ -111,25 +111,25 @@ int main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
- 		if( (Gnode = Fread("ADA1" , "--clean_empy_links", (char *)NULL))  == NULL)
- 			Perror("Linked_test: Fread");
+ 		if( (Gnode = m3l_Fread("ADA1" , "--clean_empy_links", (char *)NULL))  == NULL)
+ 			Perror("Linked_test: m3l_Fread");
 		
-// 		Fwrite(Gnode, "ADA", (char *)NULL);
+// 		m3l_Fwrite(Gnode, "ADA", (char *)NULL);
 // 		printf("\n\n\n\n");
 // 		exit(0);
 
 		
-		if(Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
+		if(m3l_Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
  	                   Error("CatData");
 					
 		printf("\n\n\n\n");
 		
- 		if( (Anode = Fread("TEST.dat", (char *)NULL))  == NULL)
- 			Perror("Linked_test: Fread");	
-//  		if( (Anode = Fread("ADA_EMPTYLINK"))  == NULL)
-//  			Perror("Linked_test: Fread");	
+ 		if( (Anode = m3l_Fread("TEST.dat", (char *)NULL))  == NULL)
+ 			Perror("Linked_test: m3l_Fread");	
+//  		if( (Anode = m3l_Fread("ADA_EMPTYLINK"))  == NULL)
+//  			Perror("Linked_test: m3l_Fread");	
 
- 		if(Cat(Anode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
+ 		if(m3l_Cat(Anode, "--all", "-P", "-L", "--links", "*", (char *)NULL) != 0)
  	                   Error("CatData");
 // exit(0);
 	
@@ -148,7 +148,7 @@ int main(void)
 		
 // 		printf("printing received node RECNODE \n\n ");
 		
-// 		 if(Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 		 if(m3l_Cat(RecNode, "--recursive", "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 	    	Error("CatData");
 		
 // // 		
@@ -161,7 +161,7 @@ int main(void)
 // 		
 // 		printf(" Looking for data set\n");
 // 		
-// 		if( ( Founds = Find(Gnode, "--recursive" ,"BBB_DATA_DADA", (char *)NULL)) == NULL){
+// 		if( ( Founds = m3l_Find(Gnode, "--recursive" ,"BBB_DATA_DADA", (char *)NULL)) == NULL){
 // 
 // 			printf("No subset found\n"); exit(0);
 // 			}
@@ -171,23 +171,23 @@ int main(void)
 // 			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 // 			}
 // 
-// 		DestroyFound(&Founds);
+// 		m3l_DestroyFound(&Founds);
 // 
 // 		}
 // 			
 // 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
 // // 
 // // 
-// 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 		if(m3l_Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 	                   Error("CatData");
 // 						
 // 		
-// 		if(Umount(&Gnode) != 1)
-//                   Perror("Umount");
+// 		if(m3l_Umount(&Gnode) != 1)
+//                   Perror("m3l_Umount");
 // 		
 // 		exit(0);
-// // 		if(Umount(&RecNode) != 1)
-// //                   Perror("Umount");
+// // 		if(m3l_Umount(&RecNode) != 1)
+// //                   Perror("m3l_Umount");
 // 				
 // 	}
 // 		
@@ -196,26 +196,26 @@ int main(void)
 
 				
 // 		printf("Going to locate %p\n", Gnode);
-// 		if( (Founds = Locate(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
-// 		if( (Founds = Locate(Gnode, "./grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+// 		if( (Founds = m3l_Locate(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+// 		if( (Founds = m3l_Locate(Gnode, "./grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
 
-//  		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
-//  		if( (Founds = Locate(Gnode, "/main/grid1/*", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
-// //  		if( (Founds = Locate(Gnode, "/main/*/boundary", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
-//  		if( (Founds = Locate(Gnode, "/*/*", "/*/*", "--ignore", (char *)NULL)) != NULL){
+//  		if( (Founds = m3l_Locate(Gnode, "/main/grid1/*", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
+//  		if( (Founds = m3l_Locate(Gnode, "/main/grid1/*", "/*/SV_name_of_grid=CFD_grid/*", "--ignore", (char *)NULL)) != NULL){
+// //  		if( (Founds = m3l_Locate(Gnode, "/main/*/boundary", "/*/*/*", "--ignore", (char *)NULL)) != NULL){
+//  		if( (Founds = m3l_Locate(Gnode, "/*/*", "/*/*", "--ignore", (char *)NULL)) != NULL){
 			
 // 			for(i=0; i < Founds->founds; i++){
 // 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 // 
-// 				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
-// 					printf(" Path is %s \n", node_path);
+// 				if( (node_path = m3l_Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+// 					printf(" m3l_Path is %s \n", node_path);
 // 					free(node_path);
 // 				}
 // 				
-// 				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 				 if(m3l_Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 					Error("CatData");
 // 			}
-// 		DestroyFound(&Founds);
+// 		m3l_DestroyFound(&Founds);
 // 		}
 // 		else
 // 		{
@@ -227,20 +227,20 @@ int main(void)
 // 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/n=2",  "--keepheadnode", (char *)NULL) );
 
 			   
-//  		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
-//  		Cp(Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CFD_grid/n=1/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
-//  		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/n=2", &Gnode, "/main/ADA", "/*/*", (char *)NULL);   
-//     		Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3/BBDD_NEWName", "/*/*/*", (char *)NULL);
-// 		Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/grid1/GRID_grid1", "/*/SV_name_of_grid=CFD_grid/*", (char *)NULL);   /* rename node */
-// 		Cp(Gnode, "/main/grid1/name_of_grid", "/*/SV_name_of_grid=CSM_grid/N=name_of_grid", &Gnode, "/main/grid1/name_GRID_grid1", "/*/SV_name_of_grid=CSM_grid/*", (char *)NULL); 
-// 		Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/ADD_grid1", "/*/*", (char *)NULL);   /* rename node */
-// 		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
-// 		Cp(Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/BouNdaRy", "/*/n=1/n=1/*", (char *)NULL); 
-		Cp(&Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./", (char *)NULL); 
-//   		Cp(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+//  		m3l_Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
+//  		m3l_Cp(Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CFD_grid/n=1/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
+//  		m3l_Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/n=2", &Gnode, "/main/ADA", "/*/*", (char *)NULL);   
+//     		m3l_Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3/BBDD_NEWName", "/*/*/*", (char *)NULL);
+// 		m3l_Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/grid1/GRID_grid1", "/*/SV_name_of_grid=CFD_grid/*", (char *)NULL);   /* rename node */
+// 		m3l_Cp(Gnode, "/main/grid1/name_of_grid", "/*/SV_name_of_grid=CSM_grid/N=name_of_grid", &Gnode, "/main/grid1/name_GRID_grid1", "/*/SV_name_of_grid=CSM_grid/*", (char *)NULL); 
+// 		m3l_Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/ADD_grid1", "/*/*", (char *)NULL);   /* rename node */
+// 		m3l_Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
+// 		m3l_Cp(Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/BouNdaRy", "/*/n=1/n=1/*", (char *)NULL); 
+		m3l_Cp(&Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./", (char *)NULL); 
+//   		m3l_Cp(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
 				   
-//   		Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "/main", "/*", (char *)NULL);   
+//   		m3l_Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "/main", "/*", (char *)NULL);   
 
 
 //  		Mv(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL);   /* rename node */
@@ -249,93 +249,93 @@ int main(void)
 // 		Mv(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/name_new", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
 
-//  		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=2/n=1", (char *)NULL);   /* rename node */
-//   		Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
-//  		Ln(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
-  		Ln(&Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNewLINK", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+//  		m3l_Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=2/n=1", (char *)NULL);   /* rename node */
+//   		m3l_Ln(&Gnode, "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+//  		m3l_Ln(&Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/n=1", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
+  		m3l_Ln(&Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNewLINK", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
-// 		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+// 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 // 			Error("CatData");
 		
 		printf(" \n\n\n Copying link \n\n\n");
-		Cp(&Gnode, "/main/grid1/boundary/typeNewLINK", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL); 
-// 		Cp(Gnode, "/main/grid1/boundary/typeNewLINK", "/*/SV_name_of_grid=CSM_grid/n=1/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL); 
+		m3l_Cp(&Gnode, "/main/grid1/boundary/typeNewLINK", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL); 
+// 		m3l_Cp(Gnode, "/main/grid1/boundary/typeNewLINK", "/*/SV_name_of_grid=CSM_grid/n=1/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL); 
 
-		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 		
 		
-		if( (Founds = Locate(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", "--ignore", (char *)NULL)) != NULL){
+		if( (Founds = m3l_Locate(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", "--ignore", (char *)NULL)) != NULL){
 			
 			for(i=0; i < Founds->founds; i++){
 				printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 
-				if( (node_path = Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
-					printf(" Path is %s \n", node_path);
+				if( (node_path = m3l_Path(Founds->Found_Nodes[i]->List, NULL)) != NULL){
+					printf(" m3l_Path is %s \n", node_path);
 					free(node_path);
 				}
 				
-				 if(Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+				 if(m3l_Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 					Error("CatData");
 				 
 				 printf("Number of links is %d\n", Founds->Found_Nodes[i]->List->lcounter);
 				 for(j=0; j < Founds->Found_Nodes[i]->List->lcounter; j++)
 					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]->List);
 			}
-		DestroyFound(&Founds);
+		m3l_DestroyFound(&Founds);
 		}
 		else
 		{
 			printf(" No founds\n");
 		}
 		
-		Fwrite(Gnode, "ADA", (char *)NULL);
+		m3l_Fwrite(Gnode, "ADA", (char *)NULL);
 		printf("\n\n\n\n");
 
-// 		 if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 		 if(m3l_Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 //  	                   Error("CatData");
 // 		
 // 		printf("\n\n\n\n");
 		
 // 		printf("\n\n\n\n");
-// 		if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+// 		if(m3l_Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 // 			Error("CatData");
 // 		
 
-		if(Umount(&Anode) != 1)
-			Perror("Umount");
+		if(m3l_Umount(&Anode) != 1)
+			Perror("m3l_Umount");
 		
 // 		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "--clean_empty_refs_to_links", "/*", (char *)NULL) );
 		
 		
-		if(Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+		if(m3l_Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 //  	                   Error("CatData");
 // 			   exit(0);
 
-		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
-		Fwrite(Gnode, "ADA_EMPTYLINK", (char *)NULL);
+		m3l_Fwrite(Gnode, "ADA_EMPTYLINK", (char *)NULL);
 		printf("\n\n\n\n");
 		
 // 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (char *)NULL);
 
 // 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
-		printf(" Number of empty links is %ld \n", Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (char *)NULL));	
-		printf(" Number of empty links is %ld \n", Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (char *)NULL));	
+		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (char *)NULL));	
+		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (char *)NULL));	
 		
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
 
 
 		dim = (size_t *) malloc( 1* sizeof(size_t));
 		dim[0] = 10;
-// 		if(  (NewList = Mklist("MADE_LIST", "I", 1, dim, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
-	 	if(  (NewList = Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main", "./", (char *)NULL)) == 0)
+// 		if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
+	 	if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main", "./", (char *)NULL)) == 0)
 			Error("Mklist");
 		free(dim);
 		for (i=0; i<10; i++)
  			NewList->data.i[i]=2*i;
 
- 		if(Cat(NewList,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+ 		if(m3l_Cat(NewList,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
  			Error("CatData");
 		
 // 		Add(&NewList, &Gnode, "/main/grid3", "/*/*", (char *)NULL);
@@ -348,23 +348,23 @@ int main(void)
 		for (i=0; i<5; i++)
  			ada[i]=3*i;
 		
-		if(  (NewList = Mklist("MADE_LIST_ADA", "I", 1, dim, &Gnode, "/main", "./", "--no_malloc", (char *)NULL)) == 0)
+		if(  (NewList = m3l_Mklist("MADE_LIST_ADA", "I", 1, dim, &Gnode, "/main", "./", "--no_malloc", (char *)NULL)) == 0)
 			Error("Mklist");
 		free(dim);
 // 		for (i=0; i<5; i++)
 //  			NewList->data.i[i]=2*i;
  		NewList->data.i = ada;
 		
-		if(Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 
-		if(Umount(&Gnode) != 1)
-			Perror("Umount");
+		if(m3l_Umount(&Gnode) != 1)
+			Perror("m3l_Umount");
 		
 // 		free(ada);
 		
-// 		if(Umount(&Anode) != 1)
-// 			Perror("Umount");	
+// 		if(m3l_Umount(&Anode) != 1)
+// 			Perror("m3l_Umount");	
 		
 	}
 		
@@ -378,12 +378,12 @@ int main(void)
 // 		
 	   
 	   
-/*	   if( Fwrite(Gnode,  "ADA_TEST") != 0)
-		   Perror("Lin*ked_test: Fwrite");
+/*	   if( m3l_Fwrite(Gnode,  "ADA_TEST") != 0)
+		   Perror("Lin*ked_test: m3l_Fwrite");
 		   */
 	   
-// 	     if( ( Found_Nodes = Find(Gnode, , "--recursive" ,"Belonging_to_ADDDATA", (char *)NULL)) == NULL){
-  		if( ( Founds = Find(Gnode,  "--recursive" ,"boundary", (char *)NULL)) == NULL){
+// 	     if( ( Found_Nodes = m3l_Find(Gnode, , "--recursive" ,"Belonging_to_ADDDATA", (char *)NULL)) == NULL){
+  		if( ( Founds = m3l_Find(Gnode,  "--recursive" ,"boundary", (char *)NULL)) == NULL){
 
 			printf("No subset found\n"); exit(0);
 		}
@@ -393,20 +393,20 @@ int main(void)
 			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
 			}
 	
-		DestroyFound(&Founds);
+		m3l_DestroyFound(&Founds);
 
 		}
 		
 		
 		
 		printf(" cut data\n");
-		if(Cat(Gnode, "--recursive", "-D", "-P", "BBB_DATA_DADA", (char *)NULL) != 0)
+		if(m3l_Cat(Gnode, "--recursive", "-D", "-P", "BBB_DATA_DADA", (char *)NULL) != 0)
 			Error("CatData");
 		printf("\n\n\n");
 
 	   
 	   printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
-	   if(Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+	   if(m3l_Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
 	   
 	   
@@ -415,8 +415,8 @@ int main(void)
 		close(socketnr);
 	   
 	   
-	   if(Umount(&Gnode) != 1)
-                  Perror("Umount");
+	   if(m3l_Umount(&Gnode) != 1)
+                  Perror("m3l_Umount");
   	exit(0);
 	   
 // 	}
@@ -431,7 +431,7 @@ int main(void)
 	    printf("\n\n\n Umounting \n\n\n");
 
 	    printf("Number of removed nodes is %ld\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (char *)NULL) );
-//	    if(Cat(RecNode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
+//	    if(m3l_Cat(RecNode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 	                   Error("CatData");
 	    
 	    
@@ -442,10 +442,10 @@ int main(void)
 	      close(socketnr);
 */
 
-	if(Umount(&Gnode) != 1)
-                  Perror("Umount");
-	if(Umount(&RecNode) != 1)
-                  Perror("Umount");
+	if(m3l_Umount(&Gnode) != 1)
+                  Perror("m3l_Umount");
+	if(m3l_Umount(&RecNode) != 1)
+                  Perror("m3l_Umount");
     
 //	}    
     exit(0);
@@ -457,8 +457,8 @@ int main(void)
 /*
  * loop over list and print it
  */
-	   printf("\n\n\n Cat \n\n\n");
-   if(Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
+	   printf("\n\n\n m3l_Cat \n\n\n");
+   if(m3l_Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
 	    	Error("CatData");
 	printf("\n\n\n");
    
@@ -467,15 +467,15 @@ int main(void)
 	}
 
 
-      if(Umount(&Gnode) != 1)
-                  Perror("Umount");
+      if(m3l_Umount(&Gnode) != 1)
+                  Perror("m3l_Umount");
 
 
  //  }
    
    
-   	   printf("\n\n\n Cat \n\n\n");
-   if(Cat(Gnode, "--recursive", "-D", "-P", "BBB_DATA_DADA", (char *)NULL) != 0)
+   	   printf("\n\n\n m3l_Cat \n\n\n");
+   if(m3l_Cat(Gnode, "--recursive", "-D", "-P", "BBB_DATA_DADA", (char *)NULL) != 0)
 	    	Error("CatData");
 	printf("\n\n\n");
 
@@ -484,7 +484,7 @@ int main(void)
  */	  
 	 printf("Looking for Additional_direcotry node\n");
 
-   if( ( Founds = Find(Gnode, "Additional_directory", (char *)NULL)) == NULL){
+   if( ( Founds = m3l_Find(Gnode, "Additional_directory", (char *)NULL)) == NULL){
 
 	   printf("No subset found\n"); exit(0);
    }
@@ -496,9 +496,9 @@ int main(void)
    }
    
    
-   	 printf("Cat Additional_direcotry node\n");
+   	 printf("m3l_Cat Additional_direcotry node\n");
 
-        if(Cat(Founds->Found_Nodes[0]->List, "-D", "-P", "-L","*", (char *)NULL) != 0)
+        if(m3l_Cat(Founds->Found_Nodes[0]->List, "-D", "-P", "-L","*", (char *)NULL) != 0)
 	    	Error("CatData");
 	
 	printf("writing to socklet\n");
@@ -515,23 +515,23 @@ int main(void)
 
 	printf("Number of removed nodes is %ld\n", Rm(&Founds->Found_Nodes[0]->List , "--recursive" , "*", (char *)NULL) );
 	
-//	if(Cat(Found_Nodes[0]->List, "-d", "-P", "*", (char *)NULL) != 0)
+//	if(m3l_Cat(Found_Nodes[0]->List, "-d", "-P", "*", (char *)NULL) != 0)
 //	    	Error("CatData");
 
         printf("Freeing memory - number of founds is %ld\n", Founds->founds);
    
-	DestroyFound(&Founds);
+	m3l_DestroyFound(&Founds);
 
    
-	printf("\n\n\n Cat \n\n\n");
-	if(Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
+	printf("\n\n\n m3l_Cat \n\n\n");
+	if(m3l_Cat(Gnode, "-D", "-P", "-L", "*", (char *)NULL) != 0)
 	Error("CatData");
   
   
     printf("\n\n\nRemoving nodes Master head node\n\n\n");
 
-    if(Umount(&Gnode) != 1)
-	    Perror("Umount");
+    if(m3l_Umount(&Gnode) != 1)
+	    Perror("m3l_Umount");
     
     printf("\n %p", Gnode);
 	

@@ -60,7 +60,7 @@ static int verbose_flag;
 /*
  * Adds Slist to specified location in Tlist
  */
-int Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+int m3l_Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 	char *word, **opt;
 	opts_t *Popts, opts;
@@ -207,7 +207,7 @@ int Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_l
  */
 	Popts = &opts;
 	
- 	addlist = add_caller(SList, TList, t_path, t_path_loc, Popts);
+ 	addlist = m3l_add_caller(SList, TList, t_path, t_path_loc, Popts);
 
 	return addlist;
 }

@@ -55,13 +55,13 @@
 #include "WriteData.h"
 #include "ln_list.h"
 
-static node_t *Read_list(const char *, opts_t *);
-static int Write_list(node_t *, const char *, opts_t *);
+static node_t *m3l_Read_list(const char *, opts_t *);
+static int m3l_Write_list(node_t *, const char *, opts_t *);
 
 /*
  * routine Links Slist to Tlist
  */
-node_t *Fread(const char *name, char * Options, ...)
+node_t *m3l_Fread(const char *name, char * Options, ...)
 {
 
 	node_t *List;
@@ -194,7 +194,7 @@ node_t *Fread(const char *name, char * Options, ...)
  */
 	Popts = &opts;
 	
- 	if( (List = Read_list(name, Popts)) == NULL){
+ 	if( (List = m3l_Read_list(name, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -205,7 +205,7 @@ node_t *Fread(const char *name, char * Options, ...)
 /*
  * function reads file and allocates structure
  */
-node_t *Read_list(const char *name, opts_t *Popts)
+node_t *m3l_Read_list(const char *name, opts_t *Popts)
 {
 	FILE *fp;
 	node_t *Lnode;
@@ -217,7 +217,7 @@ node_t *Read_list(const char *name, opts_t *Popts)
 	if ( (fp = fopen(name,"r")) == NULL)
 		Perror("fopen");
 
-	if( (Lnode = read_file(fp, Popts)) == NULL)
+	if( (Lnode = m3l_read_file(fp, Popts)) == NULL)
 		Perror("read_file");
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop
@@ -228,7 +228,7 @@ node_t *Read_list(const char *name, opts_t *Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanemptylinks(&Lnode,  Popts) ;
+		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	return Lnode;
 }
@@ -240,7 +240,7 @@ node_t *Read_list(const char *name, opts_t *Popts)
 
 
 
-int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
+int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 {
 
 	char *word, **opt;
@@ -372,7 +372,7 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
  */
 	Popts = &opts;
 	
- 	if( Write_list(Lnode, name, Popts) < 0){
+ 	if( m3l_Write_list(Lnode, name, Popts) < 0){
 		return -1;
 	}
 	else{
@@ -383,7 +383,7 @@ int Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 
 
 
-int Write_list(node_t *Lnode, const char *name, opts_t * Popts)
+int m3l_Write_list(node_t *Lnode, const char *name, opts_t * Popts)
 {
 	FILE *fp;
 
@@ -392,12 +392,12 @@ int Write_list(node_t *Lnode, const char *name, opts_t * Popts)
  * if required, clean empty links
  */
 	if(Popts->opt_e == 'e')
-		 ln_cleanemptylinks(&Lnode,  Popts) ;
+		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	if ( (fp = fopen(name,"w")) == NULL)
 		Perror("fopen");
 
-	if( WriteData(Lnode, fp) != 0)
+	if( m3l_WriteData(Lnode, fp) != 0)
 		Perror("WriteData");
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop

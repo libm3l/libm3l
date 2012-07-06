@@ -9,7 +9,6 @@
 #include "/extra2/JKA/Cprograms/2DArray/add_list.h"
 #include "/extra2/JKA/Cprograms/2DArray/Cat.h"
 #include "/extra2/JKA/Cprograms/2DArray/cat_list.h"
-#include "/extra2/JKA/Cprograms/2DArray/Client_Open_Socket.h"
 #include "/extra2/JKA/Cprograms/2DArray/Cp.h"
 #include "/extra2/JKA/Cprograms/2DArray/cp_list.h"
 #include "/extra2/JKA/Cprograms/2DArray/Find.h"

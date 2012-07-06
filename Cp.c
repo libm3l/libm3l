@@ -60,7 +60,7 @@ static int verbose_flag;
 /*
  * routine copies Slist to Tlist
  */
-size_t Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+size_t m3l_Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 
 	char *word, **opt;
@@ -252,7 +252,7 @@ size_t Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t **T
  */
 	Popts = &opts;
 	
- 	cp_tot_nodes = cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	cp_tot_nodes = m3l_cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
 
 	return cp_tot_nodes;

@@ -59,7 +59,7 @@
  * function creates the master head node of a specified name
  */
 
-node_t *Mount(const char *name)
+node_t *m3l_Mount(const char *name)
 {
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
@@ -80,7 +80,7 @@ node_t *Mount(const char *name)
 /*
  * allocate node and if success, return it otherwise return NULL
  */	
-	if( (Dnode = AllocateNode(TMPSTR, NULL)) == NULL){
+	if( (Dnode = m3l_AllocateNode(TMPSTR, NULL)) == NULL){
 		Error("Allocate");
 		return NULL;
 	}

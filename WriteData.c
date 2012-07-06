@@ -54,12 +54,12 @@
 
 #define SEPAR_SPACE ' '
 
-static int write_file_data_filedescprt(node_t *, size_t , FILE *);
+static int m3l_write_file_data_filedescprt(node_t *, size_t , FILE *);
 
 /*
  * routine writes linked list structure to the file
  */
-int WriteData(node_t *List,  FILE *fp)
+int m3l_WriteData(node_t *List,  FILE *fp)
 {
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
 	size_t i, tot_dim;
@@ -116,7 +116,7 @@ int WriteData(node_t *List,  FILE *fp)
 /*
  * call to function printing actual data in file
  */						
-			write_file_data_filedescprt(Tmpnode, tot_dim, fp);
+			m3l_write_file_data_filedescprt(Tmpnode, tot_dim, fp);
 			}
 
 			if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
@@ -158,7 +158,7 @@ int WriteData(node_t *List,  FILE *fp)
 					Tmplist->next = NULL;
 					Tmplist->prev = NULL;
 					
-					if(WriteData(Tmplist,fp) != 0){
+					if(m3l_WriteData(Tmplist,fp) != 0){
 						Warning("Write data problem");
 /*
  * restore original state
@@ -177,14 +177,14 @@ int WriteData(node_t *List,  FILE *fp)
 /*
  * empty LINK
  */					
-					if(WriteData(Tmpnode,fp) != 0){
+					if(m3l_WriteData(Tmpnode,fp) != 0){
 						Warning("Write data problem");
 						return -1;
 					}
 				}
 			}
 			else{
-				if(WriteData(Tmpnode,fp) != 0){
+				if(m3l_WriteData(Tmpnode,fp) != 0){
 					Warning("Write data problem");
 					return -1;
 				}
@@ -201,7 +201,7 @@ int WriteData(node_t *List,  FILE *fp)
 
 
 
-int write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
+int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 {	
 	size_t i, n, counter;
 	char *pc;

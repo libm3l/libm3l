@@ -37,6 +37,6 @@
 #ifndef __WRITEDATA_H__
 #define __WRITEDATA_H__
 
-int WriteData(node_t *, FILE *);
+extern int m3l_WriteData(node_t *, FILE *);
 
 #endif

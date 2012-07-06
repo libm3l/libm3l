@@ -62,7 +62,7 @@
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *Popts)
+size_t m3l_rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *Popts)
 {
 	size_t i, rm_tot_nodes, rm_nodes;
 	find_t *Founds;
@@ -70,7 +70,7 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 /*
  * call locator to locate nodes to be deleted
  */
-	if ( (Founds = locator_caller( *List, path, path_loc, Popts)) == NULL){
+	if ( (Founds = m3l_locator_caller( *List, path, path_loc, Popts)) == NULL){
 		return 0;
 	}
 	else
@@ -95,7 +95,7 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 		
 		for(i=0; i< Founds->founds; i++){
 						
-			if( (rm_nodes = rm_list(init_call, &Founds->Found_Nodes[i]->List, Popts)) < 0){
+			if( (rm_nodes = m3l_rm_list(init_call, &Founds->Found_Nodes[i]->List, Popts)) < 0){
 				Warning("problem in rm_list");
 			}
 			else{
@@ -103,13 +103,13 @@ size_t rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *
 			}
 		}				
 				
-		DestroyFound(&Founds);
+		m3l_DestroyFound(&Founds);
 		return rm_tot_nodes;
 	}
 }
 
 
-size_t rm_list(int call, node_t **List, opts_t *Popts)
+size_t m3l_rm_list(int call, node_t **List, opts_t *Popts)
 {
 /*
  * function removes all items in List
@@ -162,7 +162,7 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
 /*
  * remove the master head node and return
  */
-				if(Free(List) != 0)
+				if(m3l_Free(List) != 0)
 					Error("Free");
 /*
  * return value 1 meanign one deleted node
@@ -209,7 +209,7 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
 /*
  * if required, clean-up the reference field
  */
-				if(Popts != NULL && Popts->opt_c == 'c' && CLD != NULL) ln_cleanemptylinksref(&CLD);
+				if(Popts != NULL && Popts->opt_c == 'c' && CLD != NULL) m3l_ln_cleanemptylinksref(&CLD);
 			}
 			(*List)->child = NULL;
 		}
@@ -228,7 +228,7 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
  */
 		(*List)->parent->ndim--;
 		
-		if(Free(List) != 0)
+		if(m3l_Free(List) != 0)
 			Error("Free");
 /*
  * return value 1 meanign one deleted node
@@ -256,7 +256,7 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
  */
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
-			rmnodes = rmnodes + rm_list(2, &Tmpnode, Popts);
+			rmnodes = rmnodes + m3l_rm_list(2, &Tmpnode, Popts);
 			Tmpnode = Tmpnode1;
 		}
 /*
@@ -265,7 +265,7 @@ size_t rm_list(int call, node_t **List, opts_t *Popts)
  */
  		if(call > 1){
 			if( (*List)->ndim == 0){
-				rmnodes = rmnodes + rm_list(2, List, Popts);
+				rmnodes = rmnodes + m3l_rm_list(2, List, Popts);
 			}
 			else
 			{
