@@ -23,12 +23,12 @@
 /*
  *     Header file Write2Socket.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-18
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *     Description
  *
  */
 

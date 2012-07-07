@@ -23,12 +23,12 @@
 /*
  *     Header file FunctionsPrt.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-21
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *     Description
  *
  */
 

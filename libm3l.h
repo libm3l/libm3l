@@ -23,12 +23,12 @@
 /*
  *     Header file libm3l.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-07-06
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *     Description
  *
  */
 

@@ -23,12 +23,12 @@
 /*
  *     Header file tcpip_socket_IOop.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *     Description
  *
  */
 

@@ -23,12 +23,12 @@
 /*
  *     Header file ReadDescriptor.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-30
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *     Description
  *
  */
 

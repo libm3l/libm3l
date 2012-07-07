@@ -23,7 +23,6 @@
 /*
  *     Function udf_rm.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-07-01
  * 
  * 
@@ -38,7 +37,8 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *     Description
  *
  */
 

@@ -20,11 +20,9 @@
  */
 
 
-
 /*
  *     Function cat_list.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-12
  * 
  * 
@@ -39,7 +37,8 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *     Description
  *
  */
 
