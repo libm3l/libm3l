@@ -44,4 +44,9 @@ extern node_t *m3l_Send_receive_tcpipsocket(node_t *, const char *, int, char * 
 extern node_t *m3l_Receive_send_tcpipsocket(node_t *, const char *, int , char * , ...);
 extern node_t *m3l_Receive_tcpipsocket(const char *, int , char *, ...);
 
+extern int m3l_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_receive_tcpipsocket(const char *, int, opts_t *);
+
 #endif

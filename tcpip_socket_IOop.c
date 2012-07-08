@@ -53,16 +53,16 @@
 #include "format_type.h"
 #include "FunctionsPrt.h"
 
-#include "tcpip_socket_op.h"
 #include "tcpip_socket_IOop.h"
+#include "tcpip_socket_op.h"
 #include "Write2Socket.h"
 #include "ReadSocket.h"
 #include "ln_list.h"
 
-static int m3l_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
-static node_t *m3l_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
-static node_t *m3l_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
-static node_t *m3l_receive_tcpipsocket(const char *, int, opts_t *);
+// static int m3l_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
+// static node_t *m3l_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
+// static node_t *m3l_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
+// static node_t *m3l_receive_tcpipsocket(const char *, int, opts_t *);
 
 /*
  * routine Links Slist to Tlist
