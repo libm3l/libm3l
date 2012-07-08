@@ -39,14 +39,14 @@
 #ifndef __TCPIP_SOCKET_OP_H__
 #define __TCPIP_SOCKET_OP_H__
 
-extern int m3l_Sent_to_tcpipsocket(node_t *, const char *, int , char * , ...);
-extern node_t *m3l_Send_receive_tcpipsocket(node_t *, const char *, int, char * , ... );
-extern node_t *m3l_Receive_send_tcpipsocket(node_t *, const char *, int , char * , ...);
-extern node_t *m3l_Receive_tcpipsocket(const char *, int , char *, ...);
+extern int m3l_Client_Sent_to_tcpipsocket(node_t *, const char *, int , char * , ...);
+extern node_t *m3l_Client_Send_receive_tcpipsocket(node_t *, const char *, int, char * , ... );
+extern node_t *m3l_Client_Receive_send_tcpipsocket(node_t *, const char *, int , char * , ...);
+extern node_t *m3l_Client_Receive_tcpipsocket(const char *, int , char *, ...);
 
-extern int m3l_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
-extern node_t *m3l_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
-extern node_t *m3l_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
-extern node_t *m3l_receive_tcpipsocket(const char *, int, opts_t *);
+extern int m3l_client_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_client_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_client_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_client_receive_tcpipsocket(const char *, int, opts_t *);
 
 #endif

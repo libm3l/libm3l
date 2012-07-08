@@ -59,15 +59,15 @@
 #include "ReadSocket.h"
 #include "ln_list.h"
 
-// static int m3l_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
-// static node_t *m3l_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
-// static node_t *m3l_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
-// static node_t *m3l_receive_tcpipsocket(const char *, int, opts_t *);
+// static int m3l_client_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
+// static node_t *m3l_client_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
+// static node_t *m3l_client_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
+// static node_t *m3l_client_receive_tcpipsocket(const char *, int, opts_t *);
 
 /*
  * routine Links Slist to Tlist
  */
-int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
+int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
 
 	node_t *List;
 	char *word, **opt;
@@ -199,7 +199,7 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
  */
 	Popts = &opts;
 	
- 	if( m3l_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
+ 	if( m3l_client_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
 		return -1;
 	}
 	else{
@@ -212,7 +212,7 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * routine Links Slist to Tlist
  */
-node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -345,7 +345,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
  */
 	Popts = &opts;
 	
- 	if( (List = m3l_send_receive_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
+ 	if( (List = m3l_client_send_receive_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -358,7 +358,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * routine Links Slist to Tlist
  */
-node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -491,7 +491,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
  */
 	Popts = &opts;
 	
- 	if( (List =m3l_receive_send_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
+ 	if( (List =m3l_client_receive_send_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -500,7 +500,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 }
 
 
-node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Client_Receive_tcpipsocket(const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -633,7 +633,7 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
  */
 	Popts = &opts;
 	
- 	if( (List = m3l_receive_tcpipsocket(hostname, portnumber, Popts)) == NULL){
+ 	if( (List = m3l_client_receive_tcpipsocket(hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -645,7 +645,7 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_client_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 {
 	node_t *Gnode;
 	int socketnr;
@@ -668,7 +668,7 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 /*
  * function opens socket, writes data to it and close the socket
  */
-int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+int m3l_client_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	int socketnr;
 /*
@@ -688,7 +688,7 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_client_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	
 	
@@ -721,7 +721,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * function opens socket, reads data from it , writes data to it and close the socket
  */
-node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_client_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	
 	
