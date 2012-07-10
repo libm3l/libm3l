@@ -23,12 +23,14 @@
 /*
  *     Header file mv_list.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-04
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __MV_LIST_H__
 #define __MV_LIST_H__
 
-extern size_t mv_caller(node_t **, const char *, const char *, node_t **, const char *, const char *, opts_t *);
+extern size_t m3l_mv_caller(node_t **, const char *, const char *, node_t **, const char *, const char *, opts_t *);
 
 #endif

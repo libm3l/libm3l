@@ -23,10 +23,11 @@
 /*
  *     Function ln_list.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-30
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -60,9 +64,9 @@
 #include "rm_list.h"
 
 
-static size_t ln_list(int , node_t **, node_t **, char*, opts_t * );
-static int ln_recrt_list(node_t **, node_t **, char *);
-static node_t *ln_crt_list(node_t **, char *, opts_t *);
+static size_t m3l_ln_list(int , node_t **, node_t **, char*, opts_t * );
+static int ln_m3l_recrt_list(node_t **, node_t **, char *);
+static node_t *m3l_ln_crt_list(node_t **, char *, opts_t *);
 
 /*
  * function links list. If the list has children, it deletes them before removing list.
@@ -70,7 +74,7 @@ static node_t *ln_crt_list(node_t **, char *, opts_t *);
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+size_t m3l_ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a caller of the ln functions
@@ -90,7 +94,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 	}
 	
 	if (Popts->opt_e == 'e' || Popts->opt_c == 'c'){
- 		ln_tot_nodes = ln_cleanemptylinks(TList,  Popts);
+ 		ln_tot_nodes = m3l_ln_cleanemptylinks(TList,  Popts);
 		return ln_tot_nodes;
 	}
 		
@@ -103,7 +107,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /* 
  * check location of sources
  */
-	if ( (SFounds = locator_caller( *SList, s_path, s_path_loc, Popts)) == NULL){
+	if ( (SFounds = m3l_locator_caller( *SList, s_path, s_path_loc, Popts)) == NULL){
 		Warning("Cp: NULL SFounds");
 		return 0;
 	}
@@ -124,7 +128,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 			else{
 				Tmpnode = SFounds->Found_Nodes[i]->List;
 			
-				if( (ln_nodes = (size_t) ln_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
+				if( (ln_nodes = (size_t) m3l_ln_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
 					Warning("problem in ln_list");
 				}
 				else{
@@ -133,14 +137,14 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 			}
 		}
 		i = SFounds->founds;
-		DestroyFound(&SFounds);
+		m3l_DestroyFound(&SFounds);
 		return i;
 	}
 	else{
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -197,7 +201,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					free(path);
 					free(path_loc);
 					free(newname);
-					DestroyFound(&SFounds);
+					m3l_DestroyFound(&SFounds);
 					return -1;
 				}
 				j = 0;
@@ -212,11 +216,11 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = locator_caller( *TList, path, path_loc, Popts)) == NULL){
+				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);
-					DestroyFound(&SFounds);
+					m3l_DestroyFound(&SFounds);
 					return -1;
 				}
 /*
@@ -228,8 +232,8 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					free(path);
 					free(path_loc);
 					free(newname);
-					DestroyFound(&SFounds);
-					DestroyFound(&TFounds);
+					m3l_DestroyFound(&SFounds);
+					m3l_DestroyFound(&TFounds);
 					return -1;
 				}
 	
@@ -238,7 +242,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * copy and change the name of the list
  */
-					if( (ln_nodes = (size_t) ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
+					if( (ln_nodes = (size_t) m3l_ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  newname, Popts ) ) < 0){
 						Warning("problem in ln_list");
 					}
 					else{
@@ -251,15 +255,15 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				free(path);
 				free(path_loc);
 				free(newname);
-				DestroyFound(&SFounds);
-				DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
 				return ln_tot_nodes;
 			}
 			else{
 /*
  * target does not exist
  */
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 		}
@@ -269,8 +273,8 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
  */
 			if(TFounds->founds != 1){
 				Warning("cp: multiple target nodes");
-				DestroyFound(&TFounds);
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 /*
@@ -278,8 +282,8 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
  */
 			if( SFounds->founds > 1 && strncmp(TFounds->Found_Nodes[0]->List->type, "DIR", 3) != 0){
 				Warning("cp: target node is not DIR");
-				DestroyFound(&TFounds);
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 			
@@ -287,7 +291,7 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				
 			for(i=0; i< SFounds->founds; i++){
 				
-				if( (ln_nodes = (size_t) ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
+				if( (ln_nodes = (size_t) m3l_ln_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
 					Warning("problem in ln_list");
 				}
 				else{
@@ -295,14 +299,14 @@ size_t ln_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				}
 			}
 					
-			DestroyFound(&TFounds);
-			DestroyFound(&SFounds);
+			m3l_DestroyFound(&TFounds);
+			m3l_DestroyFound(&SFounds);
 			return ln_tot_nodes;
 		}
 	}
 }
 
-size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *Popts){
+size_t m3l_ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *Popts){
 /*
  * function copies list SList to a target list TList
  * 	if the SList is FILE, TLIST has to be file too. The data sunion and ->fdim of the TList target nodes is furst freed, then reallocated
@@ -326,7 +330,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 /*
  * link list to the source list
  */
-		if (  ln_recrt_list(TList, SList, NewName) < 1){
+		if (  m3l_ln_recrt_list(TList, SList, NewName) < 1){
 			Error("Copying list");
 			return -1;
 		}
@@ -337,7 +341,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 /*
  * link list to the directory, first make a new lits
  */
-		if ( (NewList = ln_crt_list(SList, NewName, Popts)) == NULL){
+		if ( (NewList = m3l_ln_crt_list(SList, NewName, Popts)) == NULL){
 			Error("Copying list");
 			return -1;
 		}
@@ -354,7 +358,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 /*
  * add a new node to the DIR list
  */
-		if ( add_list(&NewList, TList, Popts) < 0){
+		if ( m3l_add_list(&NewList, TList, Popts) < 0){
 			Warning("Error cp_list copy");
 			return -1;
 		}
@@ -363,7 +367,7 @@ size_t ln_list(int call, node_t **SList, node_t **TList, char* NewName, opts_t *
 }
 
 
-node_t *ln_crt_list(node_t **Slist, char *NewName, opts_t *Popts){
+node_t *m3l_ln_crt_list(node_t **Slist, char *NewName, opts_t *Popts){
 /*
  * function creates link node, 
  * parent of the node is Tlist, child of the node is Slist (Link)
@@ -394,14 +398,14 @@ node_t *ln_crt_list(node_t **Slist, char *NewName, opts_t *Popts){
 /*
  * create new node
  */
-	if( (Pnode = AllocateNode(TMPSTR, Popts)) == NULL){
+	if( (Pnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 		return (node_t *)NULL;
 	}
 
 	Pnode->child  = (*Slist);
 	
-	if( AllocateLinkInfo(Slist, Pnode) < 0){
+	if( m3l_AllocateLinkInfo(Slist, Pnode) < 0){
 		Error("AllocateLinkInfo");
 		return (node_t *) NULL;
 	}
@@ -411,7 +415,7 @@ node_t *ln_crt_list(node_t **Slist, char *NewName, opts_t *Popts){
 
 
 
-int ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
+int m3l_ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
 /*
  *      function frees the existing list. Used if both source and target lists are FILE types
  *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
@@ -456,7 +460,7 @@ int ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
  * re-create Tlist node
  * first - free existing data set, keep the List itself
  */
-	if ( Free_data_str(Tlist) != 0){
+	if ( m3l_Free_data_str(Tlist) != 0){
 		Error("Free_data_str");
 		return -1;
 	}
@@ -466,7 +470,7 @@ int ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
 	(*Tlist)->child = (*Slist);
 	(*Tlist)->ndim = 1;
 	
-	if( AllocateLinkInfo(Slist, (*Tlist)) < 0){
+	if( m3l_AllocateLinkInfo(Slist, (*Tlist)) < 0){
 		Error("AllocateLinkInfo");
 		return -1;
 	}
@@ -478,7 +482,7 @@ int ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
 }
 
 
-int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
+int m3l_AllocateLinkInfo(node_t **Slist, node_t *Tlist){
 /*
  * function allocates the linknode structure in the source node (Slist) and fills it with 
  * address if link target (Tlist)
@@ -520,7 +524,7 @@ int AllocateLinkInfo(node_t **Slist, node_t *Tlist){
 }
 
 
-size_t ln_cleanemptylinks(node_t **List,  opts_t *Popt){
+size_t m3l_ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 /*
  * function traverses entire list and look for empty links. 
  * Once it finds them it removes them
@@ -549,10 +553,10 @@ size_t ln_cleanemptylinks(node_t **List,  opts_t *Popt){
  */
 		rm_nodes = 0;
 		if( strncmp( (*List)->type, "LINK", 4) == 0){
-			if(Popt != NULL && (*List)->ndim == 0 && Popt->opt_e == 'e') rm_nodes = rm_list(2, List, Popt);
+			if(Popt != NULL && (*List)->ndim == 0 && Popt->opt_e == 'e') rm_nodes = m3l_rm_list(2, List, Popt);
 		}
 		else if	(Popt != NULL && Popt->opt_c == 'c'){
-			rm_nodes = rm_nodes + ln_cleanemptylinksref(List);
+			rm_nodes = rm_nodes + m3l_ln_cleanemptylinksref(List);
 		}
 
 		return rm_nodes;
@@ -568,8 +572,8 @@ size_t ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 		
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
-			cleaned_nodes = cleaned_nodes + ln_cleanemptylinks(&Tmpnode,  Popt);
-			if(Popt != NULL && Popt->opt_c == 'c') cleaned_nodes = cleaned_nodes + ln_cleanemptylinksref(&Tmpnode);
+			cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinks(&Tmpnode,  Popt);
+			if(Popt != NULL && Popt->opt_c == 'c') cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinksref(&Tmpnode);
 			Tmpnode = Tmpnode1;
 		}
 		return cleaned_nodes;
@@ -579,7 +583,7 @@ size_t ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 
 
 
-int ln_cleanemptylinksref(node_t **List){
+int m3l_ln_cleanemptylinksref(node_t **List){
 /*
  * function cleans empty references in  
  * (*Slist)->linknode structure

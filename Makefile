@@ -43,21 +43,3 @@ main: $(OBJS)
 #
 clean:
 	rm -f LinkedStr_TEST.out *.o *.d
-
-#
-#  make shared library
-#clibm3l.so.1.0
-lib: $(OBJS)
-	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS) 
-	ln -sf libm3l.so.1.0 libm3l.so
-
--include $(OBJS:.o=.d)
-
-%.o: %.c
-	gcc -c -fPIC $*.c -o $*.o
-	gcc -MM -fPIC $*.c > $*.d
-	@mv -f $*.d $*.d.tmp
-	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
-	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
-	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
-	@rm -f $*.d.tmp

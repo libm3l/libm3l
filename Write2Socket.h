@@ -23,12 +23,14 @@
 /*
  *     Header file Write2Socket.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-18
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __WRITE_TO_SOCKET_H__
 #define __WRITE_TO_SOCKET_H__
 
-int write_to_socket(int , node_t *,  int );
+extern int m3l_write_to_socket(int , node_t *,  int );
 
 #endif

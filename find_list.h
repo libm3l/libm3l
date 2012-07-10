@@ -23,22 +23,23 @@
 /*
  *     Header file find_list.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-04
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
 
 
-#ifndef  __FIND_CALLER_H__
+#ifndef   __FIND_CALLER_H__
 #define  __FIND_CALLER_H__
 
-find_t *Find_caller(int, node_t *, char *, opts_t *);
-
-void DestroyFound(find_t **);
+extern  find_t *m3l_Find_caller(int, node_t *, char *, opts_t *);
+extern void m3l_DestroyFound(find_t **);
 
 #endif

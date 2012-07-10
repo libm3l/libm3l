@@ -23,12 +23,14 @@
 /*
  *     Header file Add.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef  __ADD_H__
 #define  __ADD_H__
 
-int Add(node_t **, node_t **, const char *, const char *, char * , ...);
+int m3l_Add(node_t **, node_t **, const char *, const char *, char * , ...);
 
 #endif

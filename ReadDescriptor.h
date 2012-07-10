@@ -23,12 +23,14 @@
 /*
  *     Header file ReadDescriptor.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-30
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __READDESCRIPTOR_H__
 #define __READDESCRIPTOR_H__
 
-node_t *read_file(FILE *, opts_t *);
+extern node_t *m3l_read_file(FILE *, opts_t *);
 
 #endif

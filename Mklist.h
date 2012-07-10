@@ -23,12 +23,14 @@
 /*
  *     Header file Mklist.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __MKLIST_H__
 #define __MKLIST_H__
 
-node_t *Mklist(const char *, const char *, size_t , size_t *, node_t **, const char *, const char *, char * , ...);
+extern node_t *m3l_Mklist(const char *, const char *, size_t , size_t *, node_t **, const char *, const char *, char * , ...);
 
 #endif

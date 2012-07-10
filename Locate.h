@@ -23,12 +23,14 @@
 /*
  *     Header file Locate.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-18
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __LOCATE_H__
 #define __LOCATE_H__
 
-find_t *Locate(node_t *, const char *, const char *, char * , ...);
+find_t *m3l_Locate(node_t *, const char *, const char *, char * , ...);
 
 #endif

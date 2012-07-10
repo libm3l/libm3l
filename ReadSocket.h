@@ -23,12 +23,14 @@
 /*
  *     Header file ReadSocket.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-30
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __READSOCKET_H__
 #define __READSOCKET_H__
 
-node_t *read_socket(int, opts_t *);
+extern node_t *m3l_read_socket(int, opts_t *);
 
 #endif

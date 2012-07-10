@@ -23,10 +23,11 @@
 /*
  *     Function FunctionsPrt.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -168,7 +172,7 @@ char *StrToUpper(char *s)
  * NOTE - needs to be feed after use
  */
 
-char *Path(node_t *List, node_t *Orig_List)
+char *m3l_Path(node_t *List, node_t *Orig_List)
 {
 /*
   * function finds path of the list up to Orig_List
@@ -271,7 +275,7 @@ char *Path(node_t *List, node_t *Orig_List)
 /*
  * function segments path (./../../../home/etc/etc/
  */
-path_t *parse_path(const char *path)
+path_t *m3l_parse_path(const char *path)
 {
 /*
  * NOTE - segmentation fault if path starts with / // // // etc nonsence
@@ -409,7 +413,7 @@ path_t *parse_path(const char *path)
 /*
  * free Path
  */
-			destroy_pars_path(&Path);
+			m3l_destroy_pars_path(&Path);
 			return (path_t *)NULL;
 		}
 /*
@@ -427,7 +431,7 @@ path_t *parse_path(const char *path)
 			j++;
 			if(j > counter){
 				Error(" Path too long");
-				destroy_pars_path(&Path);
+				m3l_destroy_pars_path(&Path);
 				(path_t *) NULL;
 			}
 			
@@ -448,7 +452,7 @@ path_t *parse_path(const char *path)
 			j++;
 			if(j > counter){
 				Error(" Path too long");
-				destroy_pars_path(&Path);
+				m3l_destroy_pars_path(&Path);
 				return (path_t *) NULL;
 			}
 			
@@ -465,7 +469,7 @@ path_t *parse_path(const char *path)
 	}
 	else{
 		Error(" Path too long - can not add terminating character");
-		destroy_pars_path(&Path);
+		m3l_destroy_pars_path(&Path);
 		(path_t *) NULL;
 	}
 	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
@@ -476,7 +480,7 @@ path_t *parse_path(const char *path)
 /*
  * function frees pointer allocated in parse_path function
  */
-void destroy_pars_path(path_t **Path)
+void m3l_destroy_pars_path(path_t **Path)
 {
 /*
  * NOTE - unsuccesfull return must be finished
@@ -493,10 +497,10 @@ void destroy_pars_path(path_t **Path)
 	
 }
 
-get_arg_t get_arguments(const char *text)
+get_arg_t m3l_get_arguments(const char *text)
 {
 /*
- * function anlysises arguments in text
+ * function parse arguments in text
  *
  * Arguments are: 	Letter = value
  * 			(s) (S) Letter_name = value
@@ -640,3 +644,6 @@ get_arg_t get_arguments(const char *text)
 	argsstr.retval = 0;
 	return argsstr;
 }
+
+
+

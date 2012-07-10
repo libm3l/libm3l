@@ -23,12 +23,14 @@
 /*
  *     Header file locate_list.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -39,6 +41,6 @@
 #ifndef __LOCATOR_H__
 #define __LOCATOR_H__
 
-find_t *locator_caller(node_t *, const char *, const char *, opts_t *);
+find_t *m3l_locator_caller(node_t *, const char *, const char *, opts_t *);
 
 #endif

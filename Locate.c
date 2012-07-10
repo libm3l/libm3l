@@ -23,10 +23,11 @@
 /*
  *     Function Locate.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -61,7 +65,7 @@ static int verbose_flag;
 /*
  * routine finds the list and filters it using path_loc specifications
  */
-find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Options, ...)
+find_t *m3l_Locate(node_t *List, const char *path, const char *path_loc, char * Options, ...)
 {
 	
 	find_t *Founds_Loc;
@@ -253,7 +257,7 @@ find_t *Locate(node_t *List, const char *path, const char *path_loc, char * Opti
 
 	Popts = &opts;
 	
-	if( (Founds_Loc = locator_caller(List, path, path_loc, Popts)) == NULL)
+	if( (Founds_Loc = m3l_locator_caller(List, path, path_loc, Popts)) == NULL)
 		return (find_t *)NULL;
 
 	return Founds_Loc;

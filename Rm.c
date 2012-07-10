@@ -23,10 +23,11 @@
 /*
  *     Function Rm.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -60,9 +64,8 @@ static int verbose_flag;
 /*
  * routine finds the list
  */
-size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options, ...)
+size_t m3l_Rm(node_t **List, const char *path, const char *path_loc, char * Options, ...)
 {
-
 	char *word, **opt;
 	opts_t *Popts, opts;
 	size_t args_num, len, i, rm_tot_nodes;
@@ -268,7 +271,7 @@ size_t Rm(node_t **List, const char *path, const char *path_loc, char * Options,
  */
 	Popts = &opts;
 	
-	rm_tot_nodes = rm_caller(List, path, path_loc, Popts);
+	rm_tot_nodes = m3l_rm_caller(List, path, path_loc, Popts);
 
 	return rm_tot_nodes;
 }

@@ -23,12 +23,14 @@
 /*
  *     Header file tcpip_socket_IOop.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,9 +39,14 @@
 #ifndef __TCPIP_SOCKET_OP_H__
 #define __TCPIP_SOCKET_OP_H__
 
-int Sent_to_tcpipsocket(node_t *, const char *, int , char * , ...);
-node_t *Send_receive_tcpipsocket(node_t *, const char *, int, char * , ... );
-node_t *Receive_send_tcpipsocket(node_t *, const char *, int , char * , ...);
-node_t *Receive_tcpipsocket(const char *, int , char *, ...);
+extern int m3l_Client_Sent_to_tcpipsocket(node_t *, const char *, int , char * , ...);
+extern node_t *m3l_Client_Send_receive_tcpipsocket(node_t *, const char *, int, char * , ... );
+extern node_t *m3l_Client_Receive_send_tcpipsocket(node_t *, const char *, int , char * , ...);
+extern node_t *m3l_Client_Receive_tcpipsocket(const char *, int , char *, ...);
+
+extern int m3l_client_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_client_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_client_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
+extern node_t *m3l_client_receive_tcpipsocket(const char *, int, opts_t *);
 
 #endif

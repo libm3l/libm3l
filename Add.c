@@ -23,10 +23,11 @@
 /*
  *     Function Add.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -60,7 +64,7 @@ static int verbose_flag;
 /*
  * Adds Slist to specified location in Tlist
  */
-int Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+int m3l_Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 	char *word, **opt;
 	opts_t *Popts, opts;
@@ -207,7 +211,7 @@ int Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_l
  */
 	Popts = &opts;
 	
- 	addlist = add_caller(SList, TList, t_path, t_path_loc, Popts);
+ 	addlist = m3l_add_caller(SList, TList, t_path, t_path_loc, Popts);
 
 	return addlist;
 }

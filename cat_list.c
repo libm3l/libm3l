@@ -1,3 +1,4 @@
+
 /*
  *     Copyright (C) 2012  Adam Jirasek
  * 
@@ -19,14 +20,14 @@
  */
 
 
-
 /*
  *     Function cat_list.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-12
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -53,16 +57,16 @@
 #include "FunctionsPrt.h"
 #include "cat_list.h"
 
-static int cat_data(node_t *, size_t);
+static int m3l_cat_data(node_t *, size_t);
 
 
-static void PrintListInfo(node_t *, opts_t *);
+static void m3l_PrintListInfo(node_t *, opts_t *);
 
 /*
  * routine writes linked list structure
  */
 
-int cat_list(int call, node_t *List, opts_t *Popts)
+int m3l_cat_list(int call, node_t *List, opts_t *Popts)
 {
 /*
  * functions print the list or entire tree on screen
@@ -94,14 +98,14 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 /*
  * print node info
  */
-			PrintListInfo(List, Popts);
+			m3l_PrintListInfo(List, Popts);
 		}
 		else
 		{
 /*
  * initil call
  */
-			PrintListInfo(List, Popts);
+			m3l_PrintListInfo(List, Popts);
 			
 			if(call == 1){
 				Tmpnode = List->child;
@@ -110,14 +114,14 @@ int cat_list(int call, node_t *List, opts_t *Popts)
  * if node is list and option specifies it, write the target node data
  */
 					if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popts->opt_l == 'l'){
-						if(cat_list(2, Tmpnode->child, Popts) != 0){ /* list is populated by the target list where it points to */
+						if(m3l_cat_list(2, Tmpnode->child, Popts) != 0){ /* list is populated by the target list where it points to */
 							Warning("Write data problem");
 							return -1;
 						}
 					}
 					else{
 		
-						if(cat_list(2, Tmpnode, Popts) != 0){
+						if(m3l_cat_list(2, Tmpnode, Popts) != 0){
 							Warning("Write data problem");
 							return -1;
 						}
@@ -132,7 +136,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 			else if(call == 2 && Popts->opt_L == 'L' && strncmp(List->type, "LINK", 4 ) != 0   ){
 				Tmpnode = List->child;
 				while(Tmpnode != NULL){
-					if(cat_list(2, Tmpnode, Popts) != 0){
+					if(m3l_cat_list(2, Tmpnode, Popts) != 0){
 						Warning("Write data problem");
 						return -1;
 					}
@@ -146,7 +150,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 /*
  * list is LINK
  */
-		PrintListInfo(List, Popts);		
+		m3l_PrintListInfo(List, Popts);		
 		if(Popts->opt_l == 'l'){
 /*
  * List Linked list too
@@ -166,7 +170,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 				Tmpcld = Tmpnode->next;
 				Tmpnode->next = NULL;
 				
-				if(cat_list(2, Tmpnode, Popts) != 0){
+				if(m3l_cat_list(2, Tmpnode, Popts) != 0){
 					Warning("Write data problem");
 /*
  * restore the previuous state - set next node to its original value
@@ -197,7 +201,7 @@ int cat_list(int call, node_t *List, opts_t *Popts)
 }
 
 
-void PrintListInfo(node_t *List, opts_t *Popts)
+void m3l_PrintListInfo(node_t *List, opts_t *Popts)
 {
 size_t i, maxdim, tabs;
 node_t *Tmp;
@@ -245,7 +249,7 @@ node_t *Tmp;
 /*
  * decide what type of data is here, at the moment, only integers
  */
-			if( cat_data(List, maxdim) != 0)
+			if( m3l_cat_data(List, maxdim) != 0)
 				Error("cat_data");
 		}
 		printf("\n");
@@ -298,7 +302,7 @@ node_t *Tmp;
 
 
 
-int cat_data(node_t *Tmpnode, size_t tot_dim)
+int m3l_cat_data(node_t *Tmpnode, size_t tot_dim)
 {
 	
 	size_t i;

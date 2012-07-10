@@ -23,10 +23,11 @@
 /*
  *     Function Cat.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-12
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -62,7 +66,7 @@ static int verbose_flag;
 /*
  * routine finds the list
  */
-int Cat(node_t *List, char * Options, ...)
+int m3l_Cat(node_t *List, char * Options, ...)
 {
 	
  	char *word, **opt, *search_term, *search_term1;
@@ -317,7 +321,7 @@ int Cat(node_t *List, char * Options, ...)
  * if no name specified, cat entire List node
  */
 	if( *search_term == '*'){
-		if ( (status = cat_list(1, List, Popts)) != 0)
+		if ( (status = m3l_cat_list(1, List, Popts)) != 0)
 			Warning("Cat");
         	free(search_term);
 		return status;
@@ -330,7 +334,7 @@ int Cat(node_t *List, char * Options, ...)
 
 		status1 = 0;
 
-		if ( (Founds = Find_caller(1, List, search_term, Popts)) == NULL){
+		if ( (Founds = m3l_Find_caller(1, List, search_term, Popts)) == NULL){
 			free(search_term);
 			return -1;
 		}
@@ -340,16 +344,14 @@ int Cat(node_t *List, char * Options, ...)
 
 			for (i=0; i< Founds->founds; i++){
 				Tmp1 = Founds->Found_Nodes[i]->List;
-//				printf("%p, %i\n", Found_Nodes[i]->List, i);
-
 				
-				if ( (status = cat_list(1, Tmp1, Popts)) != 0)
+				if ( (status = m3l_cat_list(1, Tmp1, Popts)) != 0)
 				Warning("Cat");
 				
 				if(status < status1) status1 = status;
 			}
 			
-			DestroyFound(&Founds);
+			m3l_DestroyFound(&Founds);
 
 			free(search_term);
 

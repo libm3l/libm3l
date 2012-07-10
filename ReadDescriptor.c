@@ -23,10 +23,11 @@
 /*
  *     Function ReadDescriptor.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-30
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -60,10 +64,10 @@
 #define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0'
 
 
-static int read_file_data_line(node_t **, tmpstruct_t, FILE *f, opts_t *);
-static int read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
-static node_t *read_file_dir_data(tmpstruct_t , FILE *f, opts_t *);
-static node_t *read_file_data(FILE *f, opts_t *);
+static int m3l_read_file_data_line(node_t **, tmpstruct_t, FILE *f, opts_t *);
+static int m3l_read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
+static node_t *m3l_read_file_dir_data(tmpstruct_t , FILE *f, opts_t *);
+static node_t *m3l_read_file_data(FILE *f, opts_t *);
 
 char *pc, buff[MAXLINE];
 size_t ngotten;
@@ -75,7 +79,7 @@ size_t ngotten;
  * actual conent of the list
  * If the list if of DIR type, it calls ReadDir routine which reads DIR types of list (recursive calling)
  */ 
-node_t *read_file(FILE *fp, opts_t *Popts)
+node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t   wc, i, hi, tmpi;
@@ -224,7 +228,7 @@ node_t *read_file(FILE *fp, opts_t *Popts)
  * read data in DIR
  */
 
-					if( (Dnode = read_file_dir_data(TMPSTR, fp, Popts)) == NULL)
+					if( (Dnode = m3l_read_file_dir_data(TMPSTR, fp, Popts)) == NULL)
 						Perror("ReadDirData - ReadDir");
 /*
  * check if now additional data in the file
@@ -279,14 +283,14 @@ node_t *read_file(FILE *fp, opts_t *Popts)
  */
 
 
-node_t *read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
+node_t *m3l_read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 {
 	size_t i;
 	node_t *Dnode, *Tmpnode, *Pnode;
  /*
  * two ways of allocating pointer - through reference pointer or as a function returning pointer
  */	
-	if( (Dnode = AllocateNode(TMPSTR, Popts)) == NULL){
+	if( (Dnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 	}
 
@@ -294,7 +298,7 @@ node_t *read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
  		
 		Tmpnode=NULL;	
 				
-		if ( (Tmpnode = read_file_data(fp, Popts)) == NULL)
+		if ( (Tmpnode = m3l_read_file_data(fp, Popts)) == NULL)
 			Error("ReadDirData: ReadData");
 /*
  * add to node
@@ -315,7 +319,7 @@ node_t *read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 	return Dnode;
 }
 
-node_t *read_file_data(FILE *fp, opts_t *Popts)
+node_t *m3l_read_file_data(FILE *fp, opts_t *Popts)
 {
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t   wc, i, hi;
@@ -419,7 +423,7 @@ node_t *read_file_data(FILE *fp, opts_t *Popts)
 /*
  * if type is DIR, read it
  */
-						if( (Pnode = read_file_dir_data(TMPSTR, fp, Popts)) == NULL)
+						if( (Pnode = m3l_read_file_dir_data(TMPSTR, fp, Popts)) == NULL)
 							Perror("ReadSocketData - ReadDir");
 						return Pnode;
 					}
@@ -436,14 +440,14 @@ node_t *read_file_data(FILE *fp, opts_t *Popts)
 			lastchar = '\0';
 		}
 					
-		if( (Pnode = AllocateNode(TMPSTR, Popts)) == NULL){
+		if( (Pnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 			Error("Allocate");}
 		
 		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C'){
 /*
  * data is Char type
  */ 
-			if( read_file_data_charline(&Pnode, TMPSTR, fp) != 0){
+			if( m3l_read_file_data_charline(&Pnode, TMPSTR, fp) != 0){
 				Error("Error reading data");
 				return NULL;
 			}
@@ -453,7 +457,7 @@ node_t *read_file_data(FILE *fp, opts_t *Popts)
 /*
  * data are numbers
  */
-			if( read_file_data_line(&Pnode, TMPSTR, fp, Popts) != 0){
+			if( m3l_read_file_data_line(&Pnode, TMPSTR, fp, Popts) != 0){
 				Error("Error reading data");
 				return NULL;
 			}
@@ -481,7 +485,7 @@ node_t *read_file_data(FILE *fp, opts_t *Popts)
 	}
 	buff[ngotten] = '\0';
 	pc = &buff[0];
-	if ( (Pnode = read_file_data(fp, Popts)) == NULL)
+	if ( (Pnode = m3l_read_file_data(fp, Popts)) == NULL)
 		Error("ReadDirData: ReadData");
 	
 	return Pnode;
@@ -497,7 +501,7 @@ node_t *read_file_data(FILE *fp, opts_t *Popts)
 
 
 
-int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
+int m3l_read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 {
 /* 
  * function reads data from FILE
@@ -721,7 +725,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Po
 	}
 	buff[ngotten] = '\0';
 	pc = &buff[0];
-	if( read_file_data_line(Lnode, TMPSTR, fp, Popts) != 0){
+	if( m3l_read_file_data_line(Lnode, TMPSTR, fp, Popts) != 0){
 		Error("Error reading data");
 		return -1;
 	}
@@ -733,7 +737,7 @@ int read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Po
 	return -1;
 }
 
-int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
+int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 {
 /* 
  * function reads data from FILE
@@ -825,7 +829,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		
 		buff[ngotten] = '\0';
 		pc = &buff[0];
-		if( read_file_data_charline(Lnode, TMPSTR, fp) != 0){
+		if( m3l_read_file_data_charline(Lnode, TMPSTR, fp) != 0){
 			Error("Error reading data");
 			return -1;
 		}	
@@ -901,7 +905,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		
 		buff[ngotten] = '\0';
 		pc = &buff[0];
-		if( read_file_data_charline(Lnode, TMPSTR, fp) != 0){
+		if( m3l_read_file_data_charline(Lnode, TMPSTR, fp) != 0){
 			Error("Error reading data");
 			return -1;
 		}	
@@ -986,7 +990,7 @@ int read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 		
 		buff[ngotten] = '\0';
 		pc = &buff[0];
-		if( read_file_data_charline(Lnode, TMPSTR, fp) != 0){
+		if( m3l_read_file_data_charline(Lnode, TMPSTR, fp) != 0){
 			Error("Error reading data");
 			return -1;
 		}	

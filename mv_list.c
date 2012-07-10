@@ -23,10 +23,11 @@
 /*
  *     Function mv_list.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -58,14 +62,14 @@
 #include "find_list.h"
 #include "rm_list.h"
 
-static int mv_list(int , node_t **, node_t **, opts_t *);
+static int m3l_mv_list(int , node_t **, node_t **, opts_t *);
 /*
  * function links list. If the list has children, it deletes them before removing list.
  * called recursivelly
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a caller of the cp functions
@@ -93,7 +97,7 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * call locator to locate the target node
  */
-	if ( (SFounds = locator_caller( *SList, s_path, s_path_loc, Popts)) == NULL){
+	if ( (SFounds = m3l_locator_caller( *SList, s_path, s_path_loc, Popts)) == NULL){
 		Warning("ln: NULL SFounds");
 		return 0;
 	}
@@ -109,14 +113,14 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				Perror("snprintf");
 		}
 		i = SFounds->founds;
-		DestroyFound(&SFounds);
+		m3l_DestroyFound(&SFounds);
 		return i;
 	}
 	else{
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -173,7 +177,7 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					free(path);
 					free(path_loc);
 					free(newname);
-					DestroyFound(&SFounds);
+					m3l_DestroyFound(&SFounds);
 					return -1;
 				}
 				j = 0;
@@ -188,11 +192,11 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = locator_caller( *TList, path, path_loc, Popts)) == NULL){
+				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);
-					DestroyFound(&SFounds);
+					m3l_DestroyFound(&SFounds);
 					return -1;
 				}
 /*
@@ -204,8 +208,8 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					free(path);
 					free(path_loc);
 					free(newname);
-					DestroyFound(&SFounds);
-					DestroyFound(&TFounds);
+					m3l_DestroyFound(&SFounds);
+					m3l_DestroyFound(&TFounds);
 					return -1;
 				}
 	
@@ -227,7 +231,7 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 							Warning("mv_list: can not move node to itself");
 						}
 						else{
-							if( (mv_nodes = (size_t) mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+							if( (mv_nodes = (size_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
 								Warning("problem in ln_list");
 							}
 							else{
@@ -245,15 +249,15 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				free(path);
 				free(path_loc);
 				free(newname);
-				DestroyFound(&SFounds);
-				DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
 				return mv_tot_nodes;
 			}
 			else{
 /*
  * target does not exist
  */
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 		}
@@ -263,7 +267,7 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
  */
 			if(TFounds->founds != 1){
 				Warning("mv: multiple target nodes");
-				DestroyFound(&TFounds);
+				m3l_DestroyFound(&TFounds);
 				return -1;
 			}
 /*
@@ -271,8 +275,8 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
  */
 			if( SFounds->founds > 1 && strncmp(TFounds->Found_Nodes[0]->List->type, "DIR", 3) != 0){
 				Warning("cp: target node is not DIR");
-				DestroyFound(&TFounds);
-				DestroyFound(&SFounds);
+				m3l_DestroyFound(&TFounds);
+				m3l_DestroyFound(&SFounds);
 				return -1;
 			}
 	
@@ -284,7 +288,7 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 					Warning("mv_list: can not move node to itself");
 				}
 				else{
-					if( (mv_nodes = (size_t) mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+					if( (mv_nodes = (size_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
 						Warning("problem in ln_list");
 					}
 					else{
@@ -293,14 +297,14 @@ size_t mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, nod
 				}
 			}
 					
-			DestroyFound(&TFounds);
-			DestroyFound(&SFounds);
+			m3l_DestroyFound(&TFounds);
+			m3l_DestroyFound(&SFounds);
 			return mv_tot_nodes;
 		}
 	}
 }
 
-int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
+int m3l_mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
 {
 /*
  * function links list SList to a target list TList
@@ -346,7 +350,7 @@ int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
 /*
  * remove TList
  */		
-		if ( rm_list(1, TList, Popts) < 1 ){
+		if ( m3l_rm_list(1, TList, Popts) < 1 ){
 			Error("mv_list: rm_list");
 			return -1;
 		}
@@ -370,7 +374,7 @@ int mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
 /*
  * add a new node to the DIR list
  */
-		if ( add_list(SList, TList, Popts) < 0){
+		if ( m3l_add_list(SList, TList, Popts) < 0){
 			Warning("Error mv_list copy");
 			return -1;
 		}

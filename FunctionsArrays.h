@@ -14,16 +14,16 @@
  *     You should have received a copy of the GNU Lesser General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *     
- *     contact: libm3l@gmail.com
+ *     contact: clibm3l@gmail.com
  * 
  */
 
 
 
 /*
- *     Header file add_list.h
+ *     Header file FunctionsArrays.h
  *
- *     Date: 2012-06-24
+ *     Date: 2012-07-06
  * 
  *
  *     Modifications:
@@ -36,10 +36,14 @@
 
 
 
-#ifndef  __ADD_LIST_H__
-#define __ADD_LIST_H__
 
-int m3l_add_caller(node_t **, node_t **, const char *, const char *, opts_t *);
-int m3l_add_list(node_t **, node_t **, opts_t *);
+
+#ifndef __FUNCTIONSARRAYS_H__
+#define __FUNCTIONSARRAYS_H__
+
+extern size_t get_ind(size_t , size_t *, size_t *);
+extern size_t get_4ind(size_t , size_t , size_t , size_t, size_t, size_t, size_t, size_t);
+extern size_t get_3ind(size_t , size_t , size_t , size_t, size_t, size_t);
+extern size_t get_2ind(size_t , size_t , size_t , size_t );
 
 #endif

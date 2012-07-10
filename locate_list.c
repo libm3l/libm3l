@@ -23,10 +23,11 @@
 /*
  *     Function locate_list.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -54,14 +58,14 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
-static int match_test(node_t *, get_arg_t, size_t);
-static int match_single_test(node_t *, get_arg_t, size_t);
-static find_t *locator(find_t *, path_t *, path_t *, opts_t *);
+static int m3l_match_test(node_t *, get_arg_t, size_t);
+static int m3l_match_single_test(node_t *, get_arg_t, size_t);
+static find_t *m3l_locator(find_t *, path_t *, path_t *, opts_t *);
 
 extern int optind;
 static int verbose_flag;
 
-find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opts_t *Popts)
+find_t *m3l_locator_caller(node_t *List, const char *path, const char *path_loc, opts_t *Popts)
 {
 	path_t *parsed_path, *parsed_path_loc;
 	char *search_term, *node_path;
@@ -71,7 +75,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 /*
  * parse path
  */
-	if( (parsed_path = parse_path(path)) == NULL){
+	if( (parsed_path = m3l_parse_path(path)) == NULL){
 		Error("Error in path");
 		return (find_t *)NULL;
 	}
@@ -91,7 +95,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0 && 
 	           strncmp(parsed_path->path[0], "*", 1) != 0 && strncmp(parsed_path->path[0], "~", 1) != 0){
 			Error("Wrong absolute path");
-			destroy_pars_path(&parsed_path);
+ 			m3l_destroy_pars_path(&parsed_path);
 			return (find_t *)NULL;
 		}
 	}
@@ -101,7 +105,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 			if(strncmp(parsed_path->path[i], "..", 2) == 0){
 				if ( (Tmp_node = Tmp_node->parent) == NULL){
 					Error("Wrong path");
-					destroy_pars_path(&parsed_path);
+					m3l_destroy_pars_path(&parsed_path);
 					return (find_t *)NULL;
 				}
 			}
@@ -110,7 +114,7 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 
 	if( strncmp(Tmp_node->type, "DIR", 3) != 0){
 		Warning("List in locate is not DIR");
-		destroy_pars_path(&parsed_path);
+		m3l_destroy_pars_path(&parsed_path);
 		return (find_t *)NULL;
 	}
 /* 
@@ -121,9 +125,9 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
 			Perror("strdup");
 	if(Popts->opt_i == 'i')search_term = StrToLower(search_term);
 
-	if ( (Founds = Find_caller(2, Tmp_node, search_term, Popts)) == NULL){
+	if ( (Founds = m3l_Find_caller(2, Tmp_node, search_term, Popts)) == NULL){
 		free(search_term);
-		destroy_pars_path(&parsed_path);
+		m3l_destroy_pars_path(&parsed_path);
 		/*Warning*/("Locator: No Founds");
 		return (find_t *)NULL;
 	}
@@ -133,32 +137,32 @@ find_t *locator_caller(node_t *List, const char *path, const char *path_loc, opt
  * write the values of the find result
   * call locator to select sets
  */		
-		if( (parsed_path_loc = parse_path(path_loc)) == NULL){
+		if( (parsed_path_loc = m3l_parse_path(path_loc)) == NULL){
 			free(search_term);
-			destroy_pars_path(&parsed_path);
+			m3l_destroy_pars_path(&parsed_path);
 			Error("Path2 failed");
 			return (find_t *)NULL;
 		}
 		if(parsed_path->seg_count != parsed_path_loc->seg_count){
-			destroy_pars_path(&parsed_path_loc);
+			m3l_destroy_pars_path(&parsed_path_loc);
 			free(search_term);
-			destroy_pars_path(&parsed_path);
+			m3l_destroy_pars_path(&parsed_path);
 			Error("Number of items in path different from location specification");  /* NOTE - in later versions, use one symbol '*' can be used for all paths segments */
 			return (find_t *)NULL;
-		}
+			}
 			
- 		Founds_Loc = locator(Founds, parsed_path, parsed_path_loc, Popts);
+ 		Founds_Loc = m3l_locator(Founds, parsed_path, parsed_path_loc, Popts);
 	
 		free(search_term);
-		DestroyFound(&Founds);
-		destroy_pars_path(&parsed_path);
-		destroy_pars_path(&parsed_path_loc);		
+		m3l_DestroyFound(&Founds);
+		m3l_destroy_pars_path(&parsed_path);
+		m3l_destroy_pars_path(&parsed_path_loc);		
 		return Founds_Loc;
 	}
 }
 
 
-find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, opts_t *Popt)
+find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, opts_t *Popt)
 {
 /*
  * function looks for subset in nodel List
@@ -187,23 +191,23 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 	
 	for(i=0; i < Founds->founds; i++){
   		
-		if( (node_path = Path(Founds->Found_Nodes[i]->List, Founds->Home_Node)) == NULL){
+		if( (node_path = m3l_Path(Founds->Found_Nodes[i]->List, Founds->Home_Node)) == NULL){
 			Error(" Path error");
-			destroy_pars_path(&parsed_path_loc);
+			m3l_destroy_pars_path(&parsed_path_loc);
 			free(HelpNodeI);
 			free(node_path);
 			for(j=0; j <=i; j++)
-				destroy_pars_path(&parsed_path_Ffounds[j]);
+				m3l_destroy_pars_path(&parsed_path_Ffounds[j]);
 			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
-		if( (parsed_path_Ffounds[i] =  parse_path(node_path)) == NULL){
+		if( (parsed_path_Ffounds[i] =  m3l_parse_path(node_path)) == NULL){
 			Error(" Path error");
-			destroy_pars_path(&parsed_path_loc);
+			m3l_destroy_pars_path(&parsed_path_loc);
 			free(HelpNodeI);
 			free(node_path);
 			for(j=0; j <=i; j++)
-				destroy_pars_path(&parsed_path_Ffounds[j]);
+				m3l_destroy_pars_path(&parsed_path_Ffounds[j]);
 			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
@@ -234,15 +238,15 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 /*
  * get arguments for path segment
  */
-		argsstr = get_arguments(parsed_path_loc->path[i]);
+		argsstr = m3l_get_arguments(parsed_path_loc->path[i]);
 		
 		if(argsstr.retval == -1){
 			Error("argstr error");
-			destroy_pars_path(&parsed_path_loc);
+			m3l_destroy_pars_path(&parsed_path_loc);
 			free(HelpNodeI);
 			free(node_path);
 			for(j=0; j <Founds->founds; j++)
-				destroy_pars_path(&parsed_path_Ffounds[j]);
+				m3l_destroy_pars_path(&parsed_path_Ffounds[j]);
 			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
@@ -305,7 +309,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 // 					printf(" Name Argument to comapre are '%c' \n",argsstr.arg); 
 
 					
-						HelpNodeI[j]  = match_test(Tmp,argsstr, counter);
+						HelpNodeI[j]  = m3l_match_test(Tmp,argsstr, counter);
 /*
  * argsstr.first if S or s, deal with subset
  * argsstr.s_name - is argsstr.first == ('s' || 'S') - specifies name of subset name
@@ -335,7 +339,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
  */
 		free(HelpNodeI);
 		for(j=0; j <Founds->founds; j++)
-			destroy_pars_path(&parsed_path_Ffounds[j]);
+			m3l_destroy_pars_path(&parsed_path_Ffounds[j]);
 		free(parsed_path_Ffounds);
 		return (find_t *)NULL;
 	}
@@ -370,7 +374,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
  */
 		free(HelpNodeI);
 		for(j=0; j <Founds->founds; j++)
-			destroy_pars_path(&parsed_path_Ffounds[j]);
+			m3l_destroy_pars_path(&parsed_path_Ffounds[j]);
 		free(parsed_path_Ffounds);
 /*
  * return list of positive mathes
@@ -379,7 +383,7 @@ find_t *locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc, op
 	}
 }
 
-int match_test(node_t *List, get_arg_t argsstr, size_t counter)
+int m3l_match_test(node_t *List, get_arg_t argsstr, size_t counter)
 {
 /*
  * find if what is to be comapred is set or subset
@@ -397,7 +401,7 @@ int match_test(node_t *List, get_arg_t argsstr, size_t counter)
 		}
 		else{
 			while(Tmpnode != NULL){
-				if( (retval = match_single_test(Tmpnode,  argsstr, counter)) == 1) return 1;
+				if( (retval = m3l_match_single_test(Tmpnode,  argsstr, counter)) == 1) return 1;
 				Tmpnode = Tmpnode->next;
 			}
 			return 0;
@@ -407,14 +411,14 @@ int match_test(node_t *List, get_arg_t argsstr, size_t counter)
 /*
  * set
  */
-		retval =  match_single_test(List, argsstr, counter);
+		retval =  m3l_match_single_test(List, argsstr, counter);
 		return retval;
 	}
 	
 	return 0;
 }
 
-int match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
+int m3l_match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
 {
 	char c;
 	size_t len1, len2;

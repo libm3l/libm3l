@@ -23,12 +23,14 @@
 /*
  *     Header file FunctionsPrt.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-21
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -36,30 +38,20 @@
 
 #include "internal_format_type.h"
 
-#ifndef __FUNCTIONPRT_H__
+#ifndef  __FUNCTIONPRT_H__
 #define __FUNCTIONPRT_H__
 
-void Perror(const char *);
-
-void Warning(const char *);
-
-void Error(const char *);
-
-void sig_chld(int );
-
-int Fork(void);
-
-SIZE_T Strol(char *);
-
-char *StrToLower(char *); 
-
-char *Path(node_t *, node_t *);
-
-path_t *parse_path(const char *);
-
-void destroy_pars_path(path_t **);
-
-get_arg_t get_arguments(const char *);
+extern void Perror(const char *);
+extern void Warning(const char *);
+extern void Error(const char *);
+extern void sig_chld(int );
+extern int Fork(void);
+extern SIZE_T Strol(char *);
+extern char *StrToLower(char *); 
+extern char *m3l_Path(node_t *, node_t *);
+extern path_t *m3l_parse_path(const char *);
+extern void m3l_destroy_pars_path(path_t **);
+extern get_arg_t m3l_get_arguments(const char *);
 
 #endif
 

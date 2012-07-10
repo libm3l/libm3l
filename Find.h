@@ -23,12 +23,14 @@
 /*
  *     Header file Find.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-18
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __FIND_LIST_POINTER_H__
 #define __FIND_LIST_POINTER_H__
 
-find_t *Find(node_t *, char * , ...);
+find_t *m3l_Find(node_t *, char * , ...);
 
 #endif

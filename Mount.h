@@ -23,12 +23,14 @@
 /*
  *     Header file Mount.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-24
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef  __MOUNT_H__
 #define __MOUNT_H__
 
-extern node_t *Mount(const char *);
+extern node_t *m3l_Mount(const char *);
 
 #endif

@@ -23,12 +23,14 @@
 /*
  *     Header file WriteData.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-18
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __WRITEDATA_H__
 #define __WRITEDATA_H__
 
-int WriteData(node_t *, FILE *);
+extern int m3l_WriteData(node_t *, FILE *);
 
 #endif

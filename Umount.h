@@ -23,12 +23,14 @@
 /*
  *     Header file Umount.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-24
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,7 +39,7 @@
 #ifndef  __UMOUNT_H__
 #define  __UMOUNT_H__
 
-extern int Umount(node_t **);
+extern int m3l_Umount(node_t **);
 
 
 #endif

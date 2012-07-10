@@ -23,10 +23,11 @@
 /*
  *     Function Ln.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-07-01
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -59,7 +63,7 @@ static int verbose_flag;
 /*
  * routine Links Slist to Tlist
  */
-size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+size_t m3l_Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {
 
 	char *word, **opt;
@@ -259,7 +263,7 @@ size_t Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t **TL
  */
 	Popts = &opts;		
 
-	ln_tot_nodes = ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);	
+	ln_tot_nodes = m3l_ln_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);	
 	
 
 	return ln_tot_nodes;

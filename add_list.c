@@ -23,10 +23,11 @@
 /*
  *     Function add_list.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,14 +39,12 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
-
-
-
-
-
  
 #include "Header.h"
 #include "format_type.h"
@@ -55,7 +54,7 @@
 #include "locate_list.h"
 #include "FunctionsPrt.h"
 
-int add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+int m3l_add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a caller of the cp functions
@@ -88,7 +87,7 @@ int add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t
 	len = strlen(t_path_loc);
 	if(strncmp(t_path_loc, "./", 2) == 0 && len == 2){
 		if( strncmp( (*TList)->type, "DIR", 3) == 0){
-			addlist = add_list(SList, TList,Popts);
+			addlist = m3l_add_list(SList, TList,Popts);
 			return addlist;
 		}
 		else{
@@ -100,7 +99,7 @@ int add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
 			Warning("add_list: no correct target specified");
 			return -1;
 		}
@@ -110,15 +109,15 @@ int add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t
  */
 			if(TFounds->founds != 1){
 				Warning("mv: multiple target nodes");
-				DestroyFound(&TFounds);
+				m3l_DestroyFound(&TFounds);
 				return -1;
 			}
 					
-			if( (addlist = add_list(SList, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+			if( (addlist = m3l_add_list(SList, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
 				Warning("problem in ladd_list");
 			}
 					
-			DestroyFound(&TFounds);
+			m3l_DestroyFound(&TFounds);
 			return addlist;
 		}
 	}
@@ -130,7 +129,7 @@ int add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t
 
 
 
-int add_list(node_t **List, node_t **WTAList, opts_t *Popt)
+int m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 {
 /*
  * function adds list to the list tree

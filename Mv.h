@@ -23,12 +23,14 @@
 /*
  *     Header file Mv.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-04
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -37,6 +39,6 @@
 #ifndef __MV_H__
 #define __MV_H__
 
-size_t Mv(node_t **, const char *, const char *, node_t **, const char *, const char *, char * , ...);
+extern size_t m3l_Mv(node_t **, const char *, const char *, node_t **, const char *, const char *, char * , ...);
 
 #endif

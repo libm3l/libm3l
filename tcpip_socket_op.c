@@ -23,10 +23,11 @@
 /*
  *     Function tcpip_socket_op.c
  *
- *     Author: Adam Jirasek
  *     Date: 2012-06-24
  * 
  * 
+ *
+ *
  *     Description:
  * 
  *
@@ -38,7 +39,10 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -54,13 +58,13 @@
 #include "tcpip_socket_op.h"
 
 
-int openbindlistensocket(int portno)
+int m3l_server_openbindlistensocket(int portno)
 {
 /*
  * function opens, binds socket and makes it listening (for server)
  */
 	int sockfd, on, status;
-	struct sockaddr_in serv_addr;
+	struct sockaddr_in serv_addr, cli_addr;
 	struct hostent *hostPtr = NULL;
 	char hostname[80] = ""; 
 /*
@@ -109,8 +113,7 @@ int openbindlistensocket(int portno)
 
 
 
-
-int cli_open_socket(const char * server_addr, int portno)
+int m3l_cli_open_socket(const char * server_addr, int portno)
 {
 	int sockfd;
 	struct sockaddr_in serv_addr;

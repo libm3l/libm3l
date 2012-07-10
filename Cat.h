@@ -23,12 +23,14 @@
 /*
  *     Header file Cat.h
  *
- *     Author: Adam Jirasek
  *     Date: 2012-05-18
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		Author			Descritpion
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
  *
  */
 
@@ -39,6 +41,6 @@
 #ifndef __CAT_H__
 #define __CAT_H__
 
-int Cat(node_t *, char * , ...);
+int m3l_Cat(node_t *, char * , ...);
 
 #endif
