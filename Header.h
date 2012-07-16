@@ -67,7 +67,9 @@
 #include <openssl/err.h>
 #include <arpa/inet.h>
 #include <float.h>
-             
+#include <stdint.h>
+#include <inttypes.h>
+
 /*
  * TCP/IP communication option
  */
