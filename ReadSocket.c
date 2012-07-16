@@ -572,6 +572,143 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 /*
  * decide what type 
  */	
+ 	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
+ 		pldf = (*Lnode)->data.ldf;
+#include "ReadSocket_Part1"
+		*pldf++ = FCS_C2LD(type, &err);
+#include "ReadSocket_Part2"
+ 	}
+ 	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
+ 		pdf = (*Lnode)->data.df;
+#include "ReadSocket_Part1"
+		*pdf++ = FCS_C2D(type, &err);
+#include "ReadSocket_Part2"
+ 	}
+ 	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
+ 		pf = (*Lnode)->data.f;
+#include "ReadSocket_Part1"
+		*pf++ = FCS_C2F(type, &err);
+#include "ReadSocket_Part2"
+  	}
+/*
+ * integers
+ */
+	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
+		pulli = (*Lnode)->data.ulli;
+#include "ReadSocket_Part1"
+		*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
+		pslli = (*Lnode)->data.slli;
+#include "ReadSocket_Part1"
+		*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
+		puli = (*Lnode)->data.uli;
+#include "ReadSocket_Part1"
+		*puli++ = (unsigned long int)FCS_C2LI(type, &err);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+		plli = (*Lnode)->data.lli;
+#include "ReadSocket_Part1"
+		*plli++ = FCS_C2LLI(type, &err);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
+		pusi = (*Lnode)->data.usi;
+#include "ReadSocket_Part1"
+		*pusi++ = (unsigned short int)FCS_C2I(type);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
+		psi = (*Lnode)->data.si;
+#include "ReadSocket_Part1"
+		*psi++ = (signed int)FCS_C2I(type);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
+		pui = (*Lnode)->data.ui;
+#include "ReadSocket_Part1"
+		*pui++ = (unsigned int)FCS_C2I(type);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
+		pli = (*Lnode)->data.li;
+#include "ReadSocket_Part1"
+		*pli++ = FCS_C2LI(type, &err);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
+		pi = (*Lnode)->data.i;
+#include "ReadSocket_Part1"
+		*pi++ = FCS_C2I(type);
+#include "ReadSocket_Part2"
+	}
+/*
+ * counters
+ */
+	else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
+		pst = (*Lnode)->data.st;
+#include "ReadSocket_Part1"
+		*pst++ = FCS_C2LLI(type, &err);
+#include "ReadSocket_Part2"
+	}
+	else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
+		pptrdf = (*Lnode)->data.ptrdf;
+#include "ReadSocket_Part1"
+		*pptrdf++ = FCS_C2LLI(type, &err);
+#include "ReadSocket_Part2"
+	}
+		
+	return 0;
+/*
+  * if you get here something went wrong
+  */	
+	return -1;
+}
+
+
+int m3l_read_socket_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, opts_t *Popts)
+{
+/* 
+ * function reads data from FILE
+ */
+	char type[MAX_WORD_LENGTH], lastchar;
+	size_t i, tot_dim, wc, hi, j;
+	
+	float         *pf;
+	double        *pdf;
+	long  double  *pldf;
+/*
+ * chars
+ */
+	char           *err;
+/*
+ * integers
+ */
+	short  int         	*psi;
+	unsigned short int 	*pusi;
+	int           		*pi;
+	unsigned int  		*pui;
+	long  int     		*pli;
+	unsigned long int       *puli;
+	long long int           *plli;
+	signed long long int    *pslli;
+	unsigned long long int  *pulli;
+
+	size_t *pst;
+	ptrdiff_t *pptrdf;
+	
+	tot_dim = 1;
+	
+	for(i=0; i<TMPSTR.ndim; i++)
+		tot_dim = tot_dim * TMPSTR.dim[i];
+/*
+ * decide what type 
+ */	
 	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
 		pldf = (*Lnode)->data.ldf;
 	}

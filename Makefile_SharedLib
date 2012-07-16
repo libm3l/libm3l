@@ -17,6 +17,10 @@ main: $(OBJS)
 	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS) 
 	ln -sf libm3l.so.1.0 libm3l.so
 
+	set PWD=`pwd`
+	cp libm3l.org_h libm3l.h
+	sed -i 's:ActualPWD:'$$PWD':' libm3l.h
+
 -include $(OBJS:.o=.d)
 
 %.o: %.c
@@ -28,4 +32,4 @@ main: $(OBJS)
 	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
 	@rm -f $*.d.tmp
 clean:
-        rm -f LinkedStr_TEST.out *.o *.d
+	rm -f LinkedStr_TEST.out *.o *.d
