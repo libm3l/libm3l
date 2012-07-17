@@ -76,7 +76,9 @@ node_t *m3l_Fread(const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0'; opts.opt_c = '\0';
+	opts.opt_e = '\0';  // clean empty links
+	opts.opt_m = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_c = '\0'; // clean empty link references
 	
 	option_index = 0;
 /*
@@ -249,8 +251,8 @@ int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0';
-	
+	opts.opt_e = '\0';  // clean empty links
+	opts.opt_m = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	option_index = 0;
 /*
  * get number of options

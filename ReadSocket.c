@@ -58,6 +58,7 @@
 #include "FunctionsPrt.h"
 #include "udf_rm.h"
 #include "ReadSocket.h"
+#include "NumberConversion.h"
 
 #define EXPR      *pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0'
 #define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN 
@@ -78,6 +79,17 @@ static node_t *m3l_read_socket_data(int, opts_t *);
 
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
+
+uint64_t  init(char *k) {
+
+	uint64_t a, b; // two local variables 
+	memcpy(&a,k,8); // fill them up
+	memcpy(&b,k+8,8); // you presumably mean k+8?
+	uint64_t sum = a + b;
+	return sum;
+}
+
+
 
 /*
  * Function read just one line from a socket, disregarding comments line
@@ -343,7 +355,7 @@ node_t *m3l_read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt, opts_t *Popts)
 			Pnode         = Tmpnode;
 			Dnode->child  = Pnode;
 			Pnode->parent = Dnode;
-		}
+		}    
 		else
 		{
 			Pnode->next      = Tmpnode;
@@ -543,12 +555,12 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 	size_t i, tot_dim, wc, hi, j;
 	
 	float         *pf;
-	double        *pdf;
+	double        *pdf, d2;
 	long  double  *pldf;
 /*
  * chars
  */
-	char           *err;
+	char           *err, *end;
 /*
  * integers
  */
@@ -561,6 +573,8 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 	long long int           *plli;
 	signed long long int    *pslli;
 	unsigned long long int  *pulli;
+
+	uint64_t di;
 
 	size_t *pst;
 	ptrdiff_t *pptrdf;
@@ -576,12 +590,26 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  		pldf = (*Lnode)->data.ldf;
 #include "ReadSocket_Part1"
 		*pldf++ = FCS_C2LD(type, &err);
+// char * ulltoa(uint64_t ll, char * buffer, int radix);   http://publib.boulder.ibm.com/infocenter/zos/v1r11/index.jsp?topic=/com.ibm.zos.r11.bpxbd00/ulltoa.htm
 #include "ReadSocket_Part2"
  	}
  	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
  		pdf = (*Lnode)->data.df;
 #include "ReadSocket_Part1"
-		*pdf++ = FCS_C2D(type, &err);
+// 		*pdf++ = FCS_C2D(type, &err);
+
+//   		memcpy(&di, type, 128);
+// 		di = (buf[0] <<  24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
+
+// 		di = ((uint64_t)type[0]<< 56) | ((uint64_t)type[1]<<48) | ((uint64_t)type[2]<< 40) | ((uint64_t)type[3]  << 32) | ((uint64_t)type[4] <<  24) | (type[5] << 16) | ((uint64_t)type[6] << 8) | (uint64_t)type[7];
+//  		di = (( char)type[0]<< 56) | (( char)type[1]<<48) | (( char)type[2]<< 40) | (( char)type[3]  << 32) | (( char)type[4] <<  24) | (type[5] << 16) | (( char)type[6] << 8) | ( char)type[7];
+
+		di = strtoull(type, &end, 16);
+		d2 = unpack754_64(di);
+
+		printf("double after  : %.20lf\n", d2);
+		*pdf++ = d2;
+ 		
 #include "ReadSocket_Part2"
  	}
  	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
@@ -596,7 +624,7 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
 		pulli = (*Lnode)->data.ulli;
 #include "ReadSocket_Part1"
-		*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
+			*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
 #include "ReadSocket_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */

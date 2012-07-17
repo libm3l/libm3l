@@ -27,6 +27,8 @@
 #define unpack754_32(i) (unpack754((i), 32, 8))
 #define unpack754_64(i) (unpack754((i), 64, 11))
 
+#define to_uint64(buffer,n) (*(uint64_t*)(buffer + n))
+
 uint64_t pack754(long double , unsigned , unsigned );
 long double unpack754(uint64_t , unsigned , unsigned );
 

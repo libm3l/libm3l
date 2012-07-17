@@ -76,6 +76,8 @@ size_t m3l_Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t 
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0'; opts.opt_l = '\0';
 	opts.opt_c = '\0'; opts.opt_e = '\0'; opts.opt_m = '\0';
 	
+	// opts.opt_m = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+
 	option_index = 0;
 	ln_tot_nodes=0;
 	init_call = 2;

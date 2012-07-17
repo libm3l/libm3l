@@ -77,7 +77,9 @@ int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0'; opts.opt_c = '\0';
+	opts.opt_e = '\0';  // clean empty links
+	opts.opt_m = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_c = '\0'; // clean empty link references
 	
 	option_index = 0;
 /*
@@ -138,6 +140,9 @@ int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
+//  				{"char_coding",          no_argument,       0, 'c'},
+//  				{"IEEE754",              no_argument,       0, 'I'},
+//  				{"memcpy",               no_argument,       0, 'm'},
 				{0, 0, 0, 0}
 			};
  /*
@@ -223,7 +228,9 @@ node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0';
+	opts.opt_e = '\0';  // clean empty links
+	opts.opt_m = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_c = '\0'; // clean empty link references
 	
 	option_index = 0;
 /*
@@ -369,7 +376,9 @@ node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname,
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0';
+	opts.opt_e = '\0';  // clean empty links
+	opts.opt_m = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_c = '\0'; // clean empty link references
 	
 	option_index = 0;
 /*
@@ -678,7 +687,7 @@ int m3l_client_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
 		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;	
 	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
-	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
+	if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 		Error("Error during writing data to socket");
 	if( close(socketnr) == -1)
 		Perror("close");
@@ -703,7 +712,7 @@ node_t *m3l_client_send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
 	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 		Error("Could not open socket");
 
-	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
+	if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 		Error("Error during writing data to socket");
 	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
@@ -738,7 +747,7 @@ node_t *m3l_client_receive_send_tcpipsocket(node_t *Lnode, const char *hostname,
 	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 		Error("Error during reading data from socket");
 
-	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
+	if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 		Error("Error during writing data to socket");
 	if( close(socketnr) == -1)
 		Perror("close");
