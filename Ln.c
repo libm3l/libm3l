@@ -74,9 +74,9 @@ size_t m3l_Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t 
 	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0'; opts.opt_l = '\0';
-	opts.opt_c = '\0'; opts.opt_e = '\0'; opts.opt_m = '\0';
+	opts.opt_linkscleanemptrefs = '\0'; opts.opt_linkscleanemptlinks = '\0'; opts.opt_nomalloc = '\0';
 	
-	// opts.opt_m = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	// opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 
 	option_index = 0;
 	ln_tot_nodes=0;
@@ -186,14 +186,14 @@ size_t m3l_Ln(node_t *SList, const char *s_path, const char *s_path_loc, node_t 
 /*
  * clean empty links references
  */
-					opts.opt_c = 'c';
+					opts.opt_linkscleanemptrefs = 'c';
 				break;
 				
 				case 'e':
 /*
  * clean empty links references
  */
-					opts.opt_e = 'e';
+					opts.opt_linkscleanemptlinks = 'e';
 				break;
 				
 				case 'i':

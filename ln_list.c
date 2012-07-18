@@ -93,7 +93,7 @@ size_t m3l_ln_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 		return -1;
 	}
 	
-	if (Popts->opt_e == 'e' || Popts->opt_c == 'c'){
+	if (Popts->opt_linkscleanemptlinks == 'e' || Popts->opt_linkscleanemptrefs == 'c'){
  		ln_tot_nodes = m3l_ln_cleanemptylinks(TList,  Popts);
 		return ln_tot_nodes;
 	}
@@ -547,15 +547,15 @@ size_t m3l_ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 	if((*List)->child == NULL){
 /*
  * check if list is LINK
- * if empty link and Popt->opt_e == 'e' remove empty link
- * if not link and Popt->opt_c == 'c' check if list is linked to another LIST and 
+ * if empty link and Popt->opt_linkscleanemptlinks == 'e' remove empty link
+ * if not link and Popt->opt_linkscleanemptrefs == 'c' check if list is linked to another LIST and 
  * remove NULL references 
  */
 		rm_nodes = 0;
 		if( strncmp( (*List)->type, "LINK", 4) == 0){
-			if(Popt != NULL && (*List)->ndim == 0 && Popt->opt_e == 'e') rm_nodes = m3l_rm_list(2, List, Popt);
+			if(Popt != NULL && (*List)->ndim == 0 && Popt->opt_linkscleanemptlinks == 'e') rm_nodes = m3l_rm_list(2, List, Popt);
 		}
-		else if	(Popt != NULL && Popt->opt_c == 'c'){
+		else if	(Popt != NULL && Popt->opt_linkscleanemptrefs == 'c'){
 			rm_nodes = rm_nodes + m3l_ln_cleanemptylinksref(List);
 		}
 
@@ -573,7 +573,7 @@ size_t m3l_ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
 			cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinks(&Tmpnode,  Popt);
-			if(Popt != NULL && Popt->opt_c == 'c') cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinksref(&Tmpnode);
+			if(Popt != NULL && Popt->opt_linkscleanemptrefs == 'c') cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinksref(&Tmpnode);
 			Tmpnode = Tmpnode1;
 		}
 		return cleaned_nodes;

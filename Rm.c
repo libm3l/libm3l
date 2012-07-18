@@ -74,7 +74,7 @@ size_t m3l_Rm(node_t **List, const char *path, const char *path_loc, char * Opti
 	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0'; opts.opt_l = '\0';
-	opts.opt_c = '\0'; 
+	opts.opt_linkscleanemptrefs = '\0'; 
 	
 	option_index = 0;
 	rm_tot_nodes=0;
@@ -185,7 +185,7 @@ size_t m3l_Rm(node_t **List, const char *path, const char *path_loc, char * Opti
  * it is faster but can allocate memory of used way too much
  * to clean it, specify c
  */
-					opts.opt_c = 'c';
+					opts.opt_linkscleanemptrefs = 'c';
 				break;
 				
 				case 'i':

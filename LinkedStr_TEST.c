@@ -127,6 +127,11 @@ int main(void)
  	                   Error("CatData");
 					
 		printf("\n\n\n\n");
+
+// 		if( (Anode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "text", (char *)NULL)) == NULL)
+// 		Perror("Send_receive");
+
+		exit(0);
 		
  		if( (Anode = m3l_Fread("TEST.dat", (char *)NULL))  == NULL)
  			Perror("Linked_test: m3l_Fread");	

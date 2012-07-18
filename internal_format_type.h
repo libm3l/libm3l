@@ -61,6 +61,10 @@ typedef struct opts{
 	char opt_r, opt_R;
 	char opt_s, opt_S;
 	char opt_u, opt_U;
+
+	char opt_linkscleanemptrefs, opt_linkscleanemptlinks;
+	char opt_nomalloc;
+	char opt_tcpencoding;
 } opts_t;
 
 

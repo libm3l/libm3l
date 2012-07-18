@@ -59,6 +59,7 @@
 
 static int m3l_write_buffer(const char *, int, int, int, opts_t *);
 static int m3l_write_file_data_intdescprt(node_t *, size_t , int, opts_t *);
+static ssize_t Write(int , char *, size_t);
 
 char *pc, buffer[MAXLINE];
 ssize_t bitcount;
@@ -260,31 +261,60 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 			} 
 		}
 		else if(strncmp(Tmpnode->type,"D",1) == 0){  /* double */
-			for (i=0; i<tot_dim; i++){
-				bzero(buff, sizeof(buff));
 
-				di = pack754_64(Tmpnode->data.df[i]);
-				printf("%" PRIx64 " " , di);
-
-// 				if( (n=FCS_W_D(Tmpnode->data.df[i], SEPAR_SIGN)) < 0)
-// 	      			       	Perror("snprintf");
-
-				if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
-	      			       	Perror("snprintf");
-				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
-					Error("Writing buffer");
-			} 
+			if(Popts->opt_tcpencoding == 'I'){  /* IEEE-754 encoding */
+				for (i=0; i<tot_dim; i++){
+					bzero(buff, sizeof(buff));
+					di = pack754_64(Tmpnode->data.df[i]);
+					if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
+						Perror("snprintf");
+					buff[n] = '\0';
+					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+						Error("Writing buffer");
+				}
+			}
+			else if(Popts->opt_tcpencoding == 'r'){    /* Iraw data */
+				Error("Raw coding not implemented");
+			}
+			else if(Popts->opt_tcpencoding == 't'){ /* text enconding */
+				for (i=0; i<tot_dim; i++){
+					bzero(buff, sizeof(buff));	
+	 				if( (n=FCS_W_D(Tmpnode->data.df[i], SEPAR_SIGN)) < 0)
+	 	      			       	Perror("snprintf");
+					buff[n] = '\0';
+					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+						Error("Writing buffer");
+				}
+			}
 		}
+
+
 		else if(strncmp(Tmpnode->type,"F",1) == 0){  /* float */
-			for (i=0; i<tot_dim; i++){
-				bzero(buff, sizeof(buff));
-				if( (n=FCS_W_F(Tmpnode->data.f[i], SEPAR_SIGN)) < 0)
-	      			       	Perror("snprintf");
-				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
-					Error("Writing buffer");
-			} 
+			
+			if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+				for (i=0; i<tot_dim; i++){
+					bzero(buff, sizeof(buff));
+					fi = pack754_32(Tmpnode->data.f[i]);
+					if( (n=snprintf(buff, sizeof(buff), "%008" PRIx32 "%c", fi, SEPAR_SIGN)) < 0)
+						Perror("snprintf");
+					buff[n] = '\0';
+					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+						Error("Writing buffer");
+				}
+			}
+			else if(Popts->opt_tcpencoding == 'r'){   /* Iraw data */
+				Error("Raw coding not implemented");
+			}
+			else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
+				for (i=0; i<tot_dim; i++){
+					bzero(buff, sizeof(buff));
+					if( (n=FCS_W_F(Tmpnode->data.f[i], SEPAR_SIGN)) < 0)
+						Perror("snprintf");
+					buff[n] = '\0';
+					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+						Error("Writing buffer");
+				} 
+			}
 		}
 /*
  * chars, do not serialize, write as they are
@@ -446,7 +476,8 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
  * NOTE-URGENT - check the algorithm for adding SEPAR_SIGN at the end of buffer, 
  * especially situattion after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
  */
-	size_t n,i;
+	size_t i, size;
+	ssize_t n;
      
 	while(*buff != '\0'){
 		if(bitcount == (MAXLINE-1))
@@ -503,3 +534,26 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 	
 	return 1;
 }	
+
+
+
+ssize_t Write(int sockfd, char *buffer, size_t size){
+
+	ssize_t total, n;
+	while(size > 0) {
+
+		if ( (n = write(sockfd,buffer,size)) < 0){
+			if (errno == EINTR) continue;
+			return (total == 0) ? -1 : total;
+		}
+		buffer += n;
+		total += n;
+		size -= n;
+	}
+	return total;
+}
+
+
+
+// http://stackoverflow.com/questions/1674162/how-to-handle-eintr-interrupted-system-call
+// 5 down vote accepted

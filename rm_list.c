@@ -213,7 +213,7 @@ size_t m3l_rm_list(int call, node_t **List, opts_t *Popts)
 /*
  * if required, clean-up the reference field
  */
-				if(Popts != NULL && Popts->opt_c == 'c' && CLD != NULL) m3l_ln_cleanemptylinksref(&CLD);
+				if(Popts != NULL && Popts->opt_linkscleanemptrefs == 'c' && CLD != NULL) m3l_ln_cleanemptylinksref(&CLD);
 			}
 			(*List)->child = NULL;
 		}

@@ -80,17 +80,6 @@ static node_t *m3l_read_socket_data(int, opts_t *);
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
 
-uint64_t  init(char *k) {
-
-	uint64_t a, b; // two local variables 
-	memcpy(&a,k,8); // fill them up
-	memcpy(&b,k+8,8); // you presumably mean k+8?
-	uint64_t sum = a + b;
-	return sum;
-}
-
-
-
 /*
  * Function read just one line from a socket, disregarding comments line
  * It identifies if the line is a header of DATA or DIR list
@@ -554,7 +543,7 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t i, tot_dim, wc, hi, j;
 	
-	float         *pf;
+	float         *pf, f2;
 	double        *pdf, d2;
 	long  double  *pldf;
 /*
@@ -564,16 +553,17 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 /*
  * integers
  */
-	short  int         	*psi;
+	short  int         		*psi;
 	unsigned short int 	*pusi;
-	int           		*pi;
+	int           				*pi;
 	unsigned int  		*pui;
-	long  int     		*pli;
-	unsigned long int       *puli;
-	long long int           *plli;
-	signed long long int    *pslli;
+	long  int     			*pli;
+	unsigned long int       	*puli;
+	long long int          	 *plli;
+	signed long long int   	 *pslli;
 	unsigned long long int  *pulli;
 
+	uint32_t fi;
 	uint64_t di;
 
 	size_t *pst;
@@ -595,28 +585,51 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  	}
  	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
  		pdf = (*Lnode)->data.df;
-#include "ReadSocket_Part1"
-// 		*pdf++ = FCS_C2D(type, &err);
 
-//   		memcpy(&di, type, 128);
-// 		di = (buf[0] <<  24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
-
-// 		di = ((uint64_t)type[0]<< 56) | ((uint64_t)type[1]<<48) | ((uint64_t)type[2]<< 40) | ((uint64_t)type[3]  << 32) | ((uint64_t)type[4] <<  24) | (type[5] << 16) | ((uint64_t)type[6] << 8) | (uint64_t)type[7];
-//  		di = (( char)type[0]<< 56) | (( char)type[1]<<48) | (( char)type[2]<< 40) | (( char)type[3]  << 32) | (( char)type[4] <<  24) | (type[5] << 16) | (( char)type[6] << 8) | ( char)type[7];
-
-		di = strtoull(type, &end, 16);
-		d2 = unpack754_64(di);
-
-		printf("double after  : %.20lf\n", d2);
-		*pdf++ = d2;
- 		
-#include "ReadSocket_Part2"
+		if(Popts == NULL){
+			#include "ReadSocket_Part1"
+			*pdf++ = FCS_C2D(type, &err);
+			#include "ReadSocket_Part2"
+		}
+		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+			#include "ReadSocket_Part1"
+			di = strtoull(type, &end, 16);
+			d2 = unpack754_64(di);
+			*pdf++ = d2;
+			#include "ReadSocket_Part2"
+ 		}
+		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
+			Error("Raw coding not implemented");
+		}
+ 		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
+			#include "ReadSocket_Part1"
+			*pdf++ = FCS_C2D(type, &err);
+			#include "ReadSocket_Part2"
+ 		}
  	}
  	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
  		pf = (*Lnode)->data.f;
-#include "ReadSocket_Part1"
-		*pf++ = FCS_C2F(type, &err);
-#include "ReadSocket_Part2"
+		
+		if(Popts == NULL){
+			#include "ReadSocket_Part1"
+			*pf++ = FCS_C2F(type, &err);
+			#include "ReadSocket_Part2"
+		}
+		if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+			#include "ReadSocket_Part1"
+			fi = strtoull(type, &end, 8);
+			f2 = unpack754_32(fi);
+			*pf++ = f2;
+			#include "ReadSocket_Part2"
+ 		}
+		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
+			Error("Raw coding not implemented");
+		}
+ 		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
+			#include "ReadSocket_Part1"
+			*pf++ = FCS_C2F(type, &err);
+			#include "ReadSocket_Part2"
+		}
   	}
 /*
  * integers
