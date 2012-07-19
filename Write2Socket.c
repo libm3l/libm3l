@@ -314,7 +314,7 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
 					fi = pack754_32(Tmpnode->data.f[i]);
-					if( (n=snprintf(buff, sizeof(buff), "%008" PRIx32 "%c", fi, SEPAR_SIGN)) < 0)
+					if( (n=snprintf(buff, sizeof(buff), "%08" PRIx32 "%c", fi, SEPAR_SIGN)) < 0)
 						Perror("snprintf");
 					buff[n] = '\0';
 					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )

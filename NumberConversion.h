@@ -34,5 +34,6 @@
 
 uint64_t pack754(long double , unsigned , unsigned );
 long double unpack754(uint64_t , unsigned , unsigned );
+char * double_2_Hex(double);
 
 #endif

@@ -1,31 +1,53 @@
 /*
- * Copyright
+ *     Copyright (C) 2012  Adam Jirasek
  * 
- * the pack754 and unpack754 functions are transcript of Brian Hall code from the Beej's Guide to Network Programming
- * http://beej.us/guide/bgnet/output/html/multipage/advanced.html
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  * 
- * Copyright - see extract from the Beej's Guide to Network Programming web page: ( http://beej.us/guide/bgnet/output/html/multipage/intro.html#copyright )
- *
- * ---------------------------------------------------------------------------------------------------------------------------------
- * 1.9. Copyright and Distribution
- *
- * Beej's Guide to Network Programming is Copyright © 2012 Brian "Beej Jorgensen" Hall.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Lesser General Public License for more details.
  * 
- * With specific exceptions for source code and translations, below, this work is licensed under the Creative Commons Attribution- Noncommercial- No 
- * Derivative Works 3.0 License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/3.0/ or send a letter to Creative Commons,
- * 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+ *     You should have received a copy of the GNU Lesser General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     contact: clibm3l@gmail.com
  * 
- * One specific exception to the "No Derivative Works" portion of the license is as follows: this guide may be freely translated into any language, provided the
- * translation is accurate, and the guide is reprinted in its entirety. The same license restrictions apply to the translation as to the original guide. The 
- * translation may also include the name and contact information for the translator.
- * 
- * The C source code presented in this document is hereby granted to the public domain, and is completely free of any license restriction.
- * 
- * Educators are freely encouraged to recommend or supply copies of this guide to their students.
- * 
- * Contact beej@beej.us for more information.
- * ---------------------------------------------------------------------------------------------------------------------------------
  */
+
+/*
+ * the pack754 and unpack754 functions are transcript of Brian Hall code from the Beej's Guide to Network Programming
+ * http://beej.us/guide/bgnet/output/html/multipage/advanced.html, Contact beej@beej.us for more information.
+ */
+
+/*
+ *     Function NumberConversion.c
+ *
+ *     Date: 2012-07-19
+ * 
+ * 
+ *     Description:
+ * 
+ *
+ *     Input parameters:
+ * 
+ *
+ *     Return value:
+ * 
+ * 
+ *
+ *     Modifications:
+ *     Date		Version		Patch number		CLA 
+ *
+ *
+ *     Description
+ * 
+ */
+
+
 
 #include "Header.h"
 #include "NumberConversion.h"
@@ -55,7 +77,7 @@ uint64_t pack754(long double f, unsigned bits, unsigned expbits)
  */
 	shift = 0;
 	while(fnorm >= 2.0) { fnorm /= 2.0; shift++; }
-	while(fnorm < 1.0) { fnorm *= 2.0; shift--; }
+	while(fnorm < 1.0)  { fnorm *= 2.0; shift--; }
 	fnorm = fnorm - 1.0;
 /*
  * calculate the binary form (non-float) of the significand data
@@ -103,4 +125,27 @@ long double unpack754(uint64_t i, unsigned bits, unsigned expbits)
 	result *= (i>>(bits-1))&1? -1.0: 1.0;
 	
 	return result;
+}
+
+/*
+ * converts double to HEX
+ */
+char * double_2_Hex(double a)
+{
+//    char *buf = new char[17]; // double is 8-byte long, so we have 2*8 + terminating \0
+
+	char buf[17];
+	char *d2c;
+	char *n = buf;
+	int i;
+
+	d2c = (char *) &a;
+	
+	for(i = 0; i < 8; i++){
+		sprintf(n, "%02X", *d2c++);
+		n += 2;
+	} 
+	*(n) = '\0';
+	
+	return n;
 }
