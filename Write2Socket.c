@@ -238,25 +238,43 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
  * find type of the argument - Floats
  */
 		if (strncmp(Tmpnode->type,"LD",2) == 0){  /* long double */
+
+			if(Popts->opt_tcpencoding == 'I'){  /* IEEE-754 encoding */
+				for (i=0; i<tot_dim; i++){
+					bzero(buff, sizeof(buff));
+					di = pack754_64(Tmpnode->data.ldf[i]);
+					if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
+						Perror("snprintf");
+					buff[n] = '\0';
+					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+						Error("Writing buffer");
+				}
+			}
+			else if(Popts->opt_tcpencoding == 'r'){    /* Iraw data */
+				Error("Raw coding not implemented");
+				exit(0);
+			}
+			else if(Popts->opt_tcpencoding == 't'){ /* text enconding */
 /*
  * loop over all elements of filed
  */
-			for (i=0; i<tot_dim; i++){
+				for (i=0; i<tot_dim; i++){
 /*
  * clean buff and write in i-th element of the field
  */
-				bzero(buff, sizeof(buff));
-				if( (n= FCS_W_LD(Tmpnode->data.ldf[i], SEPAR_SIGN)) < 0){
-	      			       	Perror("snprintf");
-					return -1;
-				}
+					bzero(buff, sizeof(buff));
+					if( (n= FCS_W_LD(Tmpnode->data.ldf[i], SEPAR_SIGN)) < 0){
+						Perror("snprintf");
+						return -1;
+					}
 /*
  * set the last element of the buff to \0 and add buff to buffer
  */
-				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 ){
-					Error("Writing buffer");
-					return -1;
+					buff[n] = '\0';
+					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 ){
+						Error("Writing buffer");
+						return -1;
+					}
 				}
 			} 
 		}
@@ -275,6 +293,7 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 			}
 			else if(Popts->opt_tcpencoding == 'r'){    /* Iraw data */
 				Error("Raw coding not implemented");
+				exit(0);
 			}
 			else if(Popts->opt_tcpencoding == 't'){ /* text enconding */
 				for (i=0; i<tot_dim; i++){
@@ -304,6 +323,7 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 			}
 			else if(Popts->opt_tcpencoding == 'r'){   /* Iraw data */
 				Error("Raw coding not implemented");
+				exit(0);
 			}
 			else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
 				for (i=0; i<tot_dim; i++){
@@ -487,7 +507,9 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 /*
 * SEND TO SOCKET
 */
-			if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
+// 			if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
+			size = strlen(buffer);
+			if ( (n = Write(sockfd,buffer,size)) < size)
 				Perror("write()");
 			bzero(buffer, sizeof(buffer));
 		}
@@ -511,7 +533,9 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 /*
 * SEND TO SOCKET
 */
-		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
+// 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
+		size = strlen(buffer);
+		if ( (n = Write(sockfd,buffer,size)) < size)
 			Perror("write()");
 		bzero(buffer, sizeof(buffer));
 		
@@ -528,7 +552,9 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
  * this is the end of sending processs, send everything you have in buffer regardless how long it is.
  * The last sequence of the bugger is -EOMB-
  */
-		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
+// 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
+		size = strlen(buffer);
+		if ( (n = Write(sockfd,buffer,size)) < size)
 			Perror("write()");	
 	}
 	

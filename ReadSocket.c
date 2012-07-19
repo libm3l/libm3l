@@ -578,10 +578,28 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  */	
  	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
  		pldf = (*Lnode)->data.ldf;
-#include "ReadSocket_Part1"
-		*pldf++ = FCS_C2LD(type, &err);
-// char * ulltoa(uint64_t ll, char * buffer, int radix);   http://publib.boulder.ibm.com/infocenter/zos/v1r11/index.jsp?topic=/com.ibm.zos.r11.bpxbd00/ulltoa.htm
-#include "ReadSocket_Part2"
+
+		if(Popts == NULL){
+			#include "ReadSocket_Part1"
+			*pldf++ = FCS_C2LD(type, &err);
+			#include "ReadSocket_Part2"
+		}
+		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+			#include "ReadSocket_Part1"
+			di = strtoull(type, &end, 16);
+			d2 = unpack754_64(di);
+			*pldf++ = d2;
+			#include "ReadSocket_Part2"
+ 		}
+		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
+			Error("Raw coding not implemented");
+			exit(0);
+		}
+ 		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
+			#include "ReadSocket_Part1"
+			*pldf++ = FCS_C2D(type, &err);
+			#include "ReadSocket_Part2"
+ 		}
  	}
  	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
  		pdf = (*Lnode)->data.df;
@@ -600,6 +618,7 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  		}
 		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
 			Error("Raw coding not implemented");
+			exit(0);
 		}
  		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
 			#include "ReadSocket_Part1"
@@ -624,6 +643,7 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  		}
 		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
 			Error("Raw coding not implemented");
+			exit(0);
 		}
  		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
 			#include "ReadSocket_Part1"
