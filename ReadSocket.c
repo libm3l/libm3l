@@ -58,6 +58,7 @@
 #include "FunctionsPrt.h"
 #include "udf_rm.h"
 #include "ReadSocket.h"
+#include "NumberConversion.h"
 
 #define EXPR      *pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0'
 #define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN 
@@ -343,7 +344,7 @@ node_t *m3l_read_socket_dir_data(tmpstruct_t TMPSTR, int descrpt, opts_t *Popts)
 			Pnode         = Tmpnode;
 			Dnode->child  = Pnode;
 			Pnode->parent = Dnode;
-		}
+		}    
 		else
 		{
 			Pnode->next      = Tmpnode;
@@ -542,25 +543,28 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 	char type[MAX_WORD_LENGTH], lastchar;
 	size_t i, tot_dim, wc, hi, j;
 	
-	float         *pf;
-	double        *pdf;
+	float         *pf, f2;
+	double        *pdf, d2;
 	long  double  *pldf;
 /*
  * chars
  */
-	char           *err;
+	char           *err, *end;
 /*
  * integers
  */
-	short  int         	*psi;
+	short  int         		*psi;
 	unsigned short int 	*pusi;
-	int           		*pi;
+	int           				*pi;
 	unsigned int  		*pui;
-	long  int     		*pli;
-	unsigned long int       *puli;
-	long long int           *plli;
-	signed long long int    *pslli;
+	long  int     			*pli;
+	unsigned long int       	*puli;
+	long long int          	 *plli;
+	signed long long int   	 *pslli;
 	unsigned long long int  *pulli;
+
+	uint32_t fi;
+	uint64_t di;
 
 	size_t *pst;
 	ptrdiff_t *pptrdf;
@@ -574,21 +578,78 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  */	
  	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
  		pldf = (*Lnode)->data.ldf;
-#include "ReadSocket_Part1"
-		*pldf++ = FCS_C2LD(type, &err);
-#include "ReadSocket_Part2"
+
+		if(Popts == NULL){
+			#include "ReadSocket_Part1"
+			*pldf++ = FCS_C2LD(type, &err);
+			#include "ReadSocket_Part2"
+		}
+		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+			#include "ReadSocket_Part1"
+			di = strtoull(type, &end, 16);
+			d2 = unpack754_64(di);
+			*pldf++ = d2;
+			#include "ReadSocket_Part2"
+ 		}
+		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
+			Error("Raw coding not implemented");
+			exit(0);
+		}
+ 		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
+			#include "ReadSocket_Part1"
+			*pldf++ = FCS_C2D(type, &err);
+			#include "ReadSocket_Part2"
+ 		}
  	}
  	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
  		pdf = (*Lnode)->data.df;
-#include "ReadSocket_Part1"
-		*pdf++ = FCS_C2D(type, &err);
-#include "ReadSocket_Part2"
+
+		if(Popts == NULL){
+			#include "ReadSocket_Part1"
+			*pdf++ = FCS_C2D(type, &err);
+			#include "ReadSocket_Part2"
+		}
+		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+			#include "ReadSocket_Part1"
+			di = strtoull(type, &end, 16);
+			d2 = unpack754_64(di);
+			*pdf++ = d2;
+			#include "ReadSocket_Part2"
+ 		}
+		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
+			Error("Raw coding not implemented");
+			exit(0);
+		}
+ 		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
+			#include "ReadSocket_Part1"
+			*pdf++ = FCS_C2D(type, &err);
+			#include "ReadSocket_Part2"
+ 		}
  	}
  	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
  		pf = (*Lnode)->data.f;
-#include "ReadSocket_Part1"
-		*pf++ = FCS_C2F(type, &err);
-#include "ReadSocket_Part2"
+		
+		if(Popts == NULL){
+			#include "ReadSocket_Part1"
+			*pf++ = FCS_C2F(type, &err);
+			#include "ReadSocket_Part2"
+		}
+		if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+			#include "ReadSocket_Part1"
+			fi = strtoull(type, &end, 8);
+			f2 = unpack754_32(fi);
+			*pf++ = f2;
+			#include "ReadSocket_Part2"
+ 		}
+		else if(Popts->opt_tcpencoding == 'r'){   /* raw data */
+			Error("Raw coding not implemented");
+			exit(0);
+		}
+ 		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
+			#include "ReadSocket_Part1"
+			*pf++ = FCS_C2F(type, &err);
+			#include "ReadSocket_Part2"
+		}
   	}
 /*
  * integers
@@ -596,7 +657,7 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
 		pulli = (*Lnode)->data.ulli;
 #include "ReadSocket_Part1"
-		*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
+			*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
 #include "ReadSocket_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */

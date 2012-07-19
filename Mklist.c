@@ -75,7 +75,7 @@ node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim,
 	int option_index;
 	tmpstruct_t TMPSTR;
 	
-	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_m = '\0';
+	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_nomalloc = '\0';
 	
 	option_index = 0;
 /*
@@ -168,7 +168,7 @@ node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim,
 /*
  * if specified as a, do not malloc data structure in the node_t*
  */
-					opts.opt_m = 'm';
+					opts.opt_nomalloc = 'm';
 				break;
 				
 				case 'b':

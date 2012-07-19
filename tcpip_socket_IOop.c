@@ -59,15 +59,11 @@
 #include "ReadSocket.h"
 #include "ln_list.h"
 
-// static int m3l_client_send_to_tcpipsocket(node_t *, const char *, int , opts_t *);
-// static node_t *m3l_client_send_receive_tcpipsocket(node_t *, const char *, int , opts_t *);
-// static node_t *m3l_client_receive_send_tcpipsocket(node_t *, const char *, int , opts_t *);
-// static node_t *m3l_client_receive_tcpipsocket(const char *, int, opts_t *);
 
 /*
  * routine Links Slist to Tlist
  */
-int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
+int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
 
 	node_t *List;
 	char *word, **opt;
@@ -77,7 +73,10 @@ int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0'; opts.opt_c = '\0';
+	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
+	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	
 	option_index = 0;
 /*
@@ -138,12 +137,13 @@ int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
+				{"encoding",     required_argument,                  0, 'c'},			
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "e", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -163,11 +163,27 @@ int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
 					printf ("\n");
 					break;
 
+				case 'c':
+/*
+ * choose encoding and serialization
+ */
+					if( strncmp(optarg, "IEEE-754", 8) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_tcpencoding = 'I';
+					}
+					else if(strncmp(optarg, "raw", 3) == 0){
+/*
+ * raw data sending
+ */
+						opts.opt_tcpencoding = 'r';
+					}
 				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_e = 'e';
+					opts.opt_linkscleanemptlinks = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -199,7 +215,7 @@ int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
  */
 	Popts = &opts;
 	
- 	if( m3l_client_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
+ 	if( m3l_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
 		return -1;
 	}
 	else{
@@ -212,7 +228,7 @@ int m3l_Client_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int port
 /*
  * routine Links Slist to Tlist
  */
-node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -223,7 +239,10 @@ node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0';
+	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
+	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	
 	option_index = 0;
 /*
@@ -283,13 +302,14 @@ node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'e'},
+				{"clean_empy_links",     no_argument,              0, 'e'},
+				{"encoding",     required_argument,                  0, 'c'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "e", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -309,11 +329,28 @@ node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
 					printf ("\n");
 					break;
 
+				case 'c':
+/*
+ * choose encoding and serialization
+ */
+					if( strncmp(optarg, "IEEE-754", 8) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_tcpencoding = 'I';
+					}
+					else if(strncmp(optarg, "raw", 3) == 0){
+/*
+ * raw data sending
+ */
+						opts.opt_tcpencoding = 'r';
+					}
+				break;	
 				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_e = 'e';
+					opts.opt_linkscleanemptlinks = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -345,7 +382,7 @@ node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
  */
 	Popts = &opts;
 	
- 	if( (List = m3l_client_send_receive_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
+ 	if( (List = m3l_send_receive_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -358,7 +395,7 @@ node_t *m3l_Client_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
 /*
  * routine Links Slist to Tlist
  */
-node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -369,7 +406,10 @@ node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname,
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0';
+	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
+	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	
 	option_index = 0;
 /*
@@ -430,12 +470,13 @@ node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname,
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
+				{"encoding",     required_argument,                  0, 'c'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "e", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -455,11 +496,28 @@ node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname,
 					printf ("\n");
 					break;
 
+				case 'c':
+/*
+ * choose encoding and serialization
+ */
+					if( strncmp(optarg, "IEEE-754", 8) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_tcpencoding = 'I';
+					}
+					else if(strncmp(optarg, "raw", 3) == 0){
+/*
+ * raw data sending
+ */
+						opts.opt_tcpencoding = 'r';
+					}
+				break;
 				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'e';
+					opts.opt_linkscleanemptrefs = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -491,7 +549,7 @@ node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname,
  */
 	Popts = &opts;
 	
- 	if( (List =m3l_client_receive_send_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
+ 	if( (List =m3l_receive_send_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -500,7 +558,7 @@ node_t *m3l_Client_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname,
 }
 
 
-node_t *m3l_Client_Receive_tcpipsocket(const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Options, ...)
 {
 
 	node_t *List;
@@ -511,7 +569,9 @@ node_t *m3l_Client_Receive_tcpipsocket(const char *hostname, int portnumber, cha
 	int c;
 	int option_index;
 	
-	opts.opt_e = '\0'; opts.opt_m = '\0';
+	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	
 	option_index = 0;
 /*
@@ -572,12 +632,13 @@ node_t *m3l_Client_Receive_tcpipsocket(const char *hostname, int portnumber, cha
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
+				{"encoding",     required_argument,           0, 'c'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "e", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -597,11 +658,28 @@ node_t *m3l_Client_Receive_tcpipsocket(const char *hostname, int portnumber, cha
 					printf ("\n");
 					break;
 
+				case 'c':
+/*
+ * choose encoding and serialization
+ */
+					if( strncmp(optarg, "IEEE-754", 8) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_tcpencoding = 'I';
+					}
+					else if(strncmp(optarg, "raw", 3) == 0){
+/*
+ * raw data sending
+ */
+						opts.opt_tcpencoding = 'r';
+					}
+				break;
 				case 'e':
 /*
  * clean empty list
  */
-					opts.opt_c = 'e';
+					opts.opt_linkscleanemptrefs = 'e';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -633,7 +711,7 @@ node_t *m3l_Client_Receive_tcpipsocket(const char *hostname, int portnumber, cha
  */
 	Popts = &opts;
 	
- 	if( (List = m3l_client_receive_tcpipsocket(hostname, portnumber, Popts)) == NULL){
+ 	if( (List = m3l_receive_tcpipsocket(hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
 	else{
@@ -645,21 +723,37 @@ node_t *m3l_Client_Receive_tcpipsocket(const char *hostname, int portnumber, cha
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *m3l_client_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
 {
 	node_t *Gnode;
 	int socketnr;
 
-	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
-		Error("Could not open socket");
-	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-		Error("Error during reading data from socket");
-	if( close(socketnr) == -1)
-		Perror("close");
+	if(portnumber < 1){
+		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		return (node_t *)NULL;
+	}
+	if(hostname == NULL){
+/*
+ * server side, portnumber is socket number
+ */
+		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+			Error("Error during reading data from socket");
+	}
+	else{
+/*
+ * client side
+ */
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+			Error("Could not open socket");
+		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+			Error("Error during reading data from socket");
+		if( close(socketnr) == -1)
+			Perror("close");
+	}
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_e == 'e')
+	if(Popts->opt_linkscleanemptlinks == 'e')
 		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
@@ -668,51 +762,92 @@ node_t *m3l_client_receive_tcpipsocket(const char *hostname, int portnumber, opt
 /*
  * function opens socket, writes data to it and close the socket
  */
-int m3l_client_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	int socketnr;
+
+	if(Lnode == NULL){
+		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
+		return -1;
+	}
+	if(portnumber < 1){
+		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		return -1;
+	}
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_e == 'e')
-		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;	
-	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
-		Error("Could not open socket");
-	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
-		Error("Error during writing data to socket");
-	if( close(socketnr) == -1)
-		Perror("close");
-	
+	if(Popts->opt_linkscleanemptlinks == 'e')
+		 m3l_ln_cleanemptylinks(&Lnode,  Popts);
+
+	if(hostname == NULL){
+/*
+ * server side, portnumber is socket number
+ */
+		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
+			Error("Error during writing data to socket");
+	}
+	else{
+/*
+ * client side
+ */
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+			Error("Could not open socket");
+		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+			Error("Error during writing data to socket");
+		if( close(socketnr) == -1)
+			Perror("close");
+	}	
 	return 1;
 }
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *m3l_client_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
-	
-	
 	node_t *Gnode;
 	int socketnr;
+
+	if(Lnode == NULL){
+		Warning("m3l_send_receive_tcpipsocket:  NULL Lnode");
+		return (node_t *)NULL;
+	}
+	if(portnumber < 1){
+		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		return (node_t *)NULL;
+	}
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_e == 'e')
+	if(Popts->opt_linkscleanemptlinks == 'e')
 		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
-		Error("Could not open socket");
-
-	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
-		Error("Error during writing data to socket");
-	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-		Error("Error during reading data from socket");
-	if( close(socketnr) == -1)
-		Perror("close");
+	if(hostname == NULL){
+/*
+ * server side, portnumber is socket number
+ */
+		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
+			Error("Error during writing data to socket");
+		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+			Error("Error during reading data from socket");
+	}
+	else{
+/*
+ * client side
+ */
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+			Error("Could not open socket");
+		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+			Error("Error during writing data to socket");
+		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+			Error("Error during reading data from socket");
+		if( close(socketnr) == -1)
+			Perror("close");
+	}	
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_e == 'e')
+	if(Popts->opt_linkscleanemptlinks == 'e')
 		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 	
 	return Gnode;
@@ -721,34 +856,49 @@ node_t *m3l_client_send_receive_tcpipsocket(node_t *Lnode, const char *hostname,
 /*
  * function opens socket, reads data from it , writes data to it and close the socket
  */
-node_t *m3l_client_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
-	
-	
 	node_t *Gnode;
 	int socketnr;
+
+	if(Lnode == NULL){
+		Warning("m3l_receive_send_tcpipsocket:  NULL Lnode");
+		return (node_t *)NULL;
+	}
+	if(portnumber < 1){
+		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		return (node_t *)NULL;
+	}
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_e == 'e')			
+	if(Popts->opt_linkscleanemptlinks == 'e')			
 		m3l_ln_cleanemptylinks(&Lnode,  Popts) ;
 
-	if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
-		Error("Could not open socket");
-	if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-		Error("Error during reading data from socket");
-
-	if ( m3l_write_to_socket(1, Lnode,  socketnr) < 0)
-		Error("Error during writing data to socket");
-	if( close(socketnr) == -1)
-		Perror("close");
-
+	if(hostname == NULL){
+/*
+ * server side, portnumber is socket number
+ */
+		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+			Error("Error during reading data from socket");
+		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+			Error("Error during writing data to socket");
+	}
+	else{
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+			Error("Could not open socket");
+		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+			Error("Error during reading data from socket");
+		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+			Error("Error during writing data to socket");
+		if( close(socketnr) == -1)
+			Perror("close");
+	}
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_e == 'e')
+	if(Popts->opt_linkscleanemptlinks == 'e')
 		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 
-	
 	return Gnode;
 }
