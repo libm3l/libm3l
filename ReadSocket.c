@@ -80,6 +80,9 @@ static node_t *m3l_read_socket_data(int, opts_t *);
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
 
+
+/// 16. NOTE-URGENT when ReadSocket active and writer closes/terminates socket, server makes core file
+
 /*
  * Function read just one line from a socket, disregarding comments line
  * It identifies if the line is a header of DATA or DIR list

@@ -565,7 +565,9 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 
 ssize_t Write(int sockfd, char *buffer, size_t size){
 
-	ssize_t total, n;
+	ssize_t total, n;	
+	total = 0;
+	
 	while(size > 0) {
 
 		if ( (n = write(sockfd,buffer,size)) < 0){
