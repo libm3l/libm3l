@@ -1015,7 +1015,10 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
-				if(i == tot_dim && IFEXPR) return 0;
+				if(i == tot_dim && IFEXPR) {
+					(*Lnode)->data.c[tot_dim] = '\0';
+					return 0;
+				}
 
 			}
 			else if (i == tot_dim){
@@ -1076,8 +1079,10 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
-				if(i == tot_dim && IFEXPR) return 0;
-
+				if(i == tot_dim && IFEXPR) {
+					(*Lnode)->data.c[tot_dim] = '\0';
+					return 0;
+				}
 			}
 			else if (i == tot_dim){
 				*pdats = '\0';
@@ -1132,13 +1137,18 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
 
-				if(ngotten == 0)return 0; /* no more data in buffer */
+				if(ngotten == 0){
+					return 0; /* no more data in buffer */
+				}
 				buff[ngotten] = '\0';
 				pc = &buff[0];
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
-				if(i == tot_dim && IFEXPR) return 0;
+				if(i == tot_dim && IFEXPR) {
+					(*Lnode)->data.c[tot_dim] = '\0';
+					return 0;
+				}
 
 			}
 			else if (i == tot_dim){
@@ -1166,7 +1176,6 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				Error("Error reading data");
 			return -1;
 		}
-			
 		return 0;
 	}
 	else{

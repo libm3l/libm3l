@@ -559,8 +559,7 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 	}
 	
 	return 1;
-}	
-
+}
 
 
 ssize_t Write(int sockfd, char *buffer, size_t size){

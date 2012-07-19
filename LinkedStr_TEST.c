@@ -365,6 +365,17 @@ int main(void)
 //  			NewList->data.i[i]=2*i;
  		NewList->data.i = ada;
 		
+		
+		printf("WRITING DATA to socket\n");
+		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "text", (char *)NULL)) == NULL)
+			Perror("Send_receive");
+		printf("EXIT WRITING DATA to socket\n");
+
+		if(m3l_Umount(&RecNode) != 1)
+			Perror("m3l_Umount");
+		
+
+		
 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 
