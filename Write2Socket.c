@@ -494,11 +494,11 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 
 /*
  * NOTE-URGENT - check the algorithm for adding SEPAR_SIGN at the end of buffer, 
- * especially situattion after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
+ * especially situation after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
  */
 	size_t i, size;
 	ssize_t n;
-     
+	     
 	while(*buff != '\0'){
 		if(bitcount == (MAXLINE-1))
 		{
@@ -559,13 +559,14 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 	}
 	
 	return 1;
-}	
-
+}
 
 
 ssize_t Write(int sockfd, char *buffer, size_t size){
 
-	ssize_t total, n;
+	ssize_t total, n;	
+	total = 0;
+	
 	while(size > 0) {
 
 		if ( (n = write(sockfd,buffer,size)) < 0){

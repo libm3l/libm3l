@@ -299,8 +299,8 @@ int main(void)
 			printf(" No founds\n");
 		}
 		
-		m3l_Fwrite(Gnode, "ADA", (char *)NULL);
-		printf("\n\n\n\n");
+// 		m3l_Fwrite(Gnode, "ADA", (char *)NULL);
+// 		printf("\n\n\n\n");
 
 // 		 if(m3l_Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
 //  	                   Error("CatData");
@@ -364,6 +364,20 @@ int main(void)
 // 		for (i=0; i<5; i++)
 //  			NewList->data.i[i]=2*i;
  		NewList->data.i = ada;
+		
+		
+		printf("WRITING DATA to socket\n");
+		m3l_Fwrite(Gnode, "ADA", (char *)NULL);
+		printf("\n\n\n\n");
+//  		exit(0);
+		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "text", (char *)NULL)) == NULL)
+			Perror("Send_receive");
+		printf("EXIT WRITING DATA to socket\n");
+
+		if(m3l_Umount(&RecNode) != 1)
+			Perror("m3l_Umount");
+		
+
 		
 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");

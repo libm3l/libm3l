@@ -21,6 +21,9 @@ main: $(OBJS)
 	cp libm3l.org_h libm3l.h
 	sed -i 's:ActualPWD:'$$PWD':' libm3l.h
 
+
+	cc -g -o LinkedStr_TEST.out LinkedStr_TEST.c  -L/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList  -lm3l -Wl,-rpath=/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList
+
 -include $(OBJS:.o=.d)
 
 %.o: %.c

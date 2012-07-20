@@ -334,7 +334,7 @@ int m3l_cat_data(node_t *Tmpnode, size_t tot_dim)
 				printf("%c", Tmpnode->data.uc[i]);
 		}
 		else if(strncmp(Tmpnode->type,"C",1) == 0){  /* char */
-			for (i=0; i<tot_dim; i++)
+			for (i=0; i<tot_dim; i++) // do not count for '\0' symbol
 				printf("%c", Tmpnode->data.c[i]);
 		}
 /*

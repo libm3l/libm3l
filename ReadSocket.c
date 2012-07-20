@@ -80,6 +80,9 @@ static node_t *m3l_read_socket_data(int, opts_t *);
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
 
+
+/// 16. NOTE-URGENT when ReadSocket active and writer closes/terminates socket, server makes core file
+
 /*
  * Function read just one line from a socket, disregarding comments line
  * It identifies if the line is a header of DATA or DIR list
@@ -993,7 +996,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 /*
  * read until end of buffer or until end of array dimension reached
  */
-			while(IFEXPR) pc++;			
+			if(i == 0) while(IFEXPR) pc++;	/* if in middle of reading buffer, consider all characters */
 			while(*pc != '\0' && i < tot_dim){
 				*pdatu++ = (unsigned char)*pc++;
 				i++;
@@ -1012,7 +1015,10 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
-				if(i == tot_dim && IFEXPR) return 0;
+				if(i == tot_dim && IFEXPR) {
+					(*Lnode)->data.c[tot_dim] = '\0';
+					return 0;
+				}
 
 			}
 			else if (i == tot_dim){
@@ -1054,7 +1060,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 /*
  * read until end of buffer or end of array dimension reached
  */
-			while(IFEXPR) pc++;			
+			if(i == 0) while(IFEXPR) pc++;	/* if in middle of reading buffer, consider all characters */
 			while(*pc != '\0' && i < tot_dim){
 				*pdats++ = (signed char)*pc++;
 				i++;
@@ -1073,8 +1079,10 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
-				if(i == tot_dim && IFEXPR) return 0;
-
+				if(i == tot_dim && IFEXPR) {
+					(*Lnode)->data.c[tot_dim] = '\0';
+					return 0;
+				}
 			}
 			else if (i == tot_dim){
 				*pdats = '\0';
@@ -1107,6 +1115,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 	else if ( TMPSTR.Type[0] == 'C'){
 
 		pdat = (*Lnode)->data.c;
+// 		printf("1- buffer is '%s'\n", buff);
 /*
  * process buffer, set last char to \0
  */
@@ -1114,9 +1123,12 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 		while(*pc != '\0') /*  while(ngotten) */
 		{
 /*
+ * if in middle of reading buffer, consider all characters
+ */
+			if(i == 0) while(IFEXPR) pc++;
+/*
  * read until end of buffer or end of array dimension reached
  */
-			while(IFEXPR) pc++;			
 			while(*pc != '\0' && i < tot_dim){
 				*pdat++ = *pc++;
 				i++;
@@ -1128,20 +1140,28 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				bzero(buff,sizeof(buff));
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
+// 		printf("2- buffer is '%s'\n", buff);
 
-				if(ngotten == 0)return 0; /* no more data in buffer */
+				if(ngotten == 0){
+					return 0; /* no more data in buffer */
+				}
 				buff[ngotten] = '\0';
 				pc = &buff[0];
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
-				if(i == tot_dim && IFEXPR) return 0;
+				if(i == tot_dim && IFEXPR) {
+					(*Lnode)->data.c[tot_dim] = '\0';
+					return 0;
+				}
 
 			}
 			else if (i == tot_dim){
 				*pdat = '\0';
 				if( EXPR ){
-					printf("Data set %s (%s): string: %s\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
+					printf("buffer is '%s'\n", buff);
+					printf("pc is '%c'\n", *pc);
+					printf("Data set %s (%s): string: '%s'\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
 					Error("Mismatch in string length");
 					return -1;
 				}
@@ -1156,14 +1176,14 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 			Perror("read");
 			return -1;
 		}
-		
+// 				printf("3- buffer is '%s'\n", buff);
+
 		buff[ngotten] = '\0';
 		pc = &buff[0];
 		if( m3l_read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
 				Error("Error reading data");
 			return -1;
 		}
-			
 		return 0;
 	}
 	else{
