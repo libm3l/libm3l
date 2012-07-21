@@ -111,7 +111,7 @@ SIZE_T Strol(char *text)
   char *err;
   SIZE_T i;
 
-	i = strtol(text,&err,0);
+  	i = strtol(text,&err,0);
 	if (err == text){
 	  Error("Strol:  Error when reading and converting integer number");} /* complete garbage input */ 
 	else if (*err != 0){

@@ -40,6 +40,10 @@
 #ifndef  __TMPSTRUCT_T__
 #define  __TMPSTRUCT_T__
 
+
+#define lm3lTCPIPHeader "-libm3l_TCPIP_Header-"              /* end of buffer TCP/IP */
+
+
 typedef struct tmpstruct{
 	 char Type[MAX_TYPE_LENGTH], Name_Of_List[MAX_TYPE_LENGTH]; 
  	size_t ndim, *dim;
@@ -65,6 +69,8 @@ typedef struct opts{
 	char opt_linkscleanemptrefs, opt_linkscleanemptlinks;
 	char opt_nomalloc;
 	char opt_tcpencoding;
+	char opt_tcpheader;
+
 } opts_t;
 
 
