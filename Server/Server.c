@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
 			Error("m3l_Mklist");
 	TmpNode->data.c = answer;
 
-		dim[0] = 1;
+	dim[0] = 1;
 	if(  (TmpNode = m3l_Mklist("PID", "I", 1, dim, &Gnode, "/Head_node", "./", (char *)NULL)) == 0)
 			Error("m3l_Mklist");
 	TmpNode->data.i[0] = getpid();
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
 // 	if( (RecNode = m3l_read_socket(newsockfd,  Popts)) == NULL)
 // 	if( (RecNode = m3l_read_socket(newsockfd,  (opts_t *)NULL)) == NULL)
-	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, newsockfd, "--encoding" , "text", (char *)NULL)) == NULL)
+	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
 		Error("Error during reading data from socket");
 
 	if(m3l_Cat(RecNode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 
 // 	if ( m3l_write_to_socket(1, Gnode,  newsockfd,  Popts) < 0)
 // 	if ( m3l_write_to_socket(1, Gnode,  newsockfd,  (opts_t *)NULL) < 0)
-	if (  m3l_Send_to_tcpipsocket(Gnode, NULL , newsockfd, "--encoding" , "text", (char *)NULL) < 0)
+	if (  m3l_Send_to_tcpipsocket(Gnode, NULL , newsockfd, "--encoding" , "IEEE-754", "--header", (char *)NULL) < 0)
 		Error("Error during writing data to socket");
 
 	printf("\n\n");

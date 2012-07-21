@@ -59,9 +59,9 @@
 #include "udf_rm.h"
 #include "ReadSocket.h"
 
-#define EXPR       *pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0'
-#define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0'
-#define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0'
+#define EXPR       (*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0')
+#define IFEXPR     (*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0')
+#define LASTEXPR   (lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0')
 
 
 static int m3l_read_file_data_line(node_t **, tmpstruct_t, FILE *f, opts_t *);

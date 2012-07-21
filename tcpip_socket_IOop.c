@@ -58,11 +58,14 @@
 #include "Write2Socket.h"
 #include "ReadSocket.h"
 #include "ln_list.h"
+#include "rm_list.h"
+#include "udf_rm.h"
 
-
+static node_t *MkTCPIPHeader(opts_t *);
 /*
  * routine Links Slist to Tlist
  */
+
 int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
 
 	node_t *List;
@@ -77,7 +80,7 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
-	
+	opts.opt_tcpheader = '\0'; // do not send header with encoding info
 	option_index = 0;
 /*
  * get number of options
@@ -136,14 +139,15 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'e'},
-				{"encoding",     required_argument,                  0, 'c'},			
+				{"clean_empy_links",     no_argument,       	     0, 'e'},
+				{"encoding",     required_argument,                  0, 'c'},		
+				{"header",           no_argument,                    0, 'h'},		
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ec:h", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -184,6 +188,12 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
  * clean empty list
  */
 					opts.opt_linkscleanemptlinks = 'e';
+				break;
+				case 'h':
+/*
+ * send header with encoding info
+ */
+					opts.opt_tcpheader = 'h';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -243,6 +253,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+	opts.opt_tcpheader = '\0'; // do not send header with encoding info
 	
 	option_index = 0;
 /*
@@ -304,6 +315,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			{
 				{"clean_empy_links",     no_argument,              0, 'e'},
 				{"encoding",     required_argument,                  0, 'c'},
+				{"header",           no_argument,                    0, 'h'},		
 				{0, 0, 0, 0}
 			};
  /*
@@ -351,6 +363,12 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
  * clean empty list
  */
 					opts.opt_linkscleanemptlinks = 'e';
+				break;
+				case 'h':
+/*
+ * send header with encoding info
+ */
+					opts.opt_tcpheader = 'h';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -410,6 +428,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+	opts.opt_tcpheader = '\0'; // do not send header with encoding info
 	
 	option_index = 0;
 /*
@@ -471,6 +490,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
 				{"encoding",     required_argument,                  0, 'c'},
+				{"header",           no_argument,                    0, 'h'},		
 				{0, 0, 0, 0}
 			};
  /*
@@ -518,6 +538,12 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
  * clean empty list
  */
 					opts.opt_linkscleanemptrefs = 'e';
+				break;
+				case 'h':
+/*
+ * send header with encoding info
+ */
+					opts.opt_tcpheader = 'h';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -572,6 +598,7 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+	opts.opt_tcpheader = '\0'; // do not send header with encoding info
 	
 	option_index = 0;
 /*
@@ -633,6 +660,7 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
 				{"encoding",     required_argument,           0, 'c'},
+				{"header",           no_argument,                    0, 'h'},		
 				{0, 0, 0, 0}
 			};
  /*
@@ -680,6 +708,12 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
  * clean empty list
  */
 					opts.opt_linkscleanemptrefs = 'e';
+				break;
+				case 'h':
+/*
+ * send header with encoding info
+ */
+					opts.opt_tcpheader = 'h';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -738,6 +772,22 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
  */
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
+/*
+ * check node is TCPIPHeader and if so, read again
+ */
+		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
+/*
+ * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
+ */
+			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
+			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+			printf("AFTER HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
+			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
 	}
 	else{
 /*
@@ -747,6 +797,21 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
+/*
+ * check node is TCPIPHeader and if so, read again
+ */
+		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
+/*
+ * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
+ */
+			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
+			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
 		if( close(socketnr) == -1)
 			Perror("close");
 	}
@@ -765,6 +830,7 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	int socketnr;
+	node_t *TcpIpHeader;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
@@ -784,6 +850,21 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * server side, portnumber is socket number
  */
+		if(Popts->opt_tcpheader == 'h'){
+/*
+ * make, send and delete tcpipheader
+ */
+			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+				Error("send_to_tcpipsocket: TCPIPHeader");
+				return -1;
+			}
+			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
+				Error("Error during writing data to socket");
+			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return -1;
+			}
+		}
 		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
 			Error("Error during writing data to socket");
 	}
@@ -793,6 +874,21 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 			Error("Could not open socket");
+		if(Popts->opt_tcpheader == 'h'){
+/*
+ * make, send and delete tcpipheader
+ */
+			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+				Error("send_to_tcpipsocket: TCPIPHeader");
+				return -1;
+			}
+			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
+				Error("Error during writing data to socket");
+			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return -1;
+			}
+		}
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( close(socketnr) == -1)
@@ -807,6 +903,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 {
 	node_t *Gnode;
 	int socketnr;
+	node_t *TcpIpHeader;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_receive_tcpipsocket:  NULL Lnode");
@@ -826,10 +923,40 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * server side, portnumber is socket number
  */
+		if(Popts->opt_tcpheader == 'h'){
+/*
+ * make, send and delete tcpipheader
+ */
+			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+				Error("send_to_tcpipsocket: TCPIPHeader");
+				return (node_t *)NULL;
+			}
+			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
+				Error("Error during writing data to socket");
+			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+		}
 		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
+		/*
+ * check node is TCPIPHeader and if so, read again
+ */
+		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
+/*
+ * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
+ */
+			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
+			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
 	}
 	else{
 /*
@@ -837,10 +964,40 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 			Error("Could not open socket");
+		if(Popts->opt_tcpheader == 'h'){
+/*
+ * make, send and delete tcpipheader
+ */
+			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+				Error("send_to_tcpipsocket: TCPIPHeader");
+				return (node_t *)NULL;
+			}
+			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
+				Error("Error during writing data to socket");
+			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+		}
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
+/*
+ * check node is TCPIPHeader and if so, read again
+ */
+		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
+/*
+ * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
+ */
+			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
+			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
 		if( close(socketnr) == -1)
 			Perror("close");
 	}	
@@ -860,6 +1017,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 {
 	node_t *Gnode;
 	int socketnr;
+	node_t *TcpIpHeader;
 
 	if(Lnode == NULL){
 		Warning("m3l_receive_send_tcpipsocket:  NULL Lnode");
@@ -879,9 +1037,40 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * server side, portnumber is socket number
  */
-		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
-		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+/*
+ * check node is TCPIPHeader and if so, read again
+ */
+		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
+/*
+ * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
+ */
+			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
+			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
+		
+		if(Popts->opt_tcpheader == 'h'){
+/*
+ * make, send and delete tcpipheader
+ */
+			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+				Error("send_to_tcpipsocket: TCPIPHeader");
+				return (node_t *)NULL;
+			}
+			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
+				Error("Error during writing data to socket");
+			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+		}
+		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
 			Error("Error during writing data to socket");
 	}
 	else{
@@ -889,6 +1078,36 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
+/*
+ * check node is TCPIPHeader and if so, read again
+ */
+		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
+/*
+ * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
+ */
+			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
+			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
+		if(Popts->opt_tcpheader == 'h'){
+/*
+ * make, send and delete tcpipheader
+ */
+			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+				Error("send_to_tcpipsocket: TCPIPHeader");
+				return (node_t *)NULL;
+			}
+			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
+				Error("Error during writing data to socket");
+			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+				Error("Unable to unmount node \n");
+				return (node_t *)NULL;
+			}
+		}
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( close(socketnr) == -1)
@@ -901,4 +1120,79 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 
 	return Gnode;
+}
+
+
+node_t *MkTCPIPHeader(opts_t *Popts)
+{
+	node_t *Tmpnode, *AddNode;
+	tmpstruct_t TMPSTR;
+	
+	opts_t *Poptadd, opts;
+/*
+ * options for add and remove list
+ */
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+/*
+ * options for allocate list
+ */	
+	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_nomalloc = '\0';
+	Poptadd = &opts;
+/*
+ * make header node
+ */
+	
+	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List), "%s", lm3lTCPIPHeader) < 0)
+		   Perror("snprintf");
+	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", "DIR") < 0)
+		   Perror("snprintf");
+	
+	TMPSTR.ndim = 0;
+	TMPSTR.dim=NULL;
+ /*
+ * two ways of allocating pointer - through reference pointer or as a function returning pointer
+ */	
+	if( (Tmpnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
+		Error("Allocate");
+		return (node_t *) NULL;
+	}
+	
+/*
+ * add info about coding
+ */
+	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", "TCPIP_encoding") < 0)
+		   Perror("snprintf");
+	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", "C") < 0)
+		   Perror("snprintf");
+	
+	TMPSTR.ndim = 1;
+	if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
+		Perror("malloc");
+	TMPSTR.dim[0]=2;
+ /*
+ * two ways of allocating pointer - through reference pointer or as a function returning pointer
+ */	
+	if( (AddNode = m3l_AllocateNode(TMPSTR, Poptadd)) == NULL){
+		Error("Allocate");
+		free(TMPSTR.dim);
+		if( m3l_rm_list(1, &Tmpnode, Popts) < 0)
+			Warning("problem in rm_list");
+		return (node_t *) NULL;
+	}
+	
+	free(TMPSTR.dim);
+	
+	AddNode->data.c[0] = Popts->opt_tcpencoding;
+	AddNode->data.c[1] = '\0';
+	
+	if( m3l_add_list(&AddNode, &Tmpnode,  Poptadd) < 0){
+		Warning("problem in ladd_list");
+		if( m3l_rm_list(1, &Tmpnode, Poptadd) < 0)
+			Warning("problem in rm_list");
+		if( m3l_rm_list(1, &AddNode, Poptadd) < 0)
+			Warning("problem in rm_list");
+		return (node_t *)NULL;
+	}
+	
+	return Tmpnode;
 }

@@ -127,12 +127,12 @@ int main(void)
 					
 		printf("\n\n\n\n");
 
-		if( (Anode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "text", (char *)NULL)) == NULL)
+		if( (Anode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754",  (char *)NULL)) == NULL)
 		Perror("Send_receive");
 		
 		if(m3l_Umount(&Anode) != 1)
 			Perror("m3l_Umount");
-// 		exit(0);
+		
 		
  		if( (Anode = m3l_Fread("TEST.dat", (char *)NULL))  == NULL)
  			Perror("Linked_test: m3l_Fread");	
@@ -185,7 +185,6 @@ int main(void)
 // 
 // 		}
 // 			
-// 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" ,  "BBB_DATA_DADA", (char *)NULL) );
 // // 
 // // 
 // 		if(m3l_Cat(Gnode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
@@ -233,8 +232,8 @@ int main(void)
 // 		}
 		
 		
-// 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*",  "--keepheadnode", (char *)NULL) );
-// 		printf("Number of removed nodes is %ld\n", Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/n=2",  "--keepheadnode", (char *)NULL) );
+// 		printf("Number of removed nodes is %ld\n", m3l_Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*",  "--keepheadnode", (char *)NULL) );
+// 		printf("Number of removed nodes is %ld\n", m3l_Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/n=2",  "--keepheadnode", (char *)NULL) );
 
 			   
 //  		m3l_Cp(Gnode, "/main/Additional_directory/Belonging_to_ADDDATA/BBB_DATA_DADA", "/*/*/*/*", &Gnode, "/main/grid3", "/*/*", (char *)NULL);   
@@ -315,7 +314,7 @@ int main(void)
 		if(m3l_Umount(&Anode) != 1)
 			Perror("m3l_Umount");
 		
-// 		printf("Number of removed nodes is %ld\n", Rm(&Anode , "/Main_DATA_Structure", "--clean_empty_refs_to_links", "/*", (char *)NULL) );
+// 		printf("Number of removed nodes is %ld\n", m3l_Rm(&Anode , "/Main_DATA_Structure", "/*", "--clean_empty_refs_to_links",  (char *)NULL) );
 		
 		
 		if(m3l_Cat(Anode, "--all", "-P", "-L", "*", (char *)NULL) != 0)
@@ -367,10 +366,11 @@ int main(void)
 		
 		
 		printf("WRITING DATA to socket\n");
-		m3l_Fwrite(Gnode, "ADA", (char *)NULL);
-		printf("\n\n\n\n");
-//  		exit(0);
-		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "text", (char *)NULL)) == NULL)
+// 		printf(" Number of removed nodes is %d\n", m3l_Rm(&Gnode , "/main/EEEE", "/*/*", (char *)NULL));
+		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+			Error("CatData");
+
+		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754", "--header",  (char *)NULL)) == NULL)
 			Perror("Send_receive");
 		printf("EXIT WRITING DATA to socket\n");
 

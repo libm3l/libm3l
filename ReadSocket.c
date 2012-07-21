@@ -60,9 +60,9 @@
 #include "ReadSocket.h"
 #include "NumberConversion.h"
 
-#define EXPR      *pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0'
-#define IFEXPR     *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN 
-#define LASTEXPR   lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN 
+#define EXPR      (*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0')
+#define IFEXPR     (*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN)
+#define LASTEXPR   (lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN)
 
 
 /* 
@@ -1115,7 +1115,8 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 	else if ( TMPSTR.Type[0] == 'C'){
 
 		pdat = (*Lnode)->data.c;
-// 		printf("1- buffer is '%s'\n", buff);
+//  		printf("1- buffer is '%s'\n", buff);
+// 		printf(" pc is '%c'\n", *pc);
 /*
  * process buffer, set last char to \0
  */
@@ -1140,9 +1141,10 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				bzero(buff,sizeof(buff));
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
-// 		printf("2- buffer is '%s'\n", buff);
+// 			printf("2- buffer is '%s'   ngotten is %d\n", buff, ngotten);
 
 				if(ngotten == 0){
+// 					printf(" returning E1\n");
 					return 0; /* no more data in buffer */
 				}
 				buff[ngotten] = '\0';
@@ -1152,6 +1154,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  */
 				if(i == tot_dim && IFEXPR) {
 					(*Lnode)->data.c[tot_dim] = '\0';
+// 					printf(" returning E2   %d  %d\n", i, tot_dim);
 					return 0;
 				}
 
@@ -1165,6 +1168,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 					Error("Mismatch in string length");
 					return -1;
 				}
+// 				printf(" returning E3\n");
 				return 0;
 			}
 		}
@@ -1176,7 +1180,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 			Perror("read");
 			return -1;
 		}
-// 				printf("3- buffer is '%s'\n", buff);
+//  				printf("3- buffer is '%s'\n", buff);
 
 		buff[ngotten] = '\0';
 		pc = &buff[0];
@@ -1184,6 +1188,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				Error("Error reading data");
 			return -1;
 		}
+// 		printf(" returning E4\n");
 		return 0;
 	}
 	else{
