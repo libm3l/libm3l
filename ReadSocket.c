@@ -289,7 +289,8 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 									if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 										Perror("read");
 								}
-								exit(0); 
+								printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
+								exit(0);
 						}
 /*
  * reading socket ended sucesfully, give back Gnode

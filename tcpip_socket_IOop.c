@@ -809,7 +809,7 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 				Error("Unable to unmount node \n");
 				return (node_t *)NULL;
 			}
-			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 				Error("Error during reading data from socket");
 		}
 		if( close(socketnr) == -1)
