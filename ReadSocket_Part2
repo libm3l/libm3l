@@ -21,6 +21,8 @@
 	
 	buff[ngotten] = '\0';
 	pc = &buff[0];
+	if(ngotten == 0)return -1;
+
 	if( m3l_read_socket_data_line(Lnode, TMPSTR, descrpt, Popts) != 0){
 		Error("Error reading data");
 		return -1;

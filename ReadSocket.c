@@ -144,6 +144,7 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 
 	buff[ngotten] = '\0';		
 	pc = &buff[0];
+	if(ngotten == 0)return (node_t *)NULL;
 /*
  * process the string, in case it returned anything
  */
@@ -200,8 +201,9 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 					Perror("read");
 				buff[ngotten] = '\0';
-
 				pc = &buff[0];
+				
+				if(ngotten == 0)return (node_t *)NULL;
 /*
  * if last character was not space, tab, new line or \0 the buffer did not contain entire word, some of it's part is in the next buffer
  */
@@ -289,7 +291,8 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 									if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
 										Perror("read");
 								}
-								exit(0); 
+								printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
+								exit(0);
 						}
 /*
  * reading socket ended sucesfully, give back Gnode
@@ -420,8 +423,8 @@ node_t *m3l_read_socket_data(int descrpt, opts_t *Popts)
 					Perror("read");
 
 				buff[ngotten] = '\0';
-
 				pc = &buff[0];
+				if(ngotten == 0)return (node_t *)NULL;
 
 				if(LASTEXPR)continue;
 			}
@@ -474,7 +477,7 @@ node_t *m3l_read_socket_data(int descrpt, opts_t *Popts)
 				else if ( wc > 3 && strncmp(TMPSTR.Type,"DIR",3) != 0){
 
 					TMPSTR.dim[wc - 4] = Strol(type);
-					if( (wc - 3) == TMPSTR.ndim) break;
+					if( (wc - 3) == TMPSTR.ndim) break; /* stop reading when all dimensions are red */
 				}
 			}
 
@@ -526,6 +529,8 @@ node_t *m3l_read_socket_data(int descrpt, opts_t *Popts)
 	
 	buff[ngotten] = '\0';
 	pc = &buff[0];
+	if(ngotten == 0)return (node_t *)NULL;
+
 	if ( (Pnode = m3l_read_socket_data(descrpt, Popts)) == NULL)
 		Error("ReadDirData: ReadData");
 		
@@ -869,6 +874,8 @@ int m3l_read_socket_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, 
 
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+				if(ngotten == 0)return -1;
+
 				
 				if(LASTEXPR) continue;
 			}
@@ -952,6 +959,9 @@ int m3l_read_socket_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, 
 	
 	buff[ngotten] = '\0';
 	pc = &buff[0];
+	
+	if(ngotten == 0)return -1;
+
 	if( m3l_read_socket_data_line(Lnode, TMPSTR, descrpt, Popts) != 0){
 		Error("Error reading data");
 		return -1;
@@ -1012,6 +1022,8 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+				if(ngotten == 0)return -1;
+
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
@@ -1042,6 +1054,8 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 		
 		buff[ngotten] = '\0';
 		pc = &buff[0];
+		if(ngotten == 0)return -1;
+
 		if( m3l_read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
 				Error("Error reading data");
 			return -1;
@@ -1076,6 +1090,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				if(ngotten == 0)return 0; /* no more data in buffer */
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+				if(ngotten == 0)return -1;
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
@@ -1105,6 +1120,8 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 		
 		buff[ngotten] = '\0';
 		pc = &buff[0];
+		if(ngotten == 0)-1;
+
 		if( m3l_read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
 				Error("Error reading data");
 			return -1;
@@ -1149,6 +1166,8 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 				}
 				buff[ngotten] = '\0';
 				pc = &buff[0];
+				if(ngotten == 0)return -1;
+
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
@@ -1184,6 +1203,8 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 
 		buff[ngotten] = '\0';
 		pc = &buff[0];
+		if(ngotten == 0)return -1;
+
 		if( m3l_read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
 				Error("Error reading data");
 			return -1;

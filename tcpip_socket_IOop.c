@@ -809,7 +809,7 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 				Error("Unable to unmount node \n");
 				return (node_t *)NULL;
 			}
-			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 				Error("Error during reading data from socket");
 		}
 		if( close(socketnr) == -1)
@@ -850,21 +850,21 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * server side, portnumber is socket number
  */
-		if(Popts->opt_tcpheader == 'h'){
-/*
- * make, send and delete tcpipheader
- */
-			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
-				Error("send_to_tcpipsocket: TCPIPHeader");
-				return -1;
-			}
-			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
-				Error("Error during writing data to socket");
-			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return -1;
-			}
-		}
+// 		if(Popts->opt_tcpheader == 'h'){
+// /*
+//  * make, send and delete tcpipheader
+//  */
+// 			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+// 				Error("send_to_tcpipsocket: TCPIPHeader");
+// 				return -1;
+// 			}
+// 			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
+// 				Error("Error during writing data to socket");
+// 			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+// 				Error("Unable to unmount node \n");
+// 				return -1;
+// 			}
+// 		}
 		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
 			Error("Error during writing data to socket");
 	}
@@ -874,21 +874,21 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 			Error("Could not open socket");
-		if(Popts->opt_tcpheader == 'h'){
-/*
- * make, send and delete tcpipheader
- */
-			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
-				Error("send_to_tcpipsocket: TCPIPHeader");
-				return -1;
-			}
-			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
-				Error("Error during writing data to socket");
-			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return -1;
-			}
-		}
+// 		if(Popts->opt_tcpheader == 'h'){
+// /*
+//  * make, send and delete tcpipheader
+//  */
+// 			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+// 				Error("send_to_tcpipsocket: TCPIPHeader");
+// 				return -1;
+// 			}
+// 			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
+// 				Error("Error during writing data to socket");
+// 			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+// 				Error("Unable to unmount node \n");
+// 				return -1;
+// 			}
+// 		}
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( close(socketnr) == -1)
@@ -923,21 +923,21 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * server side, portnumber is socket number
  */
-		if(Popts->opt_tcpheader == 'h'){
-/*
- * make, send and delete tcpipheader
- */
-			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
-				Error("send_to_tcpipsocket: TCPIPHeader");
-				return (node_t *)NULL;
-			}
-			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
-				Error("Error during writing data to socket");
-			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-		}
+// 		if(Popts->opt_tcpheader == 'h'){
+// /*
+//  * make, send and delete tcpipheader
+//  */
+// 			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+// 				Error("send_to_tcpipsocket: TCPIPHeader");
+// 				return (node_t *)NULL;
+// 			}
+// 			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
+// 				Error("Error during writing data to socket");
+// 			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+// 				Error("Unable to unmount node \n");
+// 				return (node_t *)NULL;
+// 			}
+// 		}
 		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
@@ -964,21 +964,21 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 			Error("Could not open socket");
-		if(Popts->opt_tcpheader == 'h'){
-/*
- * make, send and delete tcpipheader
- */
-			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
-				Error("send_to_tcpipsocket: TCPIPHeader");
-				return (node_t *)NULL;
-			}
-			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
-				Error("Error during writing data to socket");
-			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-		}
+// 		if(Popts->opt_tcpheader == 'h'){
+// /*
+//  * make, send and delete tcpipheader
+//  */
+// 			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+// 				Error("send_to_tcpipsocket: TCPIPHeader");
+// 				return (node_t *)NULL;
+// 			}
+// 			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
+// 				Error("Error during writing data to socket");
+// 			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+// 				Error("Unable to unmount node \n");
+// 				return (node_t *)NULL;
+// 			}
+// 		}
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
@@ -1055,21 +1055,21 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 				Error("Error during reading data from socket");
 		}
 		
-		if(Popts->opt_tcpheader == 'h'){
-/*
- * make, send and delete tcpipheader
- */
-			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
-				Error("send_to_tcpipsocket: TCPIPHeader");
-				return (node_t *)NULL;
-			}
-			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
-				Error("Error during writing data to socket");
-			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-		}
+// 		if(Popts->opt_tcpheader == 'h'){
+// /*
+//  * make, send and delete tcpipheader
+//  */
+// 			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+// 				Error("send_to_tcpipsocket: TCPIPHeader");
+// 				return (node_t *)NULL;
+// 			}
+// 			if ( m3l_write_to_socket(1, TcpIpHeader,  portnumber, Popts) < 0)
+// 				Error("Error during writing data to socket");
+// 			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+// 				Error("Unable to unmount node \n");
+// 				return (node_t *)NULL;
+// 			}
+// 		}
 		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
 			Error("Error during writing data to socket");
 	}
@@ -1093,21 +1093,21 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 				Error("Error during reading data from socket");
 		}
-		if(Popts->opt_tcpheader == 'h'){
-/*
- * make, send and delete tcpipheader
- */
-			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
-				Error("send_to_tcpipsocket: TCPIPHeader");
-				return (node_t *)NULL;
-			}
-			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
-				Error("Error during writing data to socket");
-			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-		}
+// 		if(Popts->opt_tcpheader == 'h'){
+// /*
+//  * make, send and delete tcpipheader
+//  */
+// 			if( (TcpIpHeader = MkTCPIPHeader(Popts)) == NULL){
+// 				Error("send_to_tcpipsocket: TCPIPHeader");
+// 				return (node_t *)NULL;
+// 			}
+// 			if ( m3l_write_to_socket(1, TcpIpHeader,  socketnr, Popts) < 0)
+// 				Error("Error during writing data to socket");
+// 			if( m3l_rm_list(2, &TcpIpHeader, (opts_t *)NULL) < 0){
+// 				Error("Unable to unmount node \n");
+// 				return (node_t *)NULL;
+// 			}
+// 		}
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
 		if( close(socketnr) == -1)
