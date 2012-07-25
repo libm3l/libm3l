@@ -47,6 +47,8 @@ extern void Error(const char *);
 extern void sig_chld(int );
 extern int Fork(void);
 extern SIZE_T Strol(char *);
+extern unsigned long long Strtoull(char *, int);
+extern unsigned long Strtoul(char *, int);
 extern char *StrToLower(char *); 
 extern char *m3l_Path(node_t *, node_t *);
 extern path_t *m3l_parse_path(const char *);
