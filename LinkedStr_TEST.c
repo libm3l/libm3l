@@ -336,12 +336,12 @@ int main(void)
 
 
 		dim = (size_t *) malloc( 1* sizeof(size_t));
-		dim[0] = 1000000;
+		dim[0] = 10;
 // 		if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
 	 	if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main", "./", (char *)NULL)) == 0)
 			Error("Mklist");
 		free(dim);
-		for (i=0; i<1000000; i++)
+		for (i=0; i<10; i++)
  			NewList->data.i[i]=2*i;
 
  		if(m3l_Cat(NewList,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
