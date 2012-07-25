@@ -1,0 +1,17 @@
+#/bin/csh
+
+        set DIR_list=`ls *.c `
+
+        foreach DIR ($DIR_list)
+	echo $DIR
+	
+# 	sed -i 's/clibm3l/libm3l/g' $DIR
+# 	sed -i '/Author: Adam Jirasek/d' $DIR	
+# 	sed -i 's/Date		Version		Patch number		Descritpion/Date		Version		Patch number		CLA \n *     Description/g' $DIR
+#	sed -i 's/ *     Description/\n *\n *     Description/g' $DIR
+	
+#	sed -i 's/opt_m/opt_nomalloc/g' $DIR
+	sed -i 's/opt_c/opt_linkscleanemptrefs/g' $DIR
+	sed -i 's/opt_e/opt_linkscleanemptlinks/g' $DIR
+
+        end
