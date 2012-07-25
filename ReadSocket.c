@@ -497,6 +497,12 @@ node_t *m3l_read_socket_data(int descrpt, opts_t *Popts)
 			if( m3l_read_socket_data_charline(&Pnode, TMPSTR, descrpt) != 0)
 				Error("Error reading data");
 		}
+/*
+ * data is DISKFILE from a disk without any specific format type
+ */ 		
+		else if( strncmp(TMPSTR.Type,"DISKFILE",8) == 0){
+			Error("ReadSocket.c: not implemented yet");
+		}
 		else
 		{
 /*

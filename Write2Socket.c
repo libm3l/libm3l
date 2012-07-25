@@ -473,6 +473,9 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 					Error("Writing buffer");
 			} 
 		}
+		else if( strncmp(Tmpnode->type,"DISKFILE",8) == 0){
+			Error("Write2Socket.c: not implemented yet");
+		}
 		else
 		{
 			Error("Unknown type");
