@@ -35,4 +35,4 @@ main: $(OBJS)
 	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
 	@rm -f $*.d.tmp
 clean:
-	rm -f -g LinkedStr_TEST.out *.o *.d
+	rm -f LinkedStr_TEST.out *.o *.d
