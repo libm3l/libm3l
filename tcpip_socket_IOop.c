@@ -981,6 +981,12 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 // 		}
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
+/*
+ * shutdown socket for writing
+ */
+		if( shutdown(socketnr,SHUT_WR) != 0)
+			Perror("shutdown");
+
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
 /*
@@ -1074,6 +1080,9 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			Error("Error during writing data to socket");
 	}
 	else{
+/*
+ * client side
+ */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
@@ -1093,6 +1102,12 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 				Error("Error during reading data from socket");
 		}
+/*
+ * shutdown socket for reading
+ */
+		if( shutdown(socketnr,SHUT_RD) != 0)
+			Perror("shutdown");
+
 // 		if(Popts->opt_tcpheader == 'h'){
 // /*
 //  * make, send and delete tcpipheader

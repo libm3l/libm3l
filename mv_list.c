@@ -82,6 +82,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	int init_call;
  	char *name, *path, *path_loc, *newname;
 	const char *pc;
+	opts_t *Popts_Tlist, opts
 /*
  * check if data set exists
  */
@@ -102,6 +103,11 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 		return 0;
 	}
 /*
+ * set default values of options for TList
+ */
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+	Popts_Tlist = &opts;
+/*
  * check only one node is to be moved to the same directory  (ie. path is only ./ (dotslash)
  */
 	len = strlen(t_path_loc);
@@ -120,7 +126,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_TList)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -192,7 +198,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts)) == NULL){
+				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts_TList)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);
@@ -216,7 +222,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 				mv_tot_nodes = 0;
 				for(i=0; i< SFounds->founds; i++){
 /*
- * change the name of the list
+ * change the name of the listPopts_TList
  */
 					name = SFounds->Found_Nodes[i]->List->name;
 					bzero(name, sizeof(name));

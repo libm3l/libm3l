@@ -1,0 +1,58 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Cp \- copy list(s)
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B size_t m3l_Cp
+(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_p
+ath_loc, char * Options, ...)
+
+
+.SH DESCRIPTION
+.B m3l_Cp
+copies list(s) from a list tree 
+.B SList 
+to a target list list tree
+.B TList
+Path and location of list to be moved is specified by
+.B s_path
+and 
+.B s_path_loc
+.
+Path and location of the new location of the list in Tlist list tree is specifed by
+.B t_path
+and 
+.B t_path_loc
+.
+
+.SH OPTIONS
+.IP "-d --DIR"
+Look for DIRs only
+.IP "-f --FILE"
+Look for FILEs only
+.IP "-i --ignore"
+ignore case
+.IP "-I --IGNORE"
+select all but specified files
+.IP "-l --LINK"
+Look for LINKs only
+
+.SH RETURN VALUE
+Upon successful completion m3l_Mv will return size_t value larger then 0. If return value  is 0, no lists were moved. Otherwise, it shall return a negative value.
+
+.SH ERRORS
+The m3l_Cp function fails if malloc/realloc fails
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_cp_caller, 
+.BR m3l_cp_list 
