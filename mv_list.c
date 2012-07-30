@@ -82,7 +82,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	int init_call;
  	char *name, *path, *path_loc, *newname;
 	const char *pc;
-	opts_t *Popts_Tlist, opts
+	opts_t *Popts_Tlist, opts;
 /*
  * check if data set exists
  */
@@ -126,7 +126,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_TList)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -198,7 +198,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts_TList)) == NULL){
+				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts_Tlist)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);
