@@ -1,0 +1,59 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Cat \- cats list(s)
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B int m3l_Cat
+(node_t *List, char * Options, ...)
+
+
+
+.SH DESCRIPTION
+.B m3l_Cat
+prints content of list in List on standard output.
+The list is specified by name which is the last parameter in Options. 
+if the last parameter is * (star) entire content of List is print out.
+
+.SH OPTIONS
+.IP "-a --all"
+print all information including data
+.IP "-d --DIR"
+look for DIRs only
+.IP "-D --detailed"
+print information about node, its type and dimensions 
+.IP "-f --FiLE"
+look for FILEs only
+.IP "-i --ignore"
+ignore case in name of file
+.IP "-I --IGNORE"
+print everything but given name_of_file
+.IP "-q --quick"
+print names
+.IP "-P --pointer"
+print the values of the node pointer 
+.IP "-L --listsubdir"
+if item is DIR, print content af subDIRS too
+.IP "-l --LINK"
+if item is LINK, print its content  instead
+.IP "-r --recursive"
+looks recursively for the name
+
+
+.SH RETURN VALUE
+Upon successful completion m3l_cat will return 1. Otherwise, it shall return a negative value.
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_cat_list 

@@ -36,10 +36,12 @@ Frees rather the linkedlist structure in list. When the list is linked, the
 .B linkedlist
 structure contains the node info of the list where the list is linked to. When the link is removed
 the corresponding item in linkedlist is set to NULL. This option frees the linkedlist NULL items
-Called as a separate function
+Called as a separate function when invoked as
+.B  m3l_Ln(NULL, NULL, NULL, &List, NULL, NULL, "--clean_empty_refs_to_links", (char *)NULL));	
 .IP "-e --clean_empty_links"
 When source of the link is removed, the link is set to NULL 
-This option loopes over links and cleans NULL links. Called as a separate function.
+This option loopes over links and cleans NULL links. Called as a separate function when invoked as
+.B m3l_Ln(NULL, NULL, NULL, &List, NULL, NULL, "--clean_empty_links", (char *)NULL));	
 .IP "-d --DIR"
 Look for DIRs only
 .IP "-f --FILE"

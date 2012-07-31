@@ -1,0 +1,49 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Locate \- locate list(s)
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B find_t *m3l_Locate
+(node_t *List, const char *path, const char *path_loc, char * Options, ...)
+
+
+
+.SH DESCRIPTION
+.B m3l_Locate
+searches for location of the list in List
+Path and location of the list to be located is specified by
+.B path
+and 
+.B path_loc
+.
+.
+
+.SH OPTIONS
+.IP "-d --DIR"
+Look for DIRs only
+.IP "-f --FILE"
+Look for FILEs only
+.IP "-i --ignore"
+ignore case
+.IP "-l --LINK"
+Look for LINKs only
+
+.SH RETURN VALUE
+Upon successful completion m3l_Locate will return find_t structure with node_t addresses of located lists.
+If return value  is 0, no lists were located. Otherwise, it shall return a negative value.
+
+.SH ERRORS
+The m3l_Locate function fails if malloc/realloc fails
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_locate_list 

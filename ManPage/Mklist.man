@@ -1,0 +1,45 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Mklist \- creates list(s)
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B node_t m3l_Mklist
+(const char *name, const char *type, size_t ndim, size_t *dim, node_t **WTAList, const char *t_path, const char *t_path_loc, char * Options, ...)
+
+
+
+.SH DESCRIPTION
+.B m3l_Mklist
+creates a new list with a name name type type arrray dimensions ndim and dim and ads it
+to WTAList at location specified by t_path and t_path_loc.
+when invoked as
+.B m3l_Mklist(const char *name, "DIR", 0, 0, NULL, NULL, NULL, NULL);
+the created list will not be added to any list and will be head node
+.
+
+.SH OPTIONS
+.IP "-b --beginning"
+add list at the beginning of list tree
+.IP "-m --no_malloc"
+Do not allocate data structure. Use if data union is used as a pointer to existing array
+.IP "-n --nullify"
+when allocating in data union, set to 0 (not implemented yet)
+
+.SH RETURN VALUE
+Upon successful completion m3l_Mklist will return node_t pointer of the newly created list with the list of located Lists. Otherwise, it shall return NULL.
+
+.SH ERRORS
+none
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_mk_list 

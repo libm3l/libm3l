@@ -1,0 +1,60 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Rm \- removes list(s)
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B size_t m3l_Rm
+(node_t **List, const char *path, const char *path_loc, char * Options, ...)
+
+
+.SH DESCRIPTION
+.B m3l_Rm
+removes list(s) from a list tree 
+.B List 
+Path and location of list to be removed is specified by
+.B path
+and 
+.B path_loc
+
+.
+
+.SH OPTIONS
+.IP "-c --clean_empty_refs_to_links" 
+Frees rather the linkedlist structure in list. When the list is linked, the 
+.B linkedlist
+structure contains the node info of the list where the list is linked to. When the link is removed
+the corresponding item in linkedlist is set to NULL. This option frees the linkedlist NULL items
+Look for DIRs only
+.IP "-d --DIR"
+Look for DIRs only
+.IP "-f --FILE"
+Look for FILEs only
+.IP "-i --ignore"
+ignore case
+.IP "-I --IGNORE"
+select all but specified files
+.IP "-k --keepheadnode"
+remove all up to head node, keep head node
+.IP "-l --LINK"
+Look for LINKs only
+.IP "-r --recursive"
+looks for file in subdirs
+
+.SH RETURN VALUE
+Upon successful completion m3l_Rm will return size_t value larger then 0. If return value  is 0, no lists were moved. Otherwise, it shall return a negative value.
+
+.SH ERRORS
+The m3l_Rm function fails if malloc/realloc fails
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_rm_list 
