@@ -1,12 +1,6 @@
 FunctionsArrays.c
 FunctionsPrt.c
 IO.c
-Mount.c
-NumberConversion.c
-ReadDescriptor.c
-ReadSocket.c
-Write2Socket.c
-WriteData.c
 tcpip_socket_IOop.c
 tcpip_socket_op.c
 
@@ -21,7 +15,7 @@ IO.c
 Ln.c 
 Locate.c
 Mklist.c
+Mount.c
 Mv.c 
 Rm.c 
 Umount.c
-
