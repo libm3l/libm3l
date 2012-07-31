@@ -5,7 +5,6 @@ Mount.c
 NumberConversion.c
 ReadDescriptor.c
 ReadSocket.c
-Umount.c
 Write2Socket.c
 WriteData.c
 tcpip_socket_IOop.c
@@ -24,4 +23,5 @@ Locate.c
 Mklist.c
 Mv.c 
 Rm.c 
+Umount.c
 

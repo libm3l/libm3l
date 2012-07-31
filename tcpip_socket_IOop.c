@@ -254,6 +254,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_tcpheader = '\0'; // do not send header with encoding info
+	opts.opt_shutdown = '\0'; // shutdown when finished with sending
 	
 	option_index = 0;
 /*
@@ -315,13 +316,14 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			{
 				{"clean_empy_links",     no_argument,              0, 'e'},
 				{"encoding",     required_argument,                  0, 'c'},
-				{"header",           no_argument,                    0, 'h'},		
+				{"header",           no_argument,                    0, 'h'},
+				{"shutdown",           no_argument,                    0, 's'},		
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ec:h", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -369,6 +371,12 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
  * send header with encoding info
  */
 					opts.opt_tcpheader = 'h';
+				break;
+				case 's':
+/*
+ * shutdown when done with sending
+ */
+					opts.opt_shutdown = 's';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -429,6 +437,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_tcpheader = '\0'; // do not send header with encoding info
+	opts.opt_shutdown = '\0'; // shutdown when done with receiving
 	
 	option_index = 0;
 /*
@@ -490,13 +499,14 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
 				{"encoding",     required_argument,                  0, 'c'},
-				{"header",           no_argument,                    0, 'h'},		
+				{"header",           no_argument,                    0, 'h'},
+				{"shutdown",           no_argument,                    0, 's'},				
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ec:hs", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -544,6 +554,12 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
  * send header with encoding info
  */
 					opts.opt_tcpheader = 'h';
+				break;
+				case 's':
+/*
+ * shutdown when done with sending
+ */
+					opts.opt_shutdown = 's';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -984,8 +1000,10 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * shutdown socket for writing
  */
-		if( shutdown(socketnr,SHUT_WR) != 0)
-			Perror("shutdown");
+		if(Popts->opt_shutdown = 's'){
+			if( shutdown(socketnr,SHUT_WR) != 0)
+				Perror("shutdown");
+		}
 
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
@@ -1105,8 +1123,10 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * shutdown socket for reading
  */
-		if( shutdown(socketnr,SHUT_RD) != 0)
-			Perror("shutdown");
+		if(Popts->opt_shutdown = 's'){
+			if( shutdown(socketnr,SHUT_RD) != 0)
+				Perror("shutdown");
+		}
 
 // 		if(Popts->opt_tcpheader == 'h'){
 // /*
