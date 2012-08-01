@@ -58,7 +58,7 @@
 #include "tcpip_socket_op.h"
 
 
-int m3l_server_openbindlistensocket(int portno)
+int m3l_server_openbindlistensocket(int portno, char* Options, ...)
 {
 /*
  * function opens, binds socket and makes it listening (for server)
@@ -113,7 +113,7 @@ int m3l_server_openbindlistensocket(int portno)
 
 
 
-int m3l_cli_open_socket(const char * server_addr, int portno)
+int m3l_cli_open_socket(const char * server_addr, int portno, char* Options, ...)
 {
 	int sockfd;
 	struct sockaddr_in serv_addr;

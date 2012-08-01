@@ -1,0 +1,44 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Receive_tcpipsocket \- receives list from a socket
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B node_t *Receive_send_tcpipsocket
+(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+
+
+.SH DESCRIPTION
+.B Receive_send_tcpipsocket
+reads list  from a socket with hostname and port number
+.
+
+.SH OPTIONS
+.IP "-e --clean_empy_links"
+If the file contains links which are empty, remove them
+.IP "-c --encoding <value>"
+Encoding of floating point numbers before ending them over the socket. If value is 
+.B text 
+the floating point numbers are converted to text. If the value is 
+.B IEEE-754
+the floating point numbers encodes according to IEEE-754 specifrications
+
+
+.SH RETURN VALUE
+Upon successful completion Receive_send_tcpipsocket will pointer to received list. Otherwise, it shall return NULL.
+
+.SH ERRORS
+The Receive_send_tcpipsocket function fails if socket does not exist
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BH 
+

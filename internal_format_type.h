@@ -70,6 +70,7 @@ typedef struct opts{
 	char opt_nomalloc;
 	char opt_tcpencoding;
 	char opt_tcpheader;
+	char opt_shutdown;
 
 } opts_t;
 

@@ -1,0 +1,38 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Fwrite \- wrtes file
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B node_t *m3l_Fwrite
+(node_t *Lnode, const char *name, char * Options, ...)
+
+
+
+.SH DESCRIPTION
+.B m3l_Fwrite
+writes Linked list to the file with name *name
+.
+.
+
+.SH OPTIONS
+.IP "-e --clean_empy_links"
+If the file contains links which are empty, remove them
+
+.SH RETURN VALUE
+Upon successful completion m3l_Fwrite will return 0. Otherwise, it shall return -1.
+
+.SH ERRORS
+The m3l_Fwrite function fails file can not be opened
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+

@@ -809,7 +809,7 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
@@ -888,7 +888,7 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
 			Error("Could not open socket");
 // 		if(Popts->opt_tcpheader == 'h'){
 // /*
@@ -978,7 +978,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
 			Error("Could not open socket");
 // 		if(Popts->opt_tcpheader == 'h'){
 // /*
@@ -1101,7 +1101,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");

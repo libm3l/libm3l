@@ -1,0 +1,38 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Fread \- reads file
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B node_t *m3l_Fread
+(const char *name, char * Options, ...)
+
+
+
+.SH DESCRIPTION
+.B m3l_Fread
+reads file with name *name
+.
+.
+
+.SH OPTIONS
+.IP "-e --clean_empy_links"
+If the file contains links which are empty, remove them
+
+.SH RETURN VALUE
+Upon successful completion m3l_Fread will return pointer to the List. Otherwise, it shall return NULL.
+
+.SH ERRORS
+The m3l_Fread function fails if malloc/realloc fails or if the format does not conform with libm3l format
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+
