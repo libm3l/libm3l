@@ -132,7 +132,7 @@ int main(void)
 		if(m3l_Cat(Anode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
  	                   Error("CatData");
 
-exit(0);		
+// exit(0);		
 		if(m3l_Umount(&Anode) != 1)
 			Perror("m3l_Umount");
 		
