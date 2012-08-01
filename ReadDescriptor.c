@@ -443,9 +443,10 @@ node_t *m3l_read_file_data(FILE *fp, opts_t *Popts)
 		if( (Pnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 			Error("Allocate");}
 		
-		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C'){
+		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C' || strncmp(TMPSTR.Type,"DISKFILE",8) == 0){
 /*
- * data is Char type
+ * data is Char type or DISK file
+ * if DISKFILE, read name of the file and work with it only when sending through ReadSocket and Write2Socket
  */ 
 			if( m3l_read_file_data_charline(&Pnode, TMPSTR, fp) != 0){
 				Error("Error reading data");

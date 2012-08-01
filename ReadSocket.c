@@ -497,6 +497,12 @@ node_t *m3l_read_socket_data(int descrpt, opts_t *Popts)
 			if( m3l_read_socket_data_charline(&Pnode, TMPSTR, descrpt) != 0)
 				Error("Error reading data");
 		}
+/*
+ * data is DISKFILE from a disk without any specific format type
+ */ 		
+		else if( strncmp(TMPSTR.Type,"DISKFILE",8) == 0){
+			Error("ReadSocket.c: not implemented yet");
+		}
 		else
 		{
 /*
@@ -561,15 +567,15 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 /*
  * integers
  */
-	short  int         		*psi;
+	short  int         	*psi;
 	unsigned short int 	*pusi;
-	int           				*pi;
+	int           		*pi;
 	unsigned int  		*pui;
-	long  int     			*pli;
-	unsigned long int       	*puli;
-	long long int          	 *plli;
-	signed long long int   	 *pslli;
-	unsigned long long int  *pulli;
+	long  int     		*pli;
+	unsigned long int       *puli;
+	long long int          	*plli;
+	signed long long int   	*pslli;
+	unsigned long long int 	*pulli;
 
 	uint32_t fi;
 	uint64_t di;
@@ -594,7 +600,8 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		}
 		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
-			di = strtoull(type, &end, 16);
+// 			di = strtoull(type, &end, 16);
+			di = Strtoull(type, 16);
 			d2 = unpack754_64(di);
 			*pldf++ = d2;
 			#include "ReadSocket_Part2"
@@ -619,7 +626,8 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		}
 		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
-			di = strtoull(type, &end, 16);
+// 			di = strtoull(type, &end, 16);
+			di = Strtoull(type, 16);
 			d2 = unpack754_64(di);
 			*pdf++ = d2;
 			#include "ReadSocket_Part2"
@@ -644,7 +652,8 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		}
 		if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
-			fi = strtoull(type, &end, 8);
+// 			fi = strtoull(type, &end, 8);
+			fi = Strtoul(type, 8);
 			f2 = unpack754_32(fi);
 			*pf++ = f2;
 			#include "ReadSocket_Part2"

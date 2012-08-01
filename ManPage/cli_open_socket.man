@@ -1,0 +1,36 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_cli_open_socket \- opens, binds socket and convert it to listening socket
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B node_t *m3l_cli_open_socket
+(const char * server_addr, int portno, char* Options, ....)
+
+
+.SH DESCRIPTION
+.B m3l_cli_open_socket
+opens socket with hostname and portnumber
+.
+.
+
+.SH OPTIONS
+none
+
+.SH RETURN VALUE
+Upon successful completion m3l_cli_open_socket will socket descriptor. Otherwise, it shall return negative value.
+
+.SH ERRORS
+The m3l_cli_open_socket function fails if socket operations fail
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+

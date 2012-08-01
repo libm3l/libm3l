@@ -104,8 +104,8 @@ int Fork(void)
 }
 
 /*
- *
-  */
+ * Converts string to long
+ */
 SIZE_T Strol(char *text)
 {
   char *err;
@@ -113,13 +113,96 @@ SIZE_T Strol(char *text)
 
   	i = strtol(text,&err,0);
 	if (err == text){
-	  Error("Strol:  Error when reading and converting integer number");} /* complete garbage input */ 
+/* 
+ * string is not a number
+ */
+	  Error("Strol:  Error when reading and converting integer number");
+	}
 	else if (*err != 0){
-	  Perror("Strol:  Error when reading and converting integer number");}/* trailing garbage */
-	else if ((i == LONG_MAX || i == LONG_MIN) && errno == ERANGE)
-	  Perror("strol");
+		Perror("Strol:  Error when reading and converting integer number");
+/* 
+ *str began with a number but has junk left over at the end 
+ */
+	}
+	else if ((i == LONG_MAX || i == LONG_MIN) && errno == ERANGE){
+/* 
+ * the value of string does not fit in unsigned long long
+ */
+		Perror("Strol:  Error when reading and converting integer number");
+	}
 	return i;
 }
+
+/*
+ * converts hex string to unsigned 32bit
+ */
+
+unsigned long Strtoul(char *str, int base){
+	
+	char  *end;
+	unsigned long long result;
+	
+	errno = 0;
+	result = strtoull(str, &end, base);
+	if (result == 0 && end == str) {
+/* 
+ * string is not a number
+ */
+		Error("Strtoull: Error when reading and converting flaot number");
+		exit(0);
+	} 
+	else if (result == ULONG_MAX && errno) {
+/* 
+ * the value of string does not fit in unsigned long long
+ */
+		Error("Strtoull: Error when reading and converting flaot number");
+		exit(0);
+	} 
+	else if (*end != 0) {
+/* 
+ *str began with a number but has junk left over at the end 
+ */
+		Error("Strtoull: Error when reading and converting flaot number");
+		exit(0);
+	}
+	return result;
+}
+
+/*
+ * converts hex string to unsigned 64bit
+ */
+unsigned long long Strtoull(char *str, int base){
+	
+	char  *end;
+	unsigned long long result;
+	
+	errno = 0;
+	result = strtoull(str, &end, base);
+	if (result == 0 && end == str) {
+/* 
+ * string is not a number
+ */
+		Error("Strtoull: Error when reading and converting flaot number");
+		exit(0);
+	} 
+	else if (result == ULLONG_MAX && errno) {
+/* 
+ * the value of string does not fit in unsigned long long
+ */
+		Error("Strtoull: Error when reading and converting flaot number");
+		exit(0);
+	} 
+	else if (*end != 0) {
+/* 
+ *str began with a number but has junk left over at the end 
+ */
+		Error("Strtoull: Error when reading and converting flaot number");
+		exit(0);
+	}
+	
+	return result;
+}
+
 
 
 /*

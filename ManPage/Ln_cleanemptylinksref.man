@@ -1,0 +1,37 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_ln_cleanemptylinksref \- cleans references to link
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B size_t m3l_ln_cleanemptylinksref
+(node_t **List, char * Options, ...)
+
+
+.SH DESCRIPTION
+.B m3l_ln_cleanemptylinksref
+cleans references to links in list List. When list is linked to another list, 
+the
+.B linkedlist
+structure is set to pointer to the link. When removing list, the reference is set to NULL.
+When invoking this function, all linkedlist which are NULL are freed
+.
+
+.SH RETURN VALUE
+Upon successful completion m3l_ln_cleanemptylinksref will return 1. Otherwise, it shall return a negative value.
+
+.SH ERRORS
+The m3l_ln_cleanemptylinksref function fails if malloc/realloc fails
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_Ln,
+.BR m3l_Rm 

@@ -1,0 +1,44 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Send_to_tcpipsocket \- send list to socket
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B node_t *m3l_Send_to_tcpipsocket
+(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+
+
+.SH DESCRIPTION
+.B m3l_Send_to_tcpipsocket
+send list to socket with a hostname and port number
+.
+.
+
+.SH OPTIONS
+.IP "-e --clean_empy_links"
+If the file contains links which are empty, remove them
+.IP "-c --encoding <value>"
+Encoding of floating point numbers before ending them over the socket. If value is 
+.B text 
+the floating point numbers are converted to text. If the value is 
+.B IEEE-754
+the floating point numbers encodes according to IEEE-754 specifrications
+
+
+.SH RETURN VALUE
+Upon successful completion m3l_Send_to_tcpipsocket will return 1. Otherwise, it shall return negative value.
+
+.SH ERRORS
+The m3l_Send_to_tcpipsocket function fails if socket does not exist
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+

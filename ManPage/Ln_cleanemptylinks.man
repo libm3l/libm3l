@@ -1,0 +1,35 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_ln_cleanemptylinks \- cleans empty link
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B size_t m3l_ln_cleanemptylinks
+(node_t **List, char * Options, ...)
+
+
+.SH DESCRIPTION
+.B m3l_ln_cleanemptylinks
+cleans empty links in List. When list is linked to another list, 
+the link contains reference to the origin of the link. When the source list is 
+removed, the link is set to empty link. 
+m3l_ln_cleanemptylinks searches recursivelly in List for emtpy links and removes them
+
+.SH RETURN VALUE
+Upon successful completion m3l_ln_cleanemptylinks will return number of removed empty link. Otherwise, it shall return a negative value.
+
+.SH ERRORS
+The m3l_ln_cleanemptylinks function fails if rm_list fails
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_Ln, 
+.BR m3l_Rm

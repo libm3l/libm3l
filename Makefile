@@ -14,32 +14,25 @@ LFLAGS = -fbounds-check -fstack-check -g
 # link
 #
 main: $(OBJS)
-	gcc $(OBJS) -o LinkedStr_TEST.out
-#
-# pull in dependency info for *existing* .o files
-#
+	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS) 
+	ln -sf libm3l.so.1.0 libm3l.so
+
+	set PWD=`pwd`
+	cp libm3l.org_h libm3l.h
+	sed -i 's:ActualPWD:'$$PWD':' libm3l.h
+
+
+	cc -g -o LinkedStr_TEST.out LinkedStr_TEST.c  -L/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList  -lm3l -Wl,-rpath=/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList
+
 -include $(OBJS:.o=.d)
 
-#
-# compile and generate dependency info;
-# more complicated dependency computation, so all prereqs listed
-# will also become command-less, prereq-less targets
-#   sed:    strip the target (everything before colon)
-#   sed:    remove any continuation backslashes
-#   fmt -1: list words one per line
-#   sed:    strip leading spaces
-#   sed:    add trailing colons
-#
 %.o: %.c
-	gcc -c $(CFLAGS) $*.c -o $*.o
-	gcc -MM $(CFLAGS) $*.c > $*.d
+	gcc -c -g -fPIC $*.c -o $*.o
+	gcc -MM -g -fPIC $*.c > $*.d
 	@mv -f $*.d $*.d.tmp
 	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
 	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
 	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
 	@rm -f $*.d.tmp
-#
-# remove compilation products
-#
 clean:
 	rm -f LinkedStr_TEST.out *.o *.d

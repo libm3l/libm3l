@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
  /*
  * create, bind and liste socket
  */
-     if ( (sockfd = m3l_server_openbindlistensocket(portno) ) < 0 )
+     if ( (sockfd = m3l_server_openbindlistensocket(portno, (char *)NULL) ) < 0 )
 		Perror("Open_Bind_Listen");
       
 /* =============================== */      

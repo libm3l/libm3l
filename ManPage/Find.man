@@ -1,0 +1,53 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Find \- finds list(s)
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B find_t m3l_Find
+(node_t **SList, char * Options, ...)
+
+
+
+.SH DESCRIPTION
+.B m3l_Find
+looks for list specified by the name in List.
+The name is specified as the last parameter in options.
+Function is mostly used to locate a subset from the 
+List which is then filtered in Locator.
+.
+.
+
+.SH OPTIONS
+.IP "-d --DIR"
+Look for DIRs only
+.IP "-f --FILE"
+Look for FILEs only
+.IP "-i --ignore"
+ignore case
+.IP "-I --IGNORE"
+select all but specified files
+.IP "-l --LINK"
+Look for LINKs only
+.IP "-L --inside_link"
+search in inside the link
+.IP "-r --recursive"
+search recursively
+
+.SH RETURN VALUE
+Upon successful completion m3l_Find will return find_t structure with the list of located Lists. Otherwise, it shall return NULL.
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_find_list 

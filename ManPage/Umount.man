@@ -1,0 +1,37 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Umount \- removes entire list tree
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B int m3l_Umount
+(node_t **List)
+
+
+
+.SH DESCRIPTION
+.B m3l_Umount
+removes entire List tree. Works similarly to Rm
+.
+
+.SH OPTIONS
+none
+
+
+.SH RETURN VALUE
+Upon successful completion m3l_Umount will return 1. Otherwise, it shall return a negative value.
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_Rm

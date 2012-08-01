@@ -85,6 +85,7 @@ size_t m3l_ln_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	char *name, *path, *path_loc, *newname;
 	const char *pc;
 	node_t *Tmpnode, *TmpnodePar;
+	opts_t *Popts_Tlist, opts;
 /*
  * check if data set exists
  */	
@@ -111,6 +112,12 @@ size_t m3l_ln_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 		Warning("Cp: NULL SFounds");
 		return 0;
 	}
+/*
+ * set default values of options for TList
+ */
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0'; opts.opt_l = '\0';
+	opts.opt_linkscleanemptrefs = '\0'; opts.opt_linkscleanemptlinks = '\0'; opts.opt_nomalloc = '\0';
+	Popts_Tlist = &opts;
 /*
  * check only one node is to be copied to the same directory  (ie. path is onlu ./ (dotslash)
  */
@@ -144,9 +151,9 @@ size_t m3l_ln_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
 /*
- * check it the direcotry exist, if it does, the name is new name
+ * check it the direcotry exist, if it does, the name is a new name
  */
 			pc = t_path;
 			i = 0;
@@ -216,7 +223,7 @@ size_t m3l_ln_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts)) == NULL){
+				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts_Tlist)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);
@@ -556,7 +563,7 @@ size_t m3l_ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 			if(Popt != NULL && (*List)->ndim == 0 && Popt->opt_linkscleanemptlinks == 'e') rm_nodes = m3l_rm_list(2, List, Popt);
 		}
 		else if	(Popt != NULL && Popt->opt_linkscleanemptrefs == 'c'){
-			rm_nodes = rm_nodes + m3l_ln_cleanemptylinksref(List);
+			rm_nodes = rm_nodes + m3l_ln_cleanemptylinksref(List, Popt);
 		}
 
 		return rm_nodes;
@@ -573,7 +580,7 @@ size_t m3l_ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 		while(Tmpnode != NULL){
 			Tmpnode1 = Tmpnode->next;
 			cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinks(&Tmpnode,  Popt);
-			if(Popt != NULL && Popt->opt_linkscleanemptrefs == 'c') cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinksref(&Tmpnode);
+			if(Popt != NULL && Popt->opt_linkscleanemptrefs == 'c') cleaned_nodes = cleaned_nodes + m3l_ln_cleanemptylinksref(&Tmpnode, Popt);
 			Tmpnode = Tmpnode1;
 		}
 		return cleaned_nodes;
@@ -583,7 +590,7 @@ size_t m3l_ln_cleanemptylinks(node_t **List,  opts_t *Popt){
 
 
 
-int m3l_ln_cleanemptylinksref(node_t **List){
+int m3l_ln_cleanemptylinksref(node_t **List,  opts_t *Popt){
 /*
  * function cleans empty references in  
  * (*Slist)->linknode structure

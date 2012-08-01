@@ -129,7 +129,10 @@ int main(void)
 
 		if( (Anode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754",  (char *)NULL)) == NULL)
 		Perror("Send_receive");
-		
+		if(m3l_Cat(Anode, "--all", "-P", "-L","--links",  "*",   (char *)NULL) != 0)
+ 	                   Error("CatData");
+
+// exit(0);		
 		if(m3l_Umount(&Anode) != 1)
 			Perror("m3l_Umount");
 		

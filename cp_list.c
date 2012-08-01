@@ -84,6 +84,7 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	char *name, *path, *path_loc, *newname;
 	const char *pc;
 	node_t *Tmpnode, *TmpnodePar;
+	opts_t *Popts_Tlist, opts;
 /*
  * check if data set exists
  */
@@ -103,6 +104,12 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 		Warning("Cp: NULL SFounds");
 		return 0;
 	}
+/*
+ * set default values of options for TList
+ */
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+	opts.opt_L = '\0'; opts.opt_nomalloc = '\0';
+	Popts_Tlist = &opts;
 /*
  * check only one node is to be copied to the same directory  (ie. path is onlu ./ (dotslash)
  */
@@ -142,7 +149,7 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -214,7 +221,7 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts)) == NULL){
+				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts_Tlist)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);
