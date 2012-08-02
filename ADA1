@@ -7,7 +7,7 @@ type C 1 5
 BBB_DATA_DADA I 2 2 2 
 8001 8002 8003 8004 
 boundary DIR 2
-name1 C 1 9 
+name C 1 9 
 `Fuselage`
 type C 1 5 
 `Wall`

@@ -124,9 +124,9 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	}
 	else{
 /*
- * locate target; if target == NULL, just rename the node(s)
+ * locate target; if target == NULL, just rename the node(s) or --add option specified 
  */
-		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
+		if ( Popts->opt_add == 'a' || (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */

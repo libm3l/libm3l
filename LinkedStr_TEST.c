@@ -248,7 +248,17 @@ int main(void)
 // 		m3l_Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/ADD_grid1", "/*/*", (char *)NULL);   /* rename node */
 // 		m3l_Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
 // 		m3l_Cp(Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/BouNdaRy", "/*/n=1/n=1/*", (char *)NULL); 
-		m3l_Cp(&Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./", (char *)NULL); 
+		m3l_Cp(&Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./", (char *)NULL);
+		m3l_Cp(&Gnode,  "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/SV_name=Wing/*", &Gnode, 
+				"/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/SV_name=Fuselage/*", "--add", (char *)NULL); 
+
+		
+// 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+// 			Error("CatData");
+		
+// 		exit(0);
+		
+		
 //   		m3l_Cp(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
 				   

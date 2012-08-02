@@ -31,6 +31,8 @@ and
 .
 
 .SH OPTIONS
+.IP "-a --add"
+If Tlist already exists, do not rewrite it, add Slist as a new item
 .IP "-d --DIR"
 Look for DIRs only
 .IP "-f --FILE"

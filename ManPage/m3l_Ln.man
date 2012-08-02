@@ -31,6 +31,8 @@ and
 .
 
 .SH OPTIONS
+.IP "-a --add"
+If Tlist already exists, do not rewrite it, add Slist as a new item
 .IP "-c --clean_empty_refs_to_links"
 Frees rather the linkedlist structure in list. When the list is linked, the 
 .B linkedlist
