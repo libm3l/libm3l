@@ -73,12 +73,12 @@
 
 int main(void) 
 {	
-    node_t *Gnode=NULL, *RecNode, *Anode, *Tmpnode, *NewList=NULL;
-    find_t *Founds;
+    node_t *Gnode=NULL, *RecNode=NULL, *Anode=NULL, *Tmpnode=NULL, *NewList=NULL;
+    find_t *Founds=NULL;
     
     int i, count,countgrp, socketnr, j;
 
-	size_t *dim;
+    size_t *dim;
     
     char name[255], type[30];
     char *pc;
@@ -90,14 +90,15 @@ int main(void)
     int ada[5];
     get_arg_t argsstr;
     
-    char dummy[1];
-    double value = 42.000042; /* or anything else */
-    int siz;
+//     char dummy[1];
+//     double value = 42.000042; /* or anything else */
+//     int siz;
 
 
     FILE *fp;
     
     char *node_path;
+    printf("before Going to Fread1\n");
 
     printf("Going to Fread1\n");
    
@@ -107,7 +108,7 @@ int main(void)
 //     printf("exact length needed to represent 'value' "
 //            "(without the '\\0' terminator) is %d.\n", siz);
 //         printf("%f\n\n\n", -DBL_MAX);
-	printf("%d\n", snprintf(NULL, 0, "%.10f", value));
+// 	printf("%d\n", snprintf(NULL, 0, "%.10f", value));
 //     exit(0);
 
 	for (j=0; j<1; j++){
