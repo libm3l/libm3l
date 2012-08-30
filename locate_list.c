@@ -94,7 +94,7 @@ find_t *m3l_locator_caller(node_t *List, const char *path, const char *path_loc,
  */
 		if(strncmp(Tmp_node->name, parsed_path->path[0], strlen(Tmp_node->name)) != 0 && 
 	           strncmp(parsed_path->path[0], "*", 1) != 0 && strncmp(parsed_path->path[0], "~", 1) != 0){
-			Error("Wrong absolute path");
+			Warning("Wrong absolute path");
  			m3l_destroy_pars_path(&parsed_path);
 			return (find_t *)NULL;
 		}
@@ -104,7 +104,7 @@ find_t *m3l_locator_caller(node_t *List, const char *path, const char *path_loc,
 		for(i=0; i<parsed_path->seg_count; i++){
 			if(strncmp(parsed_path->path[i], "..", 2) == 0){
 				if ( (Tmp_node = Tmp_node->parent) == NULL){
-					Error("Wrong path");
+					Warning("Wrong path");
 					m3l_destroy_pars_path(&parsed_path);
 					return (find_t *)NULL;
 				}
