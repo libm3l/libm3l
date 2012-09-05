@@ -123,7 +123,7 @@ find_t *m3l_locator_caller(node_t *List, const char *path, const char *path_loc,
  */
 	if ( (search_term = strdup(parsed_path->path[parsed_path->seg_count-1])) == NULL)
 			Perror("strdup");
-	if(Popts->opt_i == 'i')search_term = StrToLower(search_term);
+	if(Popts != NULL && Popts->opt_i == 'i')search_term = StrToLower(search_term);
 
 	if ( (Founds = m3l_Find_caller(2, Tmp_node, search_term, Popts)) == NULL){
 		free(search_term);
