@@ -148,21 +148,21 @@ unsigned long Strtoul(char *str, int base){
 /* 
  * string is not a number
  */
-		Error("Strtoull: Error when reading and converting flaot number");
+		Error("Strtoull: Error when reading and converting float number");
 		exit(0);
 	} 
 	else if (result == ULONG_MAX && errno) {
 /* 
  * the value of string does not fit in unsigned long long
  */
-		Error("Strtoull: Error when reading and converting flaot number");
+		Error("Strtoull: Error when reading and converting float number");
 		exit(0);
 	} 
 	else if (*end != 0) {
 /* 
  *str began with a number but has junk left over at the end 
  */
-		Error("Strtoull: Error when reading and converting flaot number");
+		Error("Strtoull: Error when reading and converting float number");
 		exit(0);
 	}
 	return result;
@@ -182,21 +182,21 @@ unsigned long long Strtoull(char *str, int base){
 /* 
  * string is not a number
  */
-		Error("Strtoull: Error when reading and converting flaot number");
+		Error("Strtoull: Error when reading and converting float number");
 		exit(0);
 	} 
 	else if (result == ULLONG_MAX && errno) {
 /* 
  * the value of string does not fit in unsigned long long
  */
-		Error("Strtoull: Error when reading and converting flaot number");
+		Error("Strtoull: Error when reading and converting float number");
 		exit(0);
 	} 
 	else if (*end != 0) {
 /* 
  *str began with a number but has junk left over at the end 
  */
-		Error("Strtoull: Error when reading and converting flaot number");
+		Error("Strtoull: Error when reading and converting float number");
 		exit(0);
 	}
 	
