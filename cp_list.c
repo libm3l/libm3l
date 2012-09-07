@@ -111,9 +111,10 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	opts.opt_L = '\0'; opts.opt_nomalloc = '\0';
 	Popts_Tlist = &opts;
 /*
- * check only one node is to be copied to the same directory  (ie. path is onlu ./ (dotslash)
+ * check only if node is to be copied to the same directory  (ie. path is only ./ (dotslash)
  */
 	len = strlen(t_path_loc);
+	
 	if(strncmp(t_path_loc, "./", 2) == 0   &&  len == 2){		
 		
 		for(i=0; i< SFounds->founds; i++){
@@ -147,9 +148,9 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	}
 	else{
 /*
- * locate target; if target == NULL, just rename the node(s)
+ * locate target; if target == NULL, just rename the node(s) or --add option specified 
  */
-		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
+		if ( Popts->opt_add == 'a' || (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */

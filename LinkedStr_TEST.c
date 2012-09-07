@@ -73,12 +73,12 @@
 
 int main(void) 
 {	
-    node_t *Gnode=NULL, *RecNode, *Anode, *Tmpnode, *NewList=NULL;
-    find_t *Founds;
+    node_t *Gnode=NULL, *RecNode=NULL, *Anode=NULL, *Tmpnode=NULL, *NewList=NULL;
+    find_t *Founds=NULL;
     
     int i, count,countgrp, socketnr, j;
 
-	size_t *dim;
+    size_t *dim;
     
     char name[255], type[30];
     char *pc;
@@ -90,14 +90,15 @@ int main(void)
     int ada[5];
     get_arg_t argsstr;
     
-    char dummy[1];
-    double value = 42.000042; /* or anything else */
-    int siz;
+//     char dummy[1];
+//     double value = 42.000042; /* or anything else */
+//     int siz;
 
 
     FILE *fp;
     
     char *node_path;
+    printf("before Going to Fread1\n");
 
     printf("Going to Fread1\n");
    
@@ -107,7 +108,7 @@ int main(void)
 //     printf("exact length needed to represent 'value' "
 //            "(without the '\\0' terminator) is %d.\n", siz);
 //         printf("%f\n\n\n", -DBL_MAX);
-	printf("%d\n", snprintf(NULL, 0, "%.10f", value));
+// 	printf("%d\n", snprintf(NULL, 0, "%.10f", value));
 //     exit(0);
 
 	for (j=0; j<1; j++){
@@ -248,7 +249,17 @@ int main(void)
 // 		m3l_Cp(Gnode, "/main/grid1", "/*/SV_name_of_grid=CSM_grid", &Gnode, "/main/ADD_grid1", "/*/*", (char *)NULL);   /* rename node */
 // 		m3l_Cp(Gnode, "/main/grid1/boundary", "/*/SV_name_of_grid=CSM_grid/SV_type=Wall", &Gnode, "BouNdaRy", "./*", (char *)NULL); 
 // 		m3l_Cp(Gnode, "/main/grid1/boundary/type", "/*/SV_name_of_grid=CSM_grid/n=1/n=1", &Gnode, "/main/grid1/boundary/BouNdaRy", "/*/n=1/n=1/*", (char *)NULL); 
-		m3l_Cp(&Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./", (char *)NULL); 
+		m3l_Cp(&Gnode, "/main/grid1/boundary", "/*/*/SV_type=Wall", &Gnode, "BouNdaRy", "./", (char *)NULL);
+		m3l_Cp(&Gnode,  "/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/SV_name=Wing/*", &Gnode, 
+				"/main/grid1/boundary/name", "/*/SV_name_of_grid=CSM_grid/SV_name=Fuselage/*", "--add", (char *)NULL); 
+
+		
+// 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
+// 			Error("CatData");
+		
+// 		exit(0);
+		
+		
 //   		m3l_Cp(Anode, "/Main_DATA_Structure/Additional_directory", "/*/*", &Gnode, "/main/grid1/boundary/typeNew", "/*/SV_name_of_grid=CSM_grid/n=2/*", (char *)NULL);   /* rename node */
 
 				   

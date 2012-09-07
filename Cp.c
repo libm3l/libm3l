@@ -75,7 +75,7 @@ size_t m3l_Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t
 	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
-	opts.opt_L = '\0'; opts.opt_nomalloc = '\0';
+	opts.opt_L = '\0'; opts.opt_nomalloc = '\0'; opts.opt_add = '\0';
 	
 	// opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	
@@ -151,6 +151,7 @@ size_t m3l_Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t
 		{
 			static struct option long_options[] =
 			{
+				{"add",     	no_argument,       0, 'a'},
 				{"ignore",     no_argument,       0, 'i'},
 				{"DIR",        no_argument,       0, 'd'},
 				{"FILE",       no_argument,       0, 'f'},
@@ -162,7 +163,7 @@ size_t m3l_Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiklLI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "adfiklLI", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -182,6 +183,12 @@ size_t m3l_Cp(node_t **SList, const char *s_path, const char *s_path_loc, node_t
 					printf ("\n");
 					break;
 
+				case 'a':
+/*
+ * add case - if target name already exist and option is specified, do not overwrite it, add a new item with the same name
+ */
+					opts.opt_add = 'a';
+				break;
 				case 'i':
 /*
  * ignore case

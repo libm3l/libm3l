@@ -1,5 +1,6 @@
 #FILES = $(shell find ./ -name "*.c" | sed 's/.\///' )
 FILES = $(shell ls  *.c )
+PATHL  = $(shell pwd )
 
 OBJS=$(FILES:%.c=%.o)
 
@@ -22,7 +23,7 @@ main: $(OBJS)
 	sed -i 's:ActualPWD:'$$PWD':' libm3l.h
 
 
-	cc -g -o LinkedStr_TEST.out LinkedStr_TEST.c  -L/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList  -lm3l -Wl,-rpath=/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList
+	gcc -g -o LinkedStr_TEST.out LinkedStr_TEST.c  -L$(PATHL)  -lm3l -Wl,-rpath=$(PATHL)
 
 -include $(OBJS:.o=.d)
 

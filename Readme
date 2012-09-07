@@ -55,4 +55,9 @@ in Locator. c need to add testing of it
 15. - add type to Locator.c DIR, FILE,LINK etc.
   nebo podivat se na to, jak mit vice parametru do Find - ie. --DIR --FILE etc. separatne pro target a source 
 
-16. NOTE-URGENT when ReadSocket active and client shuts down, server makes core
+16. improvement in Mv, Ln, Cp
+	kdyz locator nenajde soubor, hleda jmeno parent dir, a rozhoduje podle toho.
+	dvojite hledani. Mozna, vzdy hledat parent dir a pak co je v nich
+
+17. pri IEEE-745 neni potreba strncp ale rovnou zkopirovat to co tam je do 
+bufferu

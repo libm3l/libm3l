@@ -1,0 +1,10 @@
+#/bin/csh
+
+        set DIR_list=`ls *.man | sed s/.man//g `
+
+        foreach DIR ($DIR_list)
+	echo $DIR
+	
+	man2html $DIR.man > $DIR.html
+
+        end

@@ -71,6 +71,7 @@ typedef struct opts{
 	char opt_tcpencoding;
 	char opt_tcpheader;
 	char opt_shutdown;
+	char opt_add;
 
 } opts_t;
 
