@@ -45,14 +45,14 @@
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
-#include <netinet/in.h>                                                                      
-#include <errno.h>                                                                           
-#include <sys/wait.h>                                                                        
-#include <sys/stat.h>                                                                        
-#include <fcntl.h>                                                                           
-#include <sys/ipc.h>                                                                         
-#include <sys/sem.h>                                                                         
-#include <sys/shm.h>                                                                         
+#include <netinet/in.h>
+#include <errno.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
 #include <signal.h> 
 #include <malloc.h>
 #include <limits.h> 
@@ -90,5 +90,7 @@
 #define SIZE_T size_t
 #define PTRDF_T ptrdiff_t
 
+
+#define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
 
 #endif

@@ -284,9 +284,18 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
 					di = pack754_64(Tmpnode->data.df[i]);
+#if FLOAT_MEMCP == SPRINTF
 					if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
 						Perror("snprintf");
 					buff[n] = '\0';
+#else
+					memcpy( &buff[0], &di, 8);
+					buff[8] = ',';
+					buff[9] = '\0';
+#endif
+
+// 					printf("  %d  %lf     '%s'\n", n, Tmpnode->data.df[i], buff);
+
 					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
