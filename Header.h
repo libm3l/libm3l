@@ -91,6 +91,7 @@
 #define PTRDF_T ptrdiff_t
 
 
-#define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
+// #define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
+#define FLOAT_MEMCP MEMCP
 
 #endif

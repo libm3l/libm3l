@@ -47,8 +47,6 @@
  */
 
 
-
-
 /*
  * function opens, binds and listen socket for a server
  */

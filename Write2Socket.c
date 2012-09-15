@@ -228,7 +228,7 @@ int m3l_write_to_socket(int call, node_t *List,  int socket_descrpt, opts_t *Pop
  */
 int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_descrpt, opts_t *Popts)
 {	
-	size_t i, n;
+	size_t i, n, len;
 	char *pc;
 	char buff[MAX_WORD_LENGTH+1];
 	
@@ -240,12 +240,20 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 		if (strncmp(Tmpnode->type,"LD",2) == 0){  /* long double */
 
 			if(Popts->opt_tcpencoding == 'I'){  /* IEEE-754 encoding */
+				
+				len = sizeof(di);
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
 					di = pack754_64(Tmpnode->data.ldf[i]);
+#if FLOAT_MEMCP == SPRINTF				
 					if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
 						Perror("snprintf");
 					buff[n] = '\0';
+#else
+					memcpy( &buff[0], &di, len);
+					buff[len] = ',';
+					buff[len+1] = '\0';
+#endif					
 					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
@@ -320,12 +328,19 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 		else if(strncmp(Tmpnode->type,"F",1) == 0){  /* float */
 			
 			if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+				len = sizeof(fi);
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
 					fi = pack754_32(Tmpnode->data.f[i]);
+#if FLOAT_MEMCP == SPRINTF
 					if( (n=snprintf(buff, sizeof(buff), "%08" PRIx32 "%c", fi, SEPAR_SIGN)) < 0)
 						Perror("snprintf");
 					buff[n] = '\0';
+#else
+					memcpy( &buff[0], &di, len);
+					buff[len] = ',';
+					buff[len+1] = '\0';
+#endif
 					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}

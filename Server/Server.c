@@ -135,6 +135,9 @@ int main(int argc, char *argv[])
 		Perror("Umount");
 	if(m3l_Umount(&RecNode) != 1)
 		Perror("Umount");
+	
+	if (( status = close(newsockfd)) != 0)
+		Perror("close()");
 
      exit(0);
 /*
