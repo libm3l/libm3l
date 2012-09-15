@@ -814,7 +814,6 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
 {
 	int socketnr;
-	node_t *TcpIpHeader;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
@@ -857,7 +856,6 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 {
 	node_t *Gnode;
 	int socketnr;
-	node_t *TcpIpHeader;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_receive_tcpipsocket:  NULL Lnode");
@@ -946,7 +944,6 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 {
 	node_t *Gnode;
 	int socketnr;
-	node_t *TcpIpHeader;
 
 	if(Lnode == NULL){
 		Warning("m3l_receive_send_tcpipsocket:  NULL Lnode");
