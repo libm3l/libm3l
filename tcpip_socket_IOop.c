@@ -747,7 +747,7 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 	int socketnr;
 
 	if(portnumber < 1){
-		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		Warning("m3l_receive_to_tcpipsocket:  wrong port/socket number");
 		return (node_t *)NULL;
 	}
 	if(hostname == NULL){
@@ -756,22 +756,6 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
  */
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
-/*
- * check node is TCPIPHeader and if so, read again
- */
-		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
-/*
- * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
- */
-			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
-			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-			printf("AFTER HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
-			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
-				Error("Error during reading data from socket");
-		}
 	}
 	else{
 /*
@@ -781,21 +765,6 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
-/*
- * check node is TCPIPHeader and if so, read again
- */
-		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
-/*
- * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
- */
-			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
-			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-				Error("Error during reading data from socket");
-		}
 		if( close(socketnr) == -1)
 			Perror("close");
 	}
@@ -876,21 +845,6 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			Error("Error during writing data to socket");
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
-		/*
- * check node is TCPIPHeader and if so, read again
- */
-		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
-/*
- * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
- */
-			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
-			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
-				Error("Error during reading data from socket");
-		}
 	}
 	else{
 /*
@@ -910,21 +864,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
-/*
- * check node is TCPIPHeader and if so, read again
- */
-		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
-/*
- * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
- */
-			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
-			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-				Error("Error during reading data from socket");
-		}
+
 		if( close(socketnr) == -1)
 			Perror("close");
 	}	
@@ -965,21 +905,6 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
  */
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
-/*
- * check node is TCPIPHeader and if so, read again
- */
-		if( strncmp(Gnode->name, lm3lTCPIPHeader, strlen(lm3lTCPIPHeader)) == 0){
-/*
- * NOTE - check case Gnode->name is longer and begining equal to lm3lTCPIPHeader
- */
-			printf("HEADER ARRIVED - HURRRRRRRAAAAAAHHHHH\n");
-			if( m3l_rm_list(2, &Gnode, (opts_t *)NULL) < 0){
-				Error("Unable to unmount node \n");
-				return (node_t *)NULL;
-			}
-			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
-				Error("Error during reading data from socket");
-		}
 		
 		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
 			Error("Error during writing data to socket");
