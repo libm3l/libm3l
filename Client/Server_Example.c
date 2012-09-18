@@ -174,8 +174,6 @@ int main(int argc, char *argv[])
 		Perror("Umount");
 
 	printf("\n\n------------------------------------------------------------------------------------------------\n\n\n");
-	if (( status = close(newsockfd)) != 0)
-		Perror("close()");
 
      exit(0);
 /*

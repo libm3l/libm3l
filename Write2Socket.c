@@ -214,7 +214,7 @@ int m3l_write_to_socket(int call, node_t *List,  int socket_descrpt, opts_t *Pop
  */
 	if(call == 1){
 		bzero(buff, sizeof(buff));
-		if( (n=snprintf(buff, MAX_WORD_LENGTH,EOFbuff)) < 0)
+		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s",EOFbuff)) < 0)
 			Perror("snprintf");
 		buff[n] = '\0';
 		if( m3l_write_buffer(buff, socket_descrpt,1,0, Popts) == 0 )
