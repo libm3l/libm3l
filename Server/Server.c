@@ -136,6 +136,7 @@ int main(int argc, char *argv[])
 	if(m3l_Umount(&RecNode) != 1)
 		Perror("Umount");
 
+
      exit(0);
 /*
  * end of child

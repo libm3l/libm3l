@@ -45,14 +45,14 @@
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
-#include <netinet/in.h>                                                                      
-#include <errno.h>                                                                           
-#include <sys/wait.h>                                                                        
-#include <sys/stat.h>                                                                        
-#include <fcntl.h>                                                                           
-#include <sys/ipc.h>                                                                         
-#include <sys/sem.h>                                                                         
-#include <sys/shm.h>                                                                         
+#include <netinet/in.h>
+#include <errno.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
 #include <signal.h> 
 #include <malloc.h>
 #include <limits.h> 
@@ -75,7 +75,7 @@
  */
 
 // #define MAXLINE  2048               /* Max length of buffer - NOTE MUST BE LARGER OR EQUAL TO strlent(EOFbuff)*/
-#define MAXLINE  	 6
+#define MAXLINE  	 20
 #define MAX_WORD_LENGTH  260        /* Max length of word in buffer for TCP/IP, determining mainly for how many digits can be sent over */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
@@ -90,5 +90,9 @@
 #define SIZE_T size_t
 #define PTRDF_T ptrdiff_t
 
+
+// #define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
+#define FLOAT_MEMCP MEMCP
+// #define ULLONG_MAX 18446744073709551615
 
 #endif

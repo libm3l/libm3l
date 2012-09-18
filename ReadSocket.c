@@ -60,7 +60,13 @@
 #include "ReadSocket.h"
 #include "NumberConversion.h"
 
-#define EXPR      (*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0')
+
+#if FLOAT_MEMCP == SPRINTF
+	#define EXPR      (*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0')
+#else
+	#define EXPR      ( *pc != SEPAR_SIGN && *pc != '\0')
+#endif
+
 #define IFEXPR     (*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN)
 #define LASTEXPR   (lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN)
 
@@ -626,8 +632,12 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		}
 		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
+#if FLOAT_MEMCP == SPRINTF
 // 			di = strtoull(type, &end, 16);
-			di = Strtoull(type, 16);
+  			di = Strtoull(type, 16);
+#else
+			memcpy(&di, &type[0], 8);
+#endif
 			d2 = unpack754_64(di);
 			*pdf++ = d2;
 			#include "ReadSocket_Part2"

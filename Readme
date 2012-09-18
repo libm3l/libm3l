@@ -61,3 +61,12 @@ in Locator. c need to add testing of it
 
 17. pri IEEE-745 neni potreba strncp ale rovnou zkopirovat to co tam je do 
 bufferu
+
+18. 
+#if FLOAT_MEMCP == SPRINTF
+// 			di = strtoull(type, &end, 16);
+  			di = Strtoull(type, 16);
+#else
+			memcpy(&di, &type[0], 8);
+#endif
+pro ostatni typy
