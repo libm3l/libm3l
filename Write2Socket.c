@@ -59,7 +59,7 @@
 
 static int m3l_write_buffer(const char *, int, int, int, opts_t *);
 static int m3l_write_file_data_intdescprt(node_t *, size_t , int, opts_t *);
-static ssize_t Write(int , char *, size_t);
+static ssize_t Write(int ,  size_t);
 
 char *pc, buffer[MAXLINE];
 ssize_t bitcount;
@@ -536,7 +536,7 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 */
 // 			if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 			size = strlen(buffer);
-			if ( (n = Write(sockfd,buffer,size)) < size)
+			if ( (n = Write(sockfd,size)) < size)
 				Perror("write()");
 			bzero(buffer, sizeof(buffer));
 		}
@@ -562,7 +562,7 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 */
 // 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 		size = strlen(buffer);
-		if ( (n = Write(sockfd,buffer,size)) < size)
+		if ( (n = Write(sockfd,size)) < size)
 			Perror("write()");
 		bzero(buffer, sizeof(buffer));
 		
@@ -581,7 +581,7 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
  */
 // 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 		size = strlen(buffer);
-		if ( (n = Write(sockfd,buffer,size)) < size)
+		if ( (n = Write(sockfd,size)) < size)
 			Perror("write()");	
 	}
 	
@@ -589,18 +589,21 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 }
 
 
-ssize_t Write(int sockfd, char *buffer, size_t size){
+ssize_t Write(int sockfd,  size_t size){
 
 	ssize_t total, n;	
 	total = 0;
+	char *buff;
+
+	buff = buffer;
 	
 	while(size > 0) {
 
-		if ( (n = write(sockfd,buffer,size)) < 0){
+		if ( (n = write(sockfd,buff,size)) < 0){
 			if (errno == EINTR) continue;
 			return (total == 0) ? -1 : total;
 		}
-		buffer += n;
+ 		buff += n;
 		total += n;
 		size -= n;
 	}

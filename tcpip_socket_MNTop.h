@@ -21,9 +21,9 @@
 
 
 /*
- *     Header file FunctionsArrays.h
+ *     Header file tcpip_socket_MNTop.h
  *
- *     Date: 2012-07-06
+ *     Date: 2012-09-21
  * 
  *
  *     Modifications:
@@ -31,19 +31,16 @@
  *
  *
  *     Description
- *
+ * 
  */
 
 
 
 
+#ifndef __TCPIP_SOCKET_MNT_H__
+#define __TCPIP_SOCKET_MNT_H__
 
-#ifndef __FUNCTIONSARRAYS_H__
-#define __FUNCTIONSARRAYS_H__
-
-extern size_t get_ind(size_t , size_t *, size_t *);
-extern size_t get_4ind(size_t , size_t , size_t , size_t, size_t, size_t, size_t, size_t);
-extern size_t get_3ind(size_t , size_t , size_t , size_t, size_t, size_t);
-extern size_t get_2ind(size_t , size_t , size_t , size_t );
+extern int m3l_2WayHandShake(const char *, int , char * , ...);
+extern node_t *MkTCPIPHeader(opts_t *);
 
 #endif

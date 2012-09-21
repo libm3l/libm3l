@@ -116,9 +116,11 @@ SIZE_T Strol(char *text)
 /* 
  * string is not a number
  */
-	  Error("Strol:  Error when reading and converting integer number");
+		printf("'%s'\n", text);
+		Error("Strol:  Error when reading and converting integer number");
 	}
 	else if (*err != 0){
+		printf("'%s'\n", text);
 		Perror("Strol:  Error when reading and converting integer number");
 /* 
  *str began with a number but has junk left over at the end 
@@ -128,6 +130,7 @@ SIZE_T Strol(char *text)
 /* 
  * the value of string does not fit in unsigned long long
  */
+		printf("'%s'\n", text);
 		Perror("Strol:  Error when reading and converting integer number");
 	}
 	return i;

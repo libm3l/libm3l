@@ -14,7 +14,7 @@
  *     You should have received a copy of the GNU Lesser General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *     
- *     contact: clibm3l@gmail.com
+ *     contact: libm3l@gmail.com
  * 
  */
 
@@ -74,5 +74,7 @@
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Umount.h"
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Write2Socket.h"
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/WriteData.h"
+#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Check_EOFbuff.h"
+#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/tcpip_socket_MNTop.h"
 
 #endif
