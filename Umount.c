@@ -70,7 +70,7 @@ int m3l_Umount(node_t **List)
 /*
  * delete everything in **List node
  */
-	printf("Unmounting node %s at %p\n", (*List)-> name, (*List));
+// 	printf("Unmounting node %s at %p\n", (*List)-> name, (*List));
 /*
  * when calling rm_list, specify 2 as if the function was not called initially
  * When called initially, the function consideres List as a parent dir and does not remove it
@@ -80,7 +80,7 @@ int m3l_Umount(node_t **List)
 		Error("Unable to unmount node \n");
 		return -1;
 	}
-	printf("Unmounting finished\n");
+// 	printf("Unmounting finished\n");
 
 	return 1;
 }
