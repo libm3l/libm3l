@@ -21,9 +21,9 @@
 
 
 /*
- *     Header file tcpip_socket_MNTop.h
+ *     Header file Header.h
  *
- *     Date: 2012-09-21
+ *     Date: 2012-07-01
  * 
  *
  *     Modifications:
@@ -31,17 +31,14 @@
  *
  *
  *     Description
- * 
+ *
  */
+#ifndef __LOCALHEADER_H__
+#define __LOCALHEADER_H__
 
-
-
-
-#ifndef __TCPIP_SOCKET_MNT_H__
-#define __TCPIP_SOCKET_MNT_H__
-
-// extern int m3l_2WayHandShake(const char *, int , char * , ...);
-extern node_t *m3l_ACKN(char *);
-extern node_t *MkTCPIPHeader(opts_t *);
+int id, shmid, shmid1;  /* Internal identifier of the semaphore. */
+int *shm_n;
+char *shm_buff;
 
 #endif
+	
