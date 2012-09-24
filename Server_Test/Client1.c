@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
 	int nmax;
 
-	nmax = 50000;
+	nmax = 5;
 
 // 	opts_t *Popts, opts;
 // 

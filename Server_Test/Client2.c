@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
 	int nmax;
 
-	nmax = 50000;
+	nmax = 5;
 
 /*
  * get port number

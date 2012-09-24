@@ -39,6 +39,7 @@
 int id, shmid, shmid1;  /* Internal identifier of the semaphore. */
 int *shm_n;
 char *shm_buff;
+node_t *TmpACKN;
 
 #endif
 	

@@ -16,7 +16,7 @@
 
 int main(int argc, char *argv[])
 {
-	node_t *Gnode=NULL, *RecNode=NULL, *ACKN=NULL, *TmpNode = NULL;
+	node_t *Gnode=NULL, *RecNode=NULL, *TmpNode = NULL, *ACKN=NULL;
 	pid_t  childpid;
 	size_t *dim;
 
@@ -109,10 +109,10 @@ int main(int argc, char *argv[])
  * create node_t with ACKN message
  */
 	ACKN = ackn();
+	TmpACKN - ACKN; /* set the value of global TmpACKN so that it can be freed in signal habdler */
 /*
  * loop
  */
-
 	PID = getpid();
 	
       while(1){
@@ -226,8 +226,12 @@ int main(int argc, char *argv[])
 				Perror("semop()5");
 
 		shm_n[1] = shm_n[1]*(1-stop);
-
+		
+		if(m3l_Umount(&ACKN) != 1)
+			Perror("m3l_Umount");
+		
 		if(shm_n[1] == 0) kill(PID,SIGUSR1);
+
 	}
 	else
 	{
@@ -315,6 +319,9 @@ int main(int argc, char *argv[])
  */
 		if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
  			Error("Error during reading data from socket");
+		
+		if(m3l_Umount(&ACKN) != 1)
+			Perror("m3l_Umount");
 
 	}
 /*
@@ -341,6 +348,9 @@ int main(int argc, char *argv[])
 	}  /* End of while(1) */
 	
 	printf(" Ending\n");
+	
+	if(m3l_Umount(&ACKN) != 1)
+		Perror("m3l_Umount");
 
 	DelSMH_Int(shm_buff, shmid);
 	DelSMH_Int(shm_n, shmid1);	

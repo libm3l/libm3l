@@ -131,7 +131,7 @@ int ReadSHMCopy2Socket(int descrpt)
 
 			operations[1].sem_num   = 1;
 			operations[1].sem_op    = 1;
-			operations[0].sem_flg    = 0;
+			operations[1].sem_flg    = 0;
 			if ( (retval = semop(id, operations, 2)) != 0)
 				Perror("semop()");		
 

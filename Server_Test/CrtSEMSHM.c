@@ -129,15 +129,15 @@ int CrtSEM(int number, int SEMKEYID)
  * set initial value of all semaphores 0
  * allocate field of shorts, fill it by 0
  */
-   if ( (sarray = (short *)malloc(number *sizeof(short))) == 0)
-     Perror("malloc()");
-   
-   for (i=1; i<number; i++)
-     sarray[i] = 0;
-    
-    if ( (status = semctl( semid, 1, SETALL, sarray)) == -1)
-       Perror("semctl()"); 
-    free(sarray);
+//    if ( (sarray = (short *)malloc(number *sizeof(short))) == 0)
+//      Perror("malloc()");
+//    
+//    for (i=1; i<number; i++)
+//      sarray[i] = 0;
+//     
+//     if ( (status = semctl( semid, 1, SETALL, sarray)) == -1)
+//        Perror("semctl()"); 
+//     free(sarray);
 
   return semid;
     
