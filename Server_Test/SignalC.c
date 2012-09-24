@@ -47,6 +47,7 @@ void catch_usr(int sig_num)
     DelSEM(id); 
     DelSMH_Int(shm_buff, shmid);
     DelSMH_Int(shm_n, shmid1);
+    
     if(m3l_Umount(&TmpACKN) != 1)
 	Perror("m3l_Umount");
     exit(0);

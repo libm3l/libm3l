@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 	size_t *dim;
 
 	int sockfd, newsockfd, portno, n, status, ch_stat, retval;
-	int sum, i, tot_dim;
+	int sum, i, tot_dim, stop;
 
         socklen_t clilen;
         struct sockaddr_in cli_addr;
@@ -33,8 +33,6 @@ int main(int argc, char *argv[])
 	opts_t *Popts, opts;
 
 	pid_t PID;
-
-	int stop;
 	
 	struct sembuf operations[2];   /* An "array" of one operation to perform on the semaphore. */
 	short  sarray[4];
@@ -46,22 +44,22 @@ int main(int argc, char *argv[])
 /*
  * get port number
  */
-     if (argc < 2) {
-       fprintf(stderr,"ERROR, no port number provided\n");
-       exit(1);
-     }
- 	portno = atoi(argv[1]); 
-        signal(SIGINT, catch_int);
+	if (argc < 2) {
+		fprintf(stderr,"ERROR, no port number provided\n");
+		exit(1);
+	}
+	portno = atoi(argv[1]); 
+	signal(SIGINT, catch_int);
 /*
  * SIGCHLD signal handler
  */    
 	signal(SIGCHLD,sig_chld);
-        signal(SIGUSR1, catch_usr);
+	signal(SIGUSR1, catch_usr);
 
  /*
  * create, bind and listen socket
  */
-     if ( (sockfd = m3l_server_openbindlistensocket(portno, (char *)NULL) ) < 0 )
+	if ( (sockfd = m3l_server_openbindlistensocket(portno, (char *)NULL) ) < 0 )
 		Perror("Open_Bind_Listen");
 /*
  * create 4 semaphores and set the initial value
@@ -109,241 +107,241 @@ int main(int argc, char *argv[])
  * create node_t with ACKN message
  */
 	ACKN = ackn();
-	TmpACKN - ACKN; /* set the value of global TmpACKN so that it can be freed in signal habdler */
+	TmpACKN = ACKN; /* set the value of global TmpACKN so that it can be freed in signal habdler */
 /*
  * loop
  */
 	PID = getpid();
-	
-      while(1){
+		
+	while(1){
 /*
  * accept connection
  */	
 	clilen = sizeof(cli_addr);
 
-	if ( (newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen)) < 0){
-		 if(errno = EINTR){ /* If Interrupted system call, restart - back to while ()  UNP V1 p124  */
-			Perror("accept()");
-			continue;}
-		else
-			Perror("accept()");
-	}
+		if ( (newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen)) < 0){
+			if(errno = EINTR){ /* If Interrupted system call, restart - back to while ()  UNP V1 p124  */
+				Perror("accept()");
+				continue;}
+			else
+				Perror("accept()");
+		}
 /*
  * fork and decide what type of solver is it
  */
-      if ( (childpid = Fork())  == 0) { 
+		if ( (childpid = Fork())  == 0) { 
 /*
  * close listening socket
  */
-      if (( status = close(sockfd)) != 0)
-	 Perror("close()");
+			if (( status = close(sockfd)) != 0)
+				Perror("close()");
 
-	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
- 		Error("Error during reading data from socket");
-	
-	if ( (SFounds = m3l_locator_caller(RecNode, "/Solver/Name", "/*/*", Popts)) != NULL){
-		TmpNode = SFounds->Found_Nodes[0]->List;
-	}
-	else{
-		Error("Solver data wrong");
-	}
+			if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
+				Error("Error during reading data from socket");
+		
+			if ( (SFounds = m3l_locator_caller(RecNode, "/Solver/Name", "/*/*", Popts)) != NULL){
+				TmpNode = SFounds->Found_Nodes[0]->List;
+			}
+			else{
+				Error("Solver data wrong");
+			}
 
-	if(strncmp(TmpNode->data.c, "Edge", 4) == 0){
+			if(strncmp(TmpNode->data.c, "Edge", 4) == 0){
 
-		stop = 0;
+				stop = 0;
 
-		if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
-			stop = SFounds1->Found_Nodes[0]->List->data.i[0];
-			m3l_DestroyFound(&SFounds1);
-		}		
+				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
+					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
+					m3l_DestroyFound(&SFounds1);
+				}		
 /*
  * umount node with solver name info
  */
-		if(m3l_Umount(&RecNode) != 1)
-			Perror("m3l_Umount");
+				if(m3l_Umount(&RecNode) != 1)
+					Perror("m3l_Umount");
 /*
  * you need to send ACKN to terminate reading from socket
  */
-		if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
- 			Error("Error during reading data from socket");
+				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
+					Error("Error during reading data from socket");
 /*
  * wait for internal semaphores (1 and 2) being 0 and decrement Edge semaphore (2)
  */
-		operations[0].sem_num    =  0;   /* Operate on the sem_num sem      */
-		operations[0].sem_op     =  0; /* increase by 0   */
-		operations[0].sem_flg    =  0; /* Allow a wait to occur             */
-		operations[1].sem_num    =  1;   /* Operate on the sem_num sem      */
-		operations[1].sem_op     =  0; /* increase by 0   */
-		operations[1].sem_flg    =  0; /* Allow a wait to occur             */
-		operations[2].sem_num    =  2;
-		operations[2].sem_op     =  -1;
-		operations[2].sem_flg    = 0;
-		if( (retval = semop(id, operations, 3)) != 0)
-			Perror("semop()2");
+				operations[0].sem_num    =  0;   /* Operate on the sem_num sem      */
+				operations[0].sem_op     =  0; /* increase by 0   */
+				operations[0].sem_flg    =  0; /* Allow a wait to occur             */
+				operations[1].sem_num    =  1;   /* Operate on the sem_num sem      */
+				operations[1].sem_op     =  0; /* increase by 0   */
+				operations[1].sem_flg    =  0; /* Allow a wait to occur             */
+				operations[2].sem_num    =  2;
+				operations[2].sem_op     =  -1;
+				operations[2].sem_flg    = 0;
+				if( (retval = semop(id, operations, 3)) != 0)
+					Perror("semop()2");
 /*
  * wait for CSM client to start
  */
-		operations[0].sem_num    = 3;
-		operations[0].sem_op     = 0;
-		operations[0].sem_flg    = 0;
-		if( (retval = semop(id, operations, 1)) != 0)
-			Perror("semop()3");
+				operations[0].sem_num    = 3;
+				operations[0].sem_op     = 0;
+				operations[0].sem_flg    = 0;
+				if( (retval = semop(id, operations, 1)) != 0)
+					Perror("semop()3");
 /*
  * read data from socket sent by Edge process
  */
 		
-		ReadSocketCopy2SHM(newsockfd);
+				ReadSocketCopy2SHM(newsockfd);
 /*
  * wait until second client is done with reading and sending bufer an nullifying semaphore and setting *shm_n counter to 1
  */
-		operations[0].sem_num     =  0;   /* Operate on the sem_num sem      */
-		operations[0].sem_op      =  -1; /* increase by 0   */
-		operations[0].sem_flg     =  0; /* Allow a wait to occur             */
-		operations[1].sem_num     =  1;   /* Operate on the sem_num sem      */
-		operations[1].sem_op      =  -1; /* increase by 0   */
-		operations[1].sem_flg     =  0; /* Allow a wait to occur             */
-		if( (retval = semop(id, operations, 2)) != 0)
-			Perror("semop()4"); 
+				operations[0].sem_num     =  0;   /* Operate on the sem_num sem      */
+				operations[0].sem_op      =  -1; /* increase by 0   */
+				operations[0].sem_flg     =  0; /* Allow a wait to occur             */
+				operations[1].sem_num     =  1;   /* Operate on the sem_num sem      */
+				operations[1].sem_op      =  -1; /* increase by 0   */
+				operations[1].sem_flg     =  0; /* Allow a wait to occur             */
+				if( (retval = semop(id, operations, 2)) != 0)
+					Perror("semop()4"); 
 /*
  * wait for data sent by CSM and send it back to Edge
  */
-		ReadSHMCopy2Socket(newsockfd);
+				ReadSHMCopy2Socket(newsockfd);
 /*
  * wait until reading CSM data is done and all data is sent to Edge
  * once done, increment 2. semaphore indicating fork is free to be used by 
  * another request
  */
-		operations[0].sem_num     =  0;   /* Operate on the sem_num sem      */
-		operations[0].sem_op      =  0; /* increase by 0   */
-		operations[0].sem_flg     =  0; /* Allow a wait to occur             */
-		operations[1].sem_num     =  1;   /* Operate on the sem_num sem      */
-		operations[1].sem_op      =  0; /* increase by 0   */
-		operations[1].sem_flg     =  0; /* Allow a wait to occur             */
-		operations[2].sem_num     =  2;
-		operations[2].sem_op      =  1;
-		operations[2].sem_flg     =  0;
-		if( (retval = semop(id, operations, 3)) != 0)
-				Perror("semop()5");
+				operations[0].sem_num     =  0;   /* Operate on the sem_num sem      */
+				operations[0].sem_op      =  0; /* increase by 0   */
+				operations[0].sem_flg     =  0; /* Allow a wait to occur             */
+				operations[1].sem_num     =  1;   /* Operate on the sem_num sem      */
+				operations[1].sem_op      =  0; /* increase by 0   */
+				operations[1].sem_flg     =  0; /* Allow a wait to occur             */
+				operations[2].sem_num     =  2;
+				operations[2].sem_op      =  1;
+				operations[2].sem_flg     =  0;
+				if( (retval = semop(id, operations, 3)) != 0)
+						Perror("semop()5");
 
-		shm_n[1] = shm_n[1]*(1-stop);
-		
-		if(m3l_Umount(&ACKN) != 1)
-			Perror("m3l_Umount");
-		
-		if(shm_n[1] == 0) kill(PID,SIGUSR1);
+				shm_n[1] = shm_n[1]*(1-stop);
+				
+				if(m3l_Umount(&ACKN) != 1)
+					Perror("m3l_Umount");
+				
+				if(shm_n[1] == 0)
+					kill(PID,SIGUSR1);
 
-	}
-	else
-	{
-
-		stop = 0;
-		if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
-			stop = SFounds1->Found_Nodes[0]->List->data.i[0];
-			m3l_DestroyFound(&SFounds1);
-		}
+			}
+			else
+			{
+				stop = 0;
+				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
+					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
+					m3l_DestroyFound(&SFounds1);
+				}
 /*
  * umount node with solver name info
  */
-		if(m3l_Umount(&RecNode) != 1)
-			Perror("m3l_Umount");
+				if(m3l_Umount(&RecNode) != 1)
+					Perror("m3l_Umount");
 /*
  * CSM is now waiting for reading you do not need to send ACKN
  *
  * wait for internal semaphores (1 and 2) being 0 and decrement Edge semaphore (2)
  */
-		operations[0].sem_num    =  0;   /* Operate on the sem_num sem      */
-		operations[0].sem_op     =  0; /* increase by 0   */
-		operations[0].sem_flg    =  0; /* Allow a wait to occur             */
-		operations[1].sem_num    =  1;   /* Operate on the sem_num sem      */
-		operations[1].sem_op     =  0; /* increase by 0   */
-		operations[1].sem_flg    =  0; /* Allow a wait to occur             */
-		operations[2].sem_num    =  3;
-		operations[2].sem_op     =  -1;
-		operations[2].sem_flg    =  0;
-		if( (retval = semop(id, operations, 3)) != 0)
-			Perror("semop()6");
+				operations[0].sem_num    =  0;   /* Operate on the sem_num sem      */
+				operations[0].sem_op     =  0; /* increase by 0   */
+				operations[0].sem_flg    =  0; /* Allow a wait to occur             */
+				operations[1].sem_num    =  1;   /* Operate on the sem_num sem      */
+				operations[1].sem_op     =  0; /* increase by 0   */
+				operations[1].sem_flg    =  0; /* Allow a wait to occur             */
+				operations[2].sem_num    =  3;
+				operations[2].sem_op     =  -1;
+				operations[2].sem_flg    =  0;
+				if( (retval = semop(id, operations, 3)) != 0)
+					Perror("semop()6");
 /*
  * wait for Edge client to start
  */
-		operations[0].sem_num = 2;
-		operations[0].sem_op   =  0;
-		operations[0].sem_flg    = 0;
-		if( (retval = semop(id, operations, 1)) != 0)
-			Perror("semop()7");
+				operations[0].sem_num = 2;
+				operations[0].sem_op   =  0;
+				operations[0].sem_flg    = 0;
+				if( (retval = semop(id, operations, 1)) != 0)
+					Perror("semop()7");
 /*
  * start getting data from Edge and sending over to CSM
  */
-		ReadSHMCopy2Socket(newsockfd);
+				ReadSHMCopy2Socket(newsockfd);
 /*
  * wait until entire process of shipping data from Edge to CSM is finished
  */
 
-		operations[0].sem_num    =  0;   /* Operate on the sem_num sem      */
-		operations[0].sem_op     =  0; /* increase by 0   */
-		operations[0].sem_flg    =  0; /* Allow a wait to occur             */
-		operations[1].sem_num    =  1;   /* Operate on the sem_num sem      */
-		operations[1].sem_op     =  0; /* increase by 0   */
-		operations[1].sem_flg    =  0; /* Allow a wait to occur             */
-		if( (retval = semop(id, operations, 2)) != 0)
-			Perror("semop()8");
+				operations[0].sem_num    =  0;   /* Operate on the sem_num sem      */
+				operations[0].sem_op     =  0; /* increase by 0   */
+				operations[0].sem_flg    =  0; /* Allow a wait to occur             */
+				operations[1].sem_num    =  1;   /* Operate on the sem_num sem      */
+				operations[1].sem_op     =  0; /* increase by 0   */
+				operations[1].sem_flg    =  0; /* Allow a wait to occur             */
+				if( (retval = semop(id, operations, 2)) != 0)
+					Perror("semop()8");
 /*
  * set read(socket...) counter to 1 so that reading can start
  */
-		shm_n[0] = 1;
+				shm_n[0] = 1;
 /*
  * read data sent by CSM process
  */
-		ReadSocketCopy2SHM(newsockfd);
+				ReadSocketCopy2SHM(newsockfd);
 /*
  * wait until data is sent to Edge and then 
  * continue, increment 3.semaphore indicating fork is free to be used by 
  * another request
  */		
 
-		shm_n[1] = shm_n[1]*(1-stop);
+				shm_n[1] = shm_n[1]*(1-stop);
 
-		operations[0].sem_num   =  0;   /* Operate on the sem_num sem      */
-		operations[0].sem_op     =  -1; /* increase by 0   */
-		operations[0].sem_flg     =  0; /* Allow a wait to occur             */
-		operations[1].sem_num   =  1;   /* Operate on the sem_num sem      */
-		operations[1].sem_op      =  -1; /* increase by 0   */
-		operations[1].sem_flg      =  0; /* Allow a wait to occur             */
-		operations[2].sem_num = 3;
-		operations[2].sem_op   =  1;
-		operations[2].sem_flg   = 0;
-		if( (retval = semop(id, operations, 3)) != 0)
-			Perror("semop()9"); 
+				operations[0].sem_num   =  0;   /* Operate on the sem_num sem      */
+				operations[0].sem_op     =  -1; /* increase by 0   */
+				operations[0].sem_flg     =  0; /* Allow a wait to occur             */
+				operations[1].sem_num   =  1;   /* Operate on the sem_num sem      */
+				operations[1].sem_op      =  -1; /* increase by 0   */
+				operations[1].sem_flg      =  0; /* Allow a wait to occur             */
+				operations[2].sem_num = 3;
+				operations[2].sem_op   =  1;
+				operations[2].sem_flg   = 0;
+				if( (retval = semop(id, operations, 3)) != 0)
+					Perror("semop()9"); 
 /*
  * CSM will send now data with solver name, because last operation it did was sending, 
  * terminate reading socket by sending bogus (ACKN) reqest
  */
-		if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
- 			Error("Error during reading data from socket");
-		
-		if(m3l_Umount(&ACKN) != 1)
-			Perror("m3l_Umount");
+				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
+					Error("Error during reading data from socket");
+				
+				if(m3l_Umount(&ACKN) != 1)
+					Perror("m3l_Umount");
 
-	}
+			}
 /*
  * free borrow memory
  */
-	m3l_DestroyFound(&SFounds);
+			m3l_DestroyFound(&SFounds);
 /*
  *  exit
  */	
-	exit(0);
+			exit(0);
 /*
  * end of child
  */
-      }
-      else{
+		}
+		else{
 /*
  * parent process
  * close accepted socket and loop around
  */	
-		if (( status = close(newsockfd)) != 0)
-			Perror("close()");
-	}
+			if (( status = close(newsockfd)) != 0)
+				Perror("close()");
+		}
 
 	}  /* End of while(1) */
 	
