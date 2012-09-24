@@ -27,11 +27,16 @@ int main(int argc, char *argv[])
        struct sockaddr_in cli_addr;
 	char *answer="This is answer";
 
-// 	opts_t *Popts, opts;
-// 
-// 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
-// 	opts.opt_add = '\0';
-// 	Popts = &opts;
+	struct timespec tim, tim2;
+	tim.tv_sec = 0;
+//	tim.tv_nsec = 100000000L;    /* 0.1 secs */
+	tim.tv_nsec = 5000000L;
+
+
+	int nmax;
+
+	nmax = 50000;
+
 /*
  * get port number
  */
@@ -44,6 +49,7 @@ int main(int argc, char *argv[])
  * make "header" with solver name
  */
 	SolverName = solver_name("CSM");
+
 /*
  * open socket - because we use more then just send - receive scenario
  * we need to open socket manualy and used Send_receive function with hostname = NULL, ie. as server
@@ -51,9 +57,22 @@ int main(int argc, char *argv[])
  */	
 
 
-	for(i=0; i<1000001; i++){
+	for(i=0; i<nmax; i++){
 
 	printf("----------------------------------------------------------------------------------------    i = %d\n", i);
+
+	if(i == nmax-1){
+	
+	dim = (size_t *) malloc( 1* sizeof(size_t));
+	dim[0] = 1;
+	
+	if(  (TmpNode = m3l_Mklist("STOP", "I", 1, dim, &SolverName, "/Solver", "./",  (char *)NULL)) == 0)
+		Error("m3l_Mklist");
+	TmpNode->data.i[0] = 1;
+	
+	free(dim);
+
+	}
 
 	if ( (sockfd =  m3l_cli_open_socket(argv[1], portno, (char *)NULL)) < 0)
 		Error("Could not open socket");
@@ -85,6 +104,10 @@ int main(int argc, char *argv[])
 	
 	if( (RecNode = m3l_Receive_send_tcpipsocket(Gnode,(char *)NULL, sockfd, "--encoding" , "IEEE-754",  (char *)NULL)) == NULL)
 			Perror("Send_receive");
+
+	if(nanosleep(&tim , &tim2) < 0 ){
+		Error("Nano sleep system call failed \n");
+	}
 /*
  * print answer set on screen and remove received data set
  */

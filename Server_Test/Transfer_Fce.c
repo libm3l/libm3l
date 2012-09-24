@@ -31,7 +31,7 @@ int ReadSocketCopy2SHM(int descrpt)
 	char prevbuff[EOBlen+1];
 	ssize_t n;
 
-	*shm_n = 1;
+	shm_n[0] = 1;
 
 	bzero(prevbuff,EOBlen+1);
 	
@@ -47,7 +47,7 @@ int ReadSocketCopy2SHM(int descrpt)
  * previous reading was the last one
  * leave cycle, before that change semaphore 0 so that ReadSHMCopy2Socket can continue
  */
-			*shm_n = 0;
+			shm_n[0] = 0;
 			operations[0].sem_num 	= 0;/* Which semaphore in the semaphore array : */
 			operations[0].sem_op         = 1;/* Which operation? Add 1 to semaphore value : */
 			operations[0].sem_flg         = 0;/* Set the flag so we will wait : */
@@ -112,7 +112,7 @@ int ReadSHMCopy2Socket(int descrpt)
  * if ReadSocketCopy2SHM reached end, *shm_n == 0, leave cycle otherwise
  * send entire segment to socket
  */
-		if( *shm_n > 0 ){
+		if( shm_n[0] > 0 ){
 			size = strlen(shm_buff);
 			if(size > 0){
 				if ( (n = write(descrpt,shm_buff,size)) < size)
@@ -136,7 +136,7 @@ int ReadSHMCopy2Socket(int descrpt)
 				Perror("semop()");		
 
 			
-			*shm_n = 1;
+			shm_n[0] = 1;
 		
 			return 1;
 		}

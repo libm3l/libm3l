@@ -29,8 +29,12 @@ int main(int argc, char *argv[])
 	
 	char *solver;
 
-	find_t *SFounds;
+	find_t *SFounds, *SFounds1;
 	opts_t *Popts, opts;
+
+	pid_t PID;
+
+	int stop;
 	
 	struct sembuf operations[2];   /* An "array" of one operation to perform on the semaphore. */
 	short  sarray[4];
@@ -38,6 +42,7 @@ int main(int argc, char *argv[])
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
 	opts.opt_add = '\0';
 	Popts = &opts;
+
 /*
  * get port number
  */
@@ -51,6 +56,8 @@ int main(int argc, char *argv[])
  * SIGCHLD signal handler
  */    
 	signal(SIGCHLD,sig_chld);
+        signal(SIGUSR1, catch_usr);
+
  /*
  * create, bind and listen socket
  */
@@ -91,12 +98,13 @@ int main(int argc, char *argv[])
 
 	memset(shm_buff,0,MAXLINE+1);
 
-	shmid1 = CrtSMH_Int(1, 2);
+	shmid1 = CrtSMH_Int(2, 2);
 	if ((shm_n = shmat(shmid1, NULL, 0)) == (char *) -1) {
 		Perror("shmat");
 	}
 	memset(shm_n,0,1);
-	*shm_n = 1;
+	shm_n[0] = 1;
+	shm_n[1] = 1;
 /*
  * create node_t with ACKN message
  */
@@ -104,6 +112,9 @@ int main(int argc, char *argv[])
 /*
  * loop
  */
+
+	PID = getpid();
+	
       while(1){
 /*
  * accept connection
@@ -129,7 +140,6 @@ int main(int argc, char *argv[])
 
 	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
  		Error("Error during reading data from socket");
-
 	
 	if ( (SFounds = m3l_locator_caller(RecNode, "/Solver/Name", "/*/*", Popts)) != NULL){
 		TmpNode = SFounds->Found_Nodes[0]->List;
@@ -139,6 +149,13 @@ int main(int argc, char *argv[])
 	}
 
 	if(strncmp(TmpNode->data.c, "Edge", 4) == 0){
+
+		stop = 0;
+
+		if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
+			stop = SFounds1->Found_Nodes[0]->List->data.i[0];
+			m3l_DestroyFound(&SFounds1);
+		}		
 /*
  * umount node with solver name info
  */
@@ -206,10 +223,20 @@ int main(int argc, char *argv[])
 		operations[2].sem_op      =  1;
 		operations[2].sem_flg     =  0;
 		if( (retval = semop(id, operations, 3)) != 0)
-				Perror("semop()5"); 
+				Perror("semop()5");
+
+		shm_n[1] = shm_n[1]*(1-stop);
+
+		if(shm_n[1] == 0) kill(PID,SIGUSR1);
 	}
 	else
 	{
+
+		stop = 0;
+		if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
+			stop = SFounds1->Found_Nodes[0]->List->data.i[0];
+			m3l_DestroyFound(&SFounds1);
+		}
 /*
  * umount node with solver name info
  */
@@ -258,7 +285,7 @@ int main(int argc, char *argv[])
 /*
  * set read(socket...) counter to 1 so that reading can start
  */
-		*shm_n = 1;
+		shm_n[0] = 1;
 /*
  * read data sent by CSM process
  */
@@ -268,6 +295,9 @@ int main(int argc, char *argv[])
  * continue, increment 3.semaphore indicating fork is free to be used by 
  * another request
  */		
+
+		shm_n[1] = shm_n[1]*(1-stop);
+
 		operations[0].sem_num   =  0;   /* Operate on the sem_num sem      */
 		operations[0].sem_op     =  -1; /* increase by 0   */
 		operations[0].sem_flg     =  0; /* Allow a wait to occur             */
@@ -285,13 +315,14 @@ int main(int argc, char *argv[])
  */
 		if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
  			Error("Error during reading data from socket");
+
 	}
 /*
  * free borrow memory
  */
 	m3l_DestroyFound(&SFounds);
 /*
- *  esit
+ *  exit
  */	
 	exit(0);
 /*
@@ -307,10 +338,12 @@ int main(int argc, char *argv[])
 			Perror("close()");
 	}
 
-
 	}  /* End of while(1) */
 	
-	
+	printf(" Ending\n");
+
+	DelSMH_Int(shm_buff, shmid);
+	DelSMH_Int(shm_n, shmid1);	
 	DelSEM(id);
 
 	close(sockfd);	
