@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 					kill(PID,SIGUSR1);
 
 			}
-			else
+			else 
 			{
 				stop = 0;
 				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
