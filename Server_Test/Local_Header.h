@@ -21,9 +21,9 @@
 
 
 /*
- *     Header file FunctionsArrays.h
+ *     Header file Header.h
  *
- *     Date: 2012-07-06
+ *     Date: 2012-07-01
  * 
  *
  *     Modifications:
@@ -33,17 +33,13 @@
  *     Description
  *
  */
+#ifndef __LOCALHEADER_H__
+#define __LOCALHEADER_H__
 
-
-
-
-
-#ifndef __FUNCTIONSARRAYS_H__
-#define __FUNCTIONSARRAYS_H__
-
-extern size_t get_ind(size_t , size_t *, size_t *);
-extern size_t get_4ind(size_t , size_t , size_t , size_t, size_t, size_t, size_t, size_t);
-extern size_t get_3ind(size_t , size_t , size_t , size_t, size_t, size_t);
-extern size_t get_2ind(size_t , size_t , size_t , size_t );
+int id, shmid, shmid1;  /* Internal identifier of the semaphore. */
+int *shm_n;
+char *shm_buff;
+node_t *TmpACKN;
 
 #endif
+	

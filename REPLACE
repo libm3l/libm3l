@@ -1,6 +1,6 @@
 #/bin/csh
 
-        set DIR_list=`ls *.c `
+        set DIR_list=`ls * `
 
         foreach DIR ($DIR_list)
 	echo $DIR
@@ -11,7 +11,9 @@
 #	sed -i 's/ *     Description/\n *\n *     Description/g' $DIR
 	
 #	sed -i 's/opt_m/opt_nomalloc/g' $DIR
-	sed -i 's/opt_c/opt_linkscleanemptrefs/g' $DIR
-	sed -i 's/opt_e/opt_linkscleanemptlinks/g' $DIR
+#	sed -i 's/opt_c/opt_linkscleanemptrefs/g' $DIR
+#	sed -i 's/opt_e/opt_linkscleanemptlinks/g' $DIR
+
+	sed -i 's/clibm3l@gmail.com/libm3l@gmail.com/g' $DIR
 
         end

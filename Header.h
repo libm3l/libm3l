@@ -74,12 +74,12 @@
  * TCP/IP communication option
  */
 
-// #define MAXLINE  2048               /* Max length of buffer - NOTE MUST BE LARGER OR EQUAL TO strlent(EOFbuff)*/
-#define MAXLINE  	 20
+//#define MAXLINE  2048               /* Max length of buffer - NOTE MUST BE LARGER OR EQUAL TO strlent(EOFbuff)*/
+#define MAXLINE  	8 
 #define MAX_WORD_LENGTH  260        /* Max length of word in buffer for TCP/IP, determining mainly for how many digits can be sent over */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
-
+#define EOBlen 6                      /* strlen of EOFbuff  */
 #define TEXT_SEPAR_SIGN '`'              /* sign determining the beginning and end of text (C, UC, SC) in disk file */
 /*
  * node_t data specification - NOTE: these MUST be smaller then MAX_WORD_LENGTH

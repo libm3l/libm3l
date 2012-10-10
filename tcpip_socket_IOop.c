@@ -60,8 +60,6 @@
 #include "ln_list.h"
 #include "rm_list.h"
 #include "udf_rm.h"
-
-static node_t *MkTCPIPHeader(opts_t *);
 /*
  * routine Links Slist to Tlist
  */
@@ -181,6 +179,7 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
  */
 						opts.opt_tcpencoding = 'r';
 					}
+				break;
 				case 'e':
 /*
  * clean empty list
@@ -190,8 +189,6 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /* 
  * Error, getopt_long already printed an error message
  */
-				break;
-
 				default:
 				abort ();
 			}
@@ -365,8 +362,6 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /* 
  * Error, getopt_long already printed an error message
  */
-				break;
-
 				default:
 				abort ();
 			}
@@ -540,8 +535,6 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /* 
  * Error, getopt_long already printed an error message
  */
-				break;
-
 				default:
 				abort ();
 			}
@@ -702,8 +695,6 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 /* 
  * Error, getopt_long already printed an error message
  */
-				break;
-
 				default:
 				abort ();
 			}
@@ -938,75 +929,3 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 	return Gnode;
 }
 
-
-node_t *MkTCPIPHeader(opts_t *Popts)
-{
-	node_t *Tmpnode, *AddNode;
-	tmpstruct_t TMPSTR;
-	
-	opts_t *Poptadd, opts;
-/*
- * options for add and remove list
- */
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
-/*
- * options for allocate list
- */	
-	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_nomalloc = '\0';
-	Poptadd = &opts;
-/*
- * make header node
- */
-	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List), "%s", lm3lTCPIPHeader) < 0)
-		   Perror("snprintf");
-	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", "DIR") < 0)
-		   Perror("snprintf");
-	
-	TMPSTR.ndim = 0;
-	TMPSTR.dim=NULL;
- /*
- * two ways of allocating pointer - through reference pointer or as a function returning pointer
- */	
-	if( (Tmpnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
-		Error("Allocate");
-		return (node_t *) NULL;
-	}
-/*
- * add info about coding
- */
-	if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", "TCPIP_encoding") < 0)
-		   Perror("snprintf");
-	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s", "C") < 0)
-		   Perror("snprintf");
-	
-	TMPSTR.ndim = 1;
-	if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
-		Perror("malloc");
-	TMPSTR.dim[0]=2;
- /*
- * two ways of allocating pointer - through reference pointer or as a function returning pointer
- */	
-	if( (AddNode = m3l_AllocateNode(TMPSTR, Poptadd)) == NULL){
-		Error("Allocate");
-		free(TMPSTR.dim);
-		if( m3l_rm_list(1, &Tmpnode, Popts) < 0)
-			Warning("problem in rm_list");
-		return (node_t *) NULL;
-	}
-	
-	free(TMPSTR.dim);
-	
-	AddNode->data.c[0] = Popts->opt_tcpencoding;
-	AddNode->data.c[1] = '\0';
-	
-	if( m3l_add_list(&AddNode, &Tmpnode,  Poptadd) < 0){
-		Warning("problem in ladd_list");
-		if( m3l_rm_list(1, &Tmpnode, Poptadd) < 0)
-			Warning("problem in rm_list");
-		if( m3l_rm_list(1, &AddNode, Poptadd) < 0)
-			Warning("problem in rm_list");
-		return (node_t *)NULL;
-	}
-	
-	return Tmpnode;
-}

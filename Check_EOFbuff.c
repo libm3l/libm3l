@@ -21,13 +21,11 @@
 
 
 /*
- *     Function Umount.c
+ *     Function Check_EOFbuff.c
  *
- *     Date: 2012-06-24
+ *     Date: 2012-09-20
  * 
  * 
- *
- *
  *     Description:
  * 
  *
@@ -43,44 +41,49 @@
  *
  *
  *     Description
- *
+ * 
  */
 
 
 
 
- 
+
+
 #include "Header.h"
-#include "format_type.h"
+#include "Check_EOFbuff.h"
 
 
-#include "Umount.h"
-#include "FunctionsPrt.h"
-#include "rm_list.h"
-
-
-/*
- * this function deletes the master head node.
- * before doing so, remove all data sets in this node and 
- * then remove it.
- */
-
-int m3l_Umount(node_t **List)
+int Check_EOFbuff(char *buff, char *eofbuff, ssize_t n, size_t eoblen, char *EOFBUFF)
 {
 /*
- * delete everything in **List node
+ * function check arrival of EOFbuff 
+ * - used when only looking for EOFbuff sequence to 
+ * terminate reading from socket
  */
-// 	printf("Unmounting node %s at %p\n", (*List)-> name, (*List));
+	size_t counter,i;
+	
+	counter = 0;
 /*
- * when calling rm_list, specify 2 as if the function was not called initially
- * When called initially, the function consideres List as a parent dir and does not remove it
- * In this routine, the function is supposed to remove List so it needs to be called with 2
- */ 
-	if( m3l_rm_list(2, List, (opts_t *)NULL) < 0){
-		Error("Unable to unmount node \n");
-		return -1;
-	}
-// 	printf("Unmounting finished\n");
+ * find how many character has buffer, up to eoblen
+ */
+	if(eoblen < n)
+		counter = eoblen ;
+	else
+		counter = n;
 
-	return 1;
+	for (i=counter; i<eoblen; i++)
+		*(eofbuff+i-counter) = *(eofbuff+i);
+// 		eofbuff[i-counter] = eofbuff[i];
+	
+	for (i=0; i<counter; i++)
+		*(eofbuff+i+eoblen-counter) = *(buff+n-counter+i);
+// 		eofbuff[i+eoblen-counter] = buff[n-counter+i];
+
+	eofbuff[eoblen]='\0';
+			
+	if(strncmp(eofbuff, EOFBUFF, eoblen) == 0){
+		return 1;}
+	else{
+		return 0;
+	}
 }

@@ -59,6 +59,7 @@
 #include "udf_rm.h"
 #include "ReadSocket.h"
 #include "NumberConversion.h"
+#include "Check_EOFbuff.h"
 
 
 #if FLOAT_MEMCP == SPRINTF
@@ -82,6 +83,7 @@ static int m3l_read_socket_data_line(node_t **, tmpstruct_t, int, opts_t *);
 static int m3l_read_socket_data_charline(node_t **, tmpstruct_t, int);
 static node_t *m3l_read_socket_dir_data(tmpstruct_t , int, opts_t *);
 static node_t *m3l_read_socket_data(int, opts_t *);
+static ssize_t Read(int ,int );
 
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
@@ -107,6 +109,9 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 	size_t   wc, i, hi, tmpi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
+	char prevbuff[EOBlen+1];
+
+	bzero(prevbuff,EOBlen+1);
 /*
  * 1. -----------   read info about list (on one line)
  * 			Parameters are as follows:
@@ -145,7 +150,7 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
  * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the fiield
  */
 	bzero(buff, strlen(buff));
-	if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+	if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 		Perror("read");
 
 	buff[ngotten] = '\0';		
@@ -204,7 +209,7 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
  * read next chunk of text file, complete the word by the rest from next chunk and put pointer at it's beggining
  */
 				bzero(buff,sizeof(buff));
-				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+				if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 					Perror("read");
 				buff[ngotten] = '\0';
 				pc = &buff[0];
@@ -268,43 +273,61 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
  * 
  * compare the last word with EOFbuff, if not equal attempt to read rest if socket
  */
-					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
+// 					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
+// /*
+//  * read the last part of buffer and add it to the previuous word
+//  */
+// 							bzero(buff,sizeof(buff));
+// 							if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
+// 								Perror("read");
+// 							buff[ngotten] = '\0';
+// 							if(ngotten > 0) strcat(type, buff);
+// /*
+//  * compare with EOFbuff, if not equal, give warning
+//  * NOTE: if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
+//  * sure the socket is empty
+//  */
+// 						if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
+// 								tmpi = 0;
+// 								printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
+// 								while(*pc != '\0' && tmpi++ < 100)
+// 									printf("%c", *pc++);
+// 								printf("\n");
+// /*
+//  * if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
+//  * sure the socket is empty
+//  */								
+// 								while(*pc != '\0') /*  while(ngotten) */{
+// 									bzero(buff,sizeof(buff));
+// 									if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
+// 										Perror("read");
+// 								}
+// 								printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
+// 								exit(0);
+// 						}
+// /*
+//  * reading socket ended sucesfully, give back Gnode
+//  */
+// 					}
 /*
- * read the last part of buffer and add it to the previuous word
+ * check that the end of entire message ends with EOFbuff
+ * length of EOFbuff is EOBlen (defined in Header.h)
+ * loop over EOBlen times to make sure that if EOBoff is sent over in single bytes 
+ * entire word is received. If possitive test ( == 1), return Gnode, otherwise give warning and exit
  */
-							bzero(buff,sizeof(buff));
-							if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
-								Perror("read");
-							buff[ngotten] = '\0';
-							if(ngotten > 0) strcat(type, buff);
-/*
- * compare with EOFbuff, if not equal, give warning
- * NOTE: if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
- * sure the socket is empty
- */
-						if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
-								tmpi = 0;
-								printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
-								while(*pc != '\0' && tmpi++ < 100)
-									printf("%c", *pc++);
-								printf("\n");
-/*
- * if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
- * sure the socket is empty
- */								
-								while(*pc != '\0') /*  while(ngotten) */{
-									bzero(buff,sizeof(buff));
-									if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
-										Perror("read");
-								}
-								printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
-								exit(0);
-						}
-/*
- * reading socket ended sucesfully, give back Gnode
- */
+
+// 					printf(" TYPE is '%s'" , type);
+					for(i=0; i<EOBlen; i++){
+						if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1)
+							return Dnode;
+						bzero(buff,sizeof(buff));
+						if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
+ 							Perror("read");
 					}
-					return Dnode;
+					printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
+						exit(0);
+
+// 				return Dnode;
 				}
 			}
 	
@@ -425,7 +448,7 @@ node_t *m3l_read_socket_data(int descrpt, opts_t *Popts)
  * read next chunk of text file, complete the word by the rest from next chunk
  */
 				bzero(buff,sizeof(buff));
-				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+				if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 					Perror("read");
 
 				buff[ngotten] = '\0';
@@ -534,7 +557,7 @@ node_t *m3l_read_socket_data(int descrpt, opts_t *Popts)
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 	bzero(buff,sizeof(buff));
-	if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+	if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1){
 		Perror("read");
 		return NULL;
 	}
@@ -606,7 +629,6 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		}
 		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
-// 			di = strtoull(type, &end, 16);
 			di = Strtoull(type, 16);
 			d2 = unpack754_64(di);
 			*pldf++ = d2;
@@ -633,7 +655,6 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
 #if FLOAT_MEMCP == SPRINTF
-// 			di = strtoull(type, &end, 16);
   			di = Strtoull(type, 16);
 #else
 			memcpy(&di, &type[0], 8);
@@ -662,7 +683,6 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		}
 		if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
-// 			fi = strtoull(type, &end, 8);
 			fi = Strtoul(type, 8);
 			f2 = unpack754_32(fi);
 			*pf++ = f2;
@@ -888,7 +908,7 @@ int m3l_read_socket_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, 
  * read next chunk of text file, complete the word by the rest from next chunk
  */
 				bzero(buff,sizeof(buff));
-				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+				if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 					Perror("read");
 
 				buff[ngotten] = '\0';
@@ -971,7 +991,7 @@ int m3l_read_socket_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, 
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 	bzero(buff,sizeof(buff));
-	if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+	if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1){
 		Perror("read");
 		return -1;
 	}
@@ -1035,7 +1055,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  */
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
-				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+				if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 					Perror("read");
 
 				if(ngotten == 0)return 0; /* no more data in buffer */
@@ -1066,7 +1086,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 		bzero(buff,sizeof(buff));
-		if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+		if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1){
 			Perror("read");
 			return -1;
 		}
@@ -1103,7 +1123,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  */
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
-				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+				if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 					Perror("read");
 
 				if(ngotten == 0)return 0; /* no more data in buffer */
@@ -1132,7 +1152,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 		bzero(buff,sizeof(buff));
-		if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+		if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1){
 			Perror("read");
 			return -1;
 		}
@@ -1151,8 +1171,6 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 	else if ( TMPSTR.Type[0] == 'C'){
 
 		pdat = (*Lnode)->data.c;
-//  		printf("1- buffer is '%s'\n", buff);
-// 		printf(" pc is '%c'\n", *pc);
 /*
  * process buffer, set last char to \0
  */
@@ -1175,12 +1193,10 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  */
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
-				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+				if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 					Perror("read");
-// 			printf("2- buffer is '%s'   ngotten is %d\n", buff, ngotten);
 
 				if(ngotten == 0){
-// 					printf(" returning E1\n");
 					return 0; /* no more data in buffer */
 				}
 				buff[ngotten] = '\0';
@@ -1192,7 +1208,6 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  */
 				if(i == tot_dim && IFEXPR) {
 					(*Lnode)->data.c[tot_dim] = '\0';
-// 					printf(" returning E2   %d  %d\n", i, tot_dim);
 					return 0;
 				}
 
@@ -1206,7 +1221,6 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
 					Error("Mismatch in string length");
 					return -1;
 				}
-// 				printf(" returning E3\n");
 				return 0;
 			}
 		}
@@ -1214,7 +1228,7 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 		bzero(buff,sizeof(buff));
-		if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+		if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1){
 			Perror("read");
 			return -1;
 		}
@@ -1239,3 +1253,19 @@ int m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, int descrp
   */	
 	return -1;
 }
+
+
+ssize_t Read(int descrpt ,int n)
+{
+
+		if (  (ngotten = read(descrpt,buff,n)) == -1){
+			Perror("read");
+			return -1;
+		}
+		buff[ngotten] = '\0';
+// 		printf(" BUFFer in ReadSocket is: '%s'    length is %d\n", buff, ngotten);
+
+	return ngotten;
+
+}
+
