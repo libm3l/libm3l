@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 	size_t *dim;
 
     	 int sockfd, newsockfd, portno, n, status, ch_stat;
-	int sum, i, tot_dim;
+	int sum, i, tot_dim, *tmpint;
 
        socklen_t clilen;
        struct sockaddr_in cli_addr;
@@ -136,8 +136,11 @@ int main(int argc, char *argv[])
  * calculate sum and average
  */
 		
+	int *tmpint = m3l_get_data_pointer(TmpNode);
+
 	for (i=0; i<tot_dim; i++) 
-		sum = sum + TmpNode->data.i[i];
+// 		sum = sum + TmpNode->data.i[i];
+		sum = sum + tmpint[i];
 
 	printf(" \n\nSum is   %d,  average value is %d\n", sum, sum/tot_dim);
 

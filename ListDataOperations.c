@@ -112,11 +112,10 @@ size_t m3l_get_2ind(size_t i, size_t j, size_t im, size_t jm)
 }
 
 /*
- * function gives pointer on ->data.# according to List type
+ * function gives pointer on ->data.# depending on the List type
  */
 void *m3l_get_data_pointer(node_t *Lnode)
 {
-	
 	if(strncmp( Lnode->type,"DIR",3) == 0)return NULL;
 	
 	if (strncmp(Lnode->type,"LD",2) == 0){  /* long double */
@@ -181,4 +180,33 @@ void *m3l_get_data_pointer(node_t *Lnode)
 	}
 	
 	return NULL;
+}
+
+/* 
+ * return dimensions, number of dimensions, list type and name
+ */
+size_t *m3l_get_List_dim(node_t *List){
+	return List->fdim;
+}
+size_t m3l_get_List_ndim(node_t *List){
+	return List->ndim;
+}
+char *m3l_get_List_type(node_t *List){
+	return List->type;
+}
+char *m3l_get_List_name(node_t *List){
+	return List->name;
+}
+
+/*
+ * number of founds
+ */
+size_t m3l_get_Found_number(find_t *Founds){
+	return Founds->founds;
+}
+/* 
+ * pointer to list of found nodes
+ */
+find_str_t **m3l_get_Found_nodes(find_t *Founds){
+	return Founds->Found_Nodes;
 }

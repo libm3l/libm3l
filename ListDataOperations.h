@@ -46,5 +46,12 @@ extern size_t m3l_get_4ind(size_t , size_t , size_t , size_t, size_t, size_t, si
 extern size_t m3l_get_3ind(size_t , size_t , size_t , size_t, size_t, size_t);
 extern size_t m3l_get_2ind(size_t , size_t , size_t , size_t );
 extern void *m3l_get_data_pointer(node_t *);
+extern size_t *m3l_get_List_dim(node_t *);
+extern size_t m3l_get_List_ndim(node_t *);
+extern char *m3l_get_List_type(node_t *);
+extern char *m3l_get_List_name(node_t *);
+
+extern size_t m3l_get_Found_number(find_t *);
+extern find_str_t **m3l_get_Found_nodes(find_t *);
 
 #endif
