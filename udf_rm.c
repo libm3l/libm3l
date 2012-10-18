@@ -84,11 +84,19 @@ int m3l_Free(node_t **Lnode)
  * nullify node_t
  */
 	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; 
+	
 /*
  * free filed of lists pointing to links
  */
 	if((*Lnode)->lcounter > 0){
 		for (i=0; i<(*Lnode)->lcounter; i++)
+/*
+ * notify links about this node being freed (set their ->child to NULL
+ */				
+// 			(*Lnode)->linknode[i]->List->child = NULL;
+/*
+ * free linknode memory
+ */	
 			free((*Lnode)->linknode[i]);
 		
 		free((*Lnode)->linknode);

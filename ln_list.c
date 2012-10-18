@@ -70,6 +70,8 @@ static node_t *m3l_ln_crt_list(node_t **, char *, opts_t *);
 
 /*
  * function links list. If the list has children, it deletes them before removing list.
+ * Source list is linked to Target->child 
+ * When the Source is linked to target, strucure Slist->inknode is allocated and filled by Target
  * called recursivelly
  * upon return, returns number of deleted lists, upon failure returns -1
  */
@@ -606,11 +608,14 @@ int m3l_ln_cleanemptylinksref(node_t **List,  opts_t *Popt){
 		Warning("ln_cleanemptylinksref: Empty node");
 		return -1;
 	}
-	
+/*
+ * find how many nodes uses this node as a link
+ * discard NULL links
+ */
 	if((*List)->lcounter > 0 ){
 		old_counter = (*List)->lcounter;
 		for(i=0; i< (*List)->lcounter; i++)
-			if( (*List)->linknode[i]->List != 0)counter++;
+			if( (*List)->linknode[i]->List != NULL)counter++;
 	}
 	else{
 /*
@@ -618,7 +623,7 @@ int m3l_ln_cleanemptylinksref(node_t **List,  opts_t *Popt){
  */
 		return 0;
 	}
-	
+
 	if(counter > 0){
 		
 		if( (TMP = (find_str_t **)malloc( (*List)->lcounter * sizeof(find_str_t *))) == NULL)

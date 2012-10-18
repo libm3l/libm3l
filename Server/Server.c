@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 
 // 	if ( m3l_write_to_socket(1, Gnode,  newsockfd,  Popts) < 0)
 // 	if ( m3l_write_to_socket(1, Gnode,  newsockfd,  (opts_t *)NULL) < 0)
-	if (  m3l_Send_to_tcpipsocket(Gnode, NULL , newsockfd, "--encoding" , "IEEE-754", "--header", (char *)NULL) < 0)
+	if (  m3l_Send_to_tcpipsocket(Gnode, NULL , newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 0)
 		Error("Error during writing data to socket");
 
 	printf("\n\n");
