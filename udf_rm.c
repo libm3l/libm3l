@@ -327,7 +327,7 @@ int m3l_AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 		if ( ( (*Lnode)->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int))) == NULL)
 			Perror("malloc");
 	}
-	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
+	else if(strncmp((*Lnode)->type,"LLI",3) == 0){  /* long long int */
 		if ( ( (*Lnode)->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int))) == NULL)
 			Perror("malloc");
 	}

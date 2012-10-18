@@ -41,9 +41,10 @@
 #ifndef __FUNCTIONSARRAYS_H__
 #define __FUNCTIONSARRAYS_H__
 
-extern size_t get_ind(size_t , size_t *, size_t *);
-extern size_t get_4ind(size_t , size_t , size_t , size_t, size_t, size_t, size_t, size_t);
-extern size_t get_3ind(size_t , size_t , size_t , size_t, size_t, size_t);
-extern size_t get_2ind(size_t , size_t , size_t , size_t );
+extern size_t m3l_get_ind(size_t , size_t *, size_t *);
+extern size_t m3l_get_4ind(size_t , size_t , size_t , size_t, size_t, size_t, size_t, size_t);
+extern size_t m3l_get_3ind(size_t , size_t , size_t , size_t, size_t, size_t);
+extern size_t m3l_get_2ind(size_t , size_t , size_t , size_t );
+extern void *m3l_get_data_pointer(node_t *);
 
 #endif
