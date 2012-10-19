@@ -50,6 +50,7 @@ extern size_t *m3l_get_List_dim(node_t *);
 extern size_t m3l_get_List_ndim(node_t *);
 extern char *m3l_get_List_type(node_t *);
 extern char *m3l_get_List_name(node_t *);
+extern size_t m3l_get_List_totdim(node_t *);
 
 extern size_t m3l_get_Found_number(find_t *);
 extern find_str_t **m3l_get_Found_nodes(find_t *);

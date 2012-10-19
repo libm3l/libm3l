@@ -183,17 +183,39 @@ void *m3l_get_data_pointer(node_t *Lnode)
 }
 
 /* 
- * return dimensions, number of dimensions, list type and name
+ * return dimensions
  */
 size_t *m3l_get_List_dim(node_t *List){
 	return List->fdim;
 }
+/* 
+ * return  total dimensions 
+ */
+size_t m3l_get_List_totdim(node_t *List){
+	size_t tot_dim, i;
+
+	tot_dim = 1;
+
+	for(i=0; i<List->ndim; i++)
+		tot_dim = tot_dim*List->fdim[i];
+
+	return tot_dim;
+}
+/* 
+ * return number of dimensions
+ */
 size_t m3l_get_List_ndim(node_t *List){
 	return List->ndim;
 }
+/* 
+ * return list type 
+ */
 char *m3l_get_List_type(node_t *List){
 	return List->type;
 }
+/* 
+ * return list name
+ */
 char *m3l_get_List_name(node_t *List){
 	return List->name;
 }
