@@ -73,5 +73,4 @@ add to all other types pro ostatni typy
 
 
 
-19. KO co se stane, kdyz prepisu link jinym linkem, jak je to s linked[] strukturou a odpovidajicimi linky!
-20  KO in Free_data_srt -> pred tim, nez se vynuluje linked[], mozna dat ->child=NULL (valgrind dal chybovou hlasku)
+19. KO co se stane, kdyz prepisu link jinym linkem, jak je to s linked[] strukturou a odpovidajicimi linky (ln_list line 475)

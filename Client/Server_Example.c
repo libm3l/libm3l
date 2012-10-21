@@ -129,14 +129,14 @@ int main(int argc, char *argv[])
 /*
  * get total array dimension
  */
+// 	for(i=0; i<TmpNode->ndim; i++)
+// 		tot_dim = tot_dim * TmpNode->fdim[i];
 	
-	for(i=0; i<TmpNode->ndim; i++)
-		tot_dim = tot_dim * TmpNode->fdim[i];
+	tot_dim = m3l_get_List_totdim(TmpNode);
 /*
  * calculate sum and average
  */
-		
-	int *tmpint = m3l_get_data_pointer(TmpNode);
+	tmpint = (int *)m3l_get_data_pointer(TmpNode);		
 
 	for (i=0; i<tot_dim; i++) 
 // 		sum = sum + TmpNode->data.i[i];
