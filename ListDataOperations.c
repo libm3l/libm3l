@@ -54,7 +54,7 @@
 #include "ListDataOperations.h"
 
 /*
- * function get index of 1D arrat from n-dimensional array
+ * function get index of 1D array from n-dimensional array
  */
 size_t m3l_get_ind(size_t ndim, size_t *ind,  size_t *dim)
 {
@@ -72,14 +72,12 @@ size_t m3l_get_ind(size_t ndim, size_t *ind,  size_t *dim)
 		
 	}
 	ret_ind = ret_ind + ind[ndim-1];
-// 	
-//  	ret_ind = i*jm*km+j*km+k;
 	
 	return ret_ind;
 }
 
 /*
- * function get index of 1D arrat from 3-dimensional array
+ * function get index of 1D array from 4-dimensional array
  */
 size_t m3l_get_4nd(size_t i, size_t j, size_t k, size_t l, size_t im, size_t jm, size_t km, size_t lm)
 {
@@ -90,7 +88,7 @@ size_t m3l_get_4nd(size_t i, size_t j, size_t k, size_t l, size_t im, size_t jm,
 }
 
 /*
- * function get index of 1D arrat from 3-dimensional array
+ * function get index of 1D array from 3-dimensional array
  */
 size_t m3l_get_3ind(size_t i, size_t j, size_t k, size_t im, size_t jm, size_t km)
 {
@@ -101,7 +99,7 @@ size_t m3l_get_3ind(size_t i, size_t j, size_t k, size_t im, size_t jm, size_t k
 }
 
 /*
- * function get index of 1D arrat from 3-dimensional array
+ * function get index of 1D array from 2-dimensional array
  */
 size_t m3l_get_2ind(size_t i, size_t j, size_t im, size_t jm)
 {
@@ -113,6 +111,7 @@ size_t m3l_get_2ind(size_t i, size_t j, size_t im, size_t jm)
 
 /*
  * function gives pointer on ->data.# depending on the List type
+ * function is of void * type 
  */
 void *m3l_get_data_pointer(node_t *Lnode)
 {
@@ -183,23 +182,27 @@ void *m3l_get_data_pointer(node_t *Lnode)
 }
 
 /* 
- * return dimensions
+ * return dimensions of the node
  */
 size_t *m3l_get_List_dim(node_t *List){
 	return List->fdim;
 }
 /* 
- * return  total dimensions 
+ * calculate and return total dimensions 
  */
 size_t m3l_get_List_totdim(node_t *List){
 	size_t tot_dim, i;
 
 	tot_dim = 1;
 
-	for(i=0; i<List->ndim; i++)
-		tot_dim = tot_dim*List->fdim[i];
+	if(List->ndim == 1)
+		return fdim[0];
+	else{
+		for(i=0; i<List->ndim; i++)
+			tot_dim = tot_dim*List->fdim[i];
 
-	return tot_dim;
+		return tot_dim;
+	}
 }
 /* 
  * return number of dimensions

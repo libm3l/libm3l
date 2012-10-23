@@ -65,6 +65,11 @@ static find_t *m3l_locator(find_t *, path_t *, path_t *, opts_t *);
 extern int optind;
 static int verbose_flag;
 
+/*
+ * function uses Find_list to find all possible items with given name
+ * and then filters the subset using additional info (location etc.)
+ */
+
 find_t *m3l_locator_caller(node_t *List, const char *path, const char *path_loc, opts_t *Popts)
 {
 	path_t *parsed_path, *parsed_path_loc;
