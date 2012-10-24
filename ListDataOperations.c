@@ -115,67 +115,78 @@ size_t m3l_get_2ind(size_t i, size_t j, size_t im, size_t jm)
  */
 void *m3l_get_data_pointer(node_t *Lnode)
 {
-	if(strncmp( Lnode->type,"DIR",3) == 0)return NULL;
+	node_t *TmpNode;
+/*
+ * if list is DIR, return NULL
+ * if list is LINK, set TmpNode to link target node (Lnode->child)
+ * otherwise set TmpNode = Lnode
+ */
+	if(strncmp( Lnode->type,"DIR",3) == 0)
+		return NULL;
+	else if(strncmp(Lnode->type, "LINK",4) == 0)
+		TmpNode = Lnode->child;
+	else
+		TmpNode = Lnode;
 	
-	if (strncmp(Lnode->type,"LD",2) == 0){  /* long double */
-		return (void *)Lnode->data.ldf;
+	if (strncmp(TmpNode->type,"LD",2) == 0){  /* long double */
+		return (void *)TmpNode->data.ldf;
 	}
-	else if(strncmp(Lnode->type,"D",1) == 0){  /* double */
-		return (void *)Lnode->data.df;
+	else if(strncmp(TmpNode->type,"D",1) == 0){  /* double */
+		return (void *)TmpNode->data.df;
 	}
-	else if(strncmp(Lnode->type,"F",1) == 0){  /* float */
-		return (void *)Lnode->data.f;
+	else if(strncmp(TmpNode->type,"F",1) == 0){  /* float */
+		return (void *)TmpNode->data.f;
 	}
 /*
  * chars
  */
-	else if (strncmp(Lnode->type,"SC",2) == 0){  /* signed char */
-		return (void *)Lnode->data.sc;
+	else if (strncmp(TmpNode->type,"SC",2) == 0){  /* signed char */
+		return (void *)TmpNode->data.sc;
 	}
-	else if(strncmp(Lnode->type,"UC",2) == 0){  /* unsigned char */
-		return (void *)Lnode->data.uc;
+	else if(strncmp(TmpNode->type,"UC",2) == 0){  /* unsigned char */
+		return (void *)TmpNode->data.uc;
 	}
-	else if(strncmp(Lnode->type,"C",1) == 0){  /* char */
-		return (void *)Lnode->data.c;
+	else if(strncmp(TmpNode->type,"C",1) == 0){  /* char */
+		return (void *)TmpNode->data.c;
 	}
 /*
  * integers
  */
-	else if(strncmp(Lnode->type,"ULLI",4) == 0){  /* unsigned long long  int */
-		return (void *)Lnode->data.ulli;
+	else if(strncmp(TmpNode->type,"ULLI",4) == 0){  /* unsigned long long  int */
+		return (void *)TmpNode->data.ulli;
 	}
-	else if(strncmp(Lnode->type,"SLLI",4) == 0){  /* signed long long  int */
-		return (void *)Lnode->data.slli;
+	else if(strncmp(TmpNode->type,"SLLI",4) == 0){  /* signed long long  int */
+		return (void *)TmpNode->data.slli;
 	}
-	else if(strncmp(Lnode->type,"LLI",3) == 0){  /* long long int */
-		return (void *)Lnode->data.lli;
+	else if(strncmp(TmpNode->type,"LLI",3) == 0){  /* long long int */
+		return (void *)TmpNode->data.lli;
 	}
-	else if(strncmp(Lnode->type,"ULI",3) == 0){  /* unsigned long int */
-		return (void *)Lnode->data.uli;
+	else if(strncmp(TmpNode->type,"ULI",3) == 0){  /* unsigned long int */
+		return (void *)TmpNode->data.uli;
 	}
-	else if(strncmp(Lnode->type,"USI",3) == 0){  /* unsigned short int */
-		return (void *)Lnode->data.usi;
+	else if(strncmp(TmpNode->type,"USI",3) == 0){  /* unsigned short int */
+		return (void *)TmpNode->data.usi;
 	}
-	else if(strncmp(Lnode->type,"SI",2) == 0){  /* short int */
-		return (void *)Lnode->data.si;
+	else if(strncmp(TmpNode->type,"SI",2) == 0){  /* short int */
+		return (void *)TmpNode->data.si;
 	}
-	else if(strncmp(Lnode->type,"UI",2) == 0){  /* unsigned int */
-		return (void *)Lnode->data.ui;
+	else if(strncmp(TmpNode->type,"UI",2) == 0){  /* unsigned int */
+		return (void *)TmpNode->data.ui;
 	}
-	else if(strncmp(Lnode->type,"LI",2) == 0){  /* long  int */
-		return (void *)Lnode->data.li;
+	else if(strncmp(TmpNode->type,"LI",2) == 0){  /* long  int */
+		return (void *)TmpNode->data.li;
 	}
-	else if(strncmp(Lnode->type,"I",1) == 0){  /* int */
-		return (void *)Lnode->data.i;
+	else if(strncmp(TmpNode->type,"I",1) == 0){  /* int */
+		return (void *)TmpNode->data.i;
 	}
 /*
  * counters
  */
-	else if(strncmp(Lnode->type,"ST",2) == 0){  /* size_t */
-		return (void *)Lnode->data.st;
+	else if(strncmp(TmpNode->type,"ST",2) == 0){  /* size_t */
+		return (void *)TmpNode->data.st;
 	}
-	else if(strncmp(Lnode->type,"PTRDF",1) == 0){  /* ptrdf_t */
-		return (void *)Lnode->data.ptrdf;
+	else if(strncmp(TmpNode->type,"PTRDF",1) == 0){  /* ptrdf_t */
+		return (void *)TmpNode->data.ptrdf;
 	}
 	
 	return NULL;
@@ -196,7 +207,7 @@ size_t m3l_get_List_totdim(node_t *List){
 	tot_dim = 1;
 
 	if(List->ndim == 1)
-		return fdim[0];
+		return List->fdim[0];
 	else{
 		for(i=0; i<List->ndim; i++)
 			tot_dim = tot_dim*List->fdim[i];

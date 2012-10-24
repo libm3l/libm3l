@@ -474,6 +474,9 @@ int m3l_ln_recrt_list(node_t ** Tlist, node_t **Slist, char *NewName){
 		return -1;
 	}
 /*
+ * NOTE - what if Free_data_str is applied on LINK?
+ */
+/*
  * set child of the node to the link source
  */
 	(*Tlist)->child = (*Slist);
