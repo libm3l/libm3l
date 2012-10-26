@@ -14,7 +14,7 @@
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 	bzero(buff,sizeof(buff));
-	if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1){
+	if (  (ngotten = Read(descrpt,MAXLINE-1)) == -1){
 		Perror("read");
 		return -1;
 	}

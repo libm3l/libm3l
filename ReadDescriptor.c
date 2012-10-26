@@ -68,6 +68,7 @@ static int m3l_read_file_data_line(node_t **, tmpstruct_t, FILE *f, opts_t *);
 static int m3l_read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
 static node_t *m3l_read_file_dir_data(tmpstruct_t , FILE *f, opts_t *);
 static node_t *m3l_read_file_data(FILE *f, opts_t *);
+static ssize_t Fread(FILE * ,int);
 
 char *pc, buff[MAXLINE];
 size_t ngotten;
@@ -124,9 +125,9 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
  */
 	bzero(buff, strlen(buff));
 	ngotten = 0;
-	if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-		if(ferror(fp))
-			Perror("fread");
+	
+	if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+		Perror("fread");
 	}
 
 	buff[ngotten] = '\0';		
@@ -185,9 +186,8 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
  */
 				bzero(buff,sizeof(buff));
 				ngotten = 0;
-				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-					if(ferror(fp))
-						Perror("fread");
+				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+					Perror("fread");
 				}
 
 				buff[ngotten] = '\0';
@@ -372,9 +372,8 @@ node_t *m3l_read_file_data(FILE *fp, opts_t *Popts)
  */
 				bzero(buff,sizeof(buff));
 				ngotten = 0;
-				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-					if(ferror(fp))
-						Perror("fread");
+				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+					Perror("fread");
 				}
 
 				buff[ngotten] = '\0';
@@ -478,11 +477,9 @@ node_t *m3l_read_file_data(FILE *fp, opts_t *Popts)
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 	bzero(buff,sizeof(buff));
-	if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-		if(ferror(fp)){
-			Perror("fread");
-			return NULL;
-		}
+	if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+		Perror("fread");
+		return NULL;
 	}
 	buff[ngotten] = '\0';
 	pc = &buff[0];
@@ -772,8 +769,7 @@ int m3l_read_file_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_
  */
 				bzero(buff,sizeof(buff));
 				ngotten = 0;
-				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-					if(ferror(fp))
+				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
 						Perror("fread");
 				}
 
@@ -855,11 +851,9 @@ int m3l_read_file_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 	bzero(buff,sizeof(buff));
-	if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-		if(ferror(fp)){
-			Perror("fread");
-			return 0;
-		}
+	if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+		Perror("fread");
+		return 0;
 	}
 	buff[ngotten] = '\0';
 	pc = &buff[0];
@@ -933,8 +927,7 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
 				ngotten = 0;
-				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-					if(ferror(fp))
+				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
 						Perror("fread");
 				}
 
@@ -960,9 +953,8 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 		bzero(buff,sizeof(buff));
-		if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-			if(ferror(fp))
-				Perror("fread");
+		if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+			Perror("fread");
 		}
 		
 		buff[ngotten] = '\0';
@@ -1009,9 +1001,8 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
 				ngotten = 0;
-				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-					if(ferror(fp))
-						Perror("fread");
+				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+					Perror("fread");
 				}
 
 				if(ngotten == 0)return 0; /* no more data in buffer */
@@ -1036,9 +1027,8 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 		bzero(buff,sizeof(buff));
-		if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-			if(ferror(fp))
-				Perror("fread");
+		if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+			Perror("fread");
 		}
 		
 		buff[ngotten] = '\0';
@@ -1091,9 +1081,8 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 			if(*pc == '\0'){	
 				bzero(buff,sizeof(buff));
 				ngotten = 0;
-				if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-					if(ferror(fp))
-						Perror("fread");
+				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+					Perror("fread");
 				}
 
 				if(ngotten == 0)return 0; /* no more data in buffer */
@@ -1121,9 +1110,8 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 		bzero(buff,sizeof(buff));
-		if(   (ngotten = fread(buff, sizeof(buff[0]), MAXLINE-1, fp))   < MAXLINE-1){
-			if(ferror(fp))
-				Perror("fread");
+		if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+			Perror("fread");
 		}
 		
 		buff[ngotten] = '\0';
@@ -1141,4 +1129,18 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
   * if you get here something went wrong
   */	
 	return -1;
+}
+
+ssize_t Fread(FILE *fp ,int n)
+{
+
+		if(   (ngotten = fread(buff, sizeof(buff[0]), n, fp))   < MAXLINE-1){
+			if(ferror(fp))
+				Perror("fread");
+				return -1;
+		}
+		buff[ngotten] = '\0';
+
+	return ngotten;
+
 }

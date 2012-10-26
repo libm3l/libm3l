@@ -88,9 +88,6 @@ static ssize_t Read(int ,int );
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
 
-
-/// 16. NOTE-URGENT when ReadSocket active and writer closes/terminates socket, server makes core file
-
 /*
  * Function read just one line from a socket, disregarding comments line
  * It identifies if the line is a header of DATA or DIR list
@@ -1263,7 +1260,6 @@ ssize_t Read(int descrpt ,int n)
 			return -1;
 		}
 		buff[ngotten] = '\0';
-// 		printf(" BUFFer in ReadSocket is: '%s'    length is %d\n", buff, ngotten);
 
 	return ngotten;
 

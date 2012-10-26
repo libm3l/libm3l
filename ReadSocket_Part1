@@ -38,7 +38,7 @@
  * read next chunk of text file, complete the word by the rest from next chunk
  */
 				bzero(buff,sizeof(buff));
-				if (  (ngotten = read(descrpt,buff,MAXLINE-1)) == -1)
+				if (  (ngotten = Read(descrpt,MAXLINE-1)) == -1)
 					Perror("read");
 
 				buff[ngotten] = '\0';
