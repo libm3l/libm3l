@@ -63,9 +63,9 @@
 #include <netinet/tcp.h>
 #include <malloc.h>
 #include <resolv.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-#include <arpa/inet.h>
+// #include <openssl/ssl.h>
+// #include <openssl/err.h>
+// #include <arpa/inet.h>
 #include <float.h>
 #include <stdint.h>
 #include <inttypes.h>
