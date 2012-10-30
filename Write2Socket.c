@@ -538,7 +538,7 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 			size = strlen(buffer);
 			if ( (n = Write(sockfd,size)) < size)
 				Perror("write()");
-			bzero(buffer, sizeof(buffer));
+// 			bzero(buffer, sizeof(buffer));
 		}
 		*(buffer+bitcount) = *buff++;
 		bitcount++;
@@ -564,7 +564,7 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 		size = strlen(buffer);
 		if ( (n = Write(sockfd,size)) < size)
 			Perror("write()");
-		bzero(buffer, sizeof(buffer));
+// 		bzero(buffer, sizeof(buffer));
 		
 		if(add == 1 ){
 /*
@@ -582,7 +582,8 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 // 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 		size = strlen(buffer);
 		if ( (n = Write(sockfd,size)) < size)
-			Perror("write()");	
+			Perror("write()");
+// 		bzero(buffer, sizeof(buffer));
 	}
 	
 	return 1;
@@ -598,7 +599,7 @@ ssize_t Write(int sockfd,  size_t size){
 	buff = buffer;
 	
 	while(size > 0) {
-
+		
 		if ( (n = write(sockfd,buff,size)) < 0){
 			if (errno == EINTR) continue;
 			return (total == 0) ? -1 : total;
@@ -607,6 +608,10 @@ ssize_t Write(int sockfd,  size_t size){
 		total += n;
 		size -= n;
 	}
+/*
+ * buffer was sent, nullify it
+ */
+	bzero(buffer, sizeof(buffer));
 	return total;
 }
 

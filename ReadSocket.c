@@ -268,7 +268,7 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
  * make sure that if the EOFbuff word is split and part of it is still in socket
  * read it and append to the beginning of word
  * 
- * compare the last word with EOFbuff, if not equal attempt to read rest if socket
+ * compare the last word with EOFbuff, if not equal attempt to read rest of socket
  */
 // 					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
 // /*
@@ -315,8 +315,10 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 
 // 					printf(" TYPE is '%s'" , type);
 					for(i=0; i<EOBlen; i++){
-						if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1)
-							return Dnode;
+						if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1){
+							bzero(buff,sizeof(buff));
+							return Dnode;}
+							
 						bzero(buff,sizeof(buff));
 						if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
  							Perror("read");

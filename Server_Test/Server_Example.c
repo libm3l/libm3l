@@ -145,6 +145,10 @@ int main(int argc, char *argv[])
 			else{
 				Error("Solver data wrong");
 			}
+			
+			
+// 			if(m3l_Cat(RecNode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
+// 				Error("CatData");
 
 			if(strncmp(TmpNode->data.c, "Edge", 4) == 0){
 
