@@ -90,6 +90,10 @@ int main(void)
     int ada[5];
     get_arg_t argsstr;
     
+    long double test1;
+    double test2;
+    float test3;
+    
 //     char dummy[1];
 //     double value = 42.000042; /* or anything else */
 //     int siz;
@@ -101,6 +105,10 @@ int main(void)
 	printf(" 32 bit \n");
 #endif*/
 	
+	printf(" %ld   %ld %ld  \n ", sizeof(test1), sizeof(test2), sizeof(test3));
+	exit(0);
+	
+ 
 
     FILE *fp;
     

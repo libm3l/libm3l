@@ -244,7 +244,7 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 				len = sizeof(di);
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
-					di = pack754_64(Tmpnode->data.ldf[i]);
+					di = pack754_128(Tmpnode->data.ldf[i]);
 #if FLOAT_MEMCP == SPRINTF				
 					if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
 						Perror("snprintf");
