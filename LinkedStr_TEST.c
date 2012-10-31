@@ -94,6 +94,13 @@ int main(void)
 //     double value = 42.000042; /* or anything else */
 //     int siz;
 
+ /*   
+#if defined ENVIRONMENT64
+	printf(" 64 bit \n");
+#elif defined ENVIRONMENT32
+	printf(" 32 bit \n");
+#endif*/
+	
 
     FILE *fp;
     

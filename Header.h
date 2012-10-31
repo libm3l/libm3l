@@ -95,4 +95,13 @@
 //#define FLOAT_MEMCP MEMCP
 //#define ULLONG_MAX 18446744073709551615
 
+// Check GCC
+#if __GNUC__
+#if __x86_64__ || __ppc64__
+#define ENVIRONMENT64
+#else
+#define ENVIRONMENT32
+#endif
+#endif
+
 #endif
