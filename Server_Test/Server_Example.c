@@ -319,8 +319,8 @@ int main(int argc, char *argv[])
  * CSM will send now data with solver name, because last operation it did was sending, 
  * terminate reading socket by sending bogus (ACKN) reqest
  */
-				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
-					Error("Error during reading data from socket");
+// 				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
+// 					Error("Error during reading data from socket");
 				
 				if(m3l_Umount(&ACKN) != 1)
 					Perror("m3l_Umount");

@@ -120,10 +120,10 @@ int main(int argc, char *argv[])
 	if(m3l_Umount(&Gnode) != 1)
 		Perror("m3l_Umount");
 
-	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, sockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
- 		Error("Error during reading data from socket");
-	if(m3l_Umount(&RecNode) != 1)
-		Perror("m3l_Umount");
+// 	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, sockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
+//  		Error("Error during reading data from socket");
+// 	if(m3l_Umount(&RecNode) != 1)
+// 		Perror("m3l_Umount");
 
 	if( close(sockfd) == -1)
 		Perror("close");	
