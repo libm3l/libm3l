@@ -233,8 +233,7 @@ int main(int argc, char *argv[])
 					kill(PID,SIGUSR1);
 
 			}
-			else 
-			{
+			else if(strncmp(TmpNode->data.c, "TRINITAS_REC", 12) == 0){
 				stop = 0;
 				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
 					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
@@ -277,22 +276,62 @@ int main(int argc, char *argv[])
 /*
  * wait until entire process of shipping data from Edge to CSM is finished
  */
-
 				operations[0].sem_num    =  0;   /* Operate on the sem_num sem      */
 				operations[0].sem_op     =  0;  /* increase by 0   */
 				operations[0].sem_flg    =  0; /* Allow a wait to occur             */
 				operations[1].sem_num    =  1;   /* Operate on the sem_num sem      */
 				operations[1].sem_op     =  0; /* increase by 0   */
 				operations[1].sem_flg    =  0; /* Allow a wait to occur             */
+				operations[2].sem_num    =   3;
+				operations[2].sem_op     =   1;
+				operations[2].sem_flg    =   0;
 				if( (retval = semop(id, operations, 2)) != 0)
 					Perror("semop()8");
 /*
  * set read(socket...) counter to 1 so that reading can start
  */
 				shm_n[0] = 1;
+				
+				if(m3l_Umount(&ACKN) != 1)
+					Perror("m3l_Umount");
 /*
- * read data sent by CSM process
+ * increase semafore 3 by one indicating the receiving from TRINITAS side is finished and 
+ * TRINITAS can open socket for sending data
+ */				
+				operations[0].sem_num    =   3;
+				operations[0].sem_op     =   1;
+				operations[0].sem_flg    =   0;
+				if( (retval = semop(id, operations, 1)) != 0)
+					Perror("semop()8");
+
+			}
+			else if(strncmp(TmpNode->data.c, "TRINITAS_SEND", 13) == 0){
+				
+				stop = 0;
+				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
+					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
+					m3l_DestroyFound(&SFounds1);
+				}
+/*
+ * umount node with solver name info
  */
+				if(m3l_Umount(&RecNode) != 1)
+					Perror("m3l_Umount");
+				/*
+ * you need to send ACKN to terminate reading from socket
+ */
+				
+				printf("ddddd\n");
+				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
+					Error("Error during reading data from socket");
+/*
+ * read payload data from client
+ */
+				operations[0].sem_num    =    3;
+				operations[0].sem_op     =   -1;
+				operations[0].sem_flg    =    0;
+				if( (retval = semop(id, operations, 1)) != 0)
+					Perror("semop()8");
 				ReadSocketCopy2SHM(newsockfd);
 /*
  * wait until data is sent to Edge and then 
@@ -322,7 +361,6 @@ int main(int argc, char *argv[])
 				
 				if(m3l_Umount(&ACKN) != 1)
 					Perror("m3l_Umount");
-
 			}
 /*
  * free borrow memory

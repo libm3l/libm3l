@@ -10,6 +10,7 @@ all:
 	gcc  -g -o Client1.out Client1.c ACK.o -L$(PATHL)  -lm3l -Wl,-rpath=$(PATHL)
 	gcc  -g -o Client2.out Client2.c ACK.o -L$(PATHL)  -lm3l -Wl,-rpath=$(PATHL)
 	gcc  -g -o Client2_TRINITAS.out Client2_TRINITAS.c ACK.o -L$(PATHL)  -lm3l -Wl,-rpath=$(PATHL)
+	gcc  -g -o Server_TRINITAS.out Server_TRINITAS.c ACK.o CrtSEMSHM.o  SignalC.o Transfer_Fce.o -L$(PATHL)  -lm3l -Wl,-rpath=$(PATHL)
 
 #	gcc  -g -o Client2.out Client2.c ACK.o libm3l.a
 

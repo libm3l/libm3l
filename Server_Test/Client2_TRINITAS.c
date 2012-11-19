@@ -105,9 +105,11 @@ int main(int argc, char *argv[])
 		
 		tmpint = (int *)m3l_get_data_pointer(TmpNode);
 		tmpint[0] = i;
-// 		TmpNode->data.i[0] = i;
 		
 		free(dim);
+		
+		if ( (sockfd =  m3l_cli_open_socket(argv[1], portno, (char *)NULL)) < 0)
+			Error("Could not open socket");
 		
 		if( (RecNode = m3l_Send_receive_tcpipsocket(Solver1Name,(char *)NULL, sockfd, "--encoding" , "IEEE-754",  (char *)NULL) ) == NULL)
 			Perror("Send_receive");
