@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 				Error("m3l_Mklist");
 		
 		tmpint = (int *)m3l_get_data_pointer(TmpNode);
-		tmpint[0] = i;
+		tmpint[0] = getpid()*i;
 		
 		free(dim);
 		

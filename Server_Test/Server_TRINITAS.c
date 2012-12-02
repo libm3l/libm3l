@@ -320,18 +320,17 @@ int main(int argc, char *argv[])
 				/*
  * you need to send ACKN to terminate reading from socket
  */
-				
-				printf("ddddd\n");
 				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
 					Error("Error during reading data from socket");
 /*
- * read payload data from client
+ * Decrement 3rd semafore by 1 (client takes a fork and bloks other same clients from requesting fork) and read payload data from client
  */
 				operations[0].sem_num    =    3;
 				operations[0].sem_op     =   -1;
 				operations[0].sem_flg    =    0;
 				if( (retval = semop(id, operations, 1)) != 0)
 					Perror("semop()8");
+				
 				ReadSocketCopy2SHM(newsockfd);
 /*
  * wait until data is sent to Edge and then 
