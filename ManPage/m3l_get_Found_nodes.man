@@ -1,0 +1,41 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_get_Found_nodes \- returns pointer to structure containing found nodes_t 
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B find_str_t **m3l_get_Found_nodes
+(find_t *Found)
+
+
+
+.SH DESCRIPTION
+.B m3l_get_Found_nodes
+Function returns pointer to **Found->Found_Nodes structure. To loop over the node this struture is pointing to 
+do as:
+
+for(i=0; i< 3l_get_Found_number(find_t *Founds); i++)
+		Founds->Found_Nodes[0]->List;
+.
+
+.SH OPTIONS
+none
+
+
+.SH RETURN VALUE
+Upon successful the function returns number of items in Found structure
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_Mklist

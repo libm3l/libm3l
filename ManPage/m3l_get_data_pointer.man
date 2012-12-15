@@ -1,0 +1,38 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Mount \- creates List 
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B tvoid *m3l_get_data_pointer
+(node_t *List)
+
+
+
+.SH DESCRIPTION
+.B m3l_Mount
+Function returns pointer to data set in List
+.
+
+.SH OPTIONS
+none
+
+
+.SH RETURN VALUE
+Upon successful the function returns pointer to List->data.[type]. If node does not have data.[type] associated, 
+the function returns NULL pointer.
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_Mklist
