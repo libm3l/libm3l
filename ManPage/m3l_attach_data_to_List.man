@@ -1,0 +1,44 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_get_List_no_malloc \- returns value of nomalloc option
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B char *m3l_get_List_no_malloc
+(node_t *List)
+
+
+
+.SH DESCRIPTION
+.B m3l_get_List_no_malloc
+Function returns value of no_malloc option (ie. List->nomalloc).
+When the node is created in Mklist() function the value of no_malloc option is set to 0 unles the 
+option --no_malloc is specified. This option sets the value of nomalloc ='n'.
+The value of this option can be changed by 
+.B m3l_attach_data_to_List 
+and 
+.B m3l_detach_data_from_List
+functions
+.
+
+.SH OPTIONS
+none
+
+
+.SH RETURN VALUE
+Upon successful the function returns number of dimensions for List data array
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR Mklist, m3l_attach_data_to_List, m3l_detach_data_from_List
