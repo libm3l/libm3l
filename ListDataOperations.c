@@ -249,7 +249,7 @@ find_str_t **m3l_get_Found_nodes(find_t *Founds){
 /* 
  * return no_malloc option value
  */
-char *m3l_get_List_no_malloc(node_t *List){
+char m3l_get_List_no_malloc(node_t *List){
 	return List->no_malloc;
 }
 
@@ -265,8 +265,8 @@ void *m3l_detach_data_from_List(node_t **List)
 /*  
  * set --no_malloc option in the node
  */
-	if( (RetNode = m3l_get_data_pointer( *Lnode )) != NULL){
-		(*Lnode)->no_malloc = 'n';
+	if( (RetNode = m3l_get_data_pointer( *List )) != NULL){
+		(*List)->no_malloc = 'n';
 		return RetNode;
 	}
 	else{
@@ -274,23 +274,23 @@ void *m3l_detach_data_from_List(node_t **List)
 	}
 }
 
-void *m3l_attach_data_to_List(void *array, char *typeofarray, size_t *ndim, size_t *fdim)
-{
-/*
-* Function attaches an array to the list. 
-* This means it will specify --no_malloc='\0' so that when the list is freed the 
-* data.[type] structure will be freed to.
-* Function return the pointer to data structure
-*/
-
-/*  
- * set --no_malloc option in the node
- */
-	if( (RetNode = m3l_get_data_pointer( *Lnode )) != NULL){
-		(*Lnode)->no_malloc = 'n';
-		return RetNode;
-	}
-	else
-		return NULL;
-}
-}
+// void *m3l_attach_data_to_List(void *array, char *typeofarray, size_t *ndim, size_t *fdim)
+// {
+// /*
+// * Function attaches an array to the list. 
+// * This means it will specify --no_malloc='\0' so that when the list is freed the 
+// * data.[type] structure will be freed to.
+// * Function return the pointer to data structure
+// */
+// 
+// /*  
+//  * set --no_malloc option in the node
+//  */
+// 	if( (RetNode = m3l_get_data_pointer( *Lnode )) != NULL){
+// 		(*Lnode)->no_malloc = 'n';
+// 		return RetNode;
+// 	}
+// 	else
+// 		return NULL;
+// }
+// }
