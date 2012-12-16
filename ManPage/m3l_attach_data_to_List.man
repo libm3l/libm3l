@@ -3,7 +3,7 @@
 .\"
 .TH libm3l 1 "June 2012" libm3l "User Manuals"
 .SH NAME
-m3l_get_List_no_malloc \- returns value of nomalloc option
+m3l_attach_data_to_List.man \- attaches data array to the list
 .SH SYNOPSIS
 
 #include <libm3l.h>

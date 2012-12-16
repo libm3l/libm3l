@@ -105,9 +105,9 @@ int main(void)
 	printf(" 32 bit \n");
 #endif*/
 	
-	printf(" %ld   %ld %ld  \n ", sizeof(test1), sizeof(test2), sizeof(test3));
-	exit(0);
-	
+// 	printf(" %ld   %ld %ld  \n ", sizeof(test1), sizeof(test2), sizeof(test3));
+// 	exit(0);
+// 	
  
 
     FILE *fp;
