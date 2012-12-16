@@ -88,9 +88,6 @@ static ssize_t Read(int ,int );
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
 
-
-/// 16. NOTE-URGENT when ReadSocket active and writer closes/terminates socket, server makes core file
-
 /*
  * Function read just one line from a socket, disregarding comments line
  * It identifies if the line is a header of DATA or DIR list
@@ -271,7 +268,7 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
  * make sure that if the EOFbuff word is split and part of it is still in socket
  * read it and append to the beginning of word
  * 
- * compare the last word with EOFbuff, if not equal attempt to read rest if socket
+ * compare the last word with EOFbuff, if not equal attempt to read rest of socket
  */
 // 					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
 // /*
@@ -318,8 +315,10 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 
 // 					printf(" TYPE is '%s'" , type);
 					for(i=0; i<EOBlen; i++){
-						if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1)
-							return Dnode;
+						if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1){
+							bzero(buff,sizeof(buff));
+							return Dnode;}
+							
 						bzero(buff,sizeof(buff));
 						if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
  							Perror("read");
@@ -1263,7 +1262,6 @@ ssize_t Read(int descrpt ,int n)
 			return -1;
 		}
 		buff[ngotten] = '\0';
-// 		printf(" BUFFer in ReadSocket is: '%s'    length is %d\n", buff, ngotten);
 
 	return ngotten;
 

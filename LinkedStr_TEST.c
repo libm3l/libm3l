@@ -90,10 +90,25 @@ int main(void)
     int ada[5];
     get_arg_t argsstr;
     
+    long double test1;
+    double test2;
+    float test3;
+    
 //     char dummy[1];
 //     double value = 42.000042; /* or anything else */
 //     int siz;
 
+ /*   
+#if defined ENVIRONMENT64
+	printf(" 64 bit \n");
+#elif defined ENVIRONMENT32
+	printf(" 32 bit \n");
+#endif*/
+	
+// 	printf(" %ld   %ld %ld  \n ", sizeof(test1), sizeof(test2), sizeof(test3));
+// 	exit(0);
+// 	
+ 
 
     FILE *fp;
     
@@ -384,7 +399,7 @@ int main(void)
 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (char *)NULL) != 0)
 			Error("CatData");
 
-		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754", "--header",  (char *)NULL)) == NULL)
+		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754",  (char *)NULL)) == NULL)
 			Perror("Send_receive");
 		printf("EXIT WRITING DATA to socket\n");
 

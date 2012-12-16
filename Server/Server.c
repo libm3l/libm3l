@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 	pid_t  childpid;
 	size_t *dim;
 
-    	 int sockfd, newsockfd, portno, n, status, ch_stat;
+    	 int sockfd, newsockfd, portno, n, status, ch_stat, *tmppnt;
 
      socklen_t clilen;
      struct sockaddr_in cli_addr;
@@ -93,11 +93,17 @@ int main(int argc, char *argv[])
 	if(  (TmpNode = m3l_Mklist("TEXT_OF_ANSWER", "C", 1, dim, &Gnode, "/Send_head_node", "./", "--no_malloc", (char *)NULL)) == 0)
 			Error("m3l_Mklist");
 	TmpNode->data.c = answer;
+			
+			
+// 	(char *)m3l_get_data_pointer(TmpNode)
 
 	dim[0] = 1;
 	if(  (TmpNode = m3l_Mklist("PID", "I", 1, dim, &Gnode, "/Head_node", "./", (char *)NULL)) == 0)
 			Error("m3l_Mklist");
-	TmpNode->data.i[0] = getpid();
+// 	TmpNode->data.i[0] = getpid();
+	
+ 	tmppnt = (int *)m3l_get_data_pointer(TmpNode);
+ 	tmppnt[0] = getpid();
 	
 	free(dim);
 
@@ -124,7 +130,7 @@ int main(int argc, char *argv[])
 
 // 	if ( m3l_write_to_socket(1, Gnode,  newsockfd,  Popts) < 0)
 // 	if ( m3l_write_to_socket(1, Gnode,  newsockfd,  (opts_t *)NULL) < 0)
-	if (  m3l_Send_to_tcpipsocket(Gnode, NULL , newsockfd, "--encoding" , "IEEE-754", "--header", (char *)NULL) < 0)
+	if (  m3l_Send_to_tcpipsocket(Gnode, NULL , newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 0)
 		Error("Error during writing data to socket");
 
 	printf("\n\n");

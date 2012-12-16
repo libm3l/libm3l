@@ -103,8 +103,8 @@ int main(int argc, char *argv[])
  * print answer set on screen and remove received data set
  */
 // 	printf("\n\nserver answered:\n\n\n");
-// 	if(m3l_Cat(RecNode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
-//                    Error("CatData");
+	if(m3l_Cat(RecNode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
+                   Error("CatData");
 	if(m3l_Umount(&RecNode) != 1)
 		Perror("m3l_Umount");
 

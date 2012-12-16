@@ -1,0 +1,40 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_detach_data_to_List.man \- detaches the data structure from the List
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B char *m3l_detach_data_to_List
+(node_t *List)
+
+
+
+.SH DESCRIPTION
+.B m3l_get_List_no_malloc
+When the node is created in Mklist() function the value of no_malloc option is set to 0 unles the 
+option --no_malloc is specified. This option sets the value of nomalloc ='n'.
+This function changes the value of nomalloc option to nomalloc = 'n' which is equivalent to specifying --no_malloc in Mklist.
+The List->data.[type] pointer is still pointing to the data array
+.
+
+.SH OPTIONS
+none
+
+
+.SH RETURN VALUE
+Upon successful the function returns the pointer to List->data.[type] otherwise the function shall return NULL
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR Mklist, m3l_attach_data_to_List, m3l_detach_data_from_List, m3l_get_List_no_malloc

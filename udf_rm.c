@@ -84,11 +84,19 @@ int m3l_Free(node_t **Lnode)
  * nullify node_t
  */
 	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; 
+	
 /*
  * free filed of lists pointing to links
  */
 	if((*Lnode)->lcounter > 0){
 		for (i=0; i<(*Lnode)->lcounter; i++)
+/*
+ * notify links about this node being freed (set their ->child to NULL
+ */				
+// 			(*Lnode)->linknode[i]->List->child = NULL;
+/*
+ * free linknode memory
+ */	
 			free((*Lnode)->linknode[i]);
 		
 		free((*Lnode)->linknode);
@@ -319,7 +327,7 @@ int m3l_AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 		if ( ( (*Lnode)->data.slli = (signed long long int *)malloc(tot_dim*sizeof(signed long long int))) == NULL)
 			Perror("malloc");
 	}
-	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* long long int */
+	else if(strncmp((*Lnode)->type,"LLI",3) == 0){  /* long long int */
 		if ( ( (*Lnode)->data.lli = (long long int *)malloc(tot_dim*sizeof(long long int))) == NULL)
 			Perror("malloc");
 	}

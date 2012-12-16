@@ -120,6 +120,12 @@ size_t m3l_rm_list(int call, node_t **List, opts_t *Popts)
  * if initial call (call==1) it does not remove the List dir as it considers it 
  * as a parent directory. When removing List is required (as in case of umount) 
  * the value of call during initial call has to be larger then 1
+ * 
+ * special care is taken for LINKS
+ * if node is LINK, the algorithm loops over linknode structure of the source of the link ie. ->child->linknode[]->List 
+ * and st the appropriate ->child->linknode[]->List = NULL
+ * 
+ * if node is linked to a LINK node, the targer info is corrected (ie. ->linknode[]->List->child = NULL and ->linknode[]->List->child->ndim == 0
  */
 	node_t *PAR, *CLD, *NEXT, *PREV, *CURR,  *Tmpnode, *Tmpnode1, *TmpH;
 	size_t rmnodes, i;
@@ -202,7 +208,7 @@ size_t m3l_rm_list(int call, node_t **List, opts_t *Popts)
 			NEXT->prev = PREV;
 		}
 /*
- * if list is not empty LINK, nullify it's child and send info to link target about it
+ * if list is not empty LINK, nullify its ->child and send info to link target about it
  */
 		if( (*List)->child != NULL){
 /*
@@ -218,7 +224,7 @@ size_t m3l_rm_list(int call, node_t **List, opts_t *Popts)
 			(*List)->child = NULL;
 		}
 /*
- * if node is linked to other nodes, get the info about it to links
+ * if node is linked to other nodes, get the info about it to LINK, ie. put their ->child to NULL
  */
 		for(i=0; i<(*List)->lcounter; i++){
 			TmpH =  (*List)->linknode[i]->List;

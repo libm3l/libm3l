@@ -138,7 +138,7 @@ node_t *MkTCPIPHeader(opts_t *Popts)
 	AddNode->data.c[1] = '\0';
 	
 	if( m3l_add_list(&AddNode, &Tmpnode,  Poptadd) < 0){
-		Warning("problem in ladd_list");
+		Warning("problem in add_list");
 		if( m3l_rm_list(1, &Tmpnode, Poptadd) < 0)
 			Warning("problem in rm_list");
 		if( m3l_rm_list(1, &AddNode, Poptadd) < 0)

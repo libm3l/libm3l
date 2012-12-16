@@ -62,7 +62,7 @@ extern int optind;
 static int verbose_flag;
 
 /*
- * routine Links Slist to Tlist
+ * routine makes list and adds it to WTAlist. If WTAlist == NULL the newly created list is not added 
  */
 node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim, node_t **WTAList, const char *t_path, const char *t_path_loc, char * Options, ...)
 {

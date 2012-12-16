@@ -80,9 +80,9 @@ typedef struct opts{
  * parsed_path
  */
 typedef struct path{
-	char **path;
-	char abspath;
-	size_t seg_count;
+	char **path;     /*    array of chars, paths is segmented by / sign and each segment is saved in path[] */
+	char abspath;  /*     if A path is absolute (ie. all the way up to the master head node), if R, path is relative (ie. starting from node which was passed to Locate) */
+	size_t seg_count;  /* numer of segments of path */
 } path_t;
 
 /*

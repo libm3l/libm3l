@@ -48,9 +48,9 @@ int ReadSocketCopy2SHM(int descrpt)
  * leave cycle, before that change semaphore 0 so that ReadSHMCopy2Socket can continue
  */
 			shm_n[0] = 0;
-			operations[0].sem_num 	= 0;/* Which semaphore in the semaphore array : */
-			operations[0].sem_op         = 1;/* Which operation? Add 1 to semaphore value : */
-			operations[0].sem_flg         = 0;/* Set the flag so we will wait : */
+			operations[0].sem_num 	  = 0;/* Which semaphore in the semaphore array : */
+			operations[0].sem_op      = 1;/* Which operation? Add 1 to semaphore value : */
+			operations[0].sem_flg     = 0;/* Set the flag so we will wait : */
 			if ( (retval = semop(id, operations, 1)) != 0)
 				Perror("semop()");
 			return 1;
@@ -66,18 +66,18 @@ int ReadSocketCopy2SHM(int descrpt)
 /*
  * say ReadSHMCopy2Socket it can continue
  */
-		operations[0].sem_num 	= 0;/* Which semaphore in the semaphore array : */
+		operations[0].sem_num 	     = 0;/* Which semaphore in the semaphore array : */
 		operations[0].sem_op         = 1;/* Which operation? Add 1 to semaphore value : */
-		operations[0].sem_flg         = 0;/* Set the flag so we will wait : */
+		operations[0].sem_flg        = 0;/* Set the flag so we will wait : */
 		if ( (retval = semop(id, operations, 1)) != 0)
 			Perror("semop()");
 		
 /*
  * and wait until ReadSHMCopy2Socket sends data over the socket
  */		
-		operations[0].sem_num = 1;
+		operations[0].sem_num =  1;
 		operations[0].sem_op  = -1;
-		operations[0].sem_flg = 0;
+		operations[0].sem_flg =  0;
 
 		if ( (retval = semop(id, operations, 1)) != 0)
 			Perror("semop()");
@@ -103,9 +103,9 @@ int ReadSHMCopy2Socket(int descrpt)
 /*
  * wait until given a signal go ahead
  */
-		operations[0].sem_num = 0;
+		operations[0].sem_num   =  0;
 		operations[0].sem_op    = -1;
-		operations[0].sem_flg    = 0;
+		operations[0].sem_flg   =  0;
 		if ( (retval = semop(id, operations, 1)) != 0)
 			Perror("semop()");
 /*
@@ -131,7 +131,7 @@ int ReadSHMCopy2Socket(int descrpt)
 
 			operations[1].sem_num   = 1;
 			operations[1].sem_op    = 1;
-			operations[1].sem_flg    = 0;
+			operations[1].sem_flg   = 0;
 			if ( (retval = semop(id, operations, 2)) != 0)
 				Perror("semop()");		
 
@@ -143,9 +143,9 @@ int ReadSHMCopy2Socket(int descrpt)
 /*
  * tell ReadSocketCopy2SHM to go on with another socket reading
  */
-		operations[0].sem_num = 1;
+		operations[0].sem_num  = 1;
 		operations[0].sem_op   = 1;
-		operations[0].sem_flg   = 0;
+		operations[0].sem_flg  = 0;
 		if ( (retval = semop(id, operations, 1)) != 0)
 			Perror("semop()");
 	}

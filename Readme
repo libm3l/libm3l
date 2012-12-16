@@ -69,4 +69,8 @@ bufferu
 #else
 			memcpy(&di, &type[0], 8);
 #endif
-pro ostatni typy
+add to all other types pro ostatni typy
+
+
+
+19. KO co se stane, kdyz prepisu link jinym linkem, jak je to s linked[] strukturou a odpovidajicimi linky (ln_list line 475)

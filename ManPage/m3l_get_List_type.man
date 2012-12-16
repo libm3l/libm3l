@@ -1,0 +1,37 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_get_List_type \- returns type of list
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B char *m3l_get_List_type
+(node_t *List)
+
+
+
+.SH DESCRIPTION
+.B m3l_get_List_type
+Function returns type of list (ie. List->type)
+.
+
+.SH OPTIONS
+none
+
+
+.SH RETURN VALUE
+Upon successful the function returns type of list.
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR 

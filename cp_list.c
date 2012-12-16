@@ -68,7 +68,7 @@ static int m3l_cp_recrt_list(node_t ** , node_t **, char *, opts_t *);
 static int m3l_cp_list_content(node_t **, node_t *);
 
 /*
- * function deletes list. If the list has children, it deletes them before removing list.
+ * function copies list. If the list has children, it deletes them before removing list.
  * called recursivelly
  * upon return, returns number of deleted lists, upon failure returns -1
  */

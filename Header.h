@@ -63,9 +63,9 @@
 #include <netinet/tcp.h>
 #include <malloc.h>
 #include <resolv.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-#include <arpa/inet.h>
+// #include <openssl/ssl.h>
+// #include <openssl/err.h>
+// #include <arpa/inet.h>
 #include <float.h>
 #include <stdint.h>
 #include <inttypes.h>
@@ -91,8 +91,17 @@
 #define PTRDF_T ptrdiff_t
 
 
-// #define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
+//#define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
 #define FLOAT_MEMCP MEMCP
-// #define ULLONG_MAX 18446744073709551615
+//#define ULLONG_MAX 18446744073709551615
+
+// Check GCC
+#if __GNUC__
+#if __x86_64__ || __ppc64__
+#define ENVIRONMENT64
+#else
+#define ENVIRONMENT32
+#endif
+#endif
 
 #endif

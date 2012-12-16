@@ -112,18 +112,18 @@ int main(int argc, char *argv[])
  * print answer set on screen and remove received data set
  */
 // 	printf("\n\nserver sent:\n\n\n");
-// 	if(m3l_Cat(RecNode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
-//                    Error("CatData");
+	if(m3l_Cat(RecNode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
+                   Error("CatData");
 	if(m3l_Umount(&RecNode) != 1)
 		Perror("m3l_Umount");
 
 	if(m3l_Umount(&Gnode) != 1)
 		Perror("m3l_Umount");
 
-	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, sockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
- 		Error("Error during reading data from socket");
-	if(m3l_Umount(&RecNode) != 1)
-		Perror("m3l_Umount");
+// 	if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, sockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
+//  		Error("Error during reading data from socket");
+// 	if(m3l_Umount(&RecNode) != 1)
+// 		Perror("m3l_Umount");
 
 	if( close(sockfd) == -1)
 		Perror("close");	
