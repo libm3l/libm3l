@@ -54,12 +54,11 @@
 #include "format_type.h"
 #include "FunctionsPrt.h"
 
- 
 int sig_pid = 9999;
 
 /*
  *
-  */
+ */
 void Perror(const char *msg)
 {
 	perror(msg);
@@ -151,26 +150,25 @@ unsigned long Strtoul(char *str, int base){
 /* 
  * string is not a number
  */
-		Error("Strtoull: Error when reading and converting float number");
+		Error("Strtoul: Error when reading and converting float number");
 		exit(0);
 	} 
 	else if (result == ULONG_MAX && errno) {
 /* 
  * the value of string does not fit in unsigned long long
  */
-		Error("Strtoull: Error when reading and converting float number");
+		Error("Strtoul: Error when reading and converting float number");
 		exit(0);
 	} 
 	else if (*end != 0) {
 /* 
  *str began with a number but has junk left over at the end 
  */
-		Error("Strtoull: Error when reading and converting float number");
+		Error("Strtoul: Error when reading and converting float number");
 		exit(0);
 	}
 	return result;
 }
-
 /*
  * converts hex string to unsigned 64bit
  */
@@ -251,6 +249,54 @@ char *StrToUpper(char *s)
 	} 
 	return cs;	
 }
+
+
+
+
+void *RD_MemcpyD(uint64_t *di, char *type, size_t length)
+{	
+	memcpy(di, &type[0], length);	
+}
+
+void *RD_MemcpyF(uint32_t *di, char *type, size_t length)
+{	
+	memcpy(di, &type[0], length);	
+}
+void *RD_StrtoullD(uint64_t *di, char *type, size_t length)
+{	
+	*di = Strtoull(type, length);
+}
+
+void *WR_MemcpyD(char *buff, uint64_t *di, size_t length)
+{	
+	memcpy( &buff[0], di, length);
+	buff[length] = SEPAR_SIGN;
+	buff[length+1] = '\0';
+}
+
+void *WR_snprintfD(char *buff, uint64_t *di, size_t length){
+	size_t n;
+	
+	if( (n=snprintf(buff, length, "%016" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
+		Perror("snprintf");
+	buff[n] = '\0';
+}
+
+void *WR_MemcpyF(char *buff, uint32_t *di, size_t length)
+{	
+	memcpy( &buff[0], di, length);
+	buff[length] = SEPAR_SIGN;
+	buff[length+1] = '\0';
+}
+
+void *WR_snprintfF(char *buff, uint32_t *di, size_t length){
+	size_t n;
+	
+	if( (n=snprintf(buff, length, "%08" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
+		Perror("snprintf");
+	buff[n] = '\0';
+}
+
 
 /*
  * function allocates sting and saves the 

@@ -228,12 +228,32 @@ int m3l_write_to_socket(int call, node_t *List,  int socket_descrpt, opts_t *Pop
  */
 int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_descrpt, opts_t *Popts)
 {	
-	size_t i, n, len;
+	size_t i, n, len, length, length32;
 	char *pc;
 	char buff[MAX_WORD_LENGTH+1];
 	
 	uint32_t fi;
 	uint64_t di;
+	
+	void *(*WRtoBuffD)( char *, uint64_t *,size_t);
+	void *(*WRtoBuffF)( char *, uint32_t *,size_t);
+	
+	if(Popts == NULL)
+		Error("Write2Socket: NULL Popts");
+/*
+ * determine buffer copying
+ */
+	if(Popts->opt_MEMCP == 'M'){
+		WRtoBuffD = WR_MemcpyD;
+		WRtoBuffF = WR_MemcpyF;
+		length    = sizeof(di);  //8;
+		length32  = sizeof(fi);  //4;
+	}
+	else{
+		WRtoBuffD = WR_snprintfD;
+		WRtoBuffF = WR_MemcpyF;
+		length    = sizeof(buff);
+	}
 /*
  * find type of the argument - Floats
  */
@@ -241,19 +261,10 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 
 			if(Popts->opt_tcpencoding == 'I'){  /* IEEE-754 encoding */
 				
-				len = sizeof(di);
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
 					di = pack754_128(Tmpnode->data.ldf[i]);
-#if FLOAT_MEMCP == SPRINTF				
-					if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
-						Perror("snprintf");
-					buff[n] = '\0';
-#else
-					memcpy( &buff[0], &di, len);
-					buff[len] = ',';
-					buff[len+1] = '\0';
-#endif					
+					WRtoBuffD(&buff[0], &di, length);
 					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
@@ -292,18 +303,7 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
 					di = pack754_64(Tmpnode->data.df[i]);
-#if FLOAT_MEMCP == SPRINTF
-					if( (n=snprintf(buff, sizeof(buff), "%016" PRIx64 "%c", di, SEPAR_SIGN)) < 0)
-						Perror("snprintf");
-					buff[n] = '\0';
-#else
-					memcpy( &buff[0], &di, 8);
-					buff[8] = ',';
-					buff[9] = '\0';
-#endif
-
-// 					printf("  %d  %lf     '%s'\n", n, Tmpnode->data.df[i], buff);
-
+					WRtoBuffD(&buff[0], &di, length);
 					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
@@ -332,15 +332,7 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 				for (i=0; i<tot_dim; i++){
 					bzero(buff, sizeof(buff));
 					fi = pack754_32(Tmpnode->data.f[i]);
-#if FLOAT_MEMCP == SPRINTF
-					if( (n=snprintf(buff, sizeof(buff), "%08" PRIx32 "%c", fi, SEPAR_SIGN)) < 0)
-						Perror("snprintf");
-					buff[n] = '\0';
-#else
-					memcpy( &buff[0], &di, len);
-					buff[len] = ',';
-					buff[len+1] = '\0';
-#endif
+					WRtoBuffF(&buff[0], &fi, length32);
 					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}

@@ -72,7 +72,7 @@ typedef struct opts{
 	char opt_tcpheader;
 	char opt_shutdown;
 	char opt_add;
-
+	char opt_MEMCP;
 } opts_t;
 
 

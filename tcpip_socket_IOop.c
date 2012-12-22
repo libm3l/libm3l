@@ -78,6 +78,8 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+	opts.opt_MEMCP = 'S';  // type of buffering
+	
 	option_index = 0;
 /*
  * get number of options
@@ -137,13 +139,14 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       	     0, 'e'},
-				{"encoding",     required_argument,                  0, 'c'},		
+				{"encoding",     required_argument,                  0, 'c'},
+				{"buffering",    required_argument,           	     0, 'b'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "ec:h", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:ec:h", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -162,7 +165,25 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 						printf (" with arg %s", optarg);
 					printf ("\n");
 					break;
-
+				
+				case 'b':
+/*
+ * choose how to copy data to IO buffer
+ */
+					if( strncmp(optarg, "MEMCPY", 6) == 0){
+/*
+ * MEMCPY
+ */
+						opts.opt_MEMCP = 'M';
+					}
+					else{
+/*
+ * STRNCPY
+ */
+						opts.opt_MEMCP = 'S';
+					}
+				break;
+				
 				case 'c':
 /*
  * choose encoding and serialization
@@ -243,6 +264,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_shutdown = '\0'; // shutdown when finished with sending
+	opts.opt_MEMCP = 'S';  // type of buffering
 	
 	option_index = 0;
 /*
@@ -303,14 +325,15 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,              0, 'e'},
-				{"encoding",     required_argument,                  0, 'c'},
-				{"shutdown",           no_argument,                    0, 's'},		
+				{"encoding",     required_argument,                0, 'c'},
+				{"shutdown",           no_argument,                0, 's'},
+				{"buffering",    required_argument,           0, 'b'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "ec:h", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:ec:h", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -330,6 +353,23 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 					printf ("\n");
 					break;
 
+				case 'b':
+/*
+ * choose how to copy data to IO buffer
+ */
+					if( strncmp(optarg, "MEMCPY", 6) == 0){
+/*
+ * MEMCPY
+ */
+						opts.opt_MEMCP = 'M';
+					}
+					else{
+/*
+ * STRNCPY
+ */
+						opts.opt_MEMCP = 'S';
+					}
+				break;
 				case 'c':
 /*
  * choose encoding and serialization
@@ -416,6 +456,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_shutdown = '\0'; // shutdown when done with receiving
+	opts.opt_MEMCP = 'S';  // type of buffering
 	
 	option_index = 0;
 /*
@@ -478,12 +519,13 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 				{"clean_empy_links",     no_argument,       0, 'e'},
 				{"encoding",     required_argument,                  0, 'c'},
 				{"shutdown",           no_argument,                    0, 's'},				
+				{"buffering",    required_argument,           0, 'b'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "ec:hs", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:ec:hs", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -503,6 +545,24 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 					printf ("\n");
 					break;
 
+				case 'b':
+/*
+ * choose how to copy data to IO buffer
+ */
+					if( strncmp(optarg, "MEMCPY", 6) == 0){
+/*
+ * MEMCPY
+ */
+						opts.opt_MEMCP = 'M';
+					}
+					else{
+/*
+ * STRNCPY
+ */
+						opts.opt_MEMCP = 'S';
+					}
+				break;
+				
 				case 'c':
 /*
  * choose encoding and serialization
@@ -583,6 +643,7 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+	opts.opt_MEMCP = 'S';  // type of buffering
 	
 	option_index = 0;
 /*
@@ -642,14 +703,15 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 		{
 			static struct option long_options[] =
 			{
-				{"clean_empy_links",     no_argument,       0, 'e'},
+				{"clean_empy_links",     no_argument,         0, 'e'},
 				{"encoding",     required_argument,           0, 'c'},
+				{"buffering",    required_argument,           0, 'b'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "ec:", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:ec:", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -669,6 +731,24 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 					printf ("\n");
 					break;
 
+				case 'b':
+/*
+ * choose how to copy data to IO buffer
+ */
+					if( strncmp(optarg, "MEMCPY", 6) == 0){
+/*
+ * MEMCPY
+ */
+						opts.opt_MEMCP = 'M';
+					}
+					else{
+/*
+ * STRNCPY
+ */
+						opts.opt_MEMCP = 'S';
+					}
+				break;
+				
 				case 'c':
 /*
  * choose encoding and serialization

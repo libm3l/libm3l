@@ -120,7 +120,7 @@ int m3l_Free_data_str(node_t **Lnode)
 		(*Lnode)->fdim = NULL;
 		(*Lnode)->ndim = 0;
 /*
- * if data field was nota malloced and used only as a pointer, 
+ * if data field was not malloced and used only as a pointer, 
  * do not free
  */
 		if((*Lnode)->no_malloc == 'n') return 0;

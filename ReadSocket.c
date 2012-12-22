@@ -45,10 +45,6 @@
  *     Description
  *
  */
-
-
-
-
  
 #include "Header.h"
 #include "format_type.h"
@@ -61,14 +57,20 @@
 #include "NumberConversion.h"
 #include "Check_EOFbuff.h"
 
+/*
+ * note EXPR = EXPR_SNPRNTF was used when MEMCP was #define(d) in Header.h
+ * for valule of MEMCP == SNPRINTF
+ * for value fo MEMCP == MEMCPY the value of EXPR = EXPR_MEMCP
+ * 
+ * now, only EXPR = EXPR_MEMCP is used
+ */
 
-#if FLOAT_MEMCP == SPRINTF
-	#define EXPR      (*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0')
-#else
-	#define EXPR      ( *pc != SEPAR_SIGN && *pc != '\0')
-#endif
+//#define EXPR_SNPRNTF (*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != SEPAR_SIGN && *pc != '\0')
+//#define EXPR_MEMCP (*pc != SEPAR_SIGN && *pc != '\0')
 
-#define IFEXPR     (*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0' || *pc == SEPAR_SIGN)
+#define EXPR (*pc != SEPAR_SIGN && *pc != '\0')
+
+#define IFEXPR     (*pc == SEPAR_SIGN || *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0')
 #define LASTEXPR   (lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN)
 
 
@@ -87,6 +89,7 @@ static ssize_t Read(int ,int );
 
 char *pc, buff[MAXLINE];
 ssize_t ngotten;
+// int EXPR;
 
 /*
  * Function read just one line from a socket, disregarding comments line
@@ -107,7 +110,9 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
 	char prevbuff[EOBlen+1];
-
+/*
+ * set EXPR for type of writing to buffer
+ */
 	bzero(prevbuff,EOBlen+1);
 /*
  * 1. -----------   read info about list (on one line)
@@ -152,6 +157,7 @@ node_t *m3l_read_socket(int descrpt, opts_t *Popts)
 
 	buff[ngotten] = '\0';		
 	pc = &buff[0];
+	
 	if(ngotten == 0)return (node_t *)NULL;
 /*
  * process the string, in case it returned anything
@@ -583,7 +589,7 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  * function reads data from FILE
  */
 	char type[MAX_WORD_LENGTH], lastchar;
-	size_t i, tot_dim, wc, hi, j;
+	size_t i, tot_dim, wc, hi, j, len;
 	
 	float         *pf, f2;
 	double        *pdf, d2;
@@ -607,9 +613,26 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 
 	uint32_t fi;
 	uint64_t di;
-
+	
+	void *(*GetFromBuffD)(uint64_t *, char *, size_t);
+	void *(*GetFromBuffF)(uint64_t *, char *, size_t);
+	
 	size_t *pst;
 	ptrdiff_t *pptrdf;
+	
+	if(Popts == NULL)
+		Error("ReadSocket: NULL Popts");
+/*
+ * determine buffer copying
+ */
+	if(Popts->opt_MEMCP == 'M'){
+		GetFromBuffD = RD_MemcpyD;
+		len = 8;
+	}
+	else{
+		GetFromBuffD = RD_StrtoullD;
+		len = 16;
+	}
 	
 	tot_dim = 1;
 	
@@ -621,12 +644,7 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
  		pldf = (*Lnode)->data.ldf;
 
-		if(Popts == NULL){
-			#include "ReadSocket_Part1"
-			*pldf++ = FCS_C2LD(type, &err);
-			#include "ReadSocket_Part2"
-		}
-		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
+		if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
 			di = Strtoull(type, 16);
 			d2 = unpack754_64(di);
@@ -639,25 +657,18 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
 		}
  		else if(Popts->opt_tcpencoding == 't'){   /* text enconding */
 			#include "ReadSocket_Part1"
-			*pldf++ = FCS_C2D(type, &err);
+			*pldf++ = FCS_C2LD(type, &err);
 			#include "ReadSocket_Part2"
  		}
  	}
  	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
  		pdf = (*Lnode)->data.df;
 
-		if(Popts == NULL){
+		if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
-			*pdf++ = FCS_C2D(type, &err);
-			#include "ReadSocket_Part2"
-		}
-		else if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
-			#include "ReadSocket_Part1"
-#if FLOAT_MEMCP == SPRINTF
-  			di = Strtoull(type, 16);
-#else
-			memcpy(&di, &type[0], 8);
-#endif
+
+			GetFromBuffD(&di, &type[0], len);
+
 			d2 = unpack754_64(di);
 			*pdf++ = d2;
 			#include "ReadSocket_Part2"
@@ -675,14 +686,9 @@ int m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, int descrpt, o
  	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
  		pf = (*Lnode)->data.f;
 		
-		if(Popts == NULL){
-			#include "ReadSocket_Part1"
-			*pf++ = FCS_C2F(type, &err);
-			#include "ReadSocket_Part2"
-		}
 		if(Popts->opt_tcpencoding == 'I'){   /* IEEE-754 encoding */
 			#include "ReadSocket_Part1"
-			fi = Strtoul(type, 8);
+ 			fi = Strtoul(type, 8);
 			f2 = unpack754_32(fi);
 			*pf++ = f2;
 			#include "ReadSocket_Part2"
