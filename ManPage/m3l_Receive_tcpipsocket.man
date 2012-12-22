@@ -26,7 +26,12 @@ Encoding of floating point numbers before ending them over the socket. If value 
 the floating point numbers are converted to text. If the value is 
 .B IEEE-754
 the floating point numbers encodes according to IEEE-754 specifrications
-
+.IP "-b --buffering <value>"
+reading numbers from buffer 
+.B SPRINRF 
+use snprintf function
+.B MEMCPY
+use MEMCPY function
 
 .SH RETURN VALUE
 Upon successful completion Receive_send_tcpipsocket will pointer to received list. Otherwise, it shall return NULL.
