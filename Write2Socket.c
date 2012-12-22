@@ -608,6 +608,6 @@ ssize_t Write(int sockfd,  size_t size){
 }
 
 
-
-// http://stackoverflow.com/questions/1674162/how-to-handle-eintr-interrupted-system-call
-// 5 down vote accepted
+/*
+ * http://stackoverflow.com/questions/1674162/how-to-handle-eintr-interrupted-system-call
+ */ 

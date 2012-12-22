@@ -29,7 +29,12 @@ the floating point numbers are converted to text. If the value is
 the floating point numbers encodes according to IEEE-754 specifrications
 .IP "-s --shutdown"
 shuts down the socket for reading  when reading list is finsihed.
-
+.IP "-b --buffering <value>"
+reading and writing numbers to/from buffer 
+.B SPRINRF 
+use snprintf function for writing and stroul type of function for reading
+.B MEMCPY
+use MEMCPY function
 
 .SH RETURN VALUE
 Upon successful completion m3l_Receive_send_tcpipsocket will pointer to received list. Otherwise, it shall return NULL.
