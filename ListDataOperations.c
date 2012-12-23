@@ -56,9 +56,9 @@
 /*
  * function get index of 1D array from n-dimensional array
  */
-size_t m3l_get_ind(size_t ndim, size_t *ind,  size_t *dim)
+lmsize_t m3l_get_ind(lmsize_t ndim, lmsize_t *ind,  lmsize_t *dim)
 {
-	size_t ret_ind, tmp,k,l;
+	lmsize_t ret_ind, tmp,k,l;
 	
 	ret_ind = 0;
 	for (k=0; k<ndim-1; k++){
@@ -79,9 +79,9 @@ size_t m3l_get_ind(size_t ndim, size_t *ind,  size_t *dim)
 /*
  * function get index of 1D array from 4-dimensional array
  */
-size_t m3l_get_4nd(size_t i, size_t j, size_t k, size_t l, size_t im, size_t jm, size_t km, size_t lm)
+lmsize_t m3l_get_4nd(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t l, lmsize_t im, lmsize_t jm, lmsize_t km, lmsize_t lm)
 {
-	size_t ret_ind; 	
+	lmsize_t ret_ind; 	
  	ret_ind = i*jm*km*lm+j*km*lm+k*lm+l;
 	
 	return ret_ind;
@@ -90,9 +90,9 @@ size_t m3l_get_4nd(size_t i, size_t j, size_t k, size_t l, size_t im, size_t jm,
 /*
  * function get index of 1D array from 3-dimensional array
  */
-size_t m3l_get_3ind(size_t i, size_t j, size_t k, size_t im, size_t jm, size_t km)
+lmsize_t m3l_get_3ind(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t im, lmsize_t jm, lmsize_t km)
 {
-	size_t ret_ind; 	
+	lmsize_t ret_ind; 	
  	ret_ind = i*jm*km+j*km+k;
 	
 	return ret_ind;
@@ -101,9 +101,9 @@ size_t m3l_get_3ind(size_t i, size_t j, size_t k, size_t im, size_t jm, size_t k
 /*
  * function get index of 1D array from 2-dimensional array
  */
-size_t m3l_get_2ind(size_t i, size_t j, size_t im, size_t jm)
+lmsize_t m3l_get_2ind(lmsize_t i, lmsize_t j, lmsize_t im, lmsize_t jm)
 {
-	size_t ret_ind; 	
+	lmsize_t ret_ind; 	
  	ret_ind = i*jm+j;
 	
 	return ret_ind;
@@ -182,7 +182,7 @@ void *m3l_get_data_pointer(node_t *Lnode)
 /*
  * counters
  */
-	else if(strncmp(TmpNode->type,"ST",2) == 0){  /* size_t */
+	else if(strncmp(TmpNode->type,"ST",2) == 0){  /* lmsize_t */
 		return (void *)TmpNode->data.st;
 	}
 	else if(strncmp(TmpNode->type,"PTRDF",1) == 0){  /* ptrdf_t */
@@ -195,14 +195,14 @@ void *m3l_get_data_pointer(node_t *Lnode)
 /* 
  * return dimensions of the node
  */
-size_t *m3l_get_List_dim(node_t *List){
+lmsize_t *m3l_get_List_dim(node_t *List){
 	return List->fdim;
 }
 /* 
  * calculate and return total dimensions 
  */
-size_t m3l_get_List_totdim(node_t *List){
-	size_t tot_dim, i;
+lmsize_t m3l_get_List_totdim(node_t *List){
+	lmsize_t tot_dim, i;
 
 	tot_dim = 1;
 
@@ -218,7 +218,7 @@ size_t m3l_get_List_totdim(node_t *List){
 /* 
  * return number of dimensions
  */
-size_t m3l_get_List_ndim(node_t *List){
+lmsize_t m3l_get_List_ndim(node_t *List){
 	return List->ndim;
 }
 /* 
@@ -237,7 +237,7 @@ char *m3l_get_List_name(node_t *List){
 /*
  * number of founds
  */
-size_t m3l_get_Found_number(find_t *Founds){
+lmsize_t m3l_get_Found_number(find_t *Founds){
 	return Founds->founds;
 }
 /* 
@@ -257,7 +257,7 @@ void *m3l_detach_data_from_List(node_t **List)
 {
 /*
 * Function detaches the data set from the list. 
-* This means it will specify --no_malloc='n' so that when the list is freed the 
+* It specifies --no_malloc='n' so that when the list is freed the 
 * data.[type] structure is not freed. 
 * Function return the pointer to data structure
 */
@@ -274,7 +274,7 @@ void *m3l_detach_data_from_List(node_t **List)
 	}
 }
 
-// void *m3l_attach_data_to_List(void *array, char *typeofarray, size_t *ndim, size_t *fdim)
+// void *m3l_attach_data_to_List(void *array, char *typeofarray, lmsize_t *ndim, lmsize_t *fdim)
 // {
 // /*
 // * Function attaches an array to the list. 

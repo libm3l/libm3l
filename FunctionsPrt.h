@@ -41,26 +41,27 @@
 #ifndef  __FUNCTIONPRT_H__
 #define  __FUNCTIONPRT_H__
 
-extern void Perror(const char *);
-extern void Warning(const char *);
-extern void Error(const char *);
-extern void sig_chld(int );
-extern int Fork(void);
-extern SIZE_T Strol(char *);
-extern unsigned long long Strtoull(char *, int);
-extern unsigned long Strtoul(char *, int);
-extern char *StrToLower(char *); 
-extern char *m3l_Path(node_t *, node_t *);
-extern path_t *m3l_parse_path(const char *);
+extern void Perror(const lmchar_t *);
+extern void Warning(const lmchar_t *);
+extern void Error(const lmchar_t *);
+extern void sig_chld(lmint_t );
+extern lmint_t Fork(void);
+extern lmsize_t Strol(lmchar_t *);
+extern Uint64_t Strtoull(lmchar_t *, lmint_t);
+extern unint64_t Strtoul(lmchar_t *, lmint_t);
+extern lmchar_t *StrToLower(lmchar_t *); 
+extern lmchar_t *m3l_Path(node_t *, node_t *);
+extern path_t *m3l_parse_path(const lmchar_t *);
 extern void m3l_destroy_pars_path(path_t **);
-extern get_arg_t m3l_get_arguments(const char *);
-extern void *RD_MemcpyD(uint64_t *, char *, size_t );
-extern void *RD_MemcpyF(uint32_t *, char *, size_t );
-extern void *RD_StrtoullD(uint64_t *, char *, size_t );
-extern void *WR_MemcpyD(char *, uint64_t *, size_t);
-extern void *WR_snprintfD(char *, uint64_t *, size_t);
-extern void *WR_MemcpyF(char *, uint32_t *, size_t);
-extern void *WR_snprintfF(char *, uint32_t *, size_t);
+extern get_arg_t m3l_get_arguments(const lmchar_t *);
+
+extern void *RD_MemcpyD(Uint64_t *, lmchar_t *, lmsize_t );
+extern void *RD_MemcpyF(Uint32_t *, lmchar_t *, lmsize_t );
+extern void *RD_StrtoullD(Uint64_t *, lmchar_t *, lmsize_t );
+extern void *WR_MemcpyD(lmchar_t *, Uint64_t *, lmsize_t);
+extern void *WR_snprintfD(lmchar_t *, Uint64_t *, lmsize_t);
+extern void *WR_MemcpyF(lmchar_t *, Uint32_t *, lmsize_t);
+extern void *WR_snprintfF(lmchar_t *, Uint32_t *, lmsize_t);
 
 #endif
 

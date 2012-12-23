@@ -60,23 +60,23 @@
 
 
 
-extern int optind;
-static int verbose_flag;
+extern lmint_t optind;
+static lmint_t verbose_flag;
 
 /*
  * routine finds the list
  */
-int m3l_Cat(node_t *List, char * Options, ...)
+lmint_t m3l_Cat(node_t *List, lmchar_t * Options, ...)
 {
 	
- 	char *word, **opt, *search_term, *search_term1;
+ 	lmchar_t *word, **opt, *search_term, *search_term1;
 	size_t args_num, len, i, founds;
 	find_t *Founds;
 	node_t *Tmp1;
 	opts_t *Popts, opts;
 	va_list args;
-	int c, status, status1;
-	int option_index;
+	lmint_t c, status, status1;
+	lmint_t option_index;
 		
 	opts.opt_s = '0';opts.opt_p = '0'; opts.opt_d = '0' ; opts.opt_f = '0';opts.opt_l = '0';
 
@@ -99,7 +99,7 @@ int m3l_Cat(node_t *List, char * Options, ...)
 	args_num = 1;
 	len = strlen(Options);
 
-	while((word = va_arg(args, char *)) != NULL){
+	while((word = va_arg(args, lmchar_t *)) != NULL){
 		args_num ++;
 	}
 	va_end(args);
@@ -108,7 +108,7 @@ int m3l_Cat(node_t *List, char * Options, ...)
  */
 	if(args_num > 1){
 
-		if ( (opt = (char**)malloc( (args_num+1)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num+1)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -117,11 +117,11 @@ int m3l_Cat(node_t *List, char * Options, ...)
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -129,9 +129,9 @@ int m3l_Cat(node_t *List, char * Options, ...)
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -139,7 +139,7 @@ int m3l_Cat(node_t *List, char * Options, ...)
 /*
  * get the name to look for
  */
- 		search_term1 = va_arg(args, char *);
+ 		search_term1 = va_arg(args, lmchar_t *);
 		if ( (search_term = strdup(search_term1)) == NULL)
 			Perror("strdup");
 /*

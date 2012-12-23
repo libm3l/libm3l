@@ -39,6 +39,6 @@
 #ifndef __MV_H__
 #define __MV_H__
 
-extern size_t m3l_Mv(node_t **, const char *, const char *, node_t **, const char *, const char *, char * , ...);
+extern lmsize_t m3l_Mv(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

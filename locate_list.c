@@ -58,23 +58,23 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
-static int m3l_match_test(node_t *, get_arg_t, size_t);
-static int m3l_match_single_test(node_t *, get_arg_t, size_t);
+static lmint_t m3l_match_test(node_t *, get_arg_t, lmsize_t);
+static lmint_t m3l_match_single_test(node_t *, get_arg_t, lmsize_t);
 static find_t *m3l_locator(find_t *, path_t *, path_t *, opts_t *);
 
-extern int optind;
-static int verbose_flag;
+extern lmint_t optind;
+static lmint_t verbose_flag;
 
 /*
  * function uses Find_list to find all possible items with given name
  * and then filters the subset using additional info (location etc.)
  */
 
-find_t *m3l_locator_caller(node_t *List, const char *path, const char *path_loc, opts_t *Popts)
+find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
 	path_t *parsed_path, *parsed_path_loc;
-	char *search_term, *node_path;
-	size_t i;
+	lmchar_t *search_term, *node_path;
+	lmsize_t i;
 	find_t *Founds, *Founds_Loc;
 	node_t *Tmp_node;
 /*
@@ -176,17 +176,17 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
  * created by calling Founds function
  */	
 	node_t *Tmp, *Tmppar, *Tm_prev;
-	size_t *HelpNodeI;
-	size_t i, j, k, counter;
+	lmsize_t *HelpNodeI;
+	lmsize_t i, j, k, counter;
 	path_t **parsed_path_Ffounds;
 	get_arg_t argsstr;
 	find_t *RetFound;
-	size_t tot_match, len1, len2;
-	char *node_path;
+	lmsize_t tot_match, len1, len2;
+	lmchar_t *node_path;
 /*
  * allocate field for positive match and for segments of path for each element of Found
  */
-	if ( (HelpNodeI = malloc(Founds->founds * sizeof(size_t))) == NULL)
+	if ( (HelpNodeI = malloc(Founds->founds * sizeof(lmsize_t))) == NULL)
 		Perror("malloc");
 /*
  * NOTE improve efficiency by avoiding testing elements with path different from lookup path
@@ -388,13 +388,13 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
 	}
 }
 
-int m3l_match_test(node_t *List, get_arg_t argsstr, size_t counter)
+lmint_t m3l_match_test(node_t *List, get_arg_t argsstr, lmsize_t counter)
 {
 /*
  * find if what is to be comapred is set or subset
  */
 	node_t *Tmpnode;
-	int retval;
+	lmint_t retval;
 
 	if( argsstr.first == 'S' || argsstr.first == 's' ){
 /*
@@ -423,11 +423,11 @@ int m3l_match_test(node_t *List, get_arg_t argsstr, size_t counter)
 	return 0;
 }
 
-int m3l_match_single_test(node_t *List, get_arg_t argsstr, size_t counter)
+lmint_t m3l_match_single_test(node_t *List, get_arg_t argsstr, lmsize_t counter)
 {
-	char c;
-	size_t len1, len2;
-	c = (int)argsstr.arg;
+	lmchar_t c;
+	lmsize_t len1, len2;
+	c = (lmint_t)argsstr.arg;
 
 	switch ( c ){
 			

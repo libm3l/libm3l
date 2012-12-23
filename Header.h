@@ -87,12 +87,10 @@
 #define MAX_TYPE_LENGTH   30        /* Max length of type in format */
 #define MAX_NAME_LENGTH   255       /* Max length of list name */
 
-#define SIZE_T size_t
-#define PTRDF_T ptrdiff_t
 
 
 //#define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
-#define FLOAT_MEMCP MEMCP
+// #define FLOAT_MEMCP MEMCP
 //#define ULLONG_MAX 18446744073709551615
 
 // Check GCC
@@ -103,5 +101,42 @@
 #define ENVIRONMENT32
 #endif
 #endif
+
+
+
+#define unint64_t uint32_t
+/*
+ * real numbers
+ */
+#define	lmfloat_t      float
+#define	lmdouble_t     double
+#define	lmlongdouble_t long double
+/*
+ * chars
+ */
+#define	lmchar_t  	char
+#define	lmsignchar_t  	signed char
+#define	lmusignchar_t 	unsigned char
+/*
+ * integers
+ */
+#define	lmshint_t	int16_t		// 	short  int 
+#define	lmushint_t	uint16_t	// 	unsigned short int
+#define	lmint_t		int32_t		// 	int 
+#define	lmuint_t	uint32_t	// 	unsigned int 
+#define	lmlint_t	uint64_t	// 	long int
+#define	lmulint_t	unint64_t	// 	unsigned long int  
+#define	lmllint_t	int64_t		// 	long long int 
+#define	lmsllint_t	int64_t		// 	signed long long int 
+#define	lmullint_t	uint64_t	// 	unsigned long long
+
+#define	lmsize_t	size_t	
+#define	lmssize_t	ssize_t			
+#define	lmptrdiff_t	ptrdiff_t	
+#define	lmintptr_t	intptr_t	
+#define	lmuintptr_t	uintptr_t	
+
+#define	Uint64_t	uint64_t	// 	long int
+#define	Uint32_t	uint32_t	// 	long int
 
 #endif

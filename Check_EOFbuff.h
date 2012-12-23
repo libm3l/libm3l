@@ -40,6 +40,6 @@
 #ifndef  __CHECKEOFBUFF_H__
 #define __CHECKEOFBUFF_H__
 
-extern int Check_EOFbuff(char *, char *, ssize_t , size_t , char *);
+extern lmint_t Check_EOFbuff(lmchar_t *, lmchar_t *, lmssize_t , lmsize_t , lmchar_t *);
 
 #endif

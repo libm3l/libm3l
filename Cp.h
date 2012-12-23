@@ -39,6 +39,6 @@
 #ifndef __CP_H__
 #define __CP_H__
 
-size_t m3l_Cp(node_t **, const char *, const char *, node_t **, const char *, const char *, char * , ...);
+lmsize_t m3l_Cp(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

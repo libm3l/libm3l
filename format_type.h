@@ -46,30 +46,40 @@ typedef union{
 /*
  *  reals
 */
-	float         *f;
-	double        *df;
-	long  double  *ldf;
+	lmfloat_t         	*f;
+	lmdouble_t        	*df;
+	lmlongdouble_t  	*ldf;
 /*
  * chars
  */
-	char           *c;
-	signed char    *sc;
-	unsigned char  *uc;
+	lmchar_t           	*c;
+	lmsignchar_t    	*sc;
+	lmusignchar_t  		*uc;
 /*
  * integers
  */
-	short  int         *si;
-	unsigned short int *usi;
-	int           *i;
-	unsigned int  *ui;
-	long  int     *li;
-	unsigned long int       *uli;
-	long long int           *lli;
-	signed long long int    *slli;
-	unsigned long long  int *ulli;
+// 	short  int         *si;
+// 	unsigned short int *usi;
+// 	int           *i;
+// 	unsigned int  *ui;
+// 	long  int     *li;
+// 	unsigned long int       *uli;
+// 	long long int           *lli;
+// 	signed long long int    *slli;
+// 	unsigned long long  int *ulli;
 
-	size_t *st;
-	ptrdiff_t *ptrdf;
+	lmshint_t		*si;
+	lmushint_t	 	*usi;
+	lmint_t			*i;
+	lmuint_t		*ui;
+	lmlint_t		*li;
+	lmulint_t		*uli;
+	lmllint_t		*lli;
+	lmsllint_t		*slli;
+	lmsllint_t 		*ulli;
+
+	lmsize_t		 *st;
+	lmsize_t		 *ptrdf;
 
 } data_t;
 

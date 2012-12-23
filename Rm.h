@@ -39,6 +39,6 @@
 #ifndef __RM_H__
 #define __RM_H__
 
-extern size_t m3l_Rm(node_t **, const char *, const char *, char * , ...);
+extern lmsize_t m3l_Rm(node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

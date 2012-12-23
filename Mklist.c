@@ -58,21 +58,21 @@
 #include "udf_rm.h"
 #include "rm_list.h"
 
-extern int optind;
-static int verbose_flag;
+extern lmint_t optind;
+static lmint_t verbose_flag;
 
 /*
  * routine makes list and adds it to WTAlist. If WTAlist == NULL the newly created list is not added 
  */
-node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim, node_t **WTAList, const char *t_path, const char *t_path_loc, char * Options, ...)
+node_t *m3l_Mklist(const lmchar_t *name, const lmchar_t *type, lmsize_t ndim, lmsize_t *dim, node_t **WTAList, const lmchar_t *t_path, const lmchar_t *t_path_loc, lmchar_t * Options, ...)
 {
 	node_t *List;
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i;
+	lmsize_t args_num, len, i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	tmpstruct_t TMPSTR;
 	
 	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_nomalloc = '\0';
@@ -86,7 +86,7 @@ node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim,
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -94,7 +94,7 @@ node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim,
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -103,11 +103,11 @@ node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim,
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 			Perror("malloc");
 	
  		len = strlen(Options);
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 			Perror("malloc");
 		strncpy(opt[1], Options, len);		
 		opt[1][len] = '\0';
@@ -115,9 +115,9 @@ node_t *m3l_Mklist(const char *name, const char *type, size_t ndim, size_t *dim,
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';

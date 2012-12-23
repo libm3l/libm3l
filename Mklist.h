@@ -39,6 +39,6 @@
 #ifndef __MKLIST_H__
 #define __MKLIST_H__
 
-extern node_t *m3l_Mklist(const char *, const char *, size_t , size_t *, node_t **, const char *, const char *, char * , ...);
+extern node_t *m3l_Mklist(const lmchar_t *, const lmchar_t *, lmsize_t , lmsize_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

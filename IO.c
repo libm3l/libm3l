@@ -59,22 +59,22 @@
 #include "WriteData.h"
 #include "ln_list.h"
 
-static node_t *m3l_Read_list(const char *, opts_t *);
-static int m3l_Write_list(node_t *, const char *, opts_t *);
+static node_t *m3l_Read_list(const lmchar_t *, opts_t *);
+static lmint_t m3l_Write_list(node_t *, const lmchar_t *, opts_t *);
 
 /*
  * routine Links Slist to Tlist
  */
-node_t *m3l_Fread(const char *name, char * Options, ...)
+node_t *m3l_Fread(const lmchar_t *name, lmchar_t * Options, ...)
 {
 
 	node_t *List;
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
 	size_t args_num, len,i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
@@ -89,7 +89,7 @@ node_t *m3l_Fread(const char *name, char * Options, ...)
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -97,7 +97,7 @@ node_t *m3l_Fread(const char *name, char * Options, ...)
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -106,11 +106,11 @@ node_t *m3l_Fread(const char *name, char * Options, ...)
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -118,9 +118,9 @@ node_t *m3l_Fread(const char *name, char * Options, ...)
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -211,7 +211,7 @@ node_t *m3l_Fread(const char *name, char * Options, ...)
 /*
  * function reads file and allocates structure
  */
-node_t *m3l_Read_list(const char *name, opts_t *Popts)
+node_t *m3l_Read_list(const lmchar_t *name, opts_t *Popts)
 {
 	FILE *fp;
 	node_t *Lnode;
@@ -241,15 +241,15 @@ node_t *m3l_Read_list(const char *name, opts_t *Popts)
 
 
 
-int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
+lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...)
 {
 
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
 	size_t args_num, len,i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
@@ -262,7 +262,7 @@ int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -270,7 +270,7 @@ int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -279,11 +279,11 @@ int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -291,9 +291,9 @@ int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -384,7 +384,7 @@ int m3l_Fwrite(node_t *Lnode,  const char *name, char * Options, ...)
 
 
 
-int m3l_Write_list(node_t *Lnode, const char *name, opts_t * Popts)
+lmint_t m3l_Write_list(node_t *Lnode, const lmchar_t *name, opts_t * Popts)
 {
 	FILE *fp;
 

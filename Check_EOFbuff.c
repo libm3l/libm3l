@@ -53,7 +53,7 @@
 #include "Check_EOFbuff.h"
 
 
-int Check_EOFbuff(char *buff, char *eofbuff, ssize_t n, size_t eoblen, char *EOFBUFF)
+lmint_t Check_EOFbuff(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoblen, lmchar_t *EOFBUFF)
 {
 /*
  * function check arrival of EOFbuff 

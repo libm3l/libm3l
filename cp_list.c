@@ -61,11 +61,11 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
-static int m3l_cp_list(int , node_t **, node_t **, char *, opts_t *);
+static lmint_t m3l_cp_list(lmint_t , node_t **, node_t **, lmchar_t *, opts_t *);
 static node_t *m3l_cp_crt_list( node_t **, opts_t *);
 static node_t *m3l_cp_crt_list_item(node_t **, opts_t *);
-static int m3l_cp_recrt_list(node_t ** , node_t **, char *, opts_t *);
-static int m3l_cp_list_content(node_t **, node_t *);
+static lmint_t m3l_cp_recrt_list(node_t ** , node_t **, lmchar_t *, opts_t *);
+static lmint_t m3l_cp_list_content(node_t **, node_t *);
 
 /*
  * function copies list. If the list has children, it deletes them before removing list.
@@ -73,16 +73,16 @@ static int m3l_cp_list_content(node_t **, node_t *);
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+size_t m3l_cp_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a caller of the cp functions
  */
 	size_t i,j,k,l , cp_tot_nodes, cp_nodes, len;
 	find_t *SFounds, *TFounds;
-	int init_call;
-	char *name, *path, *path_loc, *newname;
-	const char *pc;
+	lmint_t init_call;
+	lmchar_t *name, *path, *path_loc, *newname;
+	const lmchar_t *pc;
 	node_t *Tmpnode, *TmpnodePar;
 	opts_t *Popts_Tlist, opts;
 /*
@@ -133,7 +133,7 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 					Warning("mv_list: can not move node to itself");
 				}
 				else{
-					if( (cp_nodes = (size_t) m3l_cp_list(init_call, &Tmpnode, &TmpnodePar,  (char *)t_path, Popts ) ) < 0){
+					if( (cp_nodes = (size_t) m3l_cp_list(init_call, &Tmpnode, &TmpnodePar,  (lmchar_t *)t_path, Popts ) ) < 0){
 						Warning("problem in ln_list");
 					}
 					else{
@@ -170,11 +170,11 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 			if(i > 1){
 				pc = t_path;
 	
-				if(  ( path = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				if(  ( path = (lmchar_t *)malloc( (k+1)*sizeof(lmchar_t))) == NULL){
 					Perror("malloc");
 					return -1;
 				}
-				if(  (newname = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				if(  (newname = (lmchar_t *)malloc( (k+1)*sizeof(lmchar_t))) == NULL){
 					Perror("malloc");
 					return -1;
 				}
@@ -202,7 +202,7 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
  */
 				pc = t_path_loc;
 				while(*pc++ != '\0')k++;
-				if(  ( path_loc= (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				if(  ( path_loc= (lmchar_t *)malloc( (k+1)*sizeof(lmchar_t))) == NULL){
 					Perror("malloc");
 					free(path);
 					free(path_loc);
@@ -307,7 +307,7 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 					Warning("mv_list: can not move node to itself");
 				}
 				else{
-					if( (cp_nodes = (size_t) m3l_cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (char *) NULL, Popts )) < 0){
+					if( (cp_nodes = (size_t) m3l_cp_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List, (lmchar_t *) NULL, Popts )) < 0){
 						Warning("problem in cp_list");
 					}
 					else{
@@ -324,7 +324,7 @@ size_t m3l_cp_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 }
 
 
-int m3l_cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t *Popts)
+lmint_t m3l_cp_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t *NewName, opts_t *Popts)
 {
 /*
  * function copies list SList to a target list TList
@@ -334,7 +334,7 @@ int m3l_cp_list(int call, node_t **SList, node_t **TList, char *NewName, opts_t 
  *	traversing the list and copying it item-by-item
  */
 	node_t *NewList, *Tmpnode, *TmpnodePrev, *TmpnodeNext;
-	char *name;
+	lmchar_t *name;
 /*
  * copy source (Slist) to target (Tlist)
  */
@@ -578,7 +578,7 @@ node_t *m3l_cp_crt_list_item(node_t **Slist, opts_t *Popts)
 }
 
 
-int m3l_cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Popts){
+lmint_t m3l_cp_recrt_list(node_t **Tlist, node_t **Slist, lmchar_t *NewName, opts_t *Popts){
 /*
  * function realloc the existing list. Used if both source and target lists are FILE types
  *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
@@ -674,7 +674,7 @@ int m3l_cp_recrt_list(node_t **Tlist, node_t **Slist, char *NewName, opts_t *Pop
 
 	
 
-int m3l_cp_list_content(node_t **Pnode, node_t *Slist)
+lmint_t m3l_cp_list_content(node_t **Pnode, node_t *Slist)
 {
 /*
  * fuction copies content of the list ie.

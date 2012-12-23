@@ -60,21 +60,21 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
-extern int optind;
-static int verbose_flag;
+extern lmint_t optind;
+static lmint_t verbose_flag;
 /*
  * routine finds the list and filters it using path_loc specifications
  */
-find_t *m3l_Locate(node_t *List, const char *path, const char *path_loc, char * Options, ...)
+find_t *m3l_Locate(node_t *List, const lmchar_t *path, const lmchar_t *path_loc, lmchar_t * Options, ...)
 {
 	
 	find_t *Founds_Loc;
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i;
+	lmsize_t args_num, len, i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	
 	option_index = 0;
 	
@@ -94,7 +94,7 @@ find_t *m3l_Locate(node_t *List, const char *path, const char *path_loc, char * 
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -102,7 +102,7 @@ find_t *m3l_Locate(node_t *List, const char *path, const char *path_loc, char * 
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -111,11 +111,11 @@ find_t *m3l_Locate(node_t *List, const char *path, const char *path_loc, char * 
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -123,9 +123,9 @@ find_t *m3l_Locate(node_t *List, const char *path, const char *path_loc, char * 
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';

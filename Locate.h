@@ -39,6 +39,6 @@
 #ifndef __LOCATE_H__
 #define __LOCATE_H__
 
-find_t *m3l_Locate(node_t *, const char *, const char *, char * , ...);
+find_t *m3l_Locate(node_t *, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

@@ -66,11 +66,11 @@
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t m3l_rm_caller(node_t **List, const char *path, const char *path_loc, opts_t *Popts)
+lmsize_t m3l_rm_caller(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
-	size_t i, rm_tot_nodes, rm_nodes;
+	lmsize_t i, rm_tot_nodes, rm_nodes;
 	find_t *Founds;
-	int init_call;
+	lmint_t init_call;
 /*
  * call locator to locate nodes to be deleted
  */
@@ -113,7 +113,7 @@ size_t m3l_rm_caller(node_t **List, const char *path, const char *path_loc, opts
 }
 
 
-size_t m3l_rm_list(int call, node_t **List, opts_t *Popts)
+lmsize_t m3l_rm_list(lmint_t call, node_t **List, opts_t *Popts)
 {
 /*
  * function removes all items in List
@@ -128,7 +128,7 @@ size_t m3l_rm_list(int call, node_t **List, opts_t *Popts)
  * if node is linked to a LINK node, the targer info is corrected (ie. ->linknode[]->List->child = NULL and ->linknode[]->List->child->ndim == 0
  */
 	node_t *PAR, *CLD, *NEXT, *PREV, *CURR,  *Tmpnode, *Tmpnode1, *TmpH;
-	size_t rmnodes, i;
+	lmsize_t rmnodes, i;
 
 	if((*List) == NULL){
 /*

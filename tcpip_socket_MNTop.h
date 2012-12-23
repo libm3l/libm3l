@@ -41,7 +41,7 @@
 #define __TCPIP_SOCKET_MNT_H__
 
 // extern int m3l_2WayHandShake(const char *, int , char * , ...);
-extern node_t *m3l_ACKN(char *);
+extern node_t *m3l_ACKN(lmchar_t *);
 extern node_t *MkTCPIPHeader(opts_t *);
 
 #endif

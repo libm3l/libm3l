@@ -39,6 +39,6 @@
 #ifndef  __ADD_H__
 #define  __ADD_H__
 
-int m3l_Add(node_t **, node_t **, const char *, const char *, char * , ...);
+lmint_t m3l_Add(node_t **, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

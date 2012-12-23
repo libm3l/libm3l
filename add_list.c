@@ -54,7 +54,7 @@
 #include "locate_list.h"
 #include "FunctionsPrt.h"
 
-int m3l_add_caller(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+lmint_t m3l_add_caller(node_t **SList, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a caller of the cp functions
@@ -67,7 +67,7 @@ int m3l_add_caller(node_t **SList, node_t **TList, const char *t_path, const cha
 		return -1;
 	}
 
-	size_t addlist, len;
+	lmsize_t addlist, len;
 	find_t *TFounds;
 /*
  * check if data set exists
@@ -129,7 +129,7 @@ int m3l_add_caller(node_t **SList, node_t **TList, const char *t_path, const cha
 
 
 
-int m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
+lmint_t m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 {
 /*
  * function adds list to the list tree

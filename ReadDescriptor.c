@@ -64,14 +64,14 @@
 #define LASTEXPR   (lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0')
 
 
-static int m3l_read_file_data_line(node_t **, tmpstruct_t, FILE *f, opts_t *);
-static int m3l_read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
+static lmint_t m3l_read_file_data_line(node_t **, tmpstruct_t, FILE *f, opts_t *);
+static lmint_t m3l_read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
 static node_t *m3l_read_file_dir_data(tmpstruct_t , FILE *f, opts_t *);
 static node_t *m3l_read_file_data(FILE *f, opts_t *);
-static ssize_t Fread(FILE * ,int);
+static lmssize_t Fread(FILE * ,lmint_t);
 
-char *pc, buff[MAXLINE];
-size_t ngotten;
+lmchar_t *pc, buff[MAXLINE];
+lmsize_t ngotten;
 
 /*
  * Function read just one line from a socket, disregarding comments line
@@ -82,8 +82,8 @@ size_t ngotten;
  */ 
 node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 {
-	char type[MAX_WORD_LENGTH], lastchar;
-	size_t   wc, i, hi, tmpi;
+	lmchar_t type[MAX_WORD_LENGTH], lastchar;
+	lmsize_t   wc, i, hi, tmpi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
 /*
@@ -285,7 +285,7 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 
 node_t *m3l_read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 {
-	size_t i;
+	lmsize_t i;
 	node_t *Dnode, *Tmpnode, *Pnode;
  /*
  * two ways of allocating pointer - through reference pointer or as a function returning pointer
@@ -321,8 +321,8 @@ node_t *m3l_read_file_dir_data(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 
 node_t *m3l_read_file_data(FILE *fp, opts_t *Popts)
 {
-	char type[MAX_WORD_LENGTH], lastchar;
-	size_t   wc, i, hi;
+	lmchar_t type[MAX_WORD_LENGTH], lastchar;
+	lmsize_t   wc, i, hi;
 	tmpstruct_t TMPSTR;
 	node_t *Pnode;
 /*
@@ -414,7 +414,7 @@ node_t *m3l_read_file_data(FILE *fp, opts_t *Popts)
  * if the type is LINK, the dimensions will always be 0, if the dimensions is 1, IO operation dereference link
  */
 					if ( strncmp(TMPSTR.Type,"DIR",3) != 0 &&  strncmp(TMPSTR.Type,"LINK",4) != 0 ){
-						if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
+						if( (TMPSTR.dim=(lmsize_t *)malloc(TMPSTR.ndim * sizeof(lmsize_t))) == NULL)
 							Perror("malloc");
 					}
 					else
@@ -499,36 +499,46 @@ node_t *m3l_read_file_data(FILE *fp, opts_t *Popts)
 
 
 
-int m3l_read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
+lmint_t m3l_read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 {
 /* 
  * function reads data from FILE
  */
-	char type[MAX_WORD_LENGTH], lastchar;
-	size_t i, tot_dim, wc, hi, j;
+	lmchar_t type[MAX_WORD_LENGTH], lastchar;
+	lmsize_t i, tot_dim, wc, hi, j;
 	
-	float         *pf;
-	double        *pdf;
-	long  double  *pldf;
+	lmfloat_t         *pf;
+	lmdouble_t        *pdf;
+	lmlongdouble_t  *pldf;
 /*
  * chars
  */
-	char           *err;
+	lmchar_t           *err;
 /*
  * integers
  */
-	short  int         	*psi;
-	unsigned short int 	*pusi;
-	int           		*pi;
-	unsigned int  		*pui;
-	long  int     		*pli;
-	unsigned long int       *puli;	
-	long long int           *plli;
-	signed long long int    *pslli;
-	unsigned long long int  *pulli;
+// 	short  int         	*psi;
+// 	unsigned short int 	*pusi;
+// 	int           		*pi;
+// 	unsigned int  		*pui;
+// 	long  int     		*pli;
+// 	unsigned long int       *puli;	
+// 	long long int           *plli;
+// 	signed long long int    *pslli;
+// 	unsigned long long int  *pulli;
 
-	size_t *pst;
-	ptrdiff_t *pptrdf;
+	lmshint_t		*psi;
+	lmushint_t 	*pusi;
+	lmint_t		*pi;
+	lmuint_t	*pui;
+	lmlint_t	*pli;
+	lmulint_t	*puli;
+	lmllint_t	*plli;
+	lmsllint_t	*pslli;
+	lmullint_t 	*pulli;
+
+	lmsize_t *pst;
+	lmptrdiff_t *pptrdf;
 
 	tot_dim = 1;
 	
@@ -561,61 +571,69 @@ int m3l_read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t
 	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
 		pulli = (*Lnode)->data.ulli;
 #include "ReadDescriptor_Part1"
-		*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
+// 		*pulli++ = (unsigned long long int)FCS_C2LLI(type, &err);
+		*pulli++ = (lmullint_t)FCS_C2LLI(type, &err);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
 		pslli = (*Lnode)->data.slli;
 #include "ReadDescriptor_Part1"
-		*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
+// 		*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
+		*pslli++ = (lmsllint_t)FCS_C2LLI(type, &err);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
 		puli = (*Lnode)->data.uli;
 #include "ReadDescriptor_Part1"
-		*puli++ = (unsigned long int)FCS_C2LI(type, &err);
+// 		*puli++ = (unsigned long int)FCS_C2LI(type, &err);
+		*puli++ = (lmulint_t)FCS_C2LI(type, &err);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
 		plli = (*Lnode)->data.lli;
 #include "ReadDescriptor_Part1"
-		*plli++ = FCS_C2LLI(type, &err);
+		*plli++ = (lmllint_t)FCS_C2LLI(type, &err);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
 		pusi = (*Lnode)->data.usi;
 #include "ReadDescriptor_Part1"
-		*pusi++ = (unsigned short int)FCS_C2I(type);
+// 		*pusi++ = (unsigned short int)FCS_C2I(type);
+		*pusi++ = (lmushint_t)FCS_C2I(type);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
 		psi = (*Lnode)->data.si;
 #include "ReadDescriptor_Part1"
-		*psi++ = (signed int)FCS_C2I(type);
+// 		*psi++ = (signed int)FCS_C2I(type);
+		*psi++ = (lmshint_t)FCS_C2I(type);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
 		pui = (*Lnode)->data.ui;
 #include "ReadDescriptor_Part1"
-		*pui++ = (unsigned int)FCS_C2I(type);
+// 		*pui++ = (unsigned int)FCS_C2I(type);
+		*pui++ = (lmuint_t)FCS_C2I(type);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
 		pli = (*Lnode)->data.li;
 #include "ReadDescriptor_Part1"
-		*pli++ = FCS_C2LI(type, &err);
+// 		*pli++ = FCS_C2LI(type, &err);
+		*pli++ = (lmlint_t)FCS_C2LI(type, &err);
 #include "ReadDescriptor_Part2"
 	}
 	else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
 		pi = (*Lnode)->data.i;
 #include "ReadDescriptor_Part1"
-		*pi++ = FCS_C2I(type);
+// 		*pi++ = FCS_C2I(type);
+		*pi++ = (lmint_t)FCS_C2I(type);
 #include "ReadDescriptor_Part2"
 	}
 /*
  * counters
  */
-	else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
+	else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* lmsize_t */
 		pst = (*Lnode)->data.st;
 #include "ReadDescriptor_Part1"
 		*pst++ = FCS_C2LLI(type, &err);
@@ -639,247 +657,247 @@ int m3l_read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t
 
 
 
-int m3l_read_file_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
+// int m3l_read_file_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
+// {
+// /* 
+//  * function reads data from FILE
+//  */
+// 	lmchar_t type[MAX_WORD_LENGTH], lastchar;
+// 	lmsize_t i, tot_dim, wc, hi, j;
+// 	
+// 	float         *pf;
+// 	double        *pdf;
+// 	long  double  *pldf;
+// /*
+//  * chars
+//  */
+// 	lmchar_t           *err;
+// /*
+//  * integers
+//  */
+// 	short  int         	*psi;
+// 	unsigned short int 	*pusi;
+// 	int           		*pi;
+// 	unsigned int  		*pui;
+// 	long  int     		*pli;
+// 	unsigned long int       *puli;	
+// 	long long int           *plli;
+// 	signed long long int    *pslli;
+// 	unsigned long long int  *pulli;
+// 
+// 	lmsize_t *pst;
+// 	ptrdiff_t *pptrdf;
+// 	
+// 	tot_dim = 1;
+// 	
+// 	for(i=0; i<TMPSTR.ndim; i++)
+// 		tot_dim = tot_dim * TMPSTR.dim[i];
+// /*
+//  * decide what type 
+//  */	
+//  	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
+//  		pldf = (*Lnode)->data.ldf;
+//  	}
+//  	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
+//  		pdf = (*Lnode)->data.df;
+//  	}
+//  	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
+//  		pf = (*Lnode)->data.f;
+//  	}
+// /*
+//  * integers
+//  */
+// 	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
+// 		pulli = (*Lnode)->data.ulli;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
+// 		pslli = (*Lnode)->data.slli;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
+// 		puli = (*Lnode)->data.uli;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+// 		plli = (*Lnode)->data.lli;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
+// 		pusi = (*Lnode)->data.usi;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
+// 		psi = (*Lnode)->data.si;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
+// 		pui = (*Lnode)->data.ui;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
+// 		pli = (*Lnode)->data.li;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
+// 		pi = (*Lnode)->data.i;
+// 	}
+// /*
+//  * counters
+//  */
+// 	else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* lmsize_t */
+// 		pst = (*Lnode)->data.st;
+// 	}
+// 	else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
+// 		pptrdf = (*Lnode)->data.ptrdf;
+// 	}
+// /*
+//  * process buffer
+//  */
+// 	while(*pc != '\0') /*  while(ngotten) */
+// 	{
+// 		bzero(type,sizeof(type));
+// 		i = 0;
+// 		wc = 0;
+// 		lastchar = '\0';
+// /*
+//  * read until the end of string
+//  */
+// 		while(*pc != '\0'){
+// 			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
+// 				type[i++] = *pc++;				
+// /*
+//  * if number of chars in one word exceeds limit, print warning
+//  */
+// 				if(i == (MAX_WORD_LENGTH-1))
+// 					Perror("read_socket - word too long");
+// 			}
+// 			type[i] = '\0';
+// 
+// /*
+//  * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
+//  * otherwise the buffer ended in the middle of word
+//  */
+// 			if(*pc == '\0'){
+// 				hi =0;
+// 			}
+// 			else
+// 			{
+// 				hi = 1;
+// 			}
+// 
+// 			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
+// 				
+// 			
+// 			if ( *(pc+hi) == '\0'){
+// /*
+//  * read next chunk of text file, complete the word by the rest from next chunk
+//  */
+// 				bzero(buff,sizeof(buff));
+// 				ngotten = 0;
+// 				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+// 						Perror("fread");
+// 				}
+// 
+// 				buff[ngotten] = '\0';
+// 
+// 				pc = &buff[0];
+// 				
+// 				if(LASTEXPR) continue;
+// 			}
+// /*
+//  * if word is longer then 0
+//  */			
+// 			if(strlen(type) >0){
+//  				wc++;
+// /*
+//  * get the value
+//  */
+// 				if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
+// 				*pldf++ = FCS_C2LD(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
+// 					*pdf++ = FCS_C2D(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
+// 					*pf++ = FCS_C2F(type, &err);
+// 				}
+// /*
+//  * integers2
+//  */
+// 				else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
+// 					*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long int */
+// 					*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+// 					*plli++ = FCS_C2LLI(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
+// 					*puli++ = (unsigned long int)FCS_C2LI(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
+// 					*pusi++ = (unsigned short int)FCS_C2I(type);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
+// 					*psi++ = (signed int)FCS_C2I(type);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
+// 					*pui++ = (unsigned int)FCS_C2I(type);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
+// 					*pli++ = FCS_C2LI(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
+// 					*pi++ = FCS_C2I(type);
+// 				}
+// /*
+//  * counters
+//  */
+// 				else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* lmsize_t */
+// 					*pst++ = FCS_C2LLI(type, &err);
+// 				}
+// 				else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
+// 					*pptrdf++ = FCS_C2LLI(type, &err);
+// 				}
+// /*
+//   * end of reading the line, number of words is the same as required, return succes
+//   */
+// 				if( wc == tot_dim ) return 0;
+// 			}
+// 
+// 			if(IFEXPR) pc++;
+// 			bzero(type,sizeof(type));
+// 			i = 0;
+// 			lastchar = '\0';
+// 		}
+// 	}
+// /*
+//  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
+//  */
+// 	bzero(buff,sizeof(buff));
+// 	if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+// 		Perror("fread");
+// 		return 0;
+// 	}
+// 	buff[ngotten] = '\0';
+// 	pc = &buff[0];
+// 	if( m3l_read_file_data_line(Lnode, TMPSTR, fp, Popts) != 0){
+// 		Error("Error reading data");
+// 		return -1;
+// 	}
+// 	
+// 	return 0;
+// /*
+//   * if you get here something went wrong
+//   */	
+// 	return -1;
+// }
+
+lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 {
 /* 
  * function reads data from FILE
  */
-	char type[MAX_WORD_LENGTH], lastchar;
-	size_t i, tot_dim, wc, hi, j;
-	
-	float         *pf;
-	double        *pdf;
-	long  double  *pldf;
-/*
- * chars
- */
-	char           *err;
-/*
- * integers
- */
-	short  int         	*psi;
-	unsigned short int 	*pusi;
-	int           		*pi;
-	unsigned int  		*pui;
-	long  int     		*pli;
-	unsigned long int       *puli;	
-	long long int           *plli;
-	signed long long int    *pslli;
-	unsigned long long int  *pulli;
-
-	size_t *pst;
-	ptrdiff_t *pptrdf;
-	
-	tot_dim = 1;
-	
-	for(i=0; i<TMPSTR.ndim; i++)
-		tot_dim = tot_dim * TMPSTR.dim[i];
-/*
- * decide what type 
- */	
- 	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
- 		pldf = (*Lnode)->data.ldf;
- 	}
- 	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
- 		pdf = (*Lnode)->data.df;
- 	}
- 	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
- 		pf = (*Lnode)->data.f;
- 	}
-/*
- * integers
- */
-	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
-		pulli = (*Lnode)->data.ulli;
-	}
-	else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
-		pslli = (*Lnode)->data.slli;
-	}
-	else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
-		puli = (*Lnode)->data.uli;
-	}
-	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
-		plli = (*Lnode)->data.lli;
-	}
-	else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
-		pusi = (*Lnode)->data.usi;
-	}
-	else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
-		psi = (*Lnode)->data.si;
-	}
-	else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
-		pui = (*Lnode)->data.ui;
-	}
-	else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
-		pli = (*Lnode)->data.li;
-	}
-	else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
-		pi = (*Lnode)->data.i;
-	}
-/*
- * counters
- */
-	else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
-		pst = (*Lnode)->data.st;
-	}
-	else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-		pptrdf = (*Lnode)->data.ptrdf;
-	}
-/*
- * process buffer
- */
-	while(*pc != '\0') /*  while(ngotten) */
-	{
-		bzero(type,sizeof(type));
-		i = 0;
-		wc = 0;
-		lastchar = '\0';
-/*
- * read until the end of string
- */
-		while(*pc != '\0'){
-			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
-				type[i++] = *pc++;				
-/*
- * if number of chars in one word exceeds limit, print warning
- */
-				if(i == (MAX_WORD_LENGTH-1))
-					Perror("read_socket - word too long");
-			}
-			type[i] = '\0';
-
-/*
- * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
- * otherwise the buffer ended in the middle of word
- */
-			if(*pc == '\0'){
-				hi =0;
-			}
-			else
-			{
-				hi = 1;
-			}
-
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
-				
-			
-			if ( *(pc+hi) == '\0'){
-/*
- * read next chunk of text file, complete the word by the rest from next chunk
- */
-				bzero(buff,sizeof(buff));
-				ngotten = 0;
-				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
-						Perror("fread");
-				}
-
-				buff[ngotten] = '\0';
-
-				pc = &buff[0];
-				
-				if(LASTEXPR) continue;
-			}
-/*
- * if word is longer then 0
- */			
-			if(strlen(type) >0){
- 				wc++;
-/*
- * get the value
- */
-				if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
-				*pldf++ = FCS_C2LD(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
-					*pdf++ = FCS_C2D(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
-					*pf++ = FCS_C2F(type, &err);
-				}
-/*
- * integers2
- */
-				else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
-					*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long int */
-					*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
-					*plli++ = FCS_C2LLI(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
-					*puli++ = (unsigned long int)FCS_C2LI(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
-					*pusi++ = (unsigned short int)FCS_C2I(type);
-				}
-				else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
-					*psi++ = (signed int)FCS_C2I(type);
-				}
-				else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
-					*pui++ = (unsigned int)FCS_C2I(type);
-				}
-				else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
-					*pli++ = FCS_C2LI(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
-					*pi++ = FCS_C2I(type);
-				}
-/*
- * counters
- */
-				else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* size_t */
-					*pst++ = FCS_C2LLI(type, &err);
-				}
-				else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-					*pptrdf++ = FCS_C2LLI(type, &err);
-				}
-/*
-  * end of reading the line, number of words is the same as required, return succes
-  */
-				if( wc == tot_dim ) return 0;
-			}
-
-			if(IFEXPR) pc++;
-			bzero(type,sizeof(type));
-			i = 0;
-			lastchar = '\0';
-		}
-	}
-/*
- * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
- */
-	bzero(buff,sizeof(buff));
-	if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
-		Perror("fread");
-		return 0;
-	}
-	buff[ngotten] = '\0';
-	pc = &buff[0];
-	if( m3l_read_file_data_line(Lnode, TMPSTR, fp, Popts) != 0){
-		Error("Error reading data");
-		return -1;
-	}
-	
-	return 0;
-/*
-  * if you get here something went wrong
-  */	
-	return -1;
-}
-
-int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
-{
-/* 
- * function reads data from FILE
- */
-	char 		type[MAX_WORD_LENGTH], lastchar;
-	size_t 		i, tot_dim;
-	char		*pdat;
-	unsigned char 	*pdatu;
-	signed char   	*pdats;
-	int 		init;
+	lmchar_t 		type[MAX_WORD_LENGTH], lastchar;
+	lmsize_t 		i, tot_dim;
+	lmchar_t		*pdat;
+	lmusignchar_t 	*pdatu;
+	lmsignchar_t   	*pdats;
+	lmint_t 		init;
 
 	tot_dim = 1;
 	
@@ -920,7 +938,7 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read until end of buffer or ` symbol
  */			
 			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN)
-				*pdatu++ = (unsigned char)*pc++;
+				*pdatu++ = (lmusignchar_t)*pc++;
 /*
  * find why while was left
  */
@@ -994,7 +1012,7 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
  * read until end of buffer or ` symbol
  */			
 			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN)
-				*pdats++ = (signed char)*pc++;
+				*pdats++ = (lmsignchar_t)*pc++;
 /*
  * find why while was left
  */
@@ -1131,7 +1149,7 @@ int m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 	return -1;
 }
 
-ssize_t Fread(FILE *fp ,int n)
+lmssize_t Fread(FILE *fp ,lmint_t n)
 {
 
 		if(   (ngotten = fread(buff, sizeof(buff[0]), n, fp))   < MAXLINE-1){
