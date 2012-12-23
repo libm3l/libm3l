@@ -87,7 +87,7 @@ static node_t *m3l_read_socket_dir_data(tmpstruct_t , lmint_t, opts_t *);
 static node_t *m3l_read_socket_data(lmint_t, opts_t *);
 static lmssize_t Read(lmint_t ,lmint_t );
 
-char *pc, buff[MAXLINE];
+lmchar_t *pc, buff[MAXLINE];
 lmssize_t ngotten;
 // lmint_t EXPR;
 
@@ -105,11 +105,11 @@ lmssize_t ngotten;
  */ 
 node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 {
-	char type[MAX_WORD_LENGTH], lastchar;
+	lmchar_t type[MAX_WORD_LENGTH], lastchar;
 	lmsize_t   wc, i, hi, tmpi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
-	char prevbuff[EOBlen+1];
+	lmchar_t prevbuff[EOBlen+1];
 /*
  * set EXPR for type of writing to buffer
  */
@@ -402,7 +402,7 @@ node_t *m3l_read_socket_dir_data(tmpstruct_t TMPSTR, lmint_t descrpt, opts_t *Po
 
 node_t *m3l_read_socket_data(lmint_t descrpt, opts_t *Popts)
 {
-	char type[MAX_WORD_LENGTH], lastchar;
+	lmchar_t type[MAX_WORD_LENGTH], lastchar;
 	lmsize_t   wc, i, hi;
 	tmpstruct_t TMPSTR;
 	node_t *Pnode;
@@ -588,16 +588,16 @@ lmint_t m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, lmint_t de
 /* 
  * function reads data from FILE
  */
-	char type[MAX_WORD_LENGTH], lastchar;
+	lmchar_t type[MAX_WORD_LENGTH], lastchar;
 	lmsize_t i, tot_dim, wc, hi, j, len;
 	
-	float         *pf, f2;
-	double        *pdf, d2;
-	long  double  *pldf;
+	lmfloat_t         *pf, f2;
+	lmdouble_t        *pdf, d2;
+	lmlongdouble_t  *pldf;
 /*
  * chars
  */
-	char           *err, *end;
+	lmchar_t           *err, *end;
 /*
  * integers
  */
@@ -1060,9 +1060,9 @@ lmint_t m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, lmint_
  * function reads data from FILE
  */
 	lmsize_t i, tot_dim;
-	char 		*pdat;
-	unsigned char 	*pdatu;
-	signed char   	*pdats;
+	lmchar_t 		*pdat;
+	lmusignchar_t 	*pdatu;
+	lmsignchar_t   	*pdats;
 
 	tot_dim = 1;
 	
@@ -1088,7 +1088,7 @@ lmint_t m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, lmint_
  */
 			if(i == 0) while(IFEXPR) pc++;	/* if in middle of reading buffer, consider all characters */
 			while(*pc != '\0' && i < tot_dim){
-				*pdatu++ = (unsigned char)*pc++;
+				*pdatu++ = (lmusignchar_t)*pc++;
 				i++;
 			}
 /*
@@ -1156,7 +1156,7 @@ lmint_t m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, lmint_
  */
 			if(i == 0) while(IFEXPR) pc++;	/* if in middle of reading buffer, consider all characters */
 			while(*pc != '\0' && i < tot_dim){
-				*pdats++ = (signed char)*pc++;
+				*pdats++ = (lmsignchar_t)*pc++;
 				i++;
 			}
 /*

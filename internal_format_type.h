@@ -45,34 +45,34 @@
 
 
 typedef struct tmpstruct{
-	 char Type[MAX_TYPE_LENGTH], Name_Of_List[MAX_TYPE_LENGTH]; 
- 	size_t ndim, *dim;
+	 lmchar_t Type[MAX_TYPE_LENGTH], Name_Of_List[MAX_TYPE_LENGTH]; 
+ 	lmsize_t ndim, *dim;
 }tmpstruct_t;
 
 typedef struct opts{
-	char opt_a, opt_A;
-	char opt_b, opt_B;	
-	char opt_c, opt_C;
-	char opt_d, opt_D;
-	char opt_e, opt_E;
-	char opt_f, opt_F;
-	char opt_i, opt_I;
-	char opt_k, opt_K;
-	char opt_l, opt_L;	
-	char opt_m, opt_M;
-	char opt_n, opt_N;
-	char opt_p, opt_P;
-	char opt_r, opt_R;
-	char opt_s, opt_S;
-	char opt_u, opt_U;
+	lmchar_t opt_a, opt_A;
+	lmchar_t opt_b, opt_B;	
+	lmchar_t opt_c, opt_C;
+	lmchar_t opt_d, opt_D;
+	lmchar_t opt_e, opt_E;
+	lmchar_t opt_f, opt_F;
+	lmchar_t opt_i, opt_I;
+	lmchar_t opt_k, opt_K;
+	lmchar_t opt_l, opt_L;	
+	lmchar_t opt_m, opt_M;
+	lmchar_t opt_n, opt_N;
+	lmchar_t opt_p, opt_P;
+	lmchar_t opt_r, opt_R;
+	lmchar_t opt_s, opt_S;
+	lmchar_t opt_u, opt_U;
 
-	char opt_linkscleanemptrefs, opt_linkscleanemptlinks;
-	char opt_nomalloc;
-	char opt_tcpencoding;
-	char opt_tcpheader;
-	char opt_shutdown;
-	char opt_add;
-	char opt_MEMCP;
+	lmchar_t opt_linkscleanemptrefs, opt_linkscleanemptlinks;
+	lmchar_t opt_nomalloc;
+	lmchar_t opt_tcpencoding;
+	lmchar_t opt_tcpheader;
+	lmchar_t opt_shutdown;
+	lmchar_t opt_add;
+	lmchar_t opt_MEMCP;
 } opts_t;
 
 
@@ -80,20 +80,20 @@ typedef struct opts{
  * parsed_path
  */
 typedef struct path{
-	char **path;     /*    array of chars, paths is segmented by / sign and each segment is saved in path[] */
-	char abspath;  /*     if A path is absolute (ie. all the way up to the master head node), if R, path is relative (ie. starting from node which was passed to Locate) */
-	size_t seg_count;  /* numer of segments of path */
+	lmchar_t **path;     /*    array of chars, paths is segmented by / sign and each segment is saved in path[] */
+	lmchar_t abspath;  /*     if A path is absolute (ie. all the way up to the master head node), if R, path is relative (ie. starting from node which was passed to Locate) */
+	lmsize_t seg_count;  /* numer of segments of path */
 } path_t;
 
 /*
  * get_arguments
  */
 typedef struct get_arg{
-	char first;  			/* S,s or '\0' if S or s, indicates that the argument specifies sub-set */
-	char arg;    			/* value of argument V(value), T(Type), .... */
-	char args[MAX_NAME_LENGTH];	/* argument - compared according to arg */
-	char s_name[MAX_NAME_LENGTH];   /* if sub-set - specifies name of the subset */
-	int retval;
+	lmchar_t first;  			/* S,s or '\0' if S or s, indicates that the argument specifies sub-set */
+	lmchar_t arg;    			/* value of argument V(value), T(Type), .... */
+	lmchar_t args[MAX_NAME_LENGTH];	/* argument - compared according to arg */
+	lmchar_t s_name[MAX_NAME_LENGTH];   /* if sub-set - specifies name of the subset */
+	lmint_t retval;
 } get_arg_t;
 
 

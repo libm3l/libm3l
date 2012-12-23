@@ -224,13 +224,13 @@ lmsize_t m3l_get_List_ndim(node_t *List){
 /* 
  * return list type 
  */
-char *m3l_get_List_type(node_t *List){
+lmchar_t *m3l_get_List_type(node_t *List){
 	return List->type;
 }
 /* 
  * return list name
  */
-char *m3l_get_List_name(node_t *List){
+lmchar_t *m3l_get_List_name(node_t *List){
 	return List->name;
 }
 
@@ -249,7 +249,7 @@ find_str_t **m3l_get_Found_nodes(find_t *Founds){
 /* 
  * return no_malloc option value
  */
-char m3l_get_List_no_malloc(node_t *List){
+lmchar_t m3l_get_List_no_malloc(node_t *List){
 	return List->no_malloc;
 }
 

@@ -102,17 +102,17 @@ typedef struct node {
  /*
   *  spedifies type of the data set
   */
-	char *type;
+	lmchar_t *type;
  /*
   *  name of the data set
   */ 
-	char *name;
+	lmchar_t *name;
  /*
   * if list contains field, give a number of dimensions (ndim) 
   * and field dimensions (fdim)
   */
-	size_t *fdim;
-	size_t ndim;
+	lmsize_t *fdim;
+	lmsize_t ndim;
 	data_t data;
  /* 
   * pointers to the next list, parent list and child list and if the list is link, the original of the link
@@ -122,9 +122,9 @@ typedef struct node {
   * structure used for linking information, lcounter is a number of linknode array
   */
 	struct find_str **linknode;
-	size_t lcounter;
+	lmsize_t lcounter;
 	
-	char no_malloc;
+	lmchar_t no_malloc;
 
 }node_t;
 
@@ -138,7 +138,7 @@ typedef struct find_str{
 
 typedef struct find{
 	find_str_t **Found_Nodes;
-	size_t founds; 		/* number of founds */
+	lmsize_t founds; 		/* number of founds */
 	node_t *Home_Node;  	/* node from which the found was originated */
 } find_t;
 

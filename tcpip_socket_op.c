@@ -125,9 +125,9 @@ lmint_t m3l_cli_open_socket(const lmchar_t * server_addr, lmint_t portno, lmchar
  */
 /*        sock_buf_size = 625*8; 
 	retval = setsockopt( sockfd, SOL_SOCKET, SO_SNDBUF,
-                   (char *)&sock_buf_size, sizeof(sock_buf_size) );
+                   (lmchar_t *)&sock_buf_size, sizeof(sock_buf_size) );
 	retval = setsockopt( sockfd, SOL_SOCKET, SO_RCVBUF,
-                   (char *)&sock_buf_size, sizeof(sock_buf_size) );
+                   (lmchar_t *)&sock_buf_size, sizeof(sock_buf_size) );
 */
 
 /*
@@ -156,7 +156,7 @@ lmint_t m3l_cli_open_socket(const lmchar_t * server_addr, lmint_t portno, lmchar
 //        int result = setsockopt(sockfd,            /* socket affected */
 //                                 IPPROTO_TCP,     /* set option at TCP level */
 //                                 TCP_NODELAY,     /* name of option */
-//                                 (char *) &flag,  /* the cast is historical
+//                                 (lmchar_t *) &flag,  /* the cast is historical
 //                                                         cruft */
 //                                 sizeof(int));    /* length of option value */
 //         if (result < 0)

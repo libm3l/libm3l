@@ -78,7 +78,7 @@ lmint_t main(void)
     
     lmint_t i, count,countgrp, socketnr, j;
 
-    size_t *dim;
+    lmsize_t *dim;
     
     lmchar_t name[255], type[30];
     lmchar_t *pc;
@@ -364,7 +364,7 @@ lmint_t main(void)
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
 
 
-		dim = (size_t *) malloc( 1* sizeof(size_t));
+		dim = (lmsize_t *) malloc( 1* sizeof(lmsize_t));
 		dim[0] = 10;
 // 		if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, (node_t **)NULL, (const lmchar_t *)NULL, (const lmchar_t *)NULL, (lmchar_t *)NULL)) == 0)
 	 	if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main", "./", (lmchar_t *)NULL)) == 0)
@@ -380,7 +380,7 @@ lmint_t main(void)
 // 		Add(&NewList, &Gnode, "/main", "./", (lmchar_t *)NULL);
 			
 // 		NewList = NULL;
-		dim = (size_t *) malloc( 1* sizeof(size_t));
+		dim = (lmsize_t *) malloc( 1* sizeof(lmsize_t));
 		dim[0] = 5;
 // 		ada = (lmint_t *)malloc(5 * sizeof(lmint_t));
 		for (i=0; i<5; i++)
