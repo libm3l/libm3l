@@ -143,16 +143,16 @@ lmlongdouble_t unpack754(Uint64_t i, unsigned bits, unsigned expbits)
 /*
  * converts double to HEX
  */
-char * double_2_Hex(double a)
+lmchar_t * double_2_Hex(lmdouble_t a)
 {
 //    char *buf = new char[17]; // double is 8-byte long, so we have 2*8 + terminating \0
 
-	char buf[17];
-	char *d2c;
-	char *n = buf;
-	int i;
+	lmchar_t buf[17];
+	lmchar_t *d2c;
+	lmchar_t *n = buf;
+	lmint_t i;
 
-	d2c = (char *) &a;
+	d2c = (lmchar_t *) &a;
 	
 	for(i = 0; i < 8; i++){
 		sprintf(n, "%02X", *d2c++);
