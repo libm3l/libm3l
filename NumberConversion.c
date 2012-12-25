@@ -53,11 +53,18 @@
 #include "NumberConversion.h"
 
 
-uint64_t pack754(long double f, unsigned bits, unsigned expbits)
+// uint64_t pack754(long double f, unsigned bits, unsigned expbits)
+// {
+// 	long double fnorm;
+// 	int shift;
+// 	long long sign, exp, significand;
+// 	unsigned significandbits = bits - expbits - 1; // mantisa = total - exponent -1 for sign
+
+Uint64_t pack754(lmlongdouble_t f, unsigned bits, unsigned expbits)
 {
 	long double fnorm;
-	int shift;
-	long long sign, exp, significand;
+	lmint_t shift;
+	lmllint_t sign, exp, significand;
 	unsigned significandbits = bits - expbits - 1; // mantisa = total - exponent -1 for sign
 /*
  * if number is zero return 0
@@ -93,10 +100,16 @@ uint64_t pack754(long double f, unsigned bits, unsigned expbits)
 	return (sign<<(bits-1)) | (exp<<(bits-expbits-1)) | significand;
 }
 
-long double unpack754(uint64_t i, unsigned bits, unsigned expbits)
+// long double unpack754(uint64_t i, unsigned bits, unsigned expbits)
+// {
+// 	long double result;
+// 	long long shift;
+// 	unsigned bias;
+// 	unsigned significandbits = bits - expbits - 1; // mantisa = total - exponent -1 for sign
+lmlongdouble_t unpack754(Uint64_t i, unsigned bits, unsigned expbits)
 {
-	long double result;
-	long long shift;
+	lmlongdouble_t result;
+	lmllint_t shift;
 	unsigned bias;
 	unsigned significandbits = bits - expbits - 1; // mantisa = total - exponent -1 for sign
 /*
