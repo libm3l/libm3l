@@ -48,7 +48,7 @@ extern void sig_chld(lmint_t );
 extern lmint_t Fork(void);
 extern lmsize_t Strol(lmchar_t *);
 extern Uint64_t Strtoull(lmchar_t *, lmint_t);
-extern unint64_t Strtoul(lmchar_t *, lmint_t);
+extern lmulint_t Strtoul(lmchar_t *, lmint_t);
 extern lmchar_t *StrToLower(lmchar_t *); 
 extern lmchar_t *m3l_Path(node_t *, node_t *);
 extern path_t *m3l_parse_path(const lmchar_t *);

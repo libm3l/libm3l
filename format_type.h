@@ -79,7 +79,7 @@ typedef union{
 	lmsllint_t 		*ulli;
 
 	lmsize_t		 *st;
-	lmsize_t		 *ptrdf;
+	lmptrdiff_t		 *ptrdf;
 
 } data_t;
 

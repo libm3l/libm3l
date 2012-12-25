@@ -139,7 +139,7 @@ lmsize_t Strol(lmchar_t *text)
  * converts hex string to unsigned 32bit
  */
 
-unint64_t Strtoul(lmchar_t *str, lmint_t base){
+lmulint_t Strtoul(lmchar_t *str, lmint_t base){
 	
 	lmchar_t  *end;
 	Uint64_t result;
