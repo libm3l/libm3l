@@ -88,18 +88,18 @@
 #define MAX_NAME_LENGTH   255       /* Max length of list name */
 
 
-
-//#define FLOAT_MEMCP SPRINTF  /* if defined, use memcpy when IEEE-754 in Write2Socket and ReadSocket, itherwise use strncpy */
-// #define FLOAT_MEMCP MEMCP
+#ifndef ULLONG_MAX
+#define ULLONG_MAX 18446744073709551615
+#endif
 //#define ULLONG_MAX 18446744073709551615
 
 // Check GCC
 #if __GNUC__
-#if __x86_64__ || __ppc64__
-#define ENVIRONMENT64
-#else
-#define ENVIRONMENT32
-#endif
+	#if __x86_64__ || __ppc64__
+		#define ENVIRONMENT64
+	#else
+		#define ENVIRONMENT32
+	#endif
 #endif
 
 

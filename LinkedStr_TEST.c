@@ -316,7 +316,7 @@ lmint_t main(void)
 				 if(m3l_Cat(Founds->Found_Nodes[i]->List, "--all", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
 					Error("CatData");
 				 
-				 printf("Number of links is %d\n", Founds->Found_Nodes[i]->List->lcounter);
+				 printf("Number of links is %ld\n", Founds->Found_Nodes[i]->List->lcounter);
 				 for(j=0; j < Founds->Found_Nodes[i]->List->lcounter; j++)
 					 printf("-  %p\n", Founds->Found_Nodes[i]->List->linknode[j]->List);
 			}
