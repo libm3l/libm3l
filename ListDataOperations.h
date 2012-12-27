@@ -53,7 +53,7 @@ extern lmchar_t *m3l_get_List_name(node_t *);
 extern lmsize_t m3l_get_List_totdim(node_t *);
 extern lmchar_t m3l_get_List_no_malloc(node_t *);
 extern void *m3l_detach_data_from_List(node_t **, opts_t *);
-extern lmint_t *m3l_attach_data_to_List(node_t **, opts_t *);
+extern lmint_t m3l_attach_data_to_List(node_t **, opts_t *);
 
 extern lmsize_t m3l_get_Found_number(find_t *);
 extern find_str_t **m3l_get_Found_nodes(find_t *);
