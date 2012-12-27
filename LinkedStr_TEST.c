@@ -358,8 +358,8 @@ lmint_t main(void)
 // 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (lmchar_t *)NULL);
 
 // 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
-		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (lmchar_t *)NULL));	
-		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (lmchar_t *)NULL));	
+		printf(" Number of empty links is %ud \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (lmchar_t *)NULL));	
+		printf(" Number of empty links is %ud \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (lmchar_t *)NULL));	
 		
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
 
@@ -458,7 +458,7 @@ lmint_t main(void)
 		printf("\n\n\n");
 
 	   
-	   printf("Number of removed nodes is %ld\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
+	   printf("Number of removed nodes is %ud\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
 	   if(m3l_Cat(Gnode, "--all", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
 	                   Error("CatData");
 	   
@@ -483,7 +483,7 @@ lmint_t main(void)
 	    
 	    printf("\n\n\n Umounting \n\n\n");
 
-	    printf("Number of removed nodes is %ld\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
+	    printf("Number of removed nodes is %ud\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
 //	    if(m3l_Cat(RecNode, "--all", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
 	                   Error("CatData");
 	    
@@ -566,7 +566,7 @@ lmint_t main(void)
 
 //        printf("Number of removed nodes is %ld\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
 
-	printf("Number of removed nodes is %ld\n", Rm(&Founds->Found_Nodes[0]->List , "--recursive" , "*", (lmchar_t *)NULL) );
+	printf("Number of removed nodes is %ud\n", Rm(&Founds->Found_Nodes[0]->List , "--recursive" , "*", (lmchar_t *)NULL) );
 	
 //	if(m3l_Cat(Found_Nodes[0]->List, "-d", "-P", "*", (lmchar_t *)NULL) != 0)
 //	    	Error("CatData");

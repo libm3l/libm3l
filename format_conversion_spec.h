@@ -121,18 +121,18 @@
 	#define FCS_C_D(A)    if( printf("%.16lf ", A ) < 0) Perror("printf");
 	#define FCS_C_F(A)    if( printf("%.8f ",  A ) < 0) Perror("printf");
 
-	#define FCS_C_ULLI(A) if( printf("%lld ", A ) < 0) Perror("printf");
-	#define FCS_C_SLLI(A) if( printf("%lld ", A ) < 0) Perror("printf");
-	#define FCS_C_LLI(A) if( printf("%lld ", A ) < 0) Perror("printf");
-	#define FCS_C_ULI(A)  if( printf("%lu ",  A ) < 0) Perror("printf");
+	#define FCS_C_ULLI(A) if( printf("%ulld ", A ) < 0) Perror("printf");
+	#define FCS_C_SLLI(A) if( printf("%lld " , A ) < 0) Perror("printf");
+	#define FCS_C_LLI(A) if( printf("%lld "  , A ) < 0) Perror("printf");
+	#define FCS_C_ULI(A)  if( printf("%lu " ,  A ) < 0) Perror("printf");
 	#define FCS_C_USI(A)  if( printf("%u ",   A ) < 0) Perror("printf");
 	#define FCS_C_SI(A)   if( printf("%d ",   A ) < 0) Perror("printf");
 	#define FCS_C_UI(A)   if( printf("%u ",   A ) < 0) Perror("printf");
 	#define FCS_C_LI(A)   if( printf("%ld ",  A ) < 0) Perror("printf");
 	#define FCS_C_I(A)    if( printf("%d ",   A ) < 0) Perror("printf");
 
-	#define FCS_C_ST(A)       if( printf("%ld ", A ) < 0) Perror("printf");
-	#define FCS_C_PTRDF(A)    if( printf("%ld ", A ) < 0) Perror("printf");
+	#define FCS_C_ST(A)       if( printf("%zd ", A ) < 0) Perror("printf");
+	#define FCS_C_PTRDF(A)    if( printf("%td ", A ) < 0) Perror("printf");
 /*
  * used in ReadDescriptor and ReadSocket
  */

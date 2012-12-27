@@ -91,7 +91,6 @@
 #ifndef ULLONG_MAX
 #define ULLONG_MAX 18446744073709551615
 #endif
-//#define ULLONG_MAX 18446744073709551615
 
 // Check GCC
 #if __GNUC__
@@ -107,8 +106,7 @@
 
 #if ABSTRACT_DECLAR_UINT==1
 
-
-#define unint64_t uint32_t
+	#define unint64_t uint32_t
 /*
  * real numbers
  */
