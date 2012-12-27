@@ -144,6 +144,7 @@ lmint_t main(void)
 		printf("\n\n\n\n");
 
  		if( (Anode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754",  "--buffering", "MEMCPY", (lmchar_t *)NULL)) == NULL)
+//  		if( (Anode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754", (lmchar_t *)NULL)) == NULL)
 // 		if( (Anode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096,  (lmchar_t *)NULL)) == NULL)
 		Perror("Send_receive");
 		if(m3l_Cat(Anode, "--all", "-P", "-L","--links",  "*",   (lmchar_t *)NULL) != 0)
@@ -400,6 +401,7 @@ lmint_t main(void)
 			Error("CatData");
 
 		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754", "--buffering", "MEMCPY", (lmchar_t *)NULL)) == NULL)
+// 		if( (RecNode = m3l_Send_receive_tcpipsocket(Gnode, "localhost", 4096, "--encoding" , "IEEE-754",  (lmchar_t *)NULL)) == NULL)
 			Perror("Send_receive");
 		printf("EXIT WRITING DATA to socket\n");
 

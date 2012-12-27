@@ -100,7 +100,11 @@
 		#define ENVIRONMENT32
 	#endif
 #endif
-
+// #if (defined(__x86_64__) || defined(__x86_64) || defined(__amd64__) || defined(__amd64) || defined(__ppc64__) || defined(_WIN64) || defined(__LP64__) || defined(_LP64) )   // Detects 64 bits mode
+// #  define ENVIRONMENT64
+// #else
+// #  define ENVIRONMENT32
+// #endif
 
 #define ABSTRACT_DECLAR_UINT 1
 

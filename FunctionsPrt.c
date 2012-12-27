@@ -277,7 +277,8 @@ void *WR_MemcpyD(lmchar_t *buff, Uint64_t *di, lmsize_t length)
 void *WR_snprintfD(lmchar_t *buff, Uint64_t *di, lmsize_t length){
 	lmsize_t n;
 	
-	if( (n=snprintf(buff, length, "%016" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
+// 	if( (n=snprintf(buff, length, "%016" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
+	if( (n=snprintf(buff, length, "%" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
 		Perror("snprintf");
 	buff[n] = '\0';
 }
@@ -299,7 +300,8 @@ void *WR_MemcpyF(lmchar_t *buff, Uint32_t *di, lmsize_t length)
 void *WR_snprintfF(lmchar_t *buff, Uint32_t *di, lmsize_t length){
 	lmsize_t n;
 	
-	if( (n=snprintf(buff, length, "%08" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
+// 	if( (n=snprintf(buff, length, "%08" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
+	if( (n=snprintf(buff, length, "%" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
 		Perror("snprintf");
 	buff[n] = '\0';
 }
