@@ -41,6 +41,6 @@
 #ifndef __CAT_H__
 #define __CAT_H__
 
-int m3l_Cat(node_t *, char * , ...);
+lmint_t m3l_Cat(node_t *, lmchar_t * , ...);
 
 #endif

@@ -39,6 +39,6 @@
 #ifndef __WRITE_TO_SOCKET_H__
 #define __WRITE_TO_SOCKET_H__
 
-extern int m3l_write_to_socket(int , node_t *,  int , opts_t *);
+extern lmint_t m3l_write_to_socket(lmint_t , node_t *,  lmint_t , opts_t *);
 
 #endif

@@ -58,16 +58,16 @@
 
 #define SEPAR_SPACE ' '
 
-static int m3l_write_file_data_filedescprt(node_t *, size_t , FILE *);
+static lmint_t m3l_write_file_data_filedescprt(node_t *, lmsize_t , FILE *);
 
 /*
  * routine writes linked list structure to the file
  */
-int m3l_WriteData(node_t *List,  FILE *fp)
+lmint_t m3l_WriteData(node_t *List,  FILE *fp)
 {
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
-	size_t i, tot_dim;
-	char buff[MAX_WORD_LENGTH];
+	lmsize_t i, tot_dim;
+	lmchar_t buff[MAX_WORD_LENGTH];
  
 	if(List == NULL){
 		Warning("WriteData: NULL list");
@@ -88,7 +88,7 @@ int m3l_WriteData(node_t *List,  FILE *fp)
 				Perror("snprintf");
 			
 // 			if ( fwrite (&buff ,strlen(buff)*sizeof(char),  1 , fp ) < 1)
- 			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+ 			if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp ) < strlen(buff))
 				Perror("fwrite");
 		}
 		else
@@ -99,7 +99,7 @@ int m3l_WriteData(node_t *List,  FILE *fp)
 			bzero(buff, sizeof(buff));
 			if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld ",Tmpnode->name, Tmpnode->type, Tmpnode->ndim) < 0)
     					        Perror("snprintf");
-			if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+			if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 				Perror("fwrite");
 
 			if(Tmpnode->ndim > 0){
@@ -109,13 +109,13 @@ int m3l_WriteData(node_t *List,  FILE *fp)
 						bzero(buff, sizeof(buff));
 					if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
 								Perror("snprintf");
-					if (fwrite (buff ,sizeof(char),  strlen(buff) , fp ) < strlen(buff))
+					if (fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp ) < strlen(buff))
 						Perror("fwrite");
 						tot_dim = tot_dim * Tmpnode->fdim[i];
 				}
 					if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
 								Perror("snprintf");
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 /*
  * call to function printing actual data in file
@@ -125,7 +125,7 @@ int m3l_WriteData(node_t *List,  FILE *fp)
 
 			if( snprintf(buff, MAX_WORD_LENGTH,"\n") < 0)
     						        Perror("snprintf");
-			if (fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+			if (fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 				Perror("fwrite");
 		}
 		Tmpnode = Tmpnode->next;
@@ -142,7 +142,7 @@ int m3l_WriteData(node_t *List,  FILE *fp)
 		bzero(buff, sizeof(buff));
 		if( snprintf(buff, MAX_WORD_LENGTH,"%s %s %ld\n",Tmplist->name, Tmplist->type, Tmplist->ndim) < 0)
 			Perror("snprintf");
-		if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+		if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 			Perror("fwrite");
 
 		Tmpnode = Tmplist->child;
@@ -205,11 +205,11 @@ int m3l_WriteData(node_t *List,  FILE *fp)
 
 
 
-int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
+lmint_t m3l_write_file_data_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE *fp)
 {	
-	size_t i, n, counter;
-	char *pc;
-	char buff[MAX_WORD_LENGTH+1];
+	lmsize_t i, n, counter;
+	lmchar_t *pc;
+	lmchar_t buff[MAX_WORD_LENGTH+1];
 /*
  * find type of the argument - Floats
  */
@@ -230,7 +230,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
  * set the last element of the buff to \0 and add buff to buffer
  */
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -240,7 +240,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_D(Tmpnode->data.df[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -250,7 +250,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_F(Tmpnode->data.f[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -259,7 +259,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
  */
 		else if(strncmp(Tmpnode->type,"UC",2) == 0){  /* char */
 			bzero(buff, sizeof(buff));
-			pc = (char *)&Tmpnode->data.uc[0];
+			pc = (lmchar_t *)&Tmpnode->data.uc[0];
 /*
  * start with writing TEXT_SEPAR_SIGN
  */
@@ -272,7 +272,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				counter++;
 				if(counter == MAXLINE){
 					buff[counter] = '\0';
-					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+					if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 						Perror("fwrite");
 					counter = 0;
 					bzero(buff, sizeof(buff));
@@ -289,7 +289,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				buff[counter] = TEXT_SEPAR_SIGN;
 				counter++;
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
@@ -299,7 +299,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
  * write to buffer and set counter to 0 
  */
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 				counter = 0;
@@ -311,7 +311,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				buff[counter] = TEXT_SEPAR_SIGN;
 				counter++;
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
@@ -321,7 +321,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
  * clean buff and make pointer pointing at its beginning
  */
 			bzero(buff, sizeof(buff));
-			pc = (char *)&Tmpnode->data.sc[0];
+			pc = (lmchar_t *)&Tmpnode->data.sc[0];
 /*
  * start with writing TEXT_SEPAR_SIGN
  */
@@ -334,7 +334,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				counter++;
 				if(counter == MAXLINE){
 					buff[counter] = '\0';
-					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+					if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 						Perror("fwrite");
 					counter = 0;
 					bzero(buff, sizeof(buff));
@@ -351,7 +351,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				buff[counter] = TEXT_SEPAR_SIGN;
 				counter++;
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
@@ -361,7 +361,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
  * write to buffer and set counter to 0 
  */
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 				counter = 0;
@@ -373,7 +373,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				buff[counter] = TEXT_SEPAR_SIGN;
 				counter++;
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
@@ -393,7 +393,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				counter++;
 				if(counter == MAXLINE){
 					buff[counter] = '\0';
-					if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+					if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 						Perror("fwrite");
 					counter = 0;
 					bzero(buff, sizeof(buff));
@@ -410,7 +410,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				buff[counter] = TEXT_SEPAR_SIGN;
 				counter++;
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
@@ -420,7 +420,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
  * write to buffer and set counter to 0 
  */
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 				counter = 0;
@@ -432,7 +432,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				buff[counter] = TEXT_SEPAR_SIGN;
 				counter++;
 				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
@@ -448,7 +448,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_ULLI(Tmpnode->data.ulli[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -458,7 +458,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_SLLI(Tmpnode->data.slli[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -468,7 +468,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_LLI(Tmpnode->data.lli[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -478,7 +478,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_ULI(Tmpnode->data.uli[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -488,7 +488,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_USI(Tmpnode->data.usi[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -498,7 +498,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_SI(Tmpnode->data.si[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -508,7 +508,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_UI(Tmpnode->data.ui[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -518,7 +518,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_LI(Tmpnode->data.li[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -528,7 +528,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_I(Tmpnode->data.i[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -541,7 +541,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_ST(Tmpnode->data.st[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}
@@ -551,7 +551,7 @@ int m3l_write_file_data_filedescprt(node_t *Tmpnode, size_t tot_dim, FILE *fp)
 				if( (n=FCS_W_PTRDF(Tmpnode->data.ptrdf[i], SEPAR_SPACE)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if ( fwrite (buff ,sizeof(char),  strlen(buff) , fp )< strlen(buff))
+				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
 					Perror("fwrite");
 			} 
 		}

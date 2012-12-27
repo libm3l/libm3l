@@ -57,21 +57,21 @@
 #include "format_conversion_spec.h"
 #include "NumberConversion.h"
 
-static int m3l_write_buffer(const char *, int, int, int, opts_t *);
-static int m3l_write_file_data_intdescprt(node_t *, size_t , int, opts_t *);
-static ssize_t Write(int ,  size_t);
+static lmint_t m3l_write_buffer(const lmchar_t *, lmint_t, lmint_t, lmint_t, opts_t *);
+static lmint_t m3l_write_file_data_intdescprt(node_t *, lmsize_t , lmint_t, opts_t *);
+static lmssize_t Write(lmint_t ,  lmsize_t);
 
-char *pc, buffer[MAXLINE];
-ssize_t bitcount;
+lmchar_t *pc, buffer[MAXLINE];
+lmssize_t bitcount;
 
 /*
  * routine writes linked list structure to socket
  */
-int m3l_write_to_socket(int call, node_t *List,  int socket_descrpt, opts_t *Popts)
+lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
 {
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
-	size_t i, tot_dim, n;
-	char buff[MAX_WORD_LENGTH+1];	
+	lmsize_t i, tot_dim, n;
+	lmchar_t buff[MAX_WORD_LENGTH+1];	
 /*
  * initial call - nullify counters
  */
@@ -226,17 +226,17 @@ int m3l_write_to_socket(int call, node_t *List,  int socket_descrpt, opts_t *Pop
 /*
  * function writes actual data of the FILE, need to distinguish between the type of field
  */
-int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_descrpt, opts_t *Popts)
+lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_t socket_descrpt, opts_t *Popts)
 {	
-	size_t i, n, len, length, length32;
-	char *pc;
-	char buff[MAX_WORD_LENGTH+1];
+	lmsize_t i, n, len, length, length32;
+	lmchar_t *pc;
+	lmchar_t buff[MAX_WORD_LENGTH+1];
 	
-	uint32_t fi;
-	uint64_t di;
+	Uint32_t fi;
+	Uint64_t di;
 	
-	void *(*WRtoBuffD)( char *, uint64_t *,size_t);
-	void *(*WRtoBuffF)( char *, uint32_t *,size_t);
+	void *(*WRtoBuffD)( lmchar_t *, Uint64_t *, lmsize_t);
+	void *(*WRtoBuffF)( lmchar_t *, Uint32_t *, lmsize_t);
 	
 	if(Popts == NULL)
 		Error("Write2Socket: NULL Popts");
@@ -359,12 +359,12 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
 /*
  * clean buff and make pointer pointing at its beginning
  */
-			pc = (char *)&Tmpnode->data.sc[0];
+			pc = (lmchar_t *)&Tmpnode->data.sc[0];
 			if( m3l_write_buffer(pc, socket_descrpt,0,1, Popts) == 0 )
 				Error("Writing buffer");
 		}
 		else if(strncmp(Tmpnode->type,"UC",2) == 0){  /* unsigned char */
-			pc = (char *)&Tmpnode->data.uc[0];
+			pc = (lmchar_t *)&Tmpnode->data.uc[0];
 			if( m3l_write_buffer(pc, socket_descrpt,0,1, Popts) == 0 )
 				Error("Writing buffer");
 		}
@@ -502,7 +502,7 @@ int m3l_write_file_data_intdescprt(node_t *Tmpnode, size_t tot_dim, int socket_d
  * when the buffer is full, it is written to socket and 
  * pointer is set at the beginning of the buffer
  */ 
-int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *Popts)
+lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
 {
 /*
  * force - parameter forces buffer to be written to 
@@ -515,8 +515,8 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
  * NOTE-URGENT - check the algorithm for adding SEPAR_SIGN at the end of buffer, 
  * especially situation after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
  */
-	size_t i, size;
-	ssize_t n;
+	lmsize_t i, size;
+	lmssize_t n;
 	     
 	while(*buff != '\0'){
 		if(bitcount == (MAXLINE-1))
@@ -582,11 +582,11 @@ int m3l_write_buffer(const char *buff, int sockfd, int force, int add, opts_t *P
 }
 
 
-ssize_t Write(int sockfd,  size_t size){
+lmssize_t Write(lmint_t sockfd,  lmsize_t size){
 
-	ssize_t total, n;	
+	lmssize_t total, n;	
 	total = 0;
-	char *buff;
+	lmchar_t *buff;
 
 	buff = buffer;
 	

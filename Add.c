@@ -58,21 +58,19 @@
 #include "add_list.h"
 #include "FunctionsPrt.h"
 
-extern int optind;
-static int verbose_flag;
+extern lmint_t optind;
+static lmint_t verbose_flag;
 
 /*
  * Adds Slist to specified location in Tlist
  */
-int m3l_Add(node_t **SList, node_t **TList, const char *t_path, const char *t_path_loc, char * Options, ...)
+lmint_t m3l_Add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, lmchar_t * Options, ...)
 {
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i;
-	int addlist;
+	lmsize_t args_num, len, i;
+	lmint_t addlist, c, option_index;
 	va_list args;
-	int c;
-	int option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
 	
@@ -97,7 +95,7 @@ int m3l_Add(node_t **SList, node_t **TList, const char *t_path, const char *t_pa
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -105,7 +103,7 @@ int m3l_Add(node_t **SList, node_t **TList, const char *t_path, const char *t_pa
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -114,11 +112,11 @@ int m3l_Add(node_t **SList, node_t **TList, const char *t_path, const char *t_pa
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -126,9 +124,9 @@ int m3l_Add(node_t **SList, node_t **TList, const char *t_path, const char *t_pa
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';

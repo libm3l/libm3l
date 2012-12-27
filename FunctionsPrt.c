@@ -54,18 +54,18 @@
 #include "format_type.h"
 #include "FunctionsPrt.h"
 
-int sig_pid = 9999;
+lmint_t sig_pid = 9999;
 
 /*
  *
  */
-void Perror(const char *msg)
+void Perror(const lmchar_t *msg)
 {
 	perror(msg);
 	exit(1);
 }
 
-void Error(const char *msg)
+void Error(const lmchar_t *msg)
 {
 	printf("ERROR:  %s\n", msg);
 	exit(1);
@@ -74,7 +74,7 @@ void Error(const char *msg)
 /*
  *
   */
-void Warning(const char *msg)
+void Warning(const lmchar_t *msg)
 {
 	printf("Warning:  %s\n", msg);
 // 	exit(1);
@@ -83,10 +83,10 @@ void Warning(const char *msg)
 /*
  *
   */
-void sig_chld(int signo)
+void sig_chld(lmint_t signo)
 {
 	pid_t   pid;
-	int	stat;
+	lmint_t	stat;
 	while( (sig_pid = waitpid(-1, &stat, WNOHANG)) >0 );
 	return;
 }
@@ -94,9 +94,9 @@ void sig_chld(int signo)
 /*
  *
   */
-int Fork(void)
+lmint_t Fork(void)
 {
-	int childpid;
+	lmint_t childpid;
         if ( (childpid = fork()) < 0) 
 		Perror("fork()");
 	return childpid;
@@ -105,10 +105,10 @@ int Fork(void)
 /*
  * Converts string to long
  */
-SIZE_T Strol(char *text)
+lmsize_t Strol(lmchar_t *text)
 {
-  char *err;
-  SIZE_T i;
+	lmchar_t *err;
+	lmsize_t i;
 
   	i = strtol(text,&err,0);
 	if (err == text){
@@ -139,10 +139,10 @@ SIZE_T Strol(char *text)
  * converts hex string to unsigned 32bit
  */
 
-unsigned long Strtoul(char *str, int base){
+lmulint_t Strtoul(lmchar_t *str, lmint_t base){
 	
-	char  *end;
-	unsigned long long result;
+	lmchar_t  *end;
+	Uint64_t result;
 	
 	errno = 0;
 	result = strtoull(str, &end, base);
@@ -172,10 +172,10 @@ unsigned long Strtoul(char *str, int base){
 /*
  * converts hex string to unsigned 64bit
  */
-unsigned long long Strtoull(char *str, int base){
+Uint64_t Strtoull(lmchar_t *str, lmint_t base){
 	
-	char  *end;
-	unsigned long long result;
+	lmchar_t  *end;
+	Uint64_t result;
 	
 	errno = 0;
 	result = strtoull(str, &end, base);
@@ -209,9 +209,9 @@ unsigned long long Strtoull(char *str, int base){
 /*
  * strig to lower case
  */
-char *StrToLower(char *s) 
+lmchar_t *StrToLower(lmchar_t *s) 
 { 
-	char *cs;
+	lmchar_t *cs;
 
 	if( s == NULL)
 		return NULL;
@@ -231,9 +231,9 @@ char *StrToLower(char *s)
 /*
  * strig to lower case
  */
-char *StrToUpper(char *s) 
+lmchar_t *StrToUpper(lmchar_t *s) 
 { 
-	char *cs;
+	lmchar_t *cs;
 
 	if( s == NULL)
 		return NULL;
@@ -253,46 +253,55 @@ char *StrToUpper(char *s)
 
 
 
-void *RD_MemcpyD(uint64_t *di, char *type, size_t length)
+void *RD_MemcpyD(Uint64_t *di, lmchar_t *type, lmsize_t length)
 {	
 	memcpy(di, &type[0], length);	
 }
 
-void *RD_MemcpyF(uint32_t *di, char *type, size_t length)
+void *RD_MemcpyF(Uint32_t *di, lmchar_t *type, lmsize_t length)
 {	
 	memcpy(di, &type[0], length);	
 }
-void *RD_StrtoullD(uint64_t *di, char *type, size_t length)
+void *RD_StrtoullD(Uint64_t *di, lmchar_t *type, lmsize_t length)
 {	
 	*di = Strtoull(type, length);
 }
 
-void *WR_MemcpyD(char *buff, uint64_t *di, size_t length)
+void *WR_MemcpyD(lmchar_t *buff, Uint64_t *di, lmsize_t length)
 {	
 	memcpy( &buff[0], di, length);
 	buff[length] = SEPAR_SIGN;
 	buff[length+1] = '\0';
 }
 
-void *WR_snprintfD(char *buff, uint64_t *di, size_t length){
-	size_t n;
+void *WR_snprintfD(lmchar_t *buff, Uint64_t *di, lmsize_t length){
+	lmsize_t n;
 	
-	if( (n=snprintf(buff, length, "%016" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
+// 	if( (n=snprintf(buff, length, "%016" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
+	if( (n=snprintf(buff, length, "%" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
 		Perror("snprintf");
 	buff[n] = '\0';
 }
 
-void *WR_MemcpyF(char *buff, uint32_t *di, size_t length)
+void *WR_MemcpyF(lmchar_t *buff, Uint32_t *di, lmsize_t length)
 {	
 	memcpy( &buff[0], di, length);
 	buff[length] = SEPAR_SIGN;
 	buff[length+1] = '\0';
 }
 
-void *WR_snprintfF(char *buff, uint32_t *di, size_t length){
-	size_t n;
+// void *WR_MemcpyI(lmchar_t *buff, void *i, lmsize_t length)
+// {	
+// 	memcpy( &buff[0], i, length);
+// 	buff[length] = SEPAR_SIGN;
+// 	buff[length+1] = '\0';
+// }
+
+void *WR_snprintfF(lmchar_t *buff, Uint32_t *di, lmsize_t length){
+	lmsize_t n;
 	
-	if( (n=snprintf(buff, length, "%08" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
+// 	if( (n=snprintf(buff, length, "%08" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
+	if( (n=snprintf(buff, length, "%" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
 		Perror("snprintf");
 	buff[n] = '\0';
 }
@@ -304,16 +313,16 @@ void *WR_snprintfF(char *buff, uint32_t *di, size_t length){
  * NOTE - needs to be feed after use
  */
 
-char *m3l_Path(node_t *List, node_t *Orig_List)
+lmchar_t *m3l_Path(node_t *List, node_t *Orig_List)
 {
 /*
   * function finds path of the list up to Orig_List
  * If Orig_List == NULL, then the path goes to master head node
  */
-	char   *path;
-	char   **segs;
-	node_t *Tmp;
-	size_t count,i,*len, tot_len, tot_len1, j;
+	lmchar_t   *path;
+	lmchar_t   **segs;
+	node_t 	   *Tmp;
+	lmsize_t count,i,*len, tot_len, tot_len1, j;
 /*
  * find the number of all nodes up to Master Head Node
  */
@@ -327,9 +336,9 @@ char *m3l_Path(node_t *List, node_t *Orig_List)
 /*
  * allocate arrays
  */
-	if ( (segs = (char **)malloc( (count)*sizeof(char *) )) == NULL)
+	if ( (segs = (lmchar_t **)malloc( (count)*sizeof(lmchar_t *) )) == NULL)
 		Perror("malloc");
-	if ( (len = (size_t *)malloc( (count)*sizeof(size_t) )) == NULL)
+	if ( (len = (lmsize_t *)malloc( (count)*sizeof(lmsize_t) )) == NULL)
 		Perror("malloc");
 /*
  * fill segs with segments of the path
@@ -342,7 +351,7 @@ char *m3l_Path(node_t *List, node_t *Orig_List)
 		if(Tmp == Orig_List) break;
 
 		len[i] = strlen(Tmp->name);
-		if ( (segs[i] = (char *)malloc( (len[i]+1)*sizeof(char) )) == NULL)
+		if ( (segs[i] = (lmchar_t *)malloc( (len[i]+1)*sizeof(lmchar_t) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
@@ -363,7 +372,7 @@ char *m3l_Path(node_t *List, node_t *Orig_List)
  * save length of the segment
  */
 	len[i] = strlen(Tmp->name);
-	if ( (segs[i] = (char *)malloc( (len[i]+1)*sizeof(char) )) == NULL)
+	if ( (segs[i] = (lmchar_t *)malloc( (len[i]+1)*sizeof(lmchar_t) )) == NULL)
 			Perror("malloc");
 		if( snprintf(segs[i], len[i]+1,"%s",Tmp->name) < 0)
 			Perror("snprintf");
@@ -374,7 +383,7 @@ char *m3l_Path(node_t *List, node_t *Orig_List)
 /*
  * allocate string for path + 1 additional for '\0'
  */		
-	if ( (path = (char *)malloc( (tot_len + 1)*sizeof(char) )) == NULL)
+	if ( (path = (lmchar_t *)malloc( (tot_len + 1)*sizeof(lmchar_t) )) == NULL)
 		Perror("malloc");
 	
 	tot_len1 = 0;
@@ -407,15 +416,15 @@ char *m3l_Path(node_t *List, node_t *Orig_List)
 /*
  * function segments path (./../../../home/etc/etc/
  */
-path_t *m3l_parse_path(const char *path)
+path_t *m3l_parse_path(const lmchar_t *path)
 {
 /*
  * NOTE - segmentation fault if path starts with / // // // etc nonsence
  */
 	path_t *Path;
-	const char *pc;
-	size_t counter, j, st,k;
-	char abspath;
+	const lmchar_t *pc;
+	lmsize_t counter, j, st,k;
+	lmchar_t abspath;
 /*
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
@@ -502,11 +511,11 @@ path_t *m3l_parse_path(const char *path)
  		if ( (Path = (path_t *)malloc( sizeof(path_t) )) == NULL)
  			Perror("malloc");
 		
-		if ( (Path->path = (char **)malloc(counter * sizeof(char *))) == NULL)
+		if ( (Path->path = (lmchar_t **)malloc(counter * sizeof(lmchar_t *))) == NULL)
 			Perror("malloc");
 
 		for(j=0; j< counter; j++){
-			if ( (Path->path[j] = (char *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(char) )) == NULL)  /* NOTE this is a problem  before it was sizeof(char *) and it worked */
+			if ( (Path->path[j] = (lmchar_t *)malloc( (MAX_NAME_LENGTH + 1) * sizeof(lmchar_t) )) == NULL)  /* NOTE this is a problem  before it was sizeof(lmchar_t *) and it worked */
 				Perror("malloc");
 		}
 
@@ -617,7 +626,7 @@ void m3l_destroy_pars_path(path_t **Path)
 /*
  * NOTE - unsuccesfull return must be finished
  */
-	size_t i;
+	lmsize_t i;
 		
 	for (i=0; i< (*Path)->seg_count; i++)
 		free( (*Path)->path[i]);
@@ -629,7 +638,7 @@ void m3l_destroy_pars_path(path_t **Path)
 	
 }
 
-get_arg_t m3l_get_arguments(const char *text)
+get_arg_t m3l_get_arguments(const lmchar_t *text)
 {
 /*
  * function parse arguments in text
@@ -640,9 +649,9 @@ get_arg_t m3l_get_arguments(const char *text)
  * if s or S is specified, the argument refers to sub-dir of the data set
  * and is followed by the _name_ of the data set
  */
-	const char *pc;
-	char arg;
-	size_t i, n;
+	const lmchar_t *pc;
+	lmchar_t arg;
+	lmsize_t i, n;
 	get_arg_t argsstr;
 /*
  * disregard empty spaces and tabs at the beginning 

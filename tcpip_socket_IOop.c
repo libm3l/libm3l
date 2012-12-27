@@ -64,15 +64,15 @@
  * routine Links Slist to Tlist
  */
 
-int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...){
+lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...){
 
 	node_t *List;
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len,i;
+	lmsize_t args_num, len,i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
@@ -89,7 +89,7 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -97,7 +97,7 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -106,11 +106,11 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -118,9 +118,9 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -248,16 +248,16 @@ int m3l_Send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * routine Links Slist to Tlist
  */
-node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...)
 {
 
 	node_t *List;
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len,i;
+	lmsize_t args_num, len,i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
@@ -275,7 +275,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -283,7 +283,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -292,11 +292,11 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -304,9 +304,9 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -440,16 +440,16 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * routine Links Slist to Tlist
  */
-node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...)
 {
 
 	node_t *List;
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len,i;
+	lmsize_t args_num, len,i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
@@ -467,7 +467,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -475,7 +475,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -484,11 +484,11 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -496,9 +496,9 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -629,16 +629,16 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 }
 
 
-node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Options, ...)
+node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...)
 {
 
 	node_t *List;
-	char *word, **opt;
+	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len,i;
+	lmsize_t args_num, len,i;
 	va_list args;
-	int c;
-	int option_index;
+	lmint_t c;
+	lmint_t option_index;
 	
 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
@@ -654,7 +654,7 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 		args_num = 1;
 		len = strlen(Options);
 
-		while((word = va_arg(args, char *)) != NULL){
+		while((word = va_arg(args, lmchar_t *)) != NULL){
 			args_num++;
 		}
 		va_end(args);
@@ -662,7 +662,7 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 /*
  * get the values of option, for that, allocate opts ** array
  */
-		if ( (opt = (char**)malloc( (args_num)*sizeof(char *) )) == NULL)
+		if ( (opt = (lmchar_t**)malloc( (args_num)*sizeof(lmchar_t *) )) == NULL)
 			Perror("malloc");
 /*
  * get the value of the first argument
@@ -671,11 +671,11 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 /*
  * array member [0] will be empty
  */
-		if ( (opt[0] = (char *)malloc( sizeof(char) )) == NULL)
+		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 	
  		len = strlen(Options);	
-		if ( (opt[1] = (char *)malloc( (len+1) * sizeof(char ) )) == NULL)
+		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
@@ -683,9 +683,9 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
  * get the value of other arguments
  */	
 		for(i=2; i<args_num; i++){
-			word = va_arg(args, char *);
+			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			if ( (opt[i] = (char *)malloc( (len+1)*sizeof(char) )) == NULL)
+			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
@@ -812,10 +812,10 @@ node_t *m3l_Receive_tcpipsocket(const char *hostname, int portnumber, char * Opt
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, opts_t *Popts)
 {
 	node_t *Gnode;
-	int socketnr;
+	lmint_t socketnr;
 
 	if(portnumber < 1){
 		Warning("m3l_receive_to_tcpipsocket:  wrong port/socket number");
@@ -832,7 +832,7 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");
@@ -851,9 +851,9 @@ node_t *m3l_receive_tcpipsocket(const char *hostname, int portnumber, opts_t *Po
 /*
  * function opens socket, writes data to it and close the socket
  */
-int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+lmint_t m3l_send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, opts_t *Popts)
 {
-	int socketnr;
+	lmint_t socketnr;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
@@ -880,7 +880,7 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
@@ -892,10 +892,10 @@ int m3l_send_to_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber,
 /*
  * function opens socket, writes data to it, reads data from it and close the socket
  */
-node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, opts_t *Popts)
 {
 	node_t *Gnode;
-	int socketnr;
+	lmint_t socketnr;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_receive_tcpipsocket:  NULL Lnode");
@@ -921,7 +921,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
 		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
 			Error("Error during writing data to socket");
@@ -951,10 +951,10 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * function opens socket, reads data from it , writes data to it and close the socket
  */
-node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int portnumber, opts_t *Popts)
+node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, opts_t *Popts)
 {
 	node_t *Gnode;
-	int socketnr;
+	lmint_t socketnr;
 
 	if(Lnode == NULL){
 		Warning("m3l_receive_send_tcpipsocket:  NULL Lnode");
@@ -984,7 +984,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const char *hostname, int po
 /*
  * client side
  */
-		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (char *)NULL)) < 0)
+		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
 			Error("Error during reading data from socket");

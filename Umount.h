@@ -39,7 +39,7 @@
 #ifndef  __UMOUNT_H__
 #define  __UMOUNT_H__
 
-extern int m3l_Umount(node_t **);
+extern lmint_t m3l_Umount(node_t **);
 
 
 #endif

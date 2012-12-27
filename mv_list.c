@@ -62,14 +62,14 @@
 #include "find_list.h"
 #include "rm_list.h"
 
-static int m3l_mv_list(int , node_t **, node_t **, opts_t *);
+static lmint_t m3l_mv_list(lmint_t , node_t **, node_t **, opts_t *);
 /*
  * function links list. If the list has children, it deletes them before removing list.
  * called recursivelly
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc, node_t **TList, const char *t_path, const char *t_path_loc, opts_t *Popts)
+lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a caller of the cp functions
@@ -77,11 +77,11 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 
 /* NOTE - check that Tfounds and SFounds are identical */
  
-	size_t i, j,k,l,mv_tot_nodes, mv_nodes,len;
+	lmsize_t i, j,k,l,mv_tot_nodes, mv_nodes,len;
 	find_t *SFounds, *TFounds;
-	int init_call;
- 	char *name, *path, *path_loc, *newname;
-	const char *pc;
+	lmint_t init_call;
+ 	lmchar_t *name, *path, *path_loc, *newname;
+	const lmchar_t *pc;
 	opts_t *Popts_Tlist, opts;
 /*
  * check if data set exists
@@ -146,11 +146,11 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 			if(i > 1){
 				pc = t_path;
 	
-				if(  ( path = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				if(  ( path = (lmchar_t *)malloc( (k+1)*sizeof(lmchar_t))) == NULL){
 					Perror("malloc");
 					return -1;
 				}
-				if(  (newname = (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				if(  (newname = (lmchar_t *)malloc( (k+1)*sizeof(lmchar_t))) == NULL){
 					Perror("malloc");
 					return -1;
 				}
@@ -178,7 +178,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
  */
 				pc = t_path_loc;
 				while(*pc++ != '\0')k++;
-				if(  ( path_loc= (char *)malloc( (k+1)*sizeof(char))) == NULL){
+				if(  ( path_loc= (lmchar_t *)malloc( (k+1)*sizeof(lmchar_t))) == NULL){
 					Perror("malloc");
 					free(path);
 					free(path_loc);
@@ -237,7 +237,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 							Warning("mv_list: can not move node to itself");
 						}
 						else{
-							if( (mv_nodes = (size_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+							if( (mv_nodes = (lmsize_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
 								Warning("problem in ln_list");
 							}
 							else{
@@ -294,7 +294,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 					Warning("mv_list: can not move node to itself");
 				}
 				else{
-					if( (mv_nodes = (size_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
+					if( (mv_nodes = (lmsize_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
 						Warning("problem in ln_list");
 					}
 					else{
@@ -310,7 +310,7 @@ size_t m3l_mv_caller(node_t **SList, const char *s_path, const char *s_path_loc,
 	}
 }
 
-int m3l_mv_list(int call, node_t **SList, node_t **TList, opts_t *Popts)
+lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 {
 /*
  * function links list SList to a target list TList

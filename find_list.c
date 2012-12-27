@@ -57,13 +57,13 @@
 #include "find_list.h"
 #include "FunctionsPrt.h"
 
-static size_t m3l_FindList(int, node_t *, char *, opts_t *);
+static lmsize_t m3l_FindList(lmint_t, node_t *, lmchar_t *, opts_t *);
 static m3l_AddRecord(node_t *);
-static unsigned char m3l_CompStatement(char *, char *, char *, opts_t *);
-static unsigned char m3l_EvalSearchPatt(char *, char *, opts_t *);
+static lmusignchar_t m3l_CompStatement(lmchar_t *, lmchar_t *, lmchar_t *, opts_t *);
+static lmusignchar_t m3l_EvalSearchPatt(lmchar_t *, lmchar_t *, opts_t *);
 
 
-size_t nalloc;
+lmsize_t nalloc;
 find_t *Founds;
 /*
  * this function is similar to FindListPointer 
@@ -72,7 +72,7 @@ find_t *Founds;
  * decalred above
  */
 
-find_t *m3l_Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
+find_t *m3l_Find_caller(lmint_t call, node_t *List, lmchar_t *search_term, opts_t *Popt)
 {
 /*
  * allocate find_t pointer and first element
@@ -110,7 +110,7 @@ find_t *m3l_Find_caller(int call, node_t *List, char *search_term, opts_t *Popt)
 /*
  * function is a pointer to pointer type 
  */
-size_t m3l_FindList(int call, node_t *List, char *search_term, opts_t *Popt)
+lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, opts_t *Popt)
 {
 /*
  * function looks for items with given pattern and option
@@ -214,7 +214,7 @@ size_t m3l_FindList(int call, node_t *List, char *search_term, opts_t *Popt)
 }
 
 
-int m3l_AddRecord(node_t *Tmpnode)
+lmint_t m3l_AddRecord(node_t *Tmpnode)
 {
 /*
  * function adds new record (*Tmpnode) to list of found records - Found_Nodes
@@ -254,7 +254,7 @@ int m3l_AddRecord(node_t *Tmpnode)
  * compares statements with options
  */
 
-unsigned char m3l_CompStatement(char *search_term, char *pattern, char *type, opts_t *Popts)
+lmusignchar_t m3l_CompStatement(lmchar_t *search_term, lmchar_t *pattern, lmchar_t *type, opts_t *Popts)
 {
 	if ( m3l_EvalSearchPatt(search_term, pattern, Popts) == '1'){
 /*
@@ -306,11 +306,11 @@ unsigned char m3l_CompStatement(char *search_term, char *pattern, char *type, op
 	return '0';
 }
 
-unsigned char  m3l_EvalSearchPatt(char *search_term, char *pattern, opts_t *Popts)
+lmusignchar_t  m3l_EvalSearchPatt(lmchar_t *search_term, lmchar_t *pattern, opts_t *Popts)
 {
 
-	char *Ppattern;
-	size_t len1, len2;
+	lmchar_t *Ppattern;
+	lmsize_t len1, len2;
 /*
  * duplicate pattern and of required by option convert upper case to lower case
  */
@@ -361,7 +361,7 @@ void m3l_DestroyFound(find_t **Founds)
 /*
  * function destroys filed allocted by function Find_caller
  */
-	size_t i;
+	lmsize_t i;
 			
 	for(i=0; i< (*Founds)->founds; i++){
 		free( (*Founds)->Found_Nodes[i] );

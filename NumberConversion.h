@@ -32,8 +32,13 @@
 
 // #define to_uint64(buffer,n) (*(uint64_t*)(buffer + n))
 
-uint64_t pack754(long double , unsigned , unsigned );
-long double unpack754(uint64_t , unsigned , unsigned );
-char * double_2_Hex(double);
+// uint64_t pack754(long double , unsigned , unsigned );
+// long double unpack754(uint64_t , unsigned , unsigned );
+// char * double_2_Hex(double);
+
+Uint64_t pack754(lmlongdouble_t f, unsigned bits, unsigned expbits);
+lmlongdouble_t unpack754(Uint64_t i, unsigned bits, unsigned expbits);
+lmchar_t * double_2_Hex(lmdouble_t a);
+
 
 #endif

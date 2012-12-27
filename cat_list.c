@@ -57,7 +57,7 @@
 #include "FunctionsPrt.h"
 #include "cat_list.h"
 
-static int m3l_cat_data(node_t *, size_t);
+static lmint_t m3l_cat_data(node_t *, size_t);
 
 
 static void m3l_PrintListInfo(node_t *, opts_t *);
@@ -66,7 +66,7 @@ static void m3l_PrintListInfo(node_t *, opts_t *);
  * routine writes linked list structure
  */
 
-int m3l_cat_list(int call, node_t *List, opts_t *Popts)
+lmint_t m3l_cat_list(lmint_t call, node_t *List, opts_t *Popts)
 {
 /*
  * functions print the list or entire tree on screen
@@ -302,7 +302,7 @@ node_t *Tmp;
 
 
 
-int m3l_cat_data(node_t *Tmpnode, size_t tot_dim)
+lmint_t m3l_cat_data(node_t *Tmpnode, size_t tot_dim)
 {
 	
 	size_t i;

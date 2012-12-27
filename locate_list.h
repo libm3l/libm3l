@@ -41,6 +41,6 @@
 #ifndef __LOCATOR_H__
 #define __LOCATOR_H__
 
-find_t *m3l_locator_caller(node_t *, const char *, const char *, opts_t *);
+find_t *m3l_locator_caller(node_t *, const lmchar_t *, const lmchar_t *, opts_t *);
 
 #endif

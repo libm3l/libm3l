@@ -63,7 +63,7 @@
  * function creates the master head node of a specified name
  */
 
-node_t *m3l_Mount(const char *name)
+node_t *m3l_Mount(const lmchar_t *name)
 {
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;

@@ -39,6 +39,6 @@
 #ifndef __CP_LIST_H__
 #define __CP_LIST_H__
 
-extern size_t m3l_cp_caller(node_t **, const char *, const char *, node_t **, const char *, const char *, opts_t *);
+extern lmsize_t m3l_cp_caller(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
 
 #endif

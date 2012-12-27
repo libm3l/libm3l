@@ -46,30 +46,40 @@ typedef union{
 /*
  *  reals
 */
-	float         *f;
-	double        *df;
-	long  double  *ldf;
+	lmfloat_t         	*f;
+	lmdouble_t        	*df;
+	lmlongdouble_t  	*ldf;
 /*
  * chars
  */
-	char           *c;
-	signed char    *sc;
-	unsigned char  *uc;
+	lmchar_t           	*c;
+	lmsignchar_t    	*sc;
+	lmusignchar_t  		*uc;
 /*
  * integers
  */
-	short  int         *si;
-	unsigned short int *usi;
-	int           *i;
-	unsigned int  *ui;
-	long  int     *li;
-	unsigned long int       *uli;
-	long long int           *lli;
-	signed long long int    *slli;
-	unsigned long long  int *ulli;
+// 	short  int         *si;
+// 	unsigned short int *usi;
+// 	int           *i;
+// 	unsigned int  *ui;
+// 	long  int     *li;
+// 	unsigned long int       *uli;
+// 	long long int           *lli;
+// 	signed long long int    *slli;
+// 	unsigned long long  int *ulli;
 
-	size_t *st;
-	ptrdiff_t *ptrdf;
+	lmshint_t		*si;
+	lmushint_t	 	*usi;
+	lmint_t			*i;
+	lmuint_t		*ui;
+	lmlint_t		*li;
+	lmulint_t		*uli;
+	lmllint_t		*lli;
+	lmsllint_t		*slli;
+	lmsllint_t 		*ulli;
+
+	lmsize_t		 *st;
+	lmptrdiff_t		 *ptrdf;
 
 } data_t;
 
@@ -92,17 +102,17 @@ typedef struct node {
  /*
   *  spedifies type of the data set
   */
-	char *type;
+	lmchar_t *type;
  /*
   *  name of the data set
   */ 
-	char *name;
+	lmchar_t *name;
  /*
   * if list contains field, give a number of dimensions (ndim) 
   * and field dimensions (fdim)
   */
-	size_t *fdim;
-	size_t ndim;
+	lmsize_t *fdim;
+	lmsize_t ndim;
 	data_t data;
  /* 
   * pointers to the next list, parent list and child list and if the list is link, the original of the link
@@ -112,9 +122,11 @@ typedef struct node {
   * structure used for linking information, lcounter is a number of linknode array
   */
 	struct find_str **linknode;
-	size_t lcounter;
-	
-	char no_malloc;
+	lmsize_t lcounter;
+ /*
+  * parameter specifying if data.[type] has been malloc'ed lmchar_t != 'n' or not lmchar_t == 'n'
+  */	
+	lmchar_t no_malloc;
 
 }node_t;
 
@@ -128,7 +140,7 @@ typedef struct find_str{
 
 typedef struct find{
 	find_str_t **Found_Nodes;
-	size_t founds; 		/* number of founds */
+	lmsize_t founds; 		/* number of founds */
 	node_t *Home_Node;  	/* node from which the found was originated */
 } find_t;
 

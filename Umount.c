@@ -65,7 +65,7 @@
  * then remove it.
  */
 
-int m3l_Umount(node_t **List)
+lmint_t m3l_Umount(node_t **List)
 {
 /*
  * delete everything in **List node

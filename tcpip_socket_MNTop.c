@@ -55,18 +55,18 @@
 #include "udf_rm.h"
 #include "Mklist.h"
 
-node_t *m3l_ACKN(char *answer)
+node_t *m3l_ACKN(lmchar_t *answer)
 {
 	node_t *Gnode, *TmpNode;
-	size_t *dim;
+	lmsize_t *dim;
 	
-	if(  (Gnode = m3l_Mklist("ackn", "DIR", 0, 0, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
+	if(  (Gnode = m3l_Mklist("ackn", "DIR", 0, 0, (node_t **)NULL, (const lmchar_t *)NULL, (const lmchar_t *)NULL, (lmchar_t *)NULL)) == 0)
 		Perror("m3l_Mklist");
 	
-	dim = (size_t *) malloc( 1* sizeof(size_t));
+	dim = (lmsize_t *) malloc( 1* sizeof(lmsize_t));
 	dim[0] = strlen(answer)+1;
 	
-	if(  (TmpNode = m3l_Mklist("ANSWER", "C", 1, dim, &Gnode, "/ackn", "./", (char *)NULL)) == 0)
+	if(  (TmpNode = m3l_Mklist("ANSWER", "C", 1, dim, &Gnode, "/ackn", "./", (lmchar_t *)NULL)) == 0)
 		Error("m3l_Mklist");
 	TmpNode->data.c = answer;
 	
@@ -118,7 +118,7 @@ node_t *MkTCPIPHeader(opts_t *Popts)
 		   Perror("snprintf");
 	
 	TMPSTR.ndim = 1;
-	if( (TMPSTR.dim=(size_t *)malloc(TMPSTR.ndim * sizeof(size_t))) == NULL)
+	if( (TMPSTR.dim=(lmsize_t *)malloc(TMPSTR.ndim * sizeof(lmsize_t))) == NULL)
 		Perror("malloc");
 	TMPSTR.dim[0]=2;
  /*

@@ -37,9 +37,9 @@
 
 
 #ifndef   __FIND_CALLER_H__
-#define  __FIND_CALLER_H__
+#define   __FIND_CALLER_H__
 
-extern  find_t *m3l_Find_caller(int, node_t *, char *, opts_t *);
+extern  find_t *m3l_Find_caller(lmint_t, node_t *, lmchar_t *, opts_t *);
 extern void m3l_DestroyFound(find_t **);
 
 #endif
