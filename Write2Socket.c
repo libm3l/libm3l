@@ -58,8 +58,8 @@
 #include "NumberConversion.h"
 
 static lmint_t m3l_write_buffer(const lmchar_t *, lmint_t, lmint_t, lmint_t, opts_t *);
-static lmint_t m3l_write_file_data_intdescprt(node_t *, lmsize_t , lmint_t, opts_t *);
-static lmssize_t Write(lmint_t ,  lmsize_t);
+inline static lmint_t m3l_write_file_data_intdescprt(node_t *, lmsize_t , lmint_t, opts_t *);
+inline static lmssize_t Write(lmint_t ,  lmsize_t);
 
 lmchar_t *pc, buffer[MAXLINE];
 lmssize_t bitcount;
@@ -526,11 +526,9 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
 /*
 * SEND TO SOCKET
 */
-// 			if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 			size = strlen(buffer);
 			if ( (n = Write(sockfd,size)) < size)
 				Perror("write()");
-// 			bzero(buffer, sizeof(buffer));
 		}
 		*(buffer+bitcount) = *buff++;
 		bitcount++;
@@ -552,11 +550,9 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
 /*
 * SEND TO SOCKET
 */
-// 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 		size = strlen(buffer);
 		if ( (n = Write(sockfd,size)) < size)
 			Perror("write()");
-// 		bzero(buffer, sizeof(buffer));
 		
 		if(add == 1 ){
 /*
@@ -571,13 +567,10 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
  * this is the end of sending processs, send everything you have in buffer regardless how long it is.
  * The last sequence of the bugger is -EOMB-
  */
-// 		if ( (n = write(sockfd,buffer,strlen(buffer))) < 0)
 		size = strlen(buffer);
 		if ( (n = Write(sockfd,size)) < size)
 			Perror("write()");
-// 		bzero(buffer, sizeof(buffer));
 	}
-	
 	return 1;
 }
 

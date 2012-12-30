@@ -56,6 +56,7 @@
 
 #include "Mv.h"
 #include "FunctionsPrt.h"
+#include "mv_list.h"
 
 
 extern lmint_t optind;

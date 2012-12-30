@@ -56,6 +56,7 @@
 
 #include "Cp.h"
 #include "FunctionsPrt.h"
+#include "cp_list.h"
 
 
 extern lmint_t optind;

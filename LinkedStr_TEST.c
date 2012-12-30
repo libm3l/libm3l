@@ -52,23 +52,26 @@
 /*
  * Array examples
  */
-#include "Header.h"
-#include "format_type.h"
-#include "internal_format_type.h"
+// #include "Header.h"
+// #include "format_type.h"
+// #include "internal_format_type.h"
+// 
+// #include "IO.h"
+// #include "Find.h"
+// #include "Rm.h"
+// #include "Mount.h"
+// #include "Umount.h"
+// #include "Cat.h"
+// #include "tcpip_socket_IOop.h"
+// #include "WriteData.h"
+// #include "FunctionsPrt.h"
+// #include "Locate.h"
+// #include "Cp.h"
+// #include "Mklist.h"
+// #include "Add.h"
+// #include "Ln.h"
 
-#include "IO.h"
-#include "Find.h"
-#include "Rm.h"
-#include "Mount.h"
-#include "Umount.h"
-#include "Cat.h"
-#include "tcpip_socket_IOop.h"
-#include "WriteData.h"
-#include "FunctionsPrt.h"
-#include "Locate.h"
-#include "Cp.h"
-#include "Mklist.h"
-#include "Add.h"
+#include "libm3l.h"
 
 
 lmint_t main(void) 
@@ -113,6 +116,13 @@ lmint_t main(void)
     FILE *fp;
     
     lmchar_t *node_path;
+    
+    
+    lmsize_t maxsize = (lmsize_t)-1;
+    
+//     printf("SIZE is %ld \n ", maxsize);
+//     
+//     exit(0);
     printf("before Going to Fread1\n");
 
     printf("Going to Fread1\n");
@@ -359,8 +369,9 @@ lmint_t main(void)
 // 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (lmchar_t *)NULL);
 
 // 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
-		printf(" Number of empty links is %ud \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (lmchar_t *)NULL));	
-		printf(" Number of empty links is %ud \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (lmchar_t *)NULL));	
+		
+		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (lmchar_t *)NULL));	
+		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (lmchar_t *)NULL));	
 		
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
 

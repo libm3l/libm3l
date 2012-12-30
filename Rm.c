@@ -56,6 +56,7 @@
 
 #include "Rm.h"
 #include "FunctionsPrt.h"
+#include "rm_list.h"
 
 
 extern lmint_t optind;

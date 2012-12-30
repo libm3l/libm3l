@@ -140,7 +140,7 @@
 	#define	lmsllint_t	int64_t		// 	signed long long int 
 	#define	lmullint_t	uint64_t	// 	unsigned long long
 
-	#define	lmsize_t	size_t
+	#define	lmsize_t size_t
 	#define	lmssize_t	ssize_t
 	#define	lmptrdiff_t	ptrdiff_t
 	#define	lmintptr_t	intptr_t
