@@ -244,8 +244,8 @@ lmsize_t m3l_get_Found_number(find_t *Founds){
 /* 
  * pointer to list of found nodes
  */
-find_str_t **m3l_get_Found_nodes(find_t *Founds){
-	return Founds->Found_Nodes;
+node_t *m3l_get_Found_node(find_t *Founds, lmsize_t i){
+	return Founds->Found_Nodes[i]->List;
 }
 /* 
  * return no_malloc option value
