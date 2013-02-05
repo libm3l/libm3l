@@ -933,6 +933,26 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 					init = 1;
 					i=0;
 				}
+/*
+ * did not find beginning of test ie. TEXT_SEPAR_SIGN, try reading file again
+ */
+				if(init == 0){
+					bzero(buff,sizeof(buff));
+					ngotten = 0;
+					if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+						Perror("fread");
+					}
+/*
+ * if End of File, give error message
+ */
+					if(feof(fp)) Error(" fread Error file ends before beginning of text found");
+/*
+ * if no more data available, give error message
+ */					
+					if(ngotten == 0)return -1; /* no more data in buffer */
+					buff[ngotten] = '\0';
+					pc = &buff[0];
+				}
 			}
 /*
  * read until end of buffer or ` symbol
@@ -1007,6 +1027,26 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 					init = 1;
 					i=0;
 				}
+/*
+ * did not find beginning of test ie. TEXT_SEPAR_SIGN, try reading file again
+ */
+				if(init == 0){
+					bzero(buff,sizeof(buff));
+					ngotten = 0;
+					if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+						Perror("fread");
+					}
+/*
+ * if End of File, give error message
+ */
+					if(feof(fp)) Error(" fread Error file ends before beginning of text found");
+/*
+ * if no more data available, give error message
+ */					
+					if(ngotten == 0)return -1; /* no more data in buffer */
+					buff[ngotten] = '\0';
+					pc = &buff[0];
+				}				
 			}
 /*
  * read until end of buffer or ` symbol
@@ -1061,6 +1101,8 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 	}
 	else if ( TMPSTR.Type[0] == 'C'){
 		pdat = (*Lnode)->data.c;
+		
+// 		printf(" Array dimension is %ld \n ", (*Lnode)->fdim[0]);
 /*
  * process buffer, set last char to
  * set init = 0 maning going to read a word, need to find initial ` symbol
@@ -1084,12 +1126,31 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 					init = 1;
 					i=0;
 				}
+/*
+ * did not find beginning of test ie. TEXT_SEPAR_SIGN, try reading file again
+ */
+				if(init == 0){
+					bzero(buff,sizeof(buff));
+					ngotten = 0;
+					if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+						Perror("fread");
+					}
+/*
+ * if End of File, give error message
+ */
+					if(feof(fp)) Error(" fread Error file ends before beginning of text found");
+/*
+ * if no more data available, give error message
+ */					
+					if(ngotten == 0)return -1; /* no more data in buffer */
+					buff[ngotten] = '\0';
+					pc = &buff[0];
+				}
 			}
 /*
  * read until end of buffer or ` symbol
  */			
-			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN){
-				
+			while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN){				
 				*pdat++ = *pc++;
 				i++;
 			}
@@ -1127,7 +1188,7 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 /*
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
-		bzero(buff,sizeof(buff));
+		bzero(buff,sizeof(buff));	
 		if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
 			Perror("fread");
 		}
@@ -1151,14 +1212,13 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 
 lmssize_t Fread(FILE *fp ,lmint_t n)
 {
-
 		if(   (ngotten = fread(buff, sizeof(buff[0]), n, fp))   < MAXLINE-1){
 			if(ferror(fp))
-				Perror("fread");
+				Perror("fread - ferror");
 				return -1;
 		}
 		buff[ngotten] = '\0';
-
+	
 	return ngotten;
 
 }

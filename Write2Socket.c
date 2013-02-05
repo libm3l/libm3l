@@ -61,7 +61,9 @@ static lmint_t m3l_write_buffer(const lmchar_t *, lmint_t, lmint_t, lmint_t, opt
 inline static lmint_t m3l_write_file_data_intdescprt(node_t *, lmsize_t , lmint_t, opts_t *);
 inline static lmssize_t Write(lmint_t ,  lmsize_t);
 
-lmchar_t *pc, buffer[MAXLINE];
+
+#define MAXLINE_OC 100
+lmchar_t *pc, buffer[MAXLINE], OCbuffer[MAXLINE_OC];
 lmssize_t bitcount;
 
 /*
@@ -505,6 +507,8 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
 {
 /*
+ * Function writes chinks of info inbuff to buffer which is MAXLINE long before sending it 
+ * to TCP/IP socket
  * force - parameter forces buffer to be written to 
  * 	socket even if it is not fully used
  * add   - parameter adds separ sing to the end, it is needed when 
@@ -575,7 +579,79 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
 }
 
 
+lmint_t m3l_write_buffer_OC(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
+{
+/* Function writes chinks of info inbuff to OCbuffer which is MAXLINE_OC long before sending it 
+ * to TCP/IP socket. The OCbuffer is then online compressed and send lined up in buffer (m3l_write_buffer function)
+ * force - parameter forces buffer to be written to 
+ * 	socket even if it is not fully used
+ * add   - parameter adds separ sing to the end, it is needed when 
+ * 	chars are written in
+ */
+	lmsize_t i, size;
+	lmssize_t n;
+	     
+	while(*buff != '\0'){
+		if(bitcount == (MAXLINE_OC-1))
+		{
+			*(OCbuffer+bitcount) = '\0';
+			bitcount = 0;
+/*
+* SEND TO SOCKET
+*/
+			size = strlen(OCbuffer);
+
+			if ( (n = Write(sockfd,size)) < size)     
+				Perror("write()");
+		}
+		*(OCbuffer+bitcount) = *buff++;
+		bitcount++;
+	}
+	
+	if(bitcount < (MAXLINE_OC-1) && add == 1){
+/*
+ * add separ sign 
+ * NOTE: make sure that if bitcount here is = MAXLINE_OC-2 and add = force then it adds SEPAR_SIGN here as well
+ */
+		*(OCbuffer+bitcount) = SEPAR_SIGN;
+		bitcount++;
+	}
+	
+	if(bitcount == (MAXLINE_OC-1))
+	{
+		*(OCbuffer+bitcount) = '\0';
+		bitcount = 0;
+/*
+* SEND TO SOCKET
+*/
+		size = strlen(OCbuffer);
+		if ( (n = Write(sockfd,size)) < size)
+			Perror("write()");
+		
+		if(add == 1 ){
+/*
+ * add separ sign 
+ */
+			*(OCbuffer+bitcount) = SEPAR_SIGN;
+			bitcount++;
+		}
+	}
+	else if(force == 1){
+/*
+ * this is the end of sending processs, send everything you have in OCbuffer regardless how long it is.
+ * The last sequence of the bugger is -EOMB-
+ */
+		size = strlen(OCbuffer);
+		if ( (n = Write(sockfd,size)) < size)
+			Perror("write()");
+	}
+	return 1;
+}
+
 lmssize_t Write(lmint_t sockfd,  lmsize_t size){
+/*
+ * write buffer to socket
+ */
 
 	lmssize_t total, n;	
 	total = 0;
