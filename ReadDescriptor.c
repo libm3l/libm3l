@@ -713,7 +713,7 @@ againUC:
 /*
  * if End of File, give error message
  */
-					if(feof(fp) && ngotten < 0){
+					if(feof(fp) && ngotten == 0){
 						printf("Buffer '%s'\n", buff);
 						printf("Data set %s (%s): string: '%s'\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
 						Error("m3l_read_file_data_charline Error: beginning of text (TEXT_SEPAR_SIGN) not found"); 
@@ -817,7 +817,7 @@ againSC:
 /*
  * if End of File, give error message
  */
-					if(feof(fp) && ngotten < 0){
+					if(feof(fp) && ngotten == 0){
 						printf("Buffer '%s'\n", buff);
 						printf("Data set %s (%s): string: '%s'\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
 						Error("m3l_read_file_data_charline Error: beginning of text (TEXT_SEPAR_SIGN) not found"); 
@@ -924,7 +924,7 @@ againC:
 /*
  * if End of File, give error message
  */
-					if(feof(fp) && ngotten < 0){
+					if(feof(fp) && ngotten == 0){
 						printf("Buffer '%s'\n", buff);
 						printf("Data set %s (%s): string: '%s'\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
 						Error("m3l_read_file_data_charline Error: beginning of text (TEXT_SEPAR_SIGN) not found"); 
