@@ -246,7 +246,7 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 							while(*pc != '\0' && tmpi++ < 100)
 								printf("%c", *pc++);
 							printf("\n");
-							exit(0);
+// 							exit(0);
 						}
 /*
  * reading of the main node succesfully finished, return
@@ -654,239 +654,6 @@ lmint_t m3l_read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, op
 }
 
 
-
-
-
-// int m3l_read_file_data_line1(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
-// {
-// /* 
-//  * function reads data from FILE
-//  */
-// 	lmchar_t type[MAX_WORD_LENGTH], lastchar;
-// 	lmsize_t i, tot_dim, wc, hi, j;
-// 	
-// 	float         *pf;
-// 	double        *pdf;
-// 	long  double  *pldf;
-// /*
-//  * chars
-//  */
-// 	lmchar_t           *err;
-// /*
-//  * integers
-//  */
-// 	short  int         	*psi;
-// 	unsigned short int 	*pusi;
-// 	int           		*pi;
-// 	unsigned int  		*pui;
-// 	long  int     		*pli;
-// 	unsigned long int       *puli;	
-// 	long long int           *plli;
-// 	signed long long int    *pslli;
-// 	unsigned long long int  *pulli;
-// 
-// 	lmsize_t *pst;
-// 	ptrdiff_t *pptrdf;
-// 	
-// 	tot_dim = 1;
-// 	
-// 	for(i=0; i<TMPSTR.ndim; i++)
-// 		tot_dim = tot_dim * TMPSTR.dim[i];
-// /*
-//  * decide what type 
-//  */	
-//  	if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
-//  		pldf = (*Lnode)->data.ldf;
-//  	}
-//  	else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
-//  		pdf = (*Lnode)->data.df;
-//  	}
-//  	else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
-//  		pf = (*Lnode)->data.f;
-//  	}
-// /*
-//  * integers
-//  */
-// 	else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
-// 		pulli = (*Lnode)->data.ulli;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
-// 		pslli = (*Lnode)->data.slli;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
-// 		puli = (*Lnode)->data.uli;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
-// 		plli = (*Lnode)->data.lli;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
-// 		pusi = (*Lnode)->data.usi;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
-// 		psi = (*Lnode)->data.si;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
-// 		pui = (*Lnode)->data.ui;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
-// 		pli = (*Lnode)->data.li;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
-// 		pi = (*Lnode)->data.i;
-// 	}
-// /*
-//  * counters
-//  */
-// 	else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* lmsize_t */
-// 		pst = (*Lnode)->data.st;
-// 	}
-// 	else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-// 		pptrdf = (*Lnode)->data.ptrdf;
-// 	}
-// /*
-//  * process buffer
-//  */
-// 	while(*pc != '\0') /*  while(ngotten) */
-// 	{
-// 		bzero(type,sizeof(type));
-// 		i = 0;
-// 		wc = 0;
-// 		lastchar = '\0';
-// /*
-//  * read until the end of string
-//  */
-// 		while(*pc != '\0'){
-// 			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
-// 				type[i++] = *pc++;				
-// /*
-//  * if number of chars in one word exceeds limit, print warning
-//  */
-// 				if(i == (MAX_WORD_LENGTH-1))
-// 					Perror("read_socket - word too long");
-// 			}
-// 			type[i] = '\0';
-// 
-// /*
-//  * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
-//  * otherwise the buffer ended in the middle of word
-//  */
-// 			if(*pc == '\0'){
-// 				hi =0;
-// 			}
-// 			else
-// 			{
-// 				hi = 1;
-// 			}
-// 
-// 			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
-// 				
-// 			
-// 			if ( *(pc+hi) == '\0'){
-// /*
-//  * read next chunk of text file, complete the word by the rest from next chunk
-//  */
-// 				bzero(buff,sizeof(buff));
-// 				ngotten = 0;
-// 				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
-// 						Perror("fread");
-// 				}
-// 
-// 				buff[ngotten] = '\0';
-// 
-// 				pc = &buff[0];
-// 				
-// 				if(LASTEXPR) continue;
-// 			}
-// /*
-//  * if word is longer then 0
-//  */			
-// 			if(strlen(type) >0){
-//  				wc++;
-// /*
-//  * get the value
-//  */
-// 				if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
-// 				*pldf++ = FCS_C2LD(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
-// 					*pdf++ = FCS_C2D(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
-// 					*pf++ = FCS_C2F(type, &err);
-// 				}
-// /*
-//  * integers2
-//  */
-// 				else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
-// 					*pslli++ = (unsigned long long int)FCS_C2LLI(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long int */
-// 					*pslli++ = (signed long long int)FCS_C2LLI(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
-// 					*plli++ = FCS_C2LLI(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
-// 					*puli++ = (unsigned long int)FCS_C2LI(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
-// 					*pusi++ = (unsigned short int)FCS_C2I(type);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
-// 					*psi++ = (signed int)FCS_C2I(type);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
-// 					*pui++ = (unsigned int)FCS_C2I(type);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
-// 					*pli++ = FCS_C2LI(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
-// 					*pi++ = FCS_C2I(type);
-// 				}
-// /*
-//  * counters
-//  */
-// 				else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* lmsize_t */
-// 					*pst++ = FCS_C2LLI(type, &err);
-// 				}
-// 				else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
-// 					*pptrdf++ = FCS_C2LLI(type, &err);
-// 				}
-// /*
-//   * end of reading the line, number of words is the same as required, return succes
-//   */
-// 				if( wc == tot_dim ) return 0;
-// 			}
-// 
-// 			if(IFEXPR) pc++;
-// 			bzero(type,sizeof(type));
-// 			i = 0;
-// 			lastchar = '\0';
-// 		}
-// 	}
-// /*
-//  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
-//  */
-// 	bzero(buff,sizeof(buff));
-// 	if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
-// 		Perror("fread");
-// 		return 0;
-// 	}
-// 	buff[ngotten] = '\0';
-// 	pc = &buff[0];
-// 	if( m3l_read_file_data_line(Lnode, TMPSTR, fp, Popts) != 0){
-// 		Error("Error reading data");
-// 		return -1;
-// 	}
-// 	
-// 	return 0;
-// /*
-//   * if you get here something went wrong
-//   */	
-// 	return -1;
-// }
-
 lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp)
 {
 /* 
@@ -923,6 +690,7 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
 			if(init == 0){
+againUC:
 				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
 /*
  * once at `, disregard it and put init =1
@@ -945,13 +713,22 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 /*
  * if End of File, give error message
  */
-					if(feof(fp)) Error(" fread Error file ends before beginning of text found");
+					if(feof(fp) && ngotten < 0){
+						printf("Buffer '%s'\n", buff);
+						printf("Data set %s (%s): string: '%s'\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
+						Error("m3l_read_file_data_charline Error: beginning of text (TEXT_SEPAR_SIGN) not found"); 
+						return -1;
+					}
 /*
  * if no more data available, give error message
- */					
+ */										
 					if(ngotten == 0)return -1; /* no more data in buffer */
 					buff[ngotten] = '\0';
 					pc = &buff[0];
+/*
+ * the initial TEXT_SEPAR_SIGN not found, init == 0, attemt another reading
+ */
+					goto againUC;
 				}
 			}
 /*
@@ -1017,6 +794,7 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
 			if(init == 0){
+againSC:
 				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN && i++ < tot_dim)pc++;
 /*
  * once at `, disregard it and put init =1
@@ -1039,13 +817,22 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 /*
  * if End of File, give error message
  */
-					if(feof(fp)) Error(" fread Error file ends before beginning of text found");
+					if(feof(fp) && ngotten < 0){
+						printf("Buffer '%s'\n", buff);
+						printf("Data set %s (%s): string: '%s'\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
+						Error("m3l_read_file_data_charline Error: beginning of text (TEXT_SEPAR_SIGN) not found"); 
+						return -1;
+					}
 /*
  * if no more data available, give error message
- */					
+ */										
 					if(ngotten == 0)return -1; /* no more data in buffer */
 					buff[ngotten] = '\0';
 					pc = &buff[0];
+/*
+ * the initial TEXT_SEPAR_SIGN not found, init == 0, attemt another reading
+ */
+					goto againSC;
 				}				
 			}
 /*
@@ -1101,8 +888,6 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 	}
 	else if ( TMPSTR.Type[0] == 'C'){
 		pdat = (*Lnode)->data.c;
-		
-// 		printf(" Array dimension is %ld \n ", (*Lnode)->fdim[0]);
 /*
  * process buffer, set last char to
  * set init = 0 maning going to read a word, need to find initial ` symbol
@@ -1116,6 +901,7 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
  * if reading the very begining of the text, disregard everything before \`\ symbol
  */
 			if(init == 0){
+againC:				
 				while(*pc != '\0' && *pc != TEXT_SEPAR_SIGN)pc++;
 /*
  * once at `, disregard it and put init =1
@@ -1138,13 +924,22 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 /*
  * if End of File, give error message
  */
-					if(feof(fp)) Error(" fread Error file ends before beginning of text found");
+					if(feof(fp) && ngotten < 0){
+						printf("Buffer '%s'\n", buff);
+						printf("Data set %s (%s): string: '%s'\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c);
+						Error("m3l_read_file_data_charline Error: beginning of text (TEXT_SEPAR_SIGN) not found"); 
+						return -1;
+					}
 /*
  * if no more data available, give error message
- */					
+ */										
 					if(ngotten == 0)return -1; /* no more data in buffer */
 					buff[ngotten] = '\0';
 					pc = &buff[0];
+/*
+ * the initial TEXT_SEPAR_SIGN not found, init == 0, attemt another reading
+ */
+					goto againC;
 				}
 			}
 /*
@@ -1157,7 +952,7 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 /*
  * find why while was left
  */
-			if(*pc == '\0'){	
+			if(*pc == '\0'){
 				bzero(buff,sizeof(buff));
 				ngotten = 0;
 				if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
@@ -1176,7 +971,7 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
  * check that string dimentions are correct
  */
 				if( i != tot_dim ){
-					printf("Data set %s (%s): string: %s    DIAG: %ld   %ld\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c, i, tot_dim);
+					printf("Data set %s (%s): string: '%s'  DIAG: %ld   %ld\n", (*Lnode)->name,  (*Lnode)->type, (*Lnode)->data.c, i, tot_dim);
 					Error("Mismatch in string length");
 					return -1;
 				}
