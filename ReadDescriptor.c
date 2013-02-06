@@ -1093,5 +1093,18 @@ lmint_t CheckEOFile(FILE *fp){
 		}
 	}
 	
+	if( feof(fp) && *pc == '\0' ) 
+		return 1;
+	else if( feof(fp)){
+/*
+ * buffer still contains additional info, and end of file was reached, give back error message
+ */
+		tmpi = 0;
+		printf("\n  WARNING - end of file not reached, remaining part of the file starts with\n");
+		while(*pc != '\0' && tmpi++ < 100)
+		printf("%c", *pc++);
+		printf("\n");
+		return 0;
+	}
 	return 0;
 }
