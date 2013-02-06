@@ -69,6 +69,7 @@ static lmint_t m3l_read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
 static node_t *m3l_read_file_dir_data(tmpstruct_t , FILE *f, opts_t *);
 static node_t *m3l_read_file_data(FILE *f, opts_t *);
 static lmssize_t Fread(FILE * ,lmint_t);
+static lmint_t CheckEOFile(FILE *);
 
 lmchar_t *pc, buff[MAXLINE];
 lmsize_t ngotten;
@@ -230,24 +231,28 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 
 					if( (Dnode = m3l_read_file_dir_data(TMPSTR, fp, Popts)) == NULL)
 						Perror("ReadDirData - ReadDir");
+					
+					if(CheckEOFile(fp) == 0){
+						Error(" ReadDescriptor: End of file not reached\n");
+					}
 /*
  * check if now additional data in the file
  * disregard possible spaces, tabs, newlines at the end of file
  */
-						while(IFEXPR) pc++;
+// 						while(IFEXPR) pc++;
 						
 /*
  * check if at the end of file was reached, if not give warning
  */
-						if( !feof(fp) || *pc != '\0' ){
-						
-							tmpi = 0;
-							printf("\n  WARNING - end of file not reached \n  Remaining part of the file starts at\n");
-							while(*pc != '\0' && tmpi++ < 100)
-								printf("%c", *pc++);
-							printf("\n");
-// 							exit(0);
-						}
+// 						if( !feof(fp) || *pc != '\0' ){
+// 						
+// 							tmpi = 0;
+// 							printf("\n  WARNING - end of file not reached \n  Remaining part of the file starts at\n");
+// 							while(*pc != '\0' && tmpi++ < 100)
+// 								printf("%c", *pc++);
+// 							printf("\n");
+// // 							exit(0);
+// 						}
 /*
  * reading of the main node succesfully finished, return
  */
@@ -1016,4 +1021,77 @@ lmssize_t Fread(FILE *fp ,lmint_t n)
 	
 	return ngotten;
 
+}
+
+/*
+ * function check the end of filed
+ */
+lmint_t CheckEOFile(FILE *fp){
+	lmsize_t tmpi;
+/*
+ * get rid of all null spaces, tabs, newlines etc.
+ */
+	while(IFEXPR) pc++;
+/*
+ * check if at the end of file was reached, if not give warning
+ */
+	if( feof(fp) && *pc == '\0' ) 
+		return 1;
+	else if( feof(fp)){
+/*
+ * buffer still contains additional info, and end of file was reached, give back error message
+ */
+		tmpi = 0;
+		printf("\n  WARNING - end of file not reached, remaining part of the file starts with\n");
+		while(*pc != '\0' && tmpi++ < 100)
+		printf("%c", *pc++);
+		printf("\n");
+		return 0;
+	}
+	else if( *pc == '\0'){
+/*
+ * EOF file not reached, end of buffer reached, read again
+ */
+		bzero(buff, strlen(buff));
+		ngotten = 0;
+		if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+			Perror("fread");
+		}
+		buff[ngotten] = '\0';		
+		pc = &buff[0];
+	}
+/*
+ * process the string, in case it returned anything
+ */
+	while(*pc != '\0'){
+		
+		while(IFEXPR) pc++;
+/*
+ * check if at the end of file was reached, if not give warning
+ */
+		if( feof(fp) && *pc == '\0' ) return 1;
+	
+		if( feof(fp)){
+/*
+ * buffer still contains additional info, and end of file was reached, give back error message
+ */
+			tmpi = 0;
+			printf("\n  WARNING - end of file not reached, remaining part of the file starts with\n");
+			while(*pc != '\0' && tmpi++ < 100)
+			printf("%c", *pc++);
+			printf("\n");
+			return 0;
+		}
+		else if(*pc == '\0' ) {
+			bzero(buff, strlen(buff));
+			ngotten = 0;
+			if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+				Perror("fread");
+			}
+			buff[ngotten] = '\0';		
+			pc = &buff[0];
+		}
+	}
+	
+	return 0;
 }

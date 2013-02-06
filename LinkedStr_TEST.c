@@ -140,10 +140,10 @@ lmint_t main(void)
 		
 		printf(" CYCLE %d\n\n", j);
 
-//  		if( (Gnode = m3l_Fread("ADA1" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
-//  			Perror("Linked_test: m3l_Fread");
-		if( (Gnode = m3l_Fread("Definition_File" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
- 			Perror("Linked_test: m3l_Fread");		
+ 		if( (Gnode = m3l_Fread("ADA1" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
+ 			Perror("Linked_test: m3l_Fread");
+		/*if( (Gnode = m3l_Fread("Definition_File" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
+ 			Perror("Linked_test: m3l_Fread");	*/	
 // 		m3l_Fwrite(Gnode, "ADA", (lmchar_t *)NULL);
 // 		printf("\n\n\n\n");
 // 		exit(0);
