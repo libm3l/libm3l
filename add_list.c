@@ -156,10 +156,10 @@ lmint_t m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 /*
  * check that the list does not have parent
  */
-	if( (*List)->parent != NULL){;
-		Warning("add_list: list already a member");
-		return -1;
-	}
+// 	if( (*List)->parent != NULL){;
+// 		Warning("add_list: list already a member");
+// 		return -1;
+// 	}
 
 	if((*WTAList) == NULL){
 /*
