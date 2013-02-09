@@ -49,6 +49,8 @@
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/cat_list.h"
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Cp.h"
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/cp_list.h"
+#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Detach.h"
+#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/detach_list.h"
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Find.h"
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/find_list.h"
 #include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/format_type.h"
