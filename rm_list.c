@@ -71,6 +71,11 @@ lmsize_t m3l_rm_caller(node_t **List, const lmchar_t *path, const lmchar_t *path
 	lmsize_t i, rm_tot_nodes, rm_nodes;
 	find_t *Founds;
 	lmint_t init_call;
+	
+	if( (*List) == NULL){
+		Warning("rm_list: NULL list");
+		return 0;
+	}
 /*
  * call locator to locate nodes to be deleted
  */

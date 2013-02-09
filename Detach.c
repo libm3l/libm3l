@@ -61,7 +61,7 @@ static lmint_t verbose_flag;
 /*
  * routine finds the list
  */
-find_t *m3l_Deattach(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, lmchar_t * Options, ...)
+find_t *m3l_Detach_List(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, lmchar_t * Options, ...)
 {
 	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
@@ -72,8 +72,7 @@ find_t *m3l_Deattach(node_t **List, const lmchar_t *path, const lmchar_t *path_l
 	
 	find_t *Deattach_Nodes;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0'; opts.opt_l = '\0';
-	opts.opt_linkscleanemptrefs = '\0'; 
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_L = '\0'; opts.opt_l = '\0';
 	
 	option_index = 0;
 /*
@@ -242,7 +241,7 @@ find_t *m3l_Deattach(node_t **List, const lmchar_t *path, const lmchar_t *path_l
  */
 	Popts = &opts;
 	
-// 	Deattach_Nodes = m3l_rm_caller(List, path, path_loc, Popts);
+ 	Deattach_Nodes = m3l_detach_caller(List, path, path_loc, Popts);
 
 	return Deattach_Nodes;
 }

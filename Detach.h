@@ -40,6 +40,6 @@
 #ifndef __DETACH_H__
 #define __DETACH_H__
 
-extern find_t *m3l_Detach(node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
+extern find_t *m3l_Detach_List(node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

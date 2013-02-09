@@ -60,12 +60,12 @@
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
  * called recursivelly
- * upon return, returns number of deleted lists, upon failure returns -1
+ * upon return, returns number of detached lists in find_t structure, upon failure returns NULL
  */
 
 find_t *m3l_detach_caller(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
-	lmsize_t i, detached_tot_nodes, detached_nodes;
+	lmsize_t i, detached_nodes;
 	find_t *Founds;
 	lmint_t init_call;
 /*
@@ -85,7 +85,7 @@ find_t *m3l_detach_caller(node_t **List, const lmchar_t *path, const lmchar_t *p
 			return NULL;
 		}
 				
-		detached_tot_nodes = 0;
+		detached_nodes = 0;
 		
 		for(i=0; i< Founds->founds; i++){
 						
@@ -97,7 +97,7 @@ find_t *m3l_detach_caller(node_t **List, const lmchar_t *path, const lmchar_t *p
 			}
 		}
 		
-		if(detached_tot_nodes != Founds->founds){
+		if(detached_nodes != Founds->founds){
 			printf("Number of detached nodes: %ld \n",detached_nodes);
 			printf("Number of nodes nodes indentified for detaching: %ld \n",Founds->founds);
 			Warning("Detach_list: number of detached nodes different from number of identified nodes");
@@ -140,7 +140,7 @@ lmsize_t m3l_detach_list(lmint_t call, node_t **List, opts_t *Popts)
 	CLD  =  (*List)->child;
 	NEXT =  (*List)->next;
 	PREV =  (*List)->prev;
-	CURR = (*List);
+	CURR =  (*List);
 
 	if(PREV == NULL && NEXT == NULL){
 /*
@@ -184,12 +184,12 @@ lmsize_t m3l_detach_list(lmint_t call, node_t **List, opts_t *Popts)
 /*
  * now detach node - set its parent, prev and next to NULL
  */
-		(*List)->parent == NULL
-		(*List)->prev   == NULL
-		(*List)->next   == NULL
+		(*List)->parent = NULL;
+		(*List)->prev   = NULL;
+		(*List)->next   = NULL;
 
 /*
- * return value 1 meanign one deleted node
+ * return value 1 meaning one detached node
  */
 		return 1;
 }
