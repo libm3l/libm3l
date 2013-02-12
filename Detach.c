@@ -21,13 +21,11 @@
 
 
 /*
- *     Function Cp.c
+ *     Function Detach.c
  *
- *     Date: 2012-07-01
+ *     Date: 2013-02-09
  * 
  * 
- *
- *
  *     Description:
  * 
  *
@@ -43,9 +41,8 @@
  *
  *
  *     Description
- *
+ * 
  */
-
 
 
 
@@ -54,46 +51,36 @@
 #include "format_type.h"
 #include "internal_format_type.h"
 
-#include "Cp.h"
+#include "Detach.h"
 #include "FunctionsPrt.h"
-#include "cp_list.h"
+// #include "deattach_list.h"
 
 
 extern lmint_t optind;
 static lmint_t verbose_flag;
-
 /*
- * routine copies Slist to Tlist
+ * routine finds the list
  */
-size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, lmchar_t * Options, ...)
+find_t *m3l_Detach_List(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, lmchar_t * Options, ...)
 {
-
 	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
-	size_t args_num, len, i, cp_tot_nodes;
+	lmsize_t args_num, len, i;
 	va_list args;
-	lmint_t c, init_call;
+	lmint_t c;
 	lmint_t option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
-	opts.opt_L = '\0'; opts.opt_nomalloc = '\0'; opts.opt_add = '\0';
+	find_t *Deattach_Nodes;
 	
-	// opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_L = '\0'; opts.opt_l = '\0';
 	
 	option_index = 0;
-	cp_tot_nodes=0;
-	init_call = 2;
 /*
  * check if data set exists
  */
-	if((*SList) == NULL){
-		Warning("Cp: NULL source list");
-		return -1;
-	}
-	
-	if(*TList == NULL){
-		Warning("Cp: NULL target list");
-		return -1;
+	if(*List == NULL){
+		Warning("Deattach: NULL list");
+		return NULL;
 	}
 /*
  * get number of options
@@ -152,19 +139,18 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 		{
 			static struct option long_options[] =
 			{
-				{"add",     	no_argument,       0, 'a'},
-				{"ignore",     no_argument,       0, 'i'},
-				{"DIR",        no_argument,       0, 'd'},
-				{"FILE",       no_argument,       0, 'f'},
-				{"LINK",       no_argument,       0, 'l'},
-				{"IGNORE",     no_argument,       0, 'I'},
-				{"link",       no_argument,       0, 'L'},  /* search in linked targets */
+				{"ignore",     no_argument,       0, 'i'},   /* ignore case */
+				{"DIR",        no_argument,       0, 'd'},   /* look fir DIR only */
+				{"FILE",       no_argument,       0, 'f'},   /* look for FILE only */
+				{"LINK",       no_argument,       0, 'l'},   /* look fir LINK only */
+				{"IGNORE",     no_argument,       0, 'I'},   /* all but search term */
+				
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "adfiklLI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "dfiIklr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -183,20 +169,13 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 						printf (" with arg %s", optarg);
 					printf ("\n");
 					break;
-
-				case 'a':
-/*
- * add case - if target name already exist and option is specified, do not overwrite it, add a new item with the same name
- */
-					opts.opt_add = 'a';
-				break;
+				
 				case 'i':
 /*
  * ignore case
  */
 					opts.opt_i = 'i';
-				break;
-
+				break; 
 				case 'I':
 /*
  * ignore name
@@ -223,12 +202,8 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 				case 'l':
 					opts.opt_l = 'l';
 				break;
-/*
- * dereference link
- */
-				case 'L':
-					opts.opt_L = 'L';
-				break;
+
+				case '?':
 /* 
  * Error, getopt_long already printed an error message
  */
@@ -249,7 +224,7 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
  */
 		if( opts.opt_d == 'd' && opts.opt_f == 'f'){
 			Warning("Incompatible options -d -f");
-			return -1;
+			return NULL;
 		}	
 	}
 	else
@@ -266,8 +241,7 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
  */
 	Popts = &opts;
 	
- 	cp_tot_nodes = m3l_cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	Deattach_Nodes = m3l_detach_caller(List, path, path_loc, Popts);
 
-
-	return cp_tot_nodes;
+	return Deattach_Nodes;
 }

@@ -49,6 +49,8 @@
 #include "ActualPWD/cat_list.h"
 #include "ActualPWD/Cp.h"
 #include "ActualPWD/cp_list.h"
+#include "ActualPWD/Detach.h"
+#include "ActualPWD/detach_list.h"
 #include "ActualPWD/Find.h"
 #include "ActualPWD/find_list.h"
 #include "ActualPWD/format_type.h"

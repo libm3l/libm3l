@@ -15,13 +15,13 @@ LFLAGS = -fbounds-check -fstack-check -g
 # link
 #
 main: $(OBJS)
-	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS) 
-	ln -sf libm3l.so.1.0 libm3l.so
 
 	set PWD=`pwd`
 	cp libm3l.org_h libm3l.h
 	sed -i 's:ActualPWD:'$$PWD':' libm3l.h
 
+	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS) 
+	ln -sf libm3l.so.1.0 libm3l.so
 
 	gcc -g -o LinkedStr_TEST.out LinkedStr_TEST.c  -L$(PATHL)  -lm3l -Wl,-rpath=$(PATHL)
 
@@ -37,3 +37,7 @@ main: $(OBJS)
 	@rm -f $*.d.tmp
 clean:
 	rm -f LinkedStr_TEST.out *.o *.d
+Hfile:
+	set PWD=`pwd`
+	cp libm3l.org_h libm3l.h
+	sed -i 's:ActualPWD:'$$PWD':' libm3l.h

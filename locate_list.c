@@ -90,7 +90,7 @@ find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *p
  * set initial node, if path contains ../ go to higher lever
  */
 	Tmp_node = List;
-
+	
 	if(parsed_path->abspath == 'A'){
 		
 		while(Tmp_node->parent != NULL)Tmp_node = Tmp_node->parent;
@@ -133,7 +133,7 @@ find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *p
 	if ( (Founds = m3l_Find_caller(2, Tmp_node, search_term, Popts)) == NULL){
 		free(search_term);
 		m3l_destroy_pars_path(&parsed_path);
-		/*Warning*/("Locator: No Founds");
+//  		Warning("Locator: No Founds");
 		return (find_t *)NULL;
 	}
 	else
@@ -148,6 +148,7 @@ find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *p
 			Error("Path2 failed");
 			return (find_t *)NULL;
 		}
+		
 		if(parsed_path->seg_count != parsed_path_loc->seg_count){
 			m3l_destroy_pars_path(&parsed_path_loc);
 			free(search_term);
@@ -195,7 +196,9 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
 		Perror("malloc");
 	
 	for(i=0; i < Founds->founds; i++){
-  		
+/*
+ * define path of the found node i
+ */		
 		if( (node_path = m3l_Path(Founds->Found_Nodes[i]->List, Founds->Home_Node)) == NULL){
 			Error(" Path error");
 			m3l_destroy_pars_path(&parsed_path_loc);
@@ -206,6 +209,9 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
 			free(parsed_path_Ffounds);
 			return (find_t *)NULL;
 		}
+/*
+ * parse the path
+ */		
 		if( (parsed_path_Ffounds[i] =  m3l_parse_path(node_path)) == NULL){
 			Error(" Path error");
 			m3l_destroy_pars_path(&parsed_path_loc);
@@ -217,7 +223,7 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
 			return (find_t *)NULL;
 		}
 /*
- * compare number of segments of path to loopup path
+ * compare number of segments of path to lookup path
  * if different, exclude element from further testing
  */
 		if(parsed_path_Ffounds[i]->seg_count == parsed_path_loc->seg_count){
@@ -238,7 +244,7 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
 	Tmppar  = Founds->Found_Nodes[0]->List->parent;
 	Tm_prev = Founds->Found_Nodes[0]->List;
 	counter = 1;
-
+	
 	for(i=0; i<parsed_path_loc->seg_count; i++){
 /*
  * get arguments for path segment
@@ -259,7 +265,7 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
  * loop over founds and check for match, If HelpNodeI == 0, the node is already marked as negative match
  */
 		for(j = 0; j< Founds->founds; j++){
-
+			
 			if( HelpNodeI[j] == 1){
 /*
  * node is considered as possible match
@@ -279,7 +285,7 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
  */	
 					len1 = strlen(parsed_path->path[i]);
 					len2 = strlen(parsed_path_Ffounds[j]->path[i]);
-					
+										
 					if( (len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0) || 
 					    (strncmp(parsed_path->path[i], ".", 1) == 0 && len1 == 1 && i == 0) ||
 					    (strncmp(parsed_path->path[i], "~", 1) == 0	&& i == 0)){
@@ -309,10 +315,6 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
 								Tm_prev = Tmp;
 							}
 						}
-					
-// 					printf(" Argument to comapre are '%s' \n",argsstr.args); 
-// 					printf(" Name Argument to comapre are '%c' \n",argsstr.arg); 
-
 					
 						HelpNodeI[j]  = m3l_match_test(Tmp,argsstr, counter);
 /*

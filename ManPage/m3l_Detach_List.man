@@ -1,0 +1,52 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2012" libm3l "User Manuals"
+.SH NAME
+m3l_Detach_list \- detaches list(s) from list tree
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B find_t m3l_Detach_list
+(node_t **List, const char *path, const char *path_loc, char * Options, ...)
+
+
+.SH DESCRIPTION
+.B m3l_Detach_list
+detaches list(s) from a list tree 
+.B List 
+Path and location of list to be removed is specified by
+.B path
+and 
+.B path_loc
+
+.
+
+.SH OPTIONS
+Look for DIRs only
+.IP "-d --DIR"
+Look for DIRs only
+.IP "-f --FILE"
+Look for FILEs only
+.IP "-i --ignore"
+ignore case
+.IP "-I --IGNORE"
+select all but specified files
+.IP "-l --LINK"
+Look for LINKs only
+
+.SH RETURN VALUE
+Upon successful completion m3l_Detach_list will return find_t strucutre containing detached lists. 
+If return value is NULL, no lists were detached. 
+
+.SH ERRORS
+The m3l_Detach_list function fails if malloc/realloc fails
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR m3l_detach_list 

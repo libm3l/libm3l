@@ -93,7 +93,7 @@ void sig_chld(lmint_t signo)
 
 /*
  *
-  */
+ */
 lmint_t Fork(void)
 {
 	lmint_t childpid;
@@ -454,7 +454,6 @@ path_t *m3l_parse_path(const lmchar_t *path)
  * parse the path
  */
 	pc = path;
-
 	while( *pc == '\t' || *pc == ' ' &&  *pc != '\0') pc++;
 /*
  * path starts with /
@@ -470,6 +469,11 @@ path_t *m3l_parse_path(const lmchar_t *path)
 // 		counter = 0;
 // 		pc++;
 // 	}
+	else if(*pc == '.'){
+		counter = 0;
+		pc++;
+		abspath = 'R';
+	}
 /*
  * path starts with ~/   - Absolute path
  */	
@@ -479,8 +483,8 @@ path_t *m3l_parse_path(const lmchar_t *path)
 	}	
 	else{
 		counter = 1;
-	}
-
+	}	
+		
 	while(*pc != '\0'){
 /*
  * if symbol is / and not the end of the string 
@@ -503,7 +507,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
 				break;
 			}
 		}
-	}
+	}	
 /*
  * allocate array for words in path
  */
@@ -531,7 +535,11 @@ path_t *m3l_parse_path(const lmchar_t *path)
  * store individual words in array
  */
 	pc = path;
-		
+/*
+ * get rid of tabs, spaces, and dots, must be the same as at the begining of this function
+ */
+	while( *pc == '\t' || *pc == ' ' || *pc == '.'  &&  *pc != '\0') pc++;	
+	
 	if(*pc == '/' && *pc != '\0'){
 		pc++;
 	}

@@ -71,6 +71,11 @@ lmsize_t m3l_rm_caller(node_t **List, const lmchar_t *path, const lmchar_t *path
 	lmsize_t i, rm_tot_nodes, rm_nodes;
 	find_t *Founds;
 	lmint_t init_call;
+	
+	if( (*List) == NULL){
+		Warning("rm_list: NULL list");
+		return 0;
+	}
 /*
  * call locator to locate nodes to be deleted
  */
@@ -92,7 +97,7 @@ lmsize_t m3l_rm_caller(node_t **List, const lmchar_t *path, const lmchar_t *path
  * remove entire list tree. In that case put *List = NULL
  * identical to Umount
  */
-			if(Founds->founds == 1 && Founds->Found_Nodes[0]->List == (*List)) (*List) = NULL;
+// 			if(Founds->founds == 1 && Founds->Found_Nodes[0]->List == (*List)) (*List) = NULL;
 		}
 				
 		rm_tot_nodes = 0;
@@ -105,7 +110,13 @@ lmsize_t m3l_rm_caller(node_t **List, const lmchar_t *path, const lmchar_t *path
 			else{
 				rm_tot_nodes += rm_nodes;
 			}
-		}				
+		}
+/* 
+ * if number of founds = 1 and found list is idenital to List and no keep_headnode specified,
+ * remove entire list tree. In that case put *List = NULL
+ * identical to Umount
+ */
+		if(Founds->founds == 1 && Founds->Found_Nodes[0]->List == (*List)  && Popts->opt_k != 'k') (*List) = NULL;		
 				
 		m3l_DestroyFound(&Founds);
 		return rm_tot_nodes;

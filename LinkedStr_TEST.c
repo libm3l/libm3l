@@ -52,23 +52,26 @@
 /*
  * Array examples
  */
-#include "Header.h"
-#include "format_type.h"
-#include "internal_format_type.h"
+// #include "Header.h"
+// #include "format_type.h"
+// #include "internal_format_type.h"
+// 
+// #include "IO.h"
+// #include "Find.h"
+// #include "Rm.h"
+// #include "Mount.h"
+// #include "Umount.h"
+// #include "Cat.h"
+// #include "tcpip_socket_IOop.h"
+// #include "WriteData.h"
+// #include "FunctionsPrt.h"
+// #include "Locate.h"
+// #include "Cp.h"
+// #include "Mklist.h"
+// #include "Add.h"
+// #include "Ln.h"
 
-#include "IO.h"
-#include "Find.h"
-#include "Rm.h"
-#include "Mount.h"
-#include "Umount.h"
-#include "Cat.h"
-#include "tcpip_socket_IOop.h"
-#include "WriteData.h"
-#include "FunctionsPrt.h"
-#include "Locate.h"
-#include "Cp.h"
-#include "Mklist.h"
-#include "Add.h"
+#include "libm3l.h"
 
 
 lmint_t main(void) 
@@ -113,6 +116,13 @@ lmint_t main(void)
     FILE *fp;
     
     lmchar_t *node_path;
+    
+    
+    lmsize_t maxsize = (lmsize_t)-1;
+    
+//     printf("SIZE is %ld \n ", maxsize);
+//     
+//     exit(0);
     printf("before Going to Fread1\n");
 
     printf("Going to Fread1\n");
@@ -132,7 +142,8 @@ lmint_t main(void)
 
  		if( (Gnode = m3l_Fread("ADA1" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
  			Perror("Linked_test: m3l_Fread");
-		
+		/*if( (Gnode = m3l_Fread("Definition_File" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
+ 			Perror("Linked_test: m3l_Fread");	*/	
 // 		m3l_Fwrite(Gnode, "ADA", (lmchar_t *)NULL);
 // 		printf("\n\n\n\n");
 // 		exit(0);
@@ -344,7 +355,7 @@ lmint_t main(void)
 		if(m3l_Umount(&Anode) != 1)
 			Perror("m3l_Umount");
 		
-// 		printf("Number of removed nodes is %ld\n", m3l_Rm(&Anode , "/Main_DATA_Structure", "/*", "--clean_empty_refs_to_links",  (lmchar_t *)NULL) );
+//  		printf("Number of removed nodes is %ld\n", m3l_Rm(&Anode , "/Main_DATA_Structure", "/*", "--clean_empty_refs_to_links",  (lmchar_t *)NULL) );
 		
 		
 		if(m3l_Cat(Anode, "--all", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
@@ -359,8 +370,9 @@ lmint_t main(void)
 // 		Send_to_tcpipsocket(Gnode, "localhost", 4096, (lmchar_t *)NULL);
 
 // 		printf(" Number of empty links is %ld \n", ln_cleanempytlinks(&Gnode,  (opts_t *)NULL) );
-		printf(" Number of empty links is %ud \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (lmchar_t *)NULL));	
-		printf(" Number of empty links is %ud \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (lmchar_t *)NULL));	
+		
+		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_refs_to_links", (lmchar_t *)NULL));	
+		printf(" Number of empty links is %ld \n", m3l_Ln(NULL, NULL, NULL, &Gnode, NULL, NULL, "--clean_empty_links", (lmchar_t *)NULL));	
 		
 		printf("\n\n\n\n CLEANING EMPTY LINKS == \n\n\n");
 
@@ -413,6 +425,11 @@ lmint_t main(void)
 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
 			Error("CatData");
 
+//  		printf("\n\n\nNumber of removed nodes is %ld\n\n\n", m3l_Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*",  "--keepheadnode", (lmchar_t *)NULL) );		
+ 		printf("\n\n\nNumber of removed nodes is %ld\n\n\n", m3l_Rm(&Gnode , "/main/grid1/boundary", "/*/SV_name_of_grid=CFD_grid/*", (lmchar_t *)NULL) );
+		
+		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
+			Error("CatData");  
 		if(m3l_Umount(&Gnode) != 1)
 			Perror("m3l_Umount");
 		
@@ -425,170 +442,6 @@ lmint_t main(void)
 		
 		
 		exit(0);
-		
-	
-// 		
-// 		
-// 		exit(0);
-// 		
-	   
-	   
-/*	   if( m3l_Fwrite(Gnode,  "ADA_TEST") != 0)
-		   Perror("Lin*ked_test: m3l_Fwrite");
-		   */
-	   
-// 	     if( ( Found_Nodes = m3l_Find(Gnode, , "--recursive" ,"Belonging_to_ADDDATA", (lmchar_t *)NULL)) == NULL){
-  		if( ( Founds = m3l_Find(Gnode,  "--recursive" ,"boundary", (lmchar_t *)NULL)) == NULL){
-
-			printf("No subset found\n"); exit(0);
-		}
-		else
-		{
-			for(i=0; i < Founds->founds; i++){
-			printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-			}
-	
-		m3l_DestroyFound(&Founds);
-
-		}
-		
-		
-		
-		printf(" cut data\n");
-		if(m3l_Cat(Gnode, "--recursive", "-D", "-P", "BBB_DATA_DADA", (lmchar_t *)NULL) != 0)
-			Error("CatData");
-		printf("\n\n\n");
-
-	   
-	   printf("Number of removed nodes is %ud\n", Rm(&Gnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
-	   if(m3l_Cat(Gnode, "--all", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
-	                   Error("CatData");
-	   
-	   
-	   	socketnr =  cli_open_socket("localhost", 4096);
-		write_to_socket(1, Gnode,  socketnr);
-		close(socketnr);
-	   
-	   
-	   if(m3l_Umount(&Gnode) != 1)
-                  Perror("m3l_Umount");
-  	exit(0);
-	   
-// 	}
-	   
-	   
-	   
-//	   send_to_tcpipsocket(Gnode, "localhost", 4096);
-			   
-//	    RecNode = send_receive_tcpipsocket(Gnode, "localhost", 4096);
-          
-	    
-	    printf("\n\n\n Umounting \n\n\n");
-
-	    printf("Number of removed nodes is %ud\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
-//	    if(m3l_Cat(RecNode, "--all", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
-	                   Error("CatData");
-	    
-	    
-	    
-	   
-	/*      socketnr =  cli_open_socket("localhost", 4096);
-		write_to_socket(1, Gnode,  socketnr);
-	      close(socketnr);
-*/
-
-	if(m3l_Umount(&Gnode) != 1)
-                  Perror("m3l_Umount");
-	if(m3l_Umount(&RecNode) != 1)
-                  Perror("m3l_Umount");
-    
-//	}    
-    exit(0);
-    
-    
-    
-    for (i=0; i<1000000; i++){
-    
-/*
- * loop over list and print it
- */
-	   printf("\n\n\n m3l_Cat \n\n\n");
-   if(m3l_Cat(Gnode, "-D", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
-	    	Error("CatData");
-	printf("\n\n\n");
-   
-
-   
-	}
-
-
-      if(m3l_Umount(&Gnode) != 1)
-                  Perror("m3l_Umount");
-
-
- //  }
-   
-   
-   	   printf("\n\n\n m3l_Cat \n\n\n");
-   if(m3l_Cat(Gnode, "--recursive", "-D", "-P", "BBB_DATA_DADA", (lmchar_t *)NULL) != 0)
-	    	Error("CatData");
-	printf("\n\n\n");
-
-/*
- * function allocates **find_t pointer, after use must be freed
- */	  
-	 printf("Looking for Additional_direcotry node\n");
-
-   if( ( Founds = m3l_Find(Gnode, "Additional_directory", (lmchar_t *)NULL)) == NULL){
-
-	   printf("No subset found\n"); exit(0);
-   }
-   else
-   {
-	for(i=0; i < Founds->founds; i++){
-		printf(" Found name is %s  %p   %s\n", Founds->Found_Nodes[i]->List->name, Founds->Found_Nodes[i]->List, Founds->Found_Nodes[i]->List->type);
-	}
-   }
-   
-   
-   	 printf("m3l_Cat Additional_direcotry node\n");
-
-        if(m3l_Cat(Founds->Found_Nodes[0]->List, "-D", "-P", "-L","*", (lmchar_t *)NULL) != 0)
-	    	Error("CatData");
-	
-	printf("writing to socklet\n");
-	
-	   socketnr =  cli_open_socket("localhost", 4096);
-		write_to_socket(1, Founds->Found_Nodes[0]->List,  socketnr);
-	   close(socketnr);
-
-   	 printf("Removing Additional_directory node\n");
-
-	Tmpnode = Founds->Found_Nodes[0]->List;
-
-//        printf("Number of removed nodes is %ld\n", Rm(&Tmpnode , "--recursive" , "--ignore", "BBB_DATA_DADA", (lmchar_t *)NULL) );
-
-	printf("Number of removed nodes is %ud\n", Rm(&Founds->Found_Nodes[0]->List , "--recursive" , "*", (lmchar_t *)NULL) );
-	
-//	if(m3l_Cat(Found_Nodes[0]->List, "-d", "-P", "*", (lmchar_t *)NULL) != 0)
-//	    	Error("CatData");
-
-        printf("Freeing memory - number of founds is %ld\n", Founds->founds);
-   
-	m3l_DestroyFound(&Founds);
-
-   
-	printf("\n\n\n m3l_Cat \n\n\n");
-	if(m3l_Cat(Gnode, "-D", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
-	Error("CatData");
-  
-  
-    printf("\n\n\nRemoving nodes Master head node\n\n\n");
-
-    if(m3l_Umount(&Gnode) != 1)
-	    Perror("m3l_Umount");
-    
-    printf("\n %p", Gnode);
 	
   return 0;
 

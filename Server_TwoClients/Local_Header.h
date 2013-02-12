@@ -21,9 +21,9 @@
 
 
 /*
- *     Header file Ln.h
+ *     Header file Header.h
  *
- *     Date: 2012-06-04
+ *     Date: 2012-07-01
  * 
  *
  *     Modifications:
@@ -33,12 +33,13 @@
  *     Description
  *
  */
+#ifndef __LOCALHEADER_H__
+#define __LOCALHEADER_H__
 
-
-
-#ifndef __LN_H__
-#define __LN_H__
-
-lmsize_t m3l_Ln(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
+int id, shmid, shmid1;  /* Internal identifier of the semaphore. */
+int *shm_n;
+char *shm_buff;
+node_t *TmpACKN;
 
 #endif
+	

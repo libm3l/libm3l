@@ -57,6 +57,7 @@
 #include "Cat.h"
 #include "FunctionsPrt.h"
 #include "find_list.h"
+#include "cat_list.h"
 
 
 
@@ -78,7 +79,7 @@ lmint_t m3l_Cat(node_t *List, lmchar_t * Options, ...)
 	lmint_t c, status, status1;
 	lmint_t option_index;
 		
-	opts.opt_s = '0';opts.opt_p = '0'; opts.opt_d = '0' ; opts.opt_f = '0';opts.opt_l = '0';
+	opts.opt_s = '0';opts.opt_p = '0'; opts.opt_d = '0' ; opts.opt_f = '0';opts.opt_l = '0';opts.opt_L = '0';
 
 	
 	option_index = 0;

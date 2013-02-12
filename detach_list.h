@@ -21,9 +21,9 @@
 
 
 /*
- *     Header file Ln.h
+ *     Header file detach_list.h
  *
- *     Date: 2012-06-04
+ *     Date: 2013-02-09
  * 
  *
  *     Modifications:
@@ -31,14 +31,17 @@
  *
  *
  *     Description
- *
+ * 
  */
 
 
 
-#ifndef __LN_H__
-#define __LN_H__
 
-lmsize_t m3l_Ln(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
+
+#ifndef __DETACH_LIST_H__
+#define __DETACH_LIST_H__
+
+extern find_t *m3l_detach_caller(node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
+extern lmsize_t m3l_detach_list(lmint_t , node_t **, opts_t *);
 
 #endif

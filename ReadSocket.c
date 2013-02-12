@@ -149,7 +149,7 @@ node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
  * 			Pressure   D    3     100 200 300
  */
 /*
- * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the fiield
+ * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the array
  */
 	bzero(buff, strlen(buff));
 	if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)

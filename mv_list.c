@@ -87,19 +87,19 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
  * check if data set exists
  */
 	if(*SList == NULL){
-		Warning("ln: NULL source list");
+		Warning("mv: NULL source list");
 		return -1;
 	}
 
 	if(*TList == NULL){
-		Warning("ln: NULL target list");
+		Warning("mv: NULL target list");
 		return -1;
 	}
 /*
  * call locator to locate the target node
  */
 	if ( (SFounds = m3l_locator_caller( *SList, s_path, s_path_loc, Popts)) == NULL){
-		Warning("ln: NULL SFounds");
+		Warning("mv: NULL SFounds");
 		return 0;
 	}
 /*
@@ -238,7 +238,7 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 						}
 						else{
 							if( (mv_nodes = (lmsize_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
-								Warning("problem in ln_list");
+								Warning("problem in mv_list");
 							}
 							else{
 								mv_tot_nodes += mv_nodes;
@@ -295,7 +295,7 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 				}
 				else{
 					if( (mv_nodes = (lmsize_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
-						Warning("problem in ln_list");
+						Warning("problem in mv_list");
 					}
 					else{
 						mv_tot_nodes += mv_nodes;
