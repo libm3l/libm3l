@@ -1070,19 +1070,20 @@ lmint_t CheckEOFile(FILE *fp){
  * check if at the end of file was reached, if not give warning
  */
 		if( feof(fp) && *pc == '\0' ) return 1;
-	
+
 		if( feof(fp)){
 /*
  * buffer still contains additional info, and end of file was reached, give back error message
  */
 			tmpi = 0;
-			printf("\n  WARNING - end of file not reached, remaining part of the file starts with\n");
+			printf("\n  WARNING - end of file not reached, remaining data in buffer start with '%s'\n", buff);
+			printf("\n  WARNING - additional data starts with\n");
 			while(*pc != '\0' && tmpi++ < 100)
 			printf("%c", *pc++);
 			printf("\n");
 			return 0;
 		}
-		else if(*pc == '\0' ) {
+		else if(*pc == '\0' ) {	
 			bzero(buff, strlen(buff));
 			ngotten = 0;
 			if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
@@ -1091,20 +1092,23 @@ lmint_t CheckEOFile(FILE *fp){
 			buff[ngotten] = '\0';		
 			pc = &buff[0];
 		}
+/*
+ * none of the condition fulfilled, go to next symbol and loop again
+ */
+		pc++;
 	}
 	
 	if( feof(fp) && *pc == '\0' ) 
 		return 1;
-	else if( feof(fp)){
+	else{
 /*
  * buffer still contains additional info, and end of file was reached, give back error message
  */
 		tmpi = 0;
-		printf("\n  WARNING - end of file not reached, remaining part of the file starts with\n");
-		while(*pc != '\0' && tmpi++ < 100)
-		printf("%c", *pc++);
-		printf("\n");
+		printf("\n  WARNING - end of file not reached, remaining data in buffer start with '%s'\n", buff);
+// 		while(*pc != '\0' && tmpi++ < 100)
+// 		printf("%c", *pc++);
+// 		printf("\n");
 		return 0;
 	}
-	return 0;
 }

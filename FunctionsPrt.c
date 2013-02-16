@@ -422,7 +422,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
  * NOTE - segmentation fault if path starts with / // // // etc nonsence
  */
 	path_t *Path;
-	const lmchar_t *pc;
+	const lmchar_t *pc, *pc1;
 	lmsize_t counter, j, st,k;
 	lmchar_t abspath;
 /*
@@ -483,8 +483,14 @@ path_t *m3l_parse_path(const lmchar_t *path)
 	}	
 	else{
 		counter = 1;
-	}	
-		
+	}
+/*
+ * remember this position
+ */
+	pc1 = pc;
+/*
+ * count number fo segment of path
+ */		
 	while(*pc != '\0'){
 /*
  * if symbol is / and not the end of the string 
@@ -538,7 +544,8 @@ path_t *m3l_parse_path(const lmchar_t *path)
 /*
  * get rid of tabs, spaces, and dots, must be the same as at the begining of this function
  */
-	while( *pc == '\t' || *pc == ' ' || *pc == '.'  &&  *pc != '\0') pc++;	
+// 	while( *pc == '\t' || *pc == ' ' || *pc == '.'  &&  *pc != '\0') pc++;	
+	pc = pc1;
 	
 	if(*pc == '/' && *pc != '\0'){
 		pc++;

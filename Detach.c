@@ -53,7 +53,7 @@
 
 #include "Detach.h"
 #include "FunctionsPrt.h"
-// #include "deattach_list.h"
+#include "detach_list.h"
 
 
 extern lmint_t optind;
