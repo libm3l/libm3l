@@ -478,7 +478,8 @@ path_t *m3l_parse_path(const lmchar_t *path)
  * path starts with ~/   - Absolute path
  */	
 	else if(*pc == '~' ){
-		counter = 1;
+		counter = 0;
+		pc++;
 		abspath = 'A';
 	}	
 	else{
