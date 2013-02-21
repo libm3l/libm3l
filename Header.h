@@ -63,9 +63,6 @@
 #include <netinet/tcp.h>
 #include <malloc.h>
 #include <resolv.h>
-// #include <openssl/ssl.h>
-// #include <openssl/err.h>
-// #include <arpa/inet.h>
 #include <float.h>
 #include <stdint.h>
 #include <inttypes.h>
@@ -74,8 +71,7 @@
  * TCP/IP communication option
  */
 
-//#define MAXLINE  2048               /* Max length of buffer - NOTE MUST BE LARGER OR EQUAL TO strlent(EOFbuff)*/
-#define MAXLINE  	8 
+#define MAXLINE  2048               /* Max length of buffer - NOTE MUST BE LARGER OR EQUAL TO strlent(EOFbuff)*/
 #define MAX_WORD_LENGTH  260        /* Max length of word in buffer for TCP/IP, determining mainly for how many digits can be sent over */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
@@ -100,11 +96,6 @@
 		#define ENVIRONMENT32
 	#endif
 #endif
-// #if (defined(__x86_64__) || defined(__x86_64) || defined(__amd64__) || defined(__amd64) || defined(__ppc64__) || defined(_WIN64) || defined(__LP64__) || defined(_LP64) )   // Detects 64 bits mode
-// #  define ENVIRONMENT64
-// #else
-// #  define ENVIRONMENT32
-// #endif
 
 #define ABSTRACT_DECLAR_UINT 1
 
@@ -119,11 +110,7 @@
 	#define	lmlongdouble_t long double
 /*
 * chars
-*/
-// 	#define	lmchar_t  	int8_t
-// 	#define	lmsignchar_t  	int8_t
-// 	#define	lmusignchar_t 	uint8_t
-	
+*/	
 	#define	lmchar_t  	char
 	#define	lmsignchar_t  	signed char
 	#define	lmusignchar_t 	unsigned char
