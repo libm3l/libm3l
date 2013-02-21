@@ -29,19 +29,19 @@ node_t *ackn(void)
  	return Gnode;
 }
 
-node_t *solver_name(char *name)
+node_t *client_name(char *name)
 {
 	node_t *Gnode, *TmpNode;
 	char *answer="ACKN";
 	size_t *dim;
 	
-	if(  (Gnode = m3l_Mklist("Solver", "DIR", 0, 0, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
+	if(  (Gnode = m3l_Mklist("Client_Data", "DIR", 0, 0, (node_t **)NULL, (const char *)NULL, (const char *)NULL, (char *)NULL)) == 0)
 		Perror("m3l_Mklist");
 	
 	dim = (size_t *) malloc( 1* sizeof(size_t));
 	dim[0] = strlen(name)+1;
 	
-	if(  (TmpNode = m3l_Mklist("Name", "C", 1, dim, &Gnode, "/Solver", "./", "--no_malloc", (char *)NULL)) == 0)
+	if(  (TmpNode = m3l_Mklist("Name", "C", 1, dim, &Gnode, "/Client_Data", "./", "--no_malloc", (char *)NULL)) == 0)
 		Error("m3l_Mklist");
 	TmpNode->data.c = name;
 	

@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 	memset(shm_buff,0,MAXLINE+1);
 
 	shmid1 = CrtSMH_Int(2, 2);
-	if ((shm_n = shmat(shmid1, NULL, 0)) == (char *) -1) {
+	if ((shm_n = shmat(shmid1, NULL, 0)) == (int *) -1) {
 		Perror("shmat");
 	}
 	memset(shm_n,0,1);
@@ -138,11 +138,11 @@ int main(int argc, char *argv[])
 			if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
 				Error("Error during reading data from socket");
 		
-			if ( (SFounds = m3l_locator_caller(RecNode, "/Solver/Name", "/*/*", Popts)) != NULL){
+			if ( (SFounds = m3l_locator_caller(RecNode, "/Client_Data/Name", "/*/*", Popts)) != NULL){
 				TmpNode = SFounds->Found_Nodes[0]->List;
 			}
 			else{
-				Error("Solver data wrong");
+				Error("Client data wrong");
 			}
 
 // 			if(m3l_Cat(RecNode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 
 				stop = 0;
 
-				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
+				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Client_Data/STOP", "/*/*", Popts)) != NULL){
 					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
 					m3l_DestroyFound(&SFounds1);
 				}		
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
 			else    /*  CLIENT 2 */
 			{
 				stop = 0;
-				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Solver/STOP", "/*/*", Popts)) != NULL){
+				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Client_Data/STOP", "/*/*", Popts)) != NULL){
 					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
 					m3l_DestroyFound(&SFounds1);
 				}

@@ -1,8 +1,7 @@
 /*
- * example of client
- * Client creates a data set containing a text and array of int numbers
- * sends it to server and gets back answer with PID of server
- * then send a subset and gets back answer with PID of server
+ * example of client2
+ * Client2 receives data from Client1, calculates average number of double array
+ * and send back this number and its own PID
  * Author: Adam Jirasek 
  * Date:   Aug-2012
  */
@@ -46,7 +45,7 @@ int main(int argc, char *argv[])
 /*
  * make "header" with solver name, Server will use it to direct messages
  */
-	SolverName = solver_name("Client2");
+	SolverName = client_name("Client2");
 /*
  * open socket - because we use more then just send - receive scenario
  * we need to open socket manualy and used Send_receive function with hostname = NULL, ie. as server
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
 			dim = (size_t *) malloc( 1* sizeof(size_t));
 			dim[0] = 1;
 	
-			if(  (TmpNode = m3l_Mklist("STOP", "I", 1, dim, &SolverName, "/Solver", "./",  (char *)NULL)) == 0)
+			if(  (TmpNode = m3l_Mklist("STOP", "I", 1, dim, &SolverName, "/Client_Data", "./",  (char *)NULL)) == 0)
 				Error("m3l_Mklist");
 			tmpint = (int *)m3l_get_data_pointer(TmpNode);
 			tmpint[0] = 1;
@@ -83,14 +82,14 @@ int main(int argc, char *argv[])
  * send data set to server and get back answer - this data set conmtains payload, ie. "real, useful" data
  * solver name makes a node, other data will be added to this node
  */
-		Gnode = solver_name("Text from Client2");
+		Gnode = client_name("Text from Client2");
 	
 		dim = (size_t *) malloc( 1* sizeof(size_t));
 		dim[0] = 1;
 /*
  * add PID number of this process
  */
-		if(  (TmpNode = m3l_Mklist("PID", "I", 1, dim, &Gnode, "/Solver", "./", (char *)NULL)) == 0)
+		if(  (TmpNode = m3l_Mklist("PID", "I", 1, dim, &Gnode, "/Client_Data", "./", (char *)NULL)) == 0)
 				Error("m3l_Mklist");
 		tmpint = (int *)m3l_get_data_pointer(TmpNode);
 
@@ -120,11 +119,10 @@ int main(int argc, char *argv[])
  * what is their type and dimensions
  * Do not forget free borrowed memory
  */
-		if( (SFounds = m3l_Locate(RecNode, "/Solver/pressure", "/*/*", (char *)NULL)) != NULL){
+		if( (SFounds = m3l_Locate(RecNode, "/Client_Data/numbers", "/*/*", (char *)NULL)) != NULL){
 
-// 			TmpNode = SFounds->Found_Nodes[0]->List;
 			TmpNode = m3l_get_Found_node(SFounds, 0);
-			pmax = m3l_get_List_totdim(TmpNode); //TmpNode->fdim[0];
+			pmax = m3l_get_List_totdim(TmpNode); 
 			tmpdf = (double *)m3l_get_data_pointer(TmpNode);
 			
 			ave = 0;
