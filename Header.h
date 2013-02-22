@@ -70,7 +70,6 @@
 /*
  * TCP/IP communication option
  */
-
 #define MAXLINE  2048               /* Max length of buffer - NOTE MUST BE LARGER OR EQUAL TO strlent(EOFbuff)*/
 #define MAX_WORD_LENGTH  260        /* Max length of word in buffer for TCP/IP, determining mainly for how many digits can be sent over */
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
@@ -85,7 +84,7 @@
 
 
 #ifndef ULLONG_MAX
-#define ULLONG_MAX 18446744073709551615
+	#define ULLONG_MAX 18446744073709551615
 #endif
 
 // Check GCC
