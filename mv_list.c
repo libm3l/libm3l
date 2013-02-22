@@ -293,6 +293,7 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 				if(SFounds->Found_Nodes[i]->List == TFounds->Found_Nodes[0]->List){
 					Warning("mv_list: can not move node to itself");
 				}
+
 				else{
 					if( (mv_nodes = (lmsize_t) m3l_mv_list(init_call, &SFounds->Found_Nodes[i]->List, &TFounds->Found_Nodes[0]->List,  Popts )) < 0){
 						Warning("problem in mv_list");
@@ -309,6 +310,8 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 		}
 	}
 }
+
+
 
 lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 {
@@ -403,13 +406,16 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 		}
 		else if(Next == NULL){
 /*
- * List is the only child in DIR (this should actually never happen as the value of Par->ndim == 0
+ * List is the last in line
  */
 			Prev->next = NULL;
-			Par->child = NULL;
-			Par->ndim = 0;
+// 			Par->child = NULL;
+// 			Par->ndim = 0;
 		}
 		else if(Prev == NULL){
+/*
+ * List is the fisrt in line
+ */
 			Next->prev = NULL;
 			Par->child = Next;
 		}
