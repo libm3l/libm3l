@@ -20,63 +20,46 @@
 
 
 
-/*
- *     Header file libm3l.h
- *
- *     Date: 2012-07-06
- * 
- *
- *     Modifications:
- *     Date		Version		Patch number		CLA 
- *
- *
- *     Description
- *
- */
-
-
 
 #ifndef   __LIBM3L_H__
-#define  __LIBM3L_H__
-
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Header.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/format_type.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/internal_format_type.h"
-
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Add.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/add_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Cat.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/cat_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Cp.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/cp_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Detach.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/detach_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Find.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/find_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/format_type.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/FunctionsPrt.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Header.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/IO.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ListDataOperations.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Ln.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ln_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Locate.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/locate_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Mklist.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Mount.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Mv.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/mv_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ReadDescriptor.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ReadSocket.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Rm.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/rm_list.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/tcpip_socket_IOop.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/tcpip_socket_op.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/udf_rm.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Umount.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Write2Socket.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/WriteData.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Check_EOFbuff.h"
-#include "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/tcpip_socket_MNTop.h"
-
+#define   __LIBM3L_H__
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Header.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/format_type.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/internal_format_type.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Add.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Cat.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Check_EOFbuff.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Cp.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Detach.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Find.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/FunctionsPrt.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/IO.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ListDataOperations.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Ln.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Locate.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Mklist.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Mount.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Mv.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/NumberConversion.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ReadDescriptor.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ReadSocket.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Rm.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Umount.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/Write2Socket.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/WriteData.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/add_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/cat_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/cp_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/detach_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/find_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/format_conversion_spec.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/libm3l.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/ln_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/locate_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/mv_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/rm_list.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/tcpip_socket_IOop.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/tcpip_socket_MNTop.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/tcpip_socket_op.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/LinkedList/udf_rm.h"
 #endif

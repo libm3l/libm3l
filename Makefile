@@ -1,29 +1,35 @@
-#FILES = $(shell find ./ -name "*.c" | sed 's/.\///' )
 FILES = $(shell ls  *.c )
 PATHL  = $(shell pwd )
-
+HFILES = $(shell ls  *.h  |   sed 's/internal_format_type.h//'  | sed 's/Header.h//' | sed 's/format\_type.h//' )
+PWD = $(shell pwd)
 OBJS=$(FILES:%.c=%.o)
 
-CFLAGS = -fbounds-check -fstack-check -g 
-LFLAGS = -fbounds-check -fstack-check -g 
-#CFLAGS =
-#LFLAGS =
-
+CFLAGS = -fbounds-check -fstack-check -g
+LFLAGS = -fbounds-check -fstack-check -g
+#
 #Autodependencies with GNU make
-#Scott McPeak, November 2001 
+#this makefile is a modification of makefile from Scott McPeak web page, November 2001
 #
-# link
-#
-main: $(OBJS)
+main:
+	@cat COPYRIGHT_NOTICE > libm3l.h
+	@echo >> libm3l.h
+	@echo "#ifndef   __LIBM3L_H__" >> libm3l.h
+	@echo "#define   __LIBM3L_H__" >> libm3l.h
 
-	set PWD=`pwd`
-	cp libm3l.org_h libm3l.h
-	sed -i 's:ActualPWD:'$$PWD':' libm3l.h
+	@echo "#include " \"$$PWD/Header.h\">>libm3l.h
+	@echo "#include " \"$$PWD/format_type.h\">>libm3l.h
+	@echo "#include " \"$$PWD/internal_format_type.h\">>libm3l.h
 
-	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS) 
+	@$(foreach file,$(HFILES),  echo "#include " \"$$PWD/$(file)\">>libm3l.h;)
+	@echo "#endif" >> libm3l.h
+
+	make prog
+
+prog: $(OBJS)
+
+
+	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS)
 	ln -sf libm3l.so.1.0 libm3l.so
-
-	gcc -g -o LinkedStr_TEST.out LinkedStr_TEST.c  -L$(PATHL)  -lm3l -Wl,-rpath=$(PATHL)
 
 -include $(OBJS:.o=.d)
 
@@ -33,11 +39,7 @@ main: $(OBJS)
 	@mv -f $*.d $*.d.tmp
 	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
 	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \
-	  sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
+	sed -e 's/^ *//' -e 's/$$/:/' >> $*.d
 	@rm -f $*.d.tmp
 clean:
-	rm -f LinkedStr_TEST.out *.o *.d
-Hfile:
-	set PWD=`pwd`
-	cp libm3l.org_h libm3l.h
-	sed -i 's:ActualPWD:'$$PWD':' libm3l.h
+	rm -f *.o *.d
