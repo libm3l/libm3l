@@ -1,6 +1,8 @@
 PATHL  = $(shell pwd)
 
 all:
+
+	ln -sf ../../Source/libm3l.* .
 	gcc -c ACK.c
 	gcc -c CrtSEMSHM.c
 	gcc -c SignalC.c
