@@ -1,0 +1,22 @@
+/*
+ * end of reading the line, number of words is the same as required, return succes
+ */
+				if( wc == tot_dim ) return 0;
+			}
+
+			if(IFEXPR) pc++;
+			bzero(type,sizeof(type));
+			i = 0;
+			lastchar = '\0';
+		}
+	}
+	bzero(buff,sizeof(buff));
+	if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+		Perror("fread");
+	}
+	buff[ngotten] = '\0';
+	pc = &buff[0];
+	if( m3l_read_file_data_line(Lnode, TMPSTR, fp, Popts) != 0){
+		Error("Error reading data");
+		return -1;
+	}

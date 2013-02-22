@@ -1,0 +1,57 @@
+	while(*pc != '\0') /*  while(ngotten) */
+	{
+		bzero(type,sizeof(type));
+		i = 0;
+		wc = 0;
+		lastchar = '\0';
+/*
+ * read until the end of string
+ */
+		while(*pc != '\0'){
+			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
+				type[i++] = *pc++;				
+/*
+ * if number of chars in one word exceeds limit, print warning
+ */
+				if(i == (MAX_WORD_LENGTH-1))
+					Perror("read_socket - word too long");
+			}
+			type[i] = '\0';
+
+/*
+ * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
+ * otherwise the buffer ended in the middle of word
+ */
+			if(*pc == '\0'){
+				hi =0;
+			}
+			else
+			{
+				hi = 1;
+			}
+
+			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
+				
+			
+			if ( *(pc+hi) == '\0'){
+/*
+ * read next chunk of text file, complete the word by the rest from next chunk
+ */
+				bzero(buff,sizeof(buff));
+				if (  (ngotten = Read(descrpt,MAXLINE-1)) == -1)
+					Perror("read");
+
+				buff[ngotten] = '\0';
+				pc = &buff[0];
+				
+				if(LASTEXPR) continue;
+			}
+/*
+ * if word is longer then 0
+ */			
+			
+			if(strlen(type) >0){
+ 				wc++;
+/*
+ * get the value
+ */

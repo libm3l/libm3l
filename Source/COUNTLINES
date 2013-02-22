@@ -1,0 +1,18 @@
+find . -type f -name '*.c' -exec cat {} \; | sed '/^\s*#/d;/^\s*$/d;/^\s*\/\//d' | wc -l
+
+
+cat *.c | sed '/^\s*#/d;/^\s*$/d' | wc -l
+
+
+ctags 
+sloccount
+dev-util/cscope
+pmd (java)
+
+
+valgrind --tool=memcheck --leak-check=full --show-reachable=yes  --track-origins=yes ./LinkedStr_TEST.out
+valgrind --tool=memcheck  --trace-children=yes --vex-iropt-register-updates=allregs-at-mem-access --workaround-gcc296-bugs=yes --leak-check=full --leak-check=full --show-reachable=yes  --track-origins=yes ./LinkedStr_TEST.out localhost 4096
+
+
+Mudflap
+

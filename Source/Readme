@@ -1,0 +1,76 @@
+
+
+Find.c: question how to treat word and search_term upon leaving - free???
+
+
+When Free called from Rm,c  check that the pointer in the main structure is NULL.
+
+		for (i=0; i<founds; i++){
+			Tmp1 = Found_Nodes[i]->List;
+			if ( (rmnodes = rm_list(&Tmp1)) > 0){
+				rm_tot_nodes = rm_tot_nodes + rmnodes;
+			}
+
+
+2. rm function, options --recursive (all items in DIR), --level (all
+   items in dir at first level), --Number, --Size, --Type
+
+3. Start writing helps for this function (groff mdoc)
+
+
+5. KO this scenario:*  /*
+     * can not remove this DIR, it is not empty.
+     * this situation happens in --IGNORE if DIR contains items which
+   are all ignored
+     * and algorithm tries to then delete DIR
+     */*         --------------------------- *  if((*List)->ndim != 0){
+   /*
+     * can not remove this DIR, it is not empty.
+     * this situation happens in --IGNORE if DIR contains items which
+   are all ignored
+     * and algorithm tries to then delete DIR
+     */
+                        Warning(" Can not delete DIR, not empty");
+                        return -2;
+                    }*
+
+      printf("Number of removed nodes is %ld\n", Rm(&Tmpnode ,
+   "--recursive", "--IGNOR", "BBB_DATA_DADA", (char *)NULL) ); 
+
+
+
+ 8. look for circular links and give warning
+
+ 9. Cat,c and Rm.c - optional parameter links to Found_caller function specifying how to search/remove
+    linked data; either cat/remove link or target - need to be worked on!
+
+ 10. Find_caller - change reallocation of Founds subset. Right now, the subset is reallcoated every time a new
+	possitive search is made; mybe allocate in chunks of ten or so and then reallocate to final field size.
+
+
+13. get_arguments - need to solve how to indicate unsuccesfull error from the function. 
+in Locator. c need to add testing of it
+
+
+15. - add type to Locator.c DIR, FILE,LINK etc.
+  nebo podivat se na to, jak mit vice parametru do Find - ie. --DIR --FILE etc. separatne pro target a source 
+
+16. improvement in Mv, Ln, Cp
+	kdyz locator nenajde soubor, hleda jmeno parent dir, a rozhoduje podle toho.
+	dvojite hledani. Mozna, vzdy hledat parent dir a pak co je v nich
+
+17. pri IEEE-745 neni potreba strncp ale rovnou zkopirovat to co tam je do 
+bufferu
+
+18. 
+#if FLOAT_MEMCP == SPRINTF
+// 			di = strtoull(type, &end, 16);
+  			di = Strtoull(type, 16);
+#else
+			memcpy(&di, &type[0], 8);
+#endif
+add to all other types pro ostatni typy
+
+
+
+19. KO co se stane, kdyz prepisu link jinym linkem, jak je to s linked[] strukturou a odpovidajicimi linky (ln_list line 475)
