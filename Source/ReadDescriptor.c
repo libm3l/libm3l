@@ -1014,7 +1014,7 @@ lmssize_t Fread(FILE *fp ,lmint_t n)
 {
 	
 	if( feof(fp)){
-// 		Error("Fread: Error reading data, EOF reached. Possible reason - not enought data in file");
+ 		Error("Fread: Error reading data, EOF reached. Possible reason - not enought data in file");
 		ngotten = 0;
 		return 0; 
 	}
