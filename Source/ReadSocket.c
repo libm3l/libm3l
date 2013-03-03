@@ -89,7 +89,6 @@ static lmssize_t Read(lmint_t ,lmint_t );
 
 lmchar_t *pc, buff[MAXLINE];
 lmssize_t ngotten;
-// lmint_t EXPR;
 
 /*
  * Function read just one line from a socket, disregarding comments line
@@ -271,59 +270,16 @@ node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 					}
 					type[i] = '\0';
 /*
- * make sure that if the EOFbuff word is split and part of it is still in socket
- * read it and append to the beginning of word
- * 
- * compare the last word with EOFbuff, if not equal attempt to read rest of socket
- */
-// 					if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
-// /*
-//  * read the last part of buffer and add it to the previuous word
-//  */
-// 							bzero(buff,sizeof(buff));
-// 							if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
-// 								Perror("read");
-// 							buff[ngotten] = '\0';
-// 							if(ngotten > 0) strcat(type, buff);
-// /*
-//  * compare with EOFbuff, if not equal, give warning
-//  * NOTE: if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
-//  * sure the socket is empty
-//  */
-// 						if(strncmp(type,EOFbuff,strlen(EOFbuff))  != 0){
-// 								tmpi = 0;
-// 								printf("\n  WARNING - end of buffer not reached \n  Remaining part of the buffer starts at\n");
-// 								while(*pc != '\0' && tmpi++ < 100)
-// 									printf("%c", *pc++);
-// 								printf("\n");
-// /*
-//  * if from whatever reason it happens there are data after EOFbuff, maybe read them and print on screen, just to make
-//  * sure the socket is empty
-//  */								
-// 								while(*pc != '\0') /*  while(ngotten) */{
-// 									bzero(buff,sizeof(buff));
-// 									if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
-// 										Perror("read");
-// 								}
-// 								printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
-// 								exit(0);
-// 						}
-// /*
-//  * reading socket ended sucesfully, give back Gnode
-//  */
-// 					}
-/*
  * check that the end of entire message ends with EOFbuff
  * length of EOFbuff is EOBlen (defined in Header.h)
- * loop over EOBlen times to make sure that if EOBoff is sent over in single bytes 
+ * loop over EOBlen times to make sure that if EOFbuff is sent over in single bytes 
  * entire word is received. If possitive test ( == 1), return Gnode, otherwise give warning and exit
  */
-
-// 					printf(" TYPE is '%s'" , type);
 					for(i=0; i<EOBlen; i++){
 						if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1){
 							bzero(buff,sizeof(buff));
-							return Dnode;}
+							return Dnode;
+						}
 							
 						bzero(buff,sizeof(buff));
 						if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
@@ -331,8 +287,6 @@ node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 					}
 					printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
 						exit(0);
-
-// 				return Dnode;
 				}
 			}
 	

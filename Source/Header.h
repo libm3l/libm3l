@@ -76,6 +76,8 @@
 #define SEPAR_SIGN ','              /* Separation symbol between words in TCP/IP */
 #define EOFbuff "-EOMB-"              /* end of buffer TCP/IP */
 #define EOBlen 6                      /* strlen of EOFbuff  */
+#define EOFfile "-EOMF-"              /* end of I/O file */
+#define EOFlen 6                      /* strlen of EOFfile  */
 #define TEXT_SEPAR_SIGN '`'              /* sign determining the beginning and end of text (C, UC, SC) in disk file */
 /*
  * node_t data specification - NOTE: these MUST be smaller then MAX_WORD_LENGTH

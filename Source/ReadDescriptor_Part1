@@ -32,7 +32,7 @@
 
 			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
 				
-			if ( *(pc+hi) == '\0' && !feof(fp)){
+			if ( *(pc+hi) == '\0'){
 /*
  * read next chunk of text file, complete the word by the rest from next chunk
  */

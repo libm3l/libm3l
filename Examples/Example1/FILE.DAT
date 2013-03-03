@@ -30,4 +30,5 @@ Additional_directory DIR 3
 		BBB_DATA_DADA I 1 1 
 			1 
 		BBB_DATA_DADA I 1 2 
-			5001 5002 
+			5001 5002  
+			-EOMF-

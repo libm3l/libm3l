@@ -196,7 +196,22 @@ lmint_t m3l_WriteData(node_t *List,  FILE *fp)
 			Tmpnode = Tmpnode->next;
 		}
 	}
-
+/*
+ * SEND LAST DATA TO SOCKET, do not forget to send EOMB instruction if ending initial call (ie call == 1)
+ * call m3l_write_buffer with force = 1 to force sending the last piece of information
+ */
+// 	if(call == 1){
+// 		bzero(buff, sizeof(buff));
+// 		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s",EOFbuff)) < 0)
+// 			Perror("snprintf");
+// 		buff[n] = '\0';
+// /*
+//  * set the last element of the buff to \0 and add buff to buffer
+//  */
+// 				buff[n] = '\0';
+// 				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
+// 					Perror("fwrite");
+// 	}
 	return 0;
 }
 
