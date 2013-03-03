@@ -514,7 +514,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
 				break;
 			}
 		}
-	}	
+	}
 /*
  * allocate array for words in path
  */
@@ -575,25 +575,30 @@ path_t *m3l_parse_path(const lmchar_t *path)
 		}
 /*
  * if the last symbol of the path segment is '/' replace it by '\0'
- * it occurs whent he specified path ends with / symbol
+ * it occurs whent the specified path ends with / symbol
  */
 		if(*pc  == '/' ){
 			Path->path[j][st-1] = '\0';
-
 /*
  * remove all multiple / symbols
  */
 			while( *pc == '/' && *pc != '\0') pc++;
-			st = 0;
-			j++;
-			if(j > counter){
-				Error(" Path too long");
-				m3l_destroy_pars_path(&Path);
-				(path_t *) NULL;
+// 			st = 0;
+/* 
+ * if \ is not trailing edge \, increase counter of segments in path and set st (count of characters in next segment to 0)
+ */
+			if( *pc != '\0') {
+				j++;  st = 0;
+				if(j > counter){
+					Error(" Path too long");
+					m3l_destroy_pars_path(&Path);
+					(path_t *) NULL;
+				}
 			}
-			
-			if(*pc == '\0')
+			else
 				break;
+// 			if(*pc == '\0')
+// 				break;
 		}	
 /*
  * if next symbol is '/' remove it
@@ -622,7 +627,6 @@ path_t *m3l_parse_path(const lmchar_t *path)
  */
 	if( st < MAX_NAME_LENGTH && j < counter){
 		Path->path[j][st++] = '\0';
-
 	}
 	else{
 		Error(" Path too long - can not add terminating character");
