@@ -63,10 +63,10 @@ static lmint_t m3l_write_file_data_filedescprt(node_t *, lmsize_t , FILE *);
 /*
  * routine writes linked list structure to the file
  */
-lmint_t m3l_WriteData(node_t *List,  FILE *fp)
+lmint_t m3l_WriteData(lmint_t call, node_t *List,  FILE *fp)
 {
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
-	lmsize_t i, tot_dim;
+	lmsize_t i, n, tot_dim;
 	lmchar_t buff[MAX_WORD_LENGTH];
  
 	if(List == NULL){
@@ -162,7 +162,7 @@ lmint_t m3l_WriteData(node_t *List,  FILE *fp)
 					Tmplist->next = NULL;
 					Tmplist->prev = NULL;
 					
-					if(m3l_WriteData(Tmplist,fp) != 0){
+					if(m3l_WriteData(2,Tmplist,fp) != 0){
 						Warning("Write data problem");
 /*
  * restore original state
@@ -181,14 +181,14 @@ lmint_t m3l_WriteData(node_t *List,  FILE *fp)
 /*
  * empty LINK
  */					
-					if(m3l_WriteData(Tmpnode,fp) != 0){
+					if(m3l_WriteData(2,Tmpnode,fp) != 0){
 						Warning("Write data problem");
 						return -1;
 					}
 				}
 			}
 			else{
-				if(m3l_WriteData(Tmpnode,fp) != 0){
+				if(m3l_WriteData(2,Tmpnode,fp) != 0){
 					Warning("Write data problem");
 					return -1;
 				}
@@ -197,21 +197,20 @@ lmint_t m3l_WriteData(node_t *List,  FILE *fp)
 		}
 	}
 /*
- * SEND LAST DATA TO SOCKET, do not forget to send EOMB instruction if ending initial call (ie call == 1)
- * call m3l_write_buffer with force = 1 to force sending the last piece of information
+ * write the EOMF instruction if ending initial call (ie call == 1)
  */
-// 	if(call == 1){
-// 		bzero(buff, sizeof(buff));
-// 		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s",EOFbuff)) < 0)
-// 			Perror("snprintf");
-// 		buff[n] = '\0';
-// /*
-//  * set the last element of the buff to \0 and add buff to buffer
-//  */
-// 				buff[n] = '\0';
-// 				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-// 					Perror("fwrite");
-// 	}
+	if(call == 1){
+		bzero(buff, sizeof(buff));
+		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s",EOFfile)) < 0)
+			Perror("snprintf");
+		buff[n] = '\0';
+/*
+ * set the last element of the buff to \0 and add buff to buffer
+ */
+		buff[n] = '\0';
+		if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
+			Perror("fwrite");
+	}
 	return 0;
 }
 
