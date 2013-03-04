@@ -41,5 +41,6 @@
 #define __CHECKEOFBUFF_H__
 
 extern lmint_t Check_EOFbuff(lmchar_t *, lmchar_t *, lmssize_t , lmsize_t , lmchar_t *);
+extern lmint_t Check_EOFfile(lmchar_t *, lmchar_t *, lmssize_t , lmsize_t , lmchar_t *);
 
 #endif

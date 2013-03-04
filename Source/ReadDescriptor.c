@@ -58,9 +58,10 @@
 #include "FunctionsPrt.h"
 #include "udf_rm.h"
 #include "ReadSocket.h"
+#include "Check_EOFbuff.h"
 
 #define EXPR       (*pc != ' ' && *pc != '\t' && *pc != '\n' && *pc != '\0')
-#define IFEXPR     (*pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0')
+#define IFEXPR     ((*pc == ' ' || *pc == '\t' || *pc == '\n') && *pc != '\0')
 #define LASTEXPR   (lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0')
 
 
@@ -69,7 +70,6 @@ static lmint_t m3l_read_file_data_charline(node_t **, tmpstruct_t, FILE *f);
 static node_t *m3l_read_file_dir_data(tmpstruct_t , FILE *f, opts_t *);
 static node_t *m3l_read_file_data(FILE *f, opts_t *);
 static lmssize_t Fread(FILE * ,lmint_t);
-static lmint_t CheckEOFile(FILE *);
 
 lmchar_t *pc, buff[MAXLINE];
 lmsize_t ngotten;
@@ -87,6 +87,9 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 	lmsize_t   wc, i, hi, tmpi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
+	lmchar_t prevbuff[EOFlen+1];
+
+	bzero(prevbuff,EOBlen+1);
 /*
  * 1. -----------   read info about list (on one line)
  * 			Parameters are as follows:
@@ -226,33 +229,32 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 					TMPSTR.ndim = Strol(type);  
 					TMPSTR.dim=NULL;
 /*
- * read data in DIR
+ * read data in DIR - after return, teh Dnode should contain entire file except EOFfile sequence
  */
 
 					if( (Dnode = m3l_read_file_dir_data(TMPSTR, fp, Popts)) == NULL)
 						Perror("ReadDirData - ReadDir");
-					
-					if(CheckEOFile(fp) == 0){
-						Error(" ReadDescriptor: End of file not reached\n");
-					}
 /*
  * check if now additional data in the file
  * disregard possible spaces, tabs, newlines at the end of file
  */
-// 						while(IFEXPR) pc++;
-						
+					prevbuff[0] = '\0';
 /*
- * check if at the end of file was reached, if not give warning
+ * check that the last sequence in the file is end-of-file (defined in Header.h as EOFfile with length EOFlen
  */
-// 						if( !feof(fp) || *pc != '\0' ){
-// 						
-// 							tmpi = 0;
-// 							printf("\n  WARNING - end of file not reached \n  Remaining part of the file starts at\n");
-// 							while(*pc != '\0' && tmpi++ < 100)
-// 								printf("%c", *pc++);
-// 							printf("\n");
-// // 							exit(0);
-// 						}
+					for(i=0; i<EOFlen; i++){
+						if(Check_EOFfile(buff,prevbuff, strlen(buff),EOFlen, EOFfile) == 1){
+							bzero(buff,sizeof(buff));
+							return Dnode;
+						}
+							
+						bzero(buff,sizeof(buff));
+						if(   (ngotten = Fread(fp, MAXLINE-1))   < 0){
+							Perror("fread");
+						}
+					}
+					printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
+						exit(0);
 /*
  * reading of the main node succesfully finished, return
  */
@@ -1014,7 +1016,7 @@ lmssize_t Fread(FILE *fp ,lmint_t n)
 {
 	
 	if( feof(fp)){
-// 		Error("Fread: Error reading data, EOF reached. Possible reason - not enought data in file");
+ 		Error("Fread: Error reading data, EOF reached. Possible reason - not enought data in file");
 		ngotten = 0;
 		return 0; 
 	}

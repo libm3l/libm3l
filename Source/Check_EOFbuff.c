@@ -44,13 +44,10 @@
  * 
  */
 
-
-
-
-
-
 #include "Header.h"
 #include "Check_EOFbuff.h"
+#define IFEXPR     ((*buff == ' ' || *buff == '\t' || *buff == '\n') && *buff != '\0')
+#define IFEXPR1     (*eofbuff != ' ' && *eofbuff != '\t' && *eofbuff != '\n' && *eofbuff != '\0')
 
 
 lmint_t Check_EOFbuff(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoblen, lmchar_t *EOFBUFF)
@@ -70,7 +67,7 @@ lmint_t Check_EOFbuff(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoble
 		counter = eoblen ;
 	else
 		counter = n;
-
+	
 	for (i=counter; i<eoblen; i++)
 		*(eofbuff+i-counter) = *(eofbuff+i);
 // 		eofbuff[i-counter] = eofbuff[i];
@@ -80,7 +77,69 @@ lmint_t Check_EOFbuff(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoble
 // 		eofbuff[i+eoblen-counter] = buff[n-counter+i];
 
 	eofbuff[eoblen]='\0';
-			
+				
+	if(strncmp(eofbuff, EOFBUFF, eoblen) == 0){
+		return 1;}
+	else{
+		return 0;
+	}
+}
+
+
+
+lmint_t Check_EOFfile(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoblen, lmchar_t *EOFBUFF)
+{
+/*
+ * function check arrival of EOFbuff 
+ * - used when only looking for EOFbuff sequence to 
+ * terminate reading from socket
+ */
+	size_t counter,i, tecount, count1;
+	lmchar_t *pcloc;
+	
+	counter = 0;
+	tecount = 0;
+	count1  = 0;
+/*
+ * find how many character has buffer, up to eoblen
+ */
+	if(eoblen < n)
+		counter = eoblen ;
+	else
+		counter = n;
+	
+	pcloc = &buff[n-1];
+/*
+ * get rid of trailing spaces, newlines and tabs
+ */
+	for(i=0; i<n ; i++)
+		if( *(buff+n-i-1) == ' ' || *(buff+n-i-1) == '\t' || *(buff+n-i-1) == '\n'){
+			pcloc--;
+			tecount++;
+		}
+		else
+			break;
+/*
+ * set the counter
+ */		
+	if(eoblen < n-tecount)
+		count1 = eoblen;
+	else
+		count1 = n-tecount;
+/*
+ * shift characters from end by count1
+ */	
+
+	for (i=count1; i<eoblen; i++)
+		*(eofbuff+i-count1) = *(eofbuff+i);
+/*
+ * fill the rest by buff
+ */
+	for (i=0; i<count1; i++)
+		*(eofbuff+eoblen-i-1) = *pcloc--;
+
+	eofbuff[eoblen]='\0';
+				
 	if(strncmp(eofbuff, EOFBUFF, eoblen) == 0){
 		return 1;}
 	else{
