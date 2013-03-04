@@ -398,7 +398,7 @@ lmint_t m3l_Write_list(node_t *Lnode, const lmchar_t *name, opts_t * Popts)
 	if ( (fp = fopen(name,"w")) == NULL)
 		Perror("fopen");
 
-	if( m3l_WriteData(Lnode, fp) != 0)
+	if( m3l_WriteData(1, Lnode, fp) != 0)
 		Perror("WriteData");
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop

@@ -56,10 +56,9 @@ lmint_t main(void)
  */
 
 	printf(" ----------------------------------  \n");		
- 	if( (Gnode = m3l_Fread("FILE.DAT" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
- 		Perror("Linked_test: m3l_Fread");
-
-
+  	if( (Gnode = m3l_Fread("FILE.DAT" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
+  		Perror("Linked_test: m3l_Fread");
+	
 	if(m3l_Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (lmchar_t *)NULL) != 0)
  	        Error("CatData");
 /* 
@@ -165,6 +164,11 @@ lmint_t main(void)
 /*
  * remove both linked lists from memory
  */
+		printf(" ----------------------------------  \n");		
+		printf(" Writing Gnode to file - WriteFile.txt \n\n");
+
+		m3l_Fwrite(Gnode, "WriteFile.txt", (lmchar_t *)NULL);
+
 		if(m3l_Umount(&Gnode) != 1)
 			Perror("m3l_Umount");
 		if(m3l_Umount(&Anode) != 1)
