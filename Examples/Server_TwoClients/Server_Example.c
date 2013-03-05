@@ -162,9 +162,8 @@ int main(int argc, char *argv[])
 	clilen = sizeof(cli_addr);
 
 		if ( (newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen)) < 0){
-			if(errno = EINTR){ /* If Interrupted system call, restart - back to while ()  UNP V1 p124  */
-				Perror("accept()");
-				continue;}
+			if(errno == EINTR) /* If Interrupted system call, restart - back to while ()  UNP V1 p124  */
+				continue;
 			else
 				Perror("accept()");
 		}
