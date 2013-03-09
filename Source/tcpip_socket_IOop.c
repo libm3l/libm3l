@@ -45,9 +45,6 @@
  *
  */
 
-
-
-
 #include "Header.h"
 #include "format_type.h"
 #include "FunctionsPrt.h"
@@ -59,10 +56,13 @@
 #include "ln_list.h"
 #include "rm_list.h"
 #include "udf_rm.h"
-/*
- * routine Links Slist to Tlist
- */
+#include "Check_EOFbuff.h"
+
+
 inline static lmssize_t WriteEOB(lmint_t);
+static lmssize_t ReadSock(lmint_t , lmchar_t *, lmint_t );
+static lmsize_t GetEOFBuffseq(lmint_t);
+
 
 lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...){
 
@@ -142,13 +142,13 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 				{"clean_empy_links",     no_argument,       	     0, 'e'},
 				{"encoding",     required_argument,                  0, 'c'},
 				{"buffering",    required_argument,           	     0, 'b'},
-				{"EOB",    		no_argument,           	     0, 'E'},
+				{"SEOB",    		no_argument,           	     0, 'E'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:Eec:h", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:c:Eeh", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -273,6 +273,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	opts.opt_shutdown = '\0'; // shutdown when finished with sending
 	opts.opt_MEMCP = 'S';  // type of buffering
 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
+	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
 	
 	option_index = 0;
 /*
@@ -336,13 +337,14 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 				{"encoding",     required_argument,                0, 'c'},
 				{"shutdown",           no_argument,                0, 's'},
 				{"buffering",    required_argument,           0, 'b'},
-				{"EOB",    		no_argument,           	     0, 'E'},
+				{"SEOB",    		no_argument,           	     0, 'E'},
+				{"REOB",    		no_argument,           	     0, 'G'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:eEc:h", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:eEGc:h", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -407,6 +409,12 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  * clean empty list
  */
 					opts.opt_EOBseq = 'E';
+				break;
+				case 'G':
+/*
+ * receive EOFBuff only
+ */
+					opts.opt_REOBseq = 'G';
 				break;
 				case 's':
 /*
@@ -473,6 +481,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	opts.opt_shutdown = '\0'; // shutdown when done with receiving
 	opts.opt_MEMCP = 'S';  // type of buffering
 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
+	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
 	
 	option_index = 0;
 /*
@@ -536,13 +545,14 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 				{"encoding",     required_argument,                  0, 'c'},
 				{"shutdown",           no_argument,                    0, 's'},				
 				{"buffering",    required_argument,           0, 'b'},
-				{"EOB",    		no_argument,           	     0, 'E'},
+				{"SEOB",    		no_argument,           	     0, 'E'},
+				{"REOB",    		no_argument,           	     0, 'G'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:eEc:hs", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:eEGc:hs", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -609,6 +619,12 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  */
 					opts.opt_EOBseq = 'E';
 				break;
+				case 'G':
+/*
+ * receive EOFBuff only
+ */
+					opts.opt_EOBseq = 'G';
+				break;
 				case 's':
 /*
  * shutdown when done with sending
@@ -667,6 +683,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_MEMCP = 'S';  // type of buffering
+	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
 	
 	option_index = 0;
 /*
@@ -729,6 +746,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 				{"clean_empy_links",     no_argument,         0, 'e'},
 				{"encoding",     required_argument,           0, 'c'},
 				{"buffering",    required_argument,           0, 'b'},
+				{"REOB",    		no_argument,           	     0, 'G'},
 				{0, 0, 0, 0}
 			};
  /*
@@ -795,6 +813,12 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
  */
 					opts.opt_linkscleanemptrefs = 'e';
 				break;
+				case 'G':
+/*
+ * receive EOFBuff only
+ */
+					opts.opt_REOBseq = 'G';
+				break;
 /* 
  * Error, getopt_long already printed an error message
  */
@@ -848,8 +872,20 @@ node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, op
 /*
  * server side, portnumber is socket number
  */
-		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
-			Error("Error during reading data from socket");
+		if(Popts->opt_REOBseq == 'G'){
+/*
+ * receive EOFBuff only
+ */
+			if( GetEOFBuffseq(portnumber) != 0)
+				Perror("Error receiving EOFBuff");
+		}
+		else{
+/*
+ * receive Gnode
+ */
+			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
 	}
 	else{
 /*
@@ -857,8 +893,22 @@ node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, op
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
-		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-			Error("Error during reading data from socket");
+
+		if(Popts->opt_REOBseq == 'G'){
+/*
+ * receive EOFBuff only
+ */
+			if( GetEOFBuffseq(socketnr) != 0)
+				Perror("Error receiving EOFBuff");
+		}
+		else{
+/*
+ * receive Gnode
+ */
+			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
+
 		if( close(socketnr) == -1)
 			Perror("close");
 	}
@@ -973,8 +1023,21 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 				Error("Error during writing data to socket");
 		}
 		
-		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
-			Error("Error during reading data from socket");
+		if(Popts->opt_REOBseq == 'G'){
+/*
+ * receive EOFBuff only
+ */
+			if( GetEOFBuffseq(portnumber) != 0)
+				Perror("Error receiving EOFBuff");
+		}
+		else{
+/*
+ * receive Gnode
+ */
+			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
+		
 	}
 	else{
 /*
@@ -1001,9 +1064,21 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 			if( shutdown(socketnr,SHUT_WR) != 0)
 				Perror("shutdown");
 		}
-
+		
+		if(Popts->opt_REOBseq == 'G'){
+/*
+ * receive EOFBuff only
+ */
+			if( GetEOFBuffseq(socketnr) != 0)
+				Perror("Error receiving EOFBuff");
+		}
+		else{
+/*
+ * receive Gnode
+ */
 		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-			Error("Error during reading data from socket");
+				Error("Error during reading data from socket");
+		}
 
 		if( close(socketnr) == -1)
 			Perror("close");
@@ -1044,8 +1119,21 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 /*
  * server side, portnumber is socket number
  */
-		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
-			Error("Error during reading data from socket");
+		if(Popts->opt_REOBseq == 'G'){
+/*
+ * receive EOFBuff only
+ */
+			if( GetEOFBuffseq(portnumber) != 0)
+				Perror("Error receiving EOFBuff");
+		}
+		else{
+/*
+ * receive Gnode
+ */
+			if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
+		
 		
 		if(Popts->opt_EOBseq == 'E'){
 /*
@@ -1065,8 +1153,21 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
-		if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
-			Error("Error during reading data from socket");
+		
+		if(Popts->opt_REOBseq == 'G'){
+/*
+ * receive EOFBuff only
+ */
+			if( GetEOFBuffseq(socketnr) != 0)
+				Perror("Error receiving EOFBuff");
+		}
+		else{
+/*
+ * receive Gnode
+ */
+			if( (Gnode = m3l_read_socket(socketnr, Popts)) == NULL)
+				Error("Error during reading data from socket");
+		}
 /*
  * shutdown socket for reading
  */
@@ -1102,11 +1203,12 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 
 
 
-lmssize_t WriteEOB(lmint_t sockfd){
+lmssize_t WriteEOB(lmint_t sockfd)
+{
 /*
- * write buffer to socket
+ * write EOFBuff to socket
  */
-	lmssize_t total, n;	
+	lmssize_t total, n;
 	total = 0;
 	lmchar_t Echo[EOBlen+1], *buff;
 	lmsize_t size;
@@ -1130,8 +1232,41 @@ lmssize_t WriteEOB(lmint_t sockfd){
 		size -= n;
 	}
 /*
- * buffer was sent, nullify it
+ * buffer was sent
  */
 	return total;
 }
 
+
+lmsize_t GetEOFBuffseq(lmint_t descrpt){
+	
+	lmssize_t ngotten;
+	lmsize_t i;
+	lmchar_t prevbuff[EOBlen+1];
+	lmchar_t buff[MAXLINE];
+	for(i=0; i<EOBlen; i++){
+		
+		if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1){
+			bzero(buff,sizeof(buff));
+			return 0;
+		}
+		
+		bzero(buff,sizeof(buff));
+		if (  (ngotten = ReadSock(descrpt, buff, MAXLINE-1)) == -1)
+ 			Perror("read");
+	}
+	return -1;
+}
+
+lmssize_t ReadSock(lmint_t descrpt ,lmchar_t * buff, lmint_t n)
+{
+	lmssize_t ngotten;
+	
+		if (  (ngotten = read(descrpt,buff,n)) == -1){
+			Perror("read");
+			return -1;
+		}
+	buff[ngotten] = '\0';
+	return ngotten;
+
+}

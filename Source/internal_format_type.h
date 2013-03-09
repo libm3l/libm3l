@@ -74,6 +74,7 @@ typedef struct opts{
 	lmchar_t opt_add;
 	lmchar_t opt_MEMCP;
 	lmchar_t opt_EOBseq;
+	lmchar_t opt_REOBseq;
 } opts_t;
 
 
