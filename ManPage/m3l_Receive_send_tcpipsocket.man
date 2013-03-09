@@ -35,6 +35,8 @@ reading and writing numbers to/from buffer
 use snprintf function for writing and stroul type of function for reading
 .B MEMCPY
 use MEMCPY function
+.IP -E --EOB
+send EOFbuff sequence only, Lnode is ignored
 
 .SH RETURN VALUE
 Upon successful completion m3l_Receive_send_tcpipsocket will pointer to received list. Otherwise, it shall return NULL.

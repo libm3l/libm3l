@@ -19,7 +19,6 @@
  */
 
 
-
 /*
  *     Function tcpip_socket_IOop.c
  *
@@ -63,6 +62,7 @@
 /*
  * routine Links Slist to Tlist
  */
+inline static lmssize_t WriteEOB(lmint_t);
 
 lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...){
 
@@ -79,6 +79,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_MEMCP = 'S';  // type of buffering
+	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
 	
 	option_index = 0;
 /*
@@ -141,12 +142,13 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 				{"clean_empy_links",     no_argument,       	     0, 'e'},
 				{"encoding",     required_argument,                  0, 'c'},
 				{"buffering",    required_argument,           	     0, 'b'},
+				{"EOB",    		no_argument,           	     0, 'E'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:ec:h", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:Eec:h", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -206,6 +208,11 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
  * clean empty list
  */
 					opts.opt_linkscleanemptlinks = 'e';
+				case 'E':
+/*
+ * clean empty list
+ */
+					opts.opt_EOBseq = 'E';
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -235,7 +242,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
  */
 	Popts = &opts;
 	
- 	if( m3l_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
+	if( m3l_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
 		return -1;
 	}
 	else{
@@ -265,6 +272,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_shutdown = '\0'; // shutdown when finished with sending
 	opts.opt_MEMCP = 'S';  // type of buffering
+	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
 	
 	option_index = 0;
 /*
@@ -328,12 +336,13 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 				{"encoding",     required_argument,                0, 'c'},
 				{"shutdown",           no_argument,                0, 's'},
 				{"buffering",    required_argument,           0, 'b'},
+				{"EOB",    		no_argument,           	     0, 'E'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:ec:h", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:eEc:h", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -392,6 +401,12 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  * clean empty list
  */
 					opts.opt_linkscleanemptlinks = 'e';
+				break;
+				case 'E':
+/*
+ * clean empty list
+ */
+					opts.opt_EOBseq = 'E';
 				break;
 				case 's':
 /*
@@ -457,6 +472,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 	opts.opt_shutdown = '\0'; // shutdown when done with receiving
 	opts.opt_MEMCP = 'S';  // type of buffering
+	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
 	
 	option_index = 0;
 /*
@@ -520,12 +536,13 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 				{"encoding",     required_argument,                  0, 'c'},
 				{"shutdown",           no_argument,                    0, 's'},				
 				{"buffering",    required_argument,           0, 'b'},
+				{"EOB",    		no_argument,           	     0, 'E'},
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:ec:hs", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:eEc:hs", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -585,6 +602,12 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  * clean empty list
  */
 					opts.opt_linkscleanemptrefs = 'e';
+				break;
+				case 'E':
+/*
+ * clean empty list
+ */
+					opts.opt_EOBseq = 'E';
 				break;
 				case 's':
 /*
@@ -854,6 +877,7 @@ node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, op
 lmint_t m3l_send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, opts_t *Popts)
 {
 	lmint_t socketnr;
+	lmsize_t n;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
@@ -873,8 +897,20 @@ lmint_t m3l_send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 /*
  * server side, portnumber is socket number
  */
-		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
-			Error("Error during writing data to socket");
+		if(Popts->opt_EOBseq == 'E'){
+/*
+ * send EOFbuff sequence only
+ */
+			if ( (n = WriteEOB(portnumber)) < EOBlen)
+					Perror("write()");
+		}
+/*
+ * send Lnode data set
+ */
+		else{
+			if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
+				Error("Error during writing data to socket");
+		}
 	}
 	else{
 /*
@@ -882,8 +918,19 @@ lmint_t m3l_send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
-		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
-			Error("Error during writing data to socket");
+		
+		if(Popts->opt_EOBseq == 'E'){
+/*
+ * send EOFbuff sequence only
+ */
+			if ( (n = WriteEOB(socketnr)) < EOBlen)
+					Perror("write()");
+		}
+		else{
+			if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+				Error("Error during writing data to socket");
+		}
+
 		if( close(socketnr) == -1)
 			Perror("close");
 	}	
@@ -896,6 +943,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 {
 	node_t *Gnode;
 	lmint_t socketnr;
+	lmsize_t n;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_receive_tcpipsocket:  NULL Lnode");
@@ -912,8 +960,19 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 		 m3l_ln_cleanemptylinks(&Lnode,  Popts) ;
 
 	if(hostname == NULL){
-		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
-			Error("Error during writing data to socket");
+		
+		if(Popts->opt_EOBseq == 'E'){
+/*
+ * send EOFbuff sequence only
+ */
+			if ( (n = WriteEOB(portnumber)) < EOBlen)
+					Perror("write()");
+		}
+		else{
+			if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
+				Error("Error during writing data to socket");
+		}
+		
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
 	}
@@ -923,8 +982,18 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  */
 		if ( (socketnr =  m3l_cli_open_socket(hostname, portnumber, (lmchar_t *)NULL)) < 0)
 			Error("Could not open socket");
-		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
-			Error("Error during writing data to socket");
+		
+		if(Popts->opt_EOBseq == 'E'){
+/*
+ * send EOFbuff sequence only
+ */
+			if ( (n = WriteEOB(socketnr)) < EOBlen)
+					Perror("write()");
+		}
+		else{
+			if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+				Error("Error during writing data to socket");
+		}
 /*
  * shutdown socket for writing
  */
@@ -955,6 +1024,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 {
 	node_t *Gnode;
 	lmint_t socketnr;
+	lmsize_t n;
 
 	if(Lnode == NULL){
 		Warning("m3l_receive_send_tcpipsocket:  NULL Lnode");
@@ -977,8 +1047,17 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 		if( (Gnode = m3l_read_socket(portnumber, Popts)) == NULL)
 			Error("Error during reading data from socket");
 		
-		if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
-			Error("Error during writing data to socket");
+		if(Popts->opt_EOBseq == 'E'){
+/*
+ * send EOFbuff sequence only
+ */
+			if ( (n = WriteEOB(portnumber)) < EOBlen)
+					Perror("write()");
+		}
+		else{
+			if ( m3l_write_to_socket(1, Lnode,  portnumber, Popts) < 0)
+				Error("Error during writing data to socket");
+		}
 	}
 	else{
 /*
@@ -995,8 +1074,19 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 			if( shutdown(socketnr,SHUT_RD) != 0)
 				Perror("shutdown");
 		}
-		if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
-			Error("Error during writing data to socket");
+		
+		if(Popts->opt_EOBseq == 'E'){
+/*
+ * send EOFbuff sequence only
+ */
+			if ( (n = WriteEOB(socketnr)) < EOBlen)
+					Perror("write()");
+		}
+		else{
+			if ( m3l_write_to_socket(1, Lnode,  socketnr, Popts) < 0)
+				Error("Error during writing data to socket");
+		}
+
 		if( close(socketnr) == -1)
 			Perror("close");
 	}
@@ -1007,5 +1097,41 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 
 	return Gnode;
+}
+
+
+
+
+lmssize_t WriteEOB(lmint_t sockfd){
+/*
+ * write buffer to socket
+ */
+	lmssize_t total, n;	
+	total = 0;
+	lmchar_t Echo[EOBlen+1], *buff;
+	lmsize_t size;
+	
+	if( snprintf(Echo, EOBlen ,"%s", "EOFbuff") < 0)
+		Perror("snprintf");
+	
+	Echo[EOBlen] = '\0';
+	size = EOBlen + 1;
+	
+	buff = Echo;
+	
+	while(size > 0) {
+		
+		if ( (n = write(sockfd,buff,size)) < 0){
+			if (errno == EINTR) continue;
+			return (total == 0) ? -1 : total;
+		}
+ 		buff += n;
+		total += n;
+		size -= n;
+	}
+/*
+ * buffer was sent, nullify it
+ */
+	return total;
 }
 

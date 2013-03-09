@@ -34,6 +34,8 @@ writing and reading numbers from/to buffer
 use snprintf function for writing and stroul type of function for reading
 .B MEMCPY
 use MEMCPY function
+.IP -E --EOB
+send EOFbuff sequence only, Lnode is ignored
 .IP "-s --shutdown"
 shuts down the socket for sending when sending list is finsihed.
 

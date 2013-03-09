@@ -33,6 +33,8 @@ writing numbers to buffer
 use snprintf function
 .B MEMCPY
 use MEMCPY function
+.IP -E --EOB
+send EOFbuff sequence only, Lnode is ignored
 
 .SH RETURN VALUE
 Upon successful completion m3l_Send_to_tcpipsocket will return 1. Otherwise, it shall return negative value.
