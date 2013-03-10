@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
 /*
  * you need to send ACKN to terminate reading from socket
  */
-				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
+				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", "--SEOB", (char *)NULL) < 1)
 					Error("Error during reading data from socket");
 /*
  * wait for internal semaphores (1 and 2) being 0 and decrement Edge semaphore (2) - the Edge smeaphore mkes sure only one Edge 
@@ -357,12 +357,6 @@ int main(int argc, char *argv[])
 				operations[2].sem_flg    =   0;
 				if( (retval = semop(id, operations, 3)) != 0)
 					Perror("semop()9"); 
-/*
- * CSM will send now data with solver name, because last operation it did was sending, 
- * terminate reading socket by sending bogus (ACKN) reqest
- */
-// 				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL) < 1)
-// 					Error("Error during reading data from socket");
 				
 				if(m3l_Umount(&ACKN) != 1)
 					Perror("m3l_Umount");

@@ -109,15 +109,16 @@ int main(int argc, char *argv[])
 /*
  * send solver name to server and get back ACKN answer
  */
-		if( (RecNode = m3l_Send_receive_tcpipsocket(SolverName,(char *)NULL, sockfd, "--encoding" , "IEEE-754",  (char *)NULL)) == NULL)
-				Perror("Send_receive");
+// 		if( (RecNode = m3l_Send_receive_tcpipsocket(SolverName,(char *)NULL, sockfd, "--encoding" , "IEEE-754",  "--REOB", (char *)NULL)) == NULL)
+// 				Perror("Send_receive");
 /*
  * Do not care what is in RecNode, it should be ACKN, we just need to terminate data stream
- */
+ *//*
 		if(m3l_Umount(&RecNode) != 1)
-			Perror("m3l_Umount");
-/*
- * send data set to server and get back answer - this data set contains data set which contains payload data
+			Perror("m3l_Umount");*/
+		m3l_Send_receive_tcpipsocket(SolverName,(char *)NULL, sockfd, "--encoding" , "IEEE-754",  "--REOB", (char *)NULL);
+
+/* send data set to server and get back answer - this data set contains data set which contains payload data
  * solver_name makes the initial node, other data added to that node
  */
 		Gnode = client_name("Text from Client1");

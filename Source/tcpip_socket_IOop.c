@@ -863,6 +863,8 @@ node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, op
 {
 	node_t *Gnode;
 	lmint_t socketnr;
+	
+	Gnode = NULL;
 
 	if(portnumber < 1){
 		Warning("m3l_receive_to_tcpipsocket:  wrong port/socket number");
@@ -994,6 +996,8 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	node_t *Gnode;
 	lmint_t socketnr;
 	lmsize_t n;
+	
+	Gnode = NULL;
 
 	if(Lnode == NULL){
 		Warning("m3l_send_receive_tcpipsocket:  NULL Lnode");
@@ -1100,6 +1104,8 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	node_t *Gnode;
 	lmint_t socketnr;
 	lmsize_t n;
+	
+	Gnode = NULL;
 
 	if(Lnode == NULL){
 		Warning("m3l_receive_send_tcpipsocket:  NULL Lnode");
@@ -1213,9 +1219,9 @@ lmssize_t WriteEOB(lmint_t sockfd)
 	lmchar_t Echo[EOBlen+1], *buff;
 	lmsize_t size;
 	
-	if( snprintf(Echo, EOBlen ,"%s", "EOFbuff") < 0)
+	if( snprintf(Echo, EOBlen+1 ,"%s", EOFbuff) < 0)
 		Perror("snprintf");
-	
+		
 	Echo[EOBlen] = '\0';
 	size = EOBlen + 1;
 	
@@ -1244,13 +1250,19 @@ lmsize_t GetEOFBuffseq(lmint_t descrpt){
 	lmsize_t i;
 	lmchar_t prevbuff[EOBlen+1];
 	lmchar_t buff[MAXLINE];
+		
+	bzero(buff,sizeof(buff));
+	bzero(prevbuff,EOBlen+1);
+	
+	if (  (ngotten = ReadSock(descrpt, buff, MAXLINE-1)) == -1)
+ 		Perror("read");
+		
 	for(i=0; i<EOBlen; i++){
 		
-		if(Check_EOFbuff(buff,prevbuff, strlen(buff),EOBlen, EOFbuff) == 1){
-			bzero(buff,sizeof(buff));
+		if(Check_EOFbuff(buff,prevbuff, strlen(buff), EOBlen, EOFbuff) == 1){
 			return 0;
 		}
-		
+	
 		bzero(buff,sizeof(buff));
 		if (  (ngotten = ReadSock(descrpt, buff, MAXLINE-1)) == -1)
  			Perror("read");

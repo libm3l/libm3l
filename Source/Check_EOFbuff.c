@@ -58,7 +58,6 @@ lmint_t Check_EOFbuff(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoble
  * terminate reading from socket
  */
 	size_t counter,i;
-	
 	counter = 0;
 /*
  * find how many character has buffer, up to eoblen
@@ -79,7 +78,8 @@ lmint_t Check_EOFbuff(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoble
 	eofbuff[eoblen]='\0';
 				
 	if(strncmp(eofbuff, EOFBUFF, eoblen) == 0){
-		return 1;}
+		return 1;
+	}
 	else{
 		return 0;
 	}
