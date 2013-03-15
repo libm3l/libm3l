@@ -917,10 +917,14 @@ node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, op
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_linkscleanemptlinks == 'e')
-		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
-	
-	return Gnode;
+	if(Popts->opt_REOBseq != 'G'){
+		if(Popts->opt_linkscleanemptlinks == 'e')
+			m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
+
+			return Gnode;
+	}
+	else
+		return NULL;
 }
 
 /*
@@ -931,10 +935,11 @@ lmint_t m3l_send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	lmint_t socketnr;
 	lmsize_t n;
 
-	if(Lnode == NULL){
+	if(Lnode == NULL && Popts->opt_EOBseq != 'E'){
 		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
 		return -1;
 	}
+
 	if(portnumber < 1){
 		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
 		return -1;
@@ -999,7 +1004,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	
 	Gnode = NULL;
 
-	if(Lnode == NULL){
+	if(Lnode == NULL && Popts->opt_EOBseq != 'E'){
 		Warning("m3l_send_receive_tcpipsocket:  NULL Lnode");
 		return (node_t *)NULL;
 	}
@@ -1090,10 +1095,14 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_linkscleanemptlinks == 'e')
-		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
-	
-	return Gnode;
+	if(Popts->opt_REOBseq != 'G'){
+		if(Popts->opt_linkscleanemptlinks == 'e')
+			m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
+
+			return Gnode;
+	}
+	else
+		return NULL;
 }
 
 /*
@@ -1107,7 +1116,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	
 	Gnode = NULL;
 
-	if(Lnode == NULL){
+	if(Lnode == NULL && Popts->opt_EOBseq != 'E'){
 		Warning("m3l_receive_send_tcpipsocket:  NULL Lnode");
 		return (node_t *)NULL;
 	}
@@ -1200,10 +1209,14 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 /*
  * if required, clean empty links
  */
-	if(Popts->opt_linkscleanemptlinks == 'e')
-		 m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
+	if(Popts->opt_REOBseq != 'G'){
+		if(Popts->opt_linkscleanemptlinks == 'e')
+			m3l_ln_cleanemptylinks(&Gnode,  Popts) ;
 
-	return Gnode;
+			return Gnode;
+	}
+	else
+		return NULL;
 }
 
 
