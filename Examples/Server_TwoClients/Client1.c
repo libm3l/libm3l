@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 /*
  * send solver name to server and get back ACKN answer
  */
-// 		if( (RecNode = m3l_Send_receive_tcpipsocket(SolverName,(char *)NULL, sockfd, "--encoding" , "IEEE-754",  "--REOB", (char *)NULL)) == NULL)
+// 		if( (RecNode = m3l_Send_receive_tcpipsocket(SolverName,(char *)NULL, sockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
 // 				Perror("Send_receive");
 /*
  * Do not care what is in RecNode, it should be ACKN, we just need to terminate data stream
