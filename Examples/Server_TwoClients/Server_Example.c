@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
 /*
  * you need to send ACKN to terminate reading from socket
  */
-				if( m3l_Send_to_tcpipsocket(ACKN, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", "--SEOB", (char *)NULL) < 1)
+				if( m3l_Send_to_tcpipsocket(NULL, (const char *)NULL, newsockfd, "--encoding" , "IEEE-754", "--SEOB", (char *)NULL) < 1)
 					Error("Error during reading data from socket");
 /*
  * wait for internal semaphores (1 and 2) being 0 and decrement Edge semaphore (2) - the Edge smeaphore mkes sure only one Edge 
