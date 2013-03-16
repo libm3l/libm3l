@@ -45,14 +45,8 @@
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <errno.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/ipc.h>
-#include <sys/sem.h>
-#include <sys/shm.h>
 #include <signal.h> 
 #include <malloc.h>
 #include <limits.h> 
@@ -60,7 +54,6 @@
 #include <getopt.h>
 #include <ctype.h>
 #include <netdb.h>
-#include <netinet/tcp.h>
 #include <malloc.h>
 #include <resolv.h>
 #include <float.h>
