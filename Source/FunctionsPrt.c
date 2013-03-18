@@ -54,7 +54,7 @@
 #include "format_type.h"
 #include "FunctionsPrt.h"
 
-lmint_t sig_pid = 9999;
+// lmint_t sig_pid = 9999;
 
 /*
  *
@@ -78,28 +78,6 @@ void Warning(const lmchar_t *msg)
 {
 	printf("Warning:  %s\n", msg);
 // 	exit(1);
-}
-
-/*
- *
-  */
-void sig_chld(lmint_t signo)
-{
-	pid_t   pid;
-	lmint_t	stat;
-	while( (sig_pid = waitpid(-1, &stat, WNOHANG)) >0 );
-	return;
-}
-
-/*
- *
- */
-lmint_t Fork(void)
-{
-	lmint_t childpid;
-        if ( (childpid = fork()) < 0) 
-		Perror("fork()");
-	return childpid;
 }
 
 /*

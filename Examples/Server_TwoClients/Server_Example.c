@@ -52,6 +52,7 @@
 #include "ACK.h"
 #include "CrtSEMSHM.h"
 #include "SignalC.h"
+#include "Server_FunctionsPrt.h"
 
 #define SEMKEY 1
 #define SEMKEYPATH "/dev/null"  /* Path used on ftok for semget key  */
