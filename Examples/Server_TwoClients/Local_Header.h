@@ -23,7 +23,7 @@
 /*
  *     Header file Local_Header.h
  *
- *     Date: 2013-02-23
+ *     Date: 2013-02-22
  * 
  *
  *     Modifications:
@@ -35,15 +35,19 @@
  */
 
 
+#ifndef __LOCAL_HEADER_H__
+#define __LOCAL_HEADER_H__
 
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <netinet/in.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
 
-#ifndef __LOCALHEADER_H__
-#define __LOCALHEADER_H__
-
-int id, shmid, shmid1;  /* Internal identifier of the semaphore. */
-int *shm_n;
-char *shm_buff;
+lmint_t id, shmid, shmid1;  /* Internal identifier of the semaphore. */
+lmint_t *shm_n;
+lmchar_t *shm_buff;
 node_t *TmpACKN;
 
 #endif
-	

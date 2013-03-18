@@ -44,8 +44,6 @@
 extern void Perror(const lmchar_t *);
 extern void Warning(const lmchar_t *);
 extern void Error(const lmchar_t *);
-extern void sig_chld(lmint_t );
-extern lmint_t Fork(void);
 extern lmsize_t Strol(lmchar_t *);
 extern Uint64_t Strtoull(lmchar_t *, lmint_t);
 extern lmulint_t Strtoul(lmchar_t *, lmint_t);
