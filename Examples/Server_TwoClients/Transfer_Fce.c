@@ -108,7 +108,7 @@ int ReadSocketCopy2SHM(int descrpt)
 			Perror("read");
 		shm_buff[n] = '\0';
 /*
- * check if the end of entire buffer is raeched
+ * check if the end of entire buffer is reached
  */		
 		eofbuffcond = Check_EOFbuff(shm_buff,prevbuff, n,EOBlen, EOFbuff);
 /*

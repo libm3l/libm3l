@@ -389,42 +389,45 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 		}
 	}
 /*
- * connect chain after removed SList
+ * If the SList was removed, connect the list chain (after SList was removed)
  * if Slist has a parent, dicrease number of nodes in it
+ * This will not happen if Slist was a head node, ie. its Par == NULL
  */
-	if(Par != NULL) Par->ndim--;
-	if(Par->ndim > 0){
+	if(Par != NULL){
+		Par->ndim--;
+		if(Par->ndim > 0){
 /*
  * still nodes in directory
  */		
-		if(Next != NULL && Prev != NULL){
+			if(Next != NULL && Prev != NULL){
 /*
  * List is in the middle
  */
-			Prev->next = Next;
-			Next->prev = Prev;
-		}
-		else if(Next == NULL){
+				Prev->next = Next;
+				Next->prev = Prev;
+			}
+			else if(Next == NULL){
 /*
  * List is the last in line
  */
-			Prev->next = NULL;
+				Prev->next = NULL;
 // 			Par->child = NULL;
 // 			Par->ndim = 0;
-		}
-		else if(Prev == NULL){
+			}
+			else if(Prev == NULL){
 /*
  * List is the fisrt in line
  */
-			Next->prev = NULL;
-			Par->child = Next;
+				Next->prev = NULL;
+				Par->child = Next;
+			}
 		}
-	}
-	else{
+		else{
 /*
  * after move, DIR is empty
  */
-		Par->child = NULL;
+			Par->child = NULL;
+		}
 	}
 	return 1;
 }
