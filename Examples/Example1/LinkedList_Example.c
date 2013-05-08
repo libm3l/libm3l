@@ -109,7 +109,7 @@ lmint_t main(void)
 		printf(" ----------------------------------  \n");		
 		printf(" Moving data set Additional_directory_TEST in Gnode to the second data set Dir in Gnode\n");		
 
-		m3l_Mv(&Gnode,  "/main/Dir/Additional_directory_TEST", "/*/*/*", &Gnode, "/main/Dir", "/*/n=2", (lmchar_t *)NULL);   /* rename node */
+		m3l_Mv(&Gnode,  "/main/Dir/Additional_directory_TEST", "/*/*/*", &Gnode, "/main/Dir", "/*/n=2", (lmchar_t *)NULL);  
 		if(m3l_Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (lmchar_t *)NULL) != 0)
  	        	Error("CatData");
 /*
@@ -117,7 +117,7 @@ lmint_t main(void)
  */ 
 		printf(" ----------------------------------  \n");		
   		printf(" Linking  data set Additional_directory_TEST in Gnode back to Dir #1\n");		
-		m3l_Ln(&Gnode,  "/main/Dir/Additional_directory_TEST", "/*/*/*", &Gnode, "/main/Dir", "/*/n=1", (lmchar_t *)NULL);   /* rename node */
+		m3l_Ln(&Gnode,  "/main/Dir/Additional_directory_TEST", "/*/*/*", &Gnode, "/main/Dir", "/*/n=1", (lmchar_t *)NULL);  
 
 		if(m3l_Cat(Gnode,  "--all", "--links", "-P", "-L", "*", (lmchar_t *)NULL) != 0)
 			Error("CatData");
