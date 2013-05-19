@@ -58,9 +58,7 @@
 #include "find_list.h"
 
 /*
- * function deletes list. If the list has children, it deletes them before removing list.
- * called recursivelly
- * upon return, returns number of detached lists in find_t structure, upon failure returns NULL
+ * function detach list. 
  */
 
 find_t *m3l_detach_caller(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)

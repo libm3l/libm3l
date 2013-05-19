@@ -59,7 +59,7 @@
 extern lmint_t optind;
 static lmint_t verbose_flag;
 /*
- * routine finds the list
+ * routine detaches the list from list tree
  */
 find_t *m3l_Detach_List(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, lmchar_t * Options, ...)
 {

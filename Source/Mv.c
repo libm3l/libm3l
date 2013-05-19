@@ -63,7 +63,7 @@ extern lmint_t optind;
 static lmint_t verbose_flag;
 
 /*
- * routine copies Slist to Tlist
+ * routine moves Slist to Tlist
  */
 lmsize_t m3l_Mv(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, lmchar_t * Options, ...)
 {
