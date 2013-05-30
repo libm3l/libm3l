@@ -64,15 +64,13 @@
 
 static lmint_t m3l_mv_list(lmint_t , node_t **, node_t **, opts_t *);
 /*
- * function links list. If the list has children, it deletes them before removing list.
- * called recursivelly
- * upon return, returns number of deleted lists, upon failure returns -1
+ * function moves list.
  */
 
 lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
- * function is a caller of the cp functions
+ * function is a caller of the mv function
  */
 
 /* NOTE - check that Tfounds and SFounds are identical */
@@ -316,8 +314,8 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 {
 /*
- * function links list SList to a target list TList
- * 	if the SList is FILE, TLIST has to be file too. The data sunion and ->fdim of the TList target nodes is furst freed, then reallocated
+ * function moves list SList to the target list TList
+ * 	if the SList is FILE, TLIST has to be file too. The data union and ->fdim of the TList target nodes is furst freed, then reallocated
  *	and then SList data union + ->fdim and ->ndim are copied.
  * 	if the TList is DIR the Slist is re-created and added to the TList. In case SList is a DIR, the copying is done by 
  *	traversing the list and copying it item-by-item

@@ -105,7 +105,8 @@ node_t *m3l_Mklist(const lmchar_t *name, const lmchar_t *type, lmsize_t ndim, lm
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 			Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 			Perror("malloc");

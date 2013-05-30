@@ -362,6 +362,7 @@ void m3l_DestroyFound(find_t **Founds)
  * function destroys filed allocted by function Find_caller
  */
 	lmsize_t i;
+	if(*Founds == NULL)return ;
 			
 	for(i=0; i< (*Founds)->founds; i++){
 		free( (*Founds)->Found_Nodes[i] );
@@ -373,4 +374,6 @@ void m3l_DestroyFound(find_t **Founds)
 	(*Founds)->Home_Node = NULL; 
 	free((*Founds));	
 	(*Founds) = NULL; 
+	
+	return;
 }	

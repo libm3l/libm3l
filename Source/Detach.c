@@ -59,7 +59,7 @@
 extern lmint_t optind;
 static lmint_t verbose_flag;
 /*
- * routine finds the list
+ * routine detaches the list from list tree
  */
 find_t *m3l_Detach_List(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, lmchar_t * Options, ...)
 {
@@ -109,7 +109,8 @@ find_t *m3l_Detach_List(node_t **List, const lmchar_t *path, const lmchar_t *pat
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");

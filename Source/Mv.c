@@ -63,7 +63,7 @@ extern lmint_t optind;
 static lmint_t verbose_flag;
 
 /*
- * routine copies Slist to Tlist
+ * routine moves Slist to Tlist
  */
 lmsize_t m3l_Mv(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, lmchar_t * Options, ...)
 {
@@ -120,7 +120,8 @@ lmsize_t m3l_Mv(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_l
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
