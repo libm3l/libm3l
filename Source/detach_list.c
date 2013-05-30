@@ -146,48 +146,48 @@ lmsize_t m3l_detach_list(lmint_t call, node_t **List, opts_t *Popts)
  *	set number if items in parent list 0
  *	set cld pointer of the parent list to NULL
  */
-			((*List)->parent)->child = NULL;
-		}
-		else if (PREV == NULL)
-		{
+		((*List)->parent)->child = NULL;
+	}
+	else if (PREV == NULL)
+	{
 /*
  * first node in DIR list
  *	set prev pointer of the next node to NULL, this node will be head of the list
  *	set child pointer of the parent list pointing to next node
  */ 
-			NEXT->prev = NULL;
-			((*List)->parent)->child = NEXT;
-		}
- 		else if(NEXT == NULL){
+		NEXT->prev = NULL;
+		((*List)->parent)->child = NEXT;
+	}
+ 	else if(NEXT == NULL){
 /*
  * last node in DIR list
  *	set the next pointer of the previuous node to NULL, will be the last node in list
  */
-			PREV->next = NULL;
-		}
-		else
-		{ 
+		PREV->next = NULL;
+	}
+	else
+	{ 
 /*
  * node is neither first or last
  *	set the next pointer of the previous node to nexnode
  *	set the previuous pointer of the next node to previuous
  */
-			PREV->next = NEXT;
-			NEXT->prev = PREV;
-		}
+		PREV->next = NEXT;
+		NEXT->prev = PREV;
+	}
 /*
  * substract 1 from number of items in the parent node
  */
-		(*List)->parent->ndim--;
+	(*List)->parent->ndim--;
 /*
  * now detach node - set its parent, prev and next to NULL
  */
-		(*List)->parent = NULL;
-		(*List)->prev   = NULL;
-		(*List)->next   = NULL;
+	(*List)->parent = NULL;
+	(*List)->prev   = NULL;
+	(*List)->next   = NULL;
 
 /*
  * return value 1 meaning one detached node
  */
-		return 1;
+	return 1;
 }

@@ -109,7 +109,8 @@ find_t *m3l_Detach_List(node_t **List, const lmchar_t *path, const lmchar_t *pat
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");

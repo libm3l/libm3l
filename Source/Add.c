@@ -114,7 +114,8 @@ lmint_t m3l_Add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");

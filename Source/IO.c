@@ -108,7 +108,8 @@ node_t *m3l_Fread(const lmchar_t *name, lmchar_t * Options, ...)
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
@@ -281,7 +282,8 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");

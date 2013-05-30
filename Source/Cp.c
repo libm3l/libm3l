@@ -122,7 +122,8 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
  */
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
-	
+		opt[0][0]='\0';
+
  		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
 				Perror("malloc");
