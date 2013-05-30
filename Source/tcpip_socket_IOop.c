@@ -94,10 +94,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 			args_num++;
 		}
 		va_end(args);
-		args_num++;
-		
-		printf("Number of arguments is %d\n", args_num);
-		
+		args_num++;		
 /*
  * get the values of option, for that, allocate opts ** array
  */
@@ -129,13 +126,6 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
-		}
-		
-		
-		for(i=1; i<args_num; i++){
-			
-			printf(" -----------------  Argument %d %d is %s\n", args_num, i, opt[i]);
-			
 		}
 /*
  * end args
