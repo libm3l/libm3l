@@ -160,7 +160,7 @@ lmsize_t m3l_Rm(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, l
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "dfiIklr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "cdfiIklr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */

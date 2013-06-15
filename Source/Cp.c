@@ -165,7 +165,7 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "adfiklLI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "adfilLI", long_options, &option_index);
 /*
  * Detect the end of the options 
  */

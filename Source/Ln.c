@@ -165,7 +165,7 @@ lmsize_t m3l_Ln(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_l
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "acdefiklI", long_options, &option_index);
+			c = getopt_long (args_num, opt, "acdefilI", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
