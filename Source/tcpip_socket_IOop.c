@@ -95,8 +95,6 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 		}
 		va_end(args);
 		args_num++;
-		
-// 		printf(" Number of arugemts is % d\n", args_num);
 /*
  * get the values of option, for that, allocate opts ** array
  */
@@ -124,19 +122,12 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			
-// 			printf(" Send Len is %d %d %d %s \n", i, args_num, len, word);
-			
+	
 			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
 			opt[i][len] = '\0';
 		}
-		
-
-// 		for(i=0; i<args_num; i++){
-// 			printf(" SArgument %d of %d is '%s'\n", i, args_num, opt[i]);
-// 		}
 /*
  * end args
  */
@@ -712,8 +703,6 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 		}
 		va_end(args);
 		args_num++;
-		
-// 		printf(" Recargs: %d   %d\n", portnumber, args_num);
 /*
  * get the values of option, for that, allocate opts ** array
  */
@@ -741,10 +730,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
-			
-// 			printf(" Read Len is %d %d %d %s \n", i, args_num, len, word);
 
-			
 			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
@@ -754,11 +740,6 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
  * end args
  */
 		va_end(args);
-		
-		
-// 		for(i=0; i<args_num; i++){
-// 			printf(" READTCPIP   Argument %d of %d is '%s'\n", i, args_num, opt[i]);
-// 		}
 /*
  * get meaning of options
  * first - reset opting = 0 to reinitialize getopt_long
@@ -960,7 +941,7 @@ lmint_t m3l_send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	lmint_t socketnr;
 	lmsize_t n;
 
-	if(Lnode == NULL && Popts->opt_EOBseq != 'E'){
+	if(Lnode == NULL && Popts->opt_EOBseq != 'E'){		
 		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
 		return -1;
 	}
