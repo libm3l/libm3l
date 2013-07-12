@@ -182,7 +182,7 @@ lmint_t m3l_Cat(node_t *List, lmchar_t * Options, ...)
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "adDhHfiIlLPqr", long_options, &option_index);
+			c = getopt_long (args_num, opt, "adDfiIlLPqr", long_options, &option_index);
 /*
  * Detect the end of the options 
  */

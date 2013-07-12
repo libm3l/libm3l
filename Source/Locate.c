@@ -156,7 +156,7 @@ find_t *m3l_Locate(node_t *List, const lmchar_t *path, const lmchar_t *path_loc,
  /*
   * getopt_long stores the option index here. 
   */
- 			c = getopt_long (args_num, opt, "dfiILr", long_options, &option_index);
+ 			c = getopt_long (args_num, opt, "dfilL", long_options, &option_index);
 /*
  * Detect the end of the options 
  */

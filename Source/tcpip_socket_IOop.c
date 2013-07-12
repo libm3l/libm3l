@@ -94,7 +94,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 			args_num++;
 		}
 		va_end(args);
-		args_num++;		
+		args_num++;
 /*
  * get the values of option, for that, allocate opts ** array
  */
@@ -122,6 +122,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
+	
 			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
@@ -149,7 +150,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:c:Eeh", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:c:Ee", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -346,7 +347,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:eEGc:h", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:eEGc:s", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -555,7 +556,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:eEGc:hs", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:eEGc:s", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -729,6 +730,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 		for(i=2; i<args_num; i++){
 			word = va_arg(args, lmchar_t *);
 			len = strlen(word);
+
 			if ( (opt[i] = (lmchar_t *)malloc( (len+1)*sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 			strncpy(opt[i], word, len);
@@ -756,7 +758,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "b:ec:", long_options, &option_index);
+			c = getopt_long (args_num, opt, "b:ec:G", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -939,7 +941,7 @@ lmint_t m3l_send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	lmint_t socketnr;
 	lmsize_t n;
 
-	if(Lnode == NULL && Popts->opt_EOBseq != 'E'){
+	if(Lnode == NULL && Popts->opt_EOBseq != 'E'){		
 		Warning("m3l_send_to_tcpipsocket:  NULL Lnode");
 		return -1;
 	}
