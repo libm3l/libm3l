@@ -83,6 +83,10 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	
 	option_index = 0;
 /*
+ * if hostname == NULL, portnumber is socket number
+ */
+
+/*
  * get number of options
  */	
 	if(Options != NULL){
@@ -546,11 +550,11 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
-				{"encoding",     required_argument,                  0, 'c'},
-				{"shutdown",           no_argument,                    0, 's'},				
-				{"buffering",    required_argument,           0, 'b'},
-				{"SEOB",    		no_argument,           	     0, 'E'},
-				{"REOB",    		no_argument,           	     0, 'G'},
+				{"encoding",     required_argument,         0, 'c'},
+				{"shutdown",           no_argument,         0, 's'},
+				{"buffering",    required_argument,         0, 'b'},
+				{"SEOB",    		no_argument,        0, 'E'},
+				{"REOB",    		no_argument,        0, 'G'},
 				{0, 0, 0, 0}
 			};
  /*
@@ -752,7 +756,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 				{"clean_empy_links",     no_argument,         0, 'e'},
 				{"encoding",     required_argument,           0, 'c'},
 				{"buffering",    required_argument,           0, 'b'},
-				{"REOB",    		no_argument,           	     0, 'G'},
+				{"REOB",    		no_argument,          0, 'G'},
 				{0, 0, 0, 0}
 			};
  /*
@@ -873,7 +877,7 @@ node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, op
 	Gnode = NULL;
 
 	if(portnumber < 1){
-		Warning("m3l_receive_to_tcpipsocket:  wrong port/socket number");
+		Warning("m3l_receive_tcpipsocket:  wrong port/socket number");
 		return (node_t *)NULL;
 	}
 	if(hostname == NULL){
@@ -1015,7 +1019,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 		return (node_t *)NULL;
 	}
 	if(portnumber < 1){
-		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		Warning("m3l_send_receive_tcpipsocket:  wrong port/socket number");
 		return (node_t *)NULL;
 	}
 /*
@@ -1127,7 +1131,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 		return (node_t *)NULL;
 	}
 	if(portnumber < 1){
-		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		Warning("m3l_receive_send_tcpipsocket:  wrong port/socket number");
 		return (node_t *)NULL;
 	}
 /*
