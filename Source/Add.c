@@ -57,6 +57,8 @@
 #include "Add.h"
 #include "add_list.h"
 #include "FunctionsPrt.h"
+#include "Set_Default_Parameters.h"
+
 
 extern lmint_t optind;
 static lmint_t verbose_flag;
@@ -72,7 +74,10 @@ lmint_t m3l_Add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
 	lmint_t addlist, c, option_index;
 	va_list args;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+// 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+	
+	Popts = &opts;
+	m3l_set_Add(&Popts);
 	
 	option_index = 0;
 /*
@@ -207,9 +212,7 @@ lmint_t m3l_Add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
 	}
 /*
  * locate nodes using find function
- */
-	Popts = &opts;
-	
+ */	
  	addlist = m3l_add_caller(SList, TList, t_path, t_path_loc, Popts);
 
 	return addlist;

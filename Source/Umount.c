@@ -89,7 +89,6 @@ lmint_t m3l_Umount(node_t **List)
 	}
 	
 	*List = NULL;
-// 	printf("Unmounting finished\n");
 
 	return 1;
 }

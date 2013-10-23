@@ -1258,8 +1258,6 @@ lmssize_t Read(lmint_t descrpt ,lmint_t n)
 			return -1;
 		}
 		buff[ngotten] = '\0';
-
 	return ngotten;
-
 }
 

@@ -83,15 +83,17 @@ node_t *MkTCPIPHeader(opts_t *Popts)
 	tmpstruct_t TMPSTR;
 	
 	opts_t *Poptadd, opts;
-/*
- * options for add and remove list
- */
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
-/*
- * options for allocate list
- */	
-	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_nomalloc = '\0';
+// /*
+//  * options for add and remove list
+//  */
+// 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+// /*
+//  * options for allocate list
+//  */	
+// 	opts.opt_n = '\0'; opts.opt_b = '\0'; opts.opt_nomalloc = '\0';
+
 	Poptadd = &opts;
+	m3l_set_MkTCPIPHeader(&Poptadd);
 /*
  * make header node
  */

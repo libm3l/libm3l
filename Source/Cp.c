@@ -57,6 +57,7 @@
 #include "Cp.h"
 #include "FunctionsPrt.h"
 #include "cp_list.h"
+#include "Set_Default_Parameters.h"
 
 
 extern lmint_t optind;
@@ -75,10 +76,14 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 	lmint_t c, init_call;
 	lmint_t option_index;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
-	opts.opt_L = '\0'; opts.opt_nomalloc = '\0'; opts.opt_add = '\0';
+// 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
+// 	opts.opt_L = '\0'; opts.opt_nomalloc = '\0'; opts.opt_add = '\0';
 	
 	// opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+	
+	Popts = &opts;
+	m3l_set_Cat(&Popts);
+
 	
 	option_index = 0;
 	cp_tot_nodes=0;
@@ -264,9 +269,7 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 	}
 /*
  * locate nodes using find function
- */
-	Popts = &opts;
-	
+ */	
  	cp_tot_nodes = m3l_cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
 
