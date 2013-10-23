@@ -74,14 +74,21 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	lmint_t c;
 	lmint_t option_index;
 	
-	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
-	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
-	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
-	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
-	opts.opt_MEMCP = 'S';  // type of buffering
-	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
+// 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+// 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+// 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
+// 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+// 	opts.opt_MEMCP = 'S';  // type of buffering
+// 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
+	
+	Popts = &opts;
+	m3l_set_set_Send_to_tcpipsocket(&Popts);
 	
 	option_index = 0;
+/*
+ * if hostname == NULL, portnumber is socket number
+ */
+
 /*
  * get number of options
  */	
@@ -241,9 +248,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	}
 /*
  * locate nodes using find function
- */
-	Popts = &opts;
-	
+ */	
 	if( m3l_send_to_tcpipsocket(Lnode, hostname, portnumber, Popts) < 0){
 		return -1;
 	}
@@ -268,14 +273,17 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	lmint_t c;
 	lmint_t option_index;
 	
-	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
-	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
-	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
-	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
-	opts.opt_shutdown = '\0'; // shutdown when finished with sending
-	opts.opt_MEMCP = 'S';  // type of buffering
-	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
-	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
+// 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+// 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+// 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
+// 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+// 	opts.opt_shutdown = '\0'; // shutdown when finished with sending
+// 	opts.opt_MEMCP = 'S';  // type of buffering
+// 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
+// 	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
+
+	Popts = &opts;
+	m3l_m3l_set_Send_receive_tcpipsocket(&Popts);
 	
 	option_index = 0;
 /*
@@ -450,9 +458,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	}
 /*
  * locate nodes using find function
- */
-	Popts = &opts;
-	
+ */	
  	if( (List = m3l_send_receive_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
@@ -477,14 +483,17 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	lmint_t c;
 	lmint_t option_index;
 	
-	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
-	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
-	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
-	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
-	opts.opt_shutdown = '\0'; // shutdown when done with receiving
-	opts.opt_MEMCP = 'S';  // type of buffering
-	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
-	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
+// 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+// 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+// 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
+// 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+// 	opts.opt_shutdown = '\0'; // shutdown when done with receiving
+// 	opts.opt_MEMCP = 'S';  // type of buffering
+// 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
+// 	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
+	
+	Popts = &opts;
+	m3l_set_Receive_send_tcpipsocket(&Popts);
 	
 	option_index = 0;
 /*
@@ -546,11 +555,11 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
-				{"encoding",     required_argument,                  0, 'c'},
-				{"shutdown",           no_argument,                    0, 's'},				
-				{"buffering",    required_argument,           0, 'b'},
-				{"SEOB",    		no_argument,           	     0, 'E'},
-				{"REOB",    		no_argument,           	     0, 'G'},
+				{"encoding",     required_argument,         0, 'c'},
+				{"shutdown",           no_argument,         0, 's'},
+				{"buffering",    required_argument,         0, 'b'},
+				{"SEOB",    		no_argument,        0, 'E'},
+				{"REOB",    		no_argument,        0, 'G'},
 				{0, 0, 0, 0}
 			};
  /*
@@ -660,9 +669,7 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	}
 /*
  * locate nodes using find function
- */
-	Popts = &opts;
-	
+ */	
  	if( (List =m3l_receive_send_tcpipsocket(Lnode, hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
@@ -683,11 +690,14 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 	lmint_t c;
 	lmint_t option_index;
 	
-	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
-	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
-	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
-	opts.opt_MEMCP = 'S';  // type of buffering
-	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
+// 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+// 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+// 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
+// 	opts.opt_MEMCP = 'S';  // type of buffering
+// 	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
+	
+	Popts = &opts;
+	m3l_set_Receive_tcpipsocket(&Popts);
 	
 	option_index = 0;
 /*
@@ -752,7 +762,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 				{"clean_empy_links",     no_argument,         0, 'e'},
 				{"encoding",     required_argument,           0, 'c'},
 				{"buffering",    required_argument,           0, 'b'},
-				{"REOB",    		no_argument,           	     0, 'G'},
+				{"REOB",    		no_argument,          0, 'G'},
 				{0, 0, 0, 0}
 			};
  /*
@@ -850,9 +860,7 @@ node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lm
 	}
 /*
  * locate nodes using find function
- */
-	Popts = &opts;
-	
+ */	
  	if( (List = m3l_receive_tcpipsocket(hostname, portnumber, Popts)) == NULL){
 		return (node_t *)NULL;
 	}
@@ -873,7 +881,7 @@ node_t *m3l_receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, op
 	Gnode = NULL;
 
 	if(portnumber < 1){
-		Warning("m3l_receive_to_tcpipsocket:  wrong port/socket number");
+		Warning("m3l_receive_tcpipsocket:  wrong port/socket number");
 		return (node_t *)NULL;
 	}
 	if(hostname == NULL){
@@ -1015,7 +1023,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 		return (node_t *)NULL;
 	}
 	if(portnumber < 1){
-		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		Warning("m3l_send_receive_tcpipsocket:  wrong port/socket number");
 		return (node_t *)NULL;
 	}
 /*
@@ -1127,7 +1135,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 		return (node_t *)NULL;
 	}
 	if(portnumber < 1){
-		Warning("m3l_send_to_tcpipsocket:  wrong port/socket number");
+		Warning("m3l_receive_send_tcpipsocket:  wrong port/socket number");
 		return (node_t *)NULL;
 	}
 /*

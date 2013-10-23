@@ -58,6 +58,7 @@
 #include "ReadDescriptor.h"
 #include "WriteData.h"
 #include "ln_list.h"
+#include "Set_Default_Parameters.h"
 
 static node_t *m3l_Read_list(const lmchar_t *, opts_t *);
 static lmint_t m3l_Write_list(node_t *, const lmchar_t *, opts_t *);
@@ -76,10 +77,13 @@ node_t *m3l_Fread(const lmchar_t *name, lmchar_t * Options, ...)
 	lmint_t c;
 	lmint_t option_index;
 	
-	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
-	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
-	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
-	
+// 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+// 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+// 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
+
+	Popts = &opts;
+	m3l_set_Fread(&Popts);
+
 	option_index = 0;
 /*
  * get number of options
@@ -252,9 +256,12 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
 	lmint_t c;
 	lmint_t option_index;
 	
-	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
-	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
-	option_index = 0;
+	Popts = &opts;
+	m3l_set_Fwrite(&Popts);
+	
+// 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
+// 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
+// 	option_index = 0;
 /*
  * get number of options
  */	

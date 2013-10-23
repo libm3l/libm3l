@@ -57,6 +57,7 @@
 #include "Find.h"
 #include "FunctionsPrt.h"
 #include "find_list.h"
+#include "Set_Default_Parameters.h"
 
 extern lmint_t optind;
 static lmint_t verbose_flag;
@@ -84,8 +85,11 @@ find_t *m3l_Find(node_t *List, lmchar_t * Options, ...)
 	if(Options == NULL)
 		return (find_t *)NULL;
 	
-	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
-	opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_l = '\0';
+// 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = '\0'; opts.opt_I = '\0';
+// 	opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_l = '\0';
+	
+	Popts = &opts;
+	m3l_set_Find(&Popts);
 
 	va_start(args, Options);
 	args_num = 1;
@@ -271,8 +275,6 @@ find_t *m3l_Find(node_t *List, lmchar_t * Options, ...)
 		free(search_term);
 		return (find_t *)NULL;
 	}
-
-	Popts = &opts;
 /*
  * call find function with specified options
  */
