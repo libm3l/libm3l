@@ -1,6 +1,8 @@
 FILES = $(shell ls  *.c )
 PATHL  = $(shell pwd )
-HFILES = $(shell ls  *.h  |   sed 's/internal_format_type.h//'  | sed 's/Header.h//' | sed 's/format\_type.h//' )
+# HFILES = $(shell ls  *.h  |   sed 's/internal\_format\_type.h//'  | sed 's/Header.h//' | sed 's/format\_type.h//' | sed 's/format\_conversion\_spec.h//' )
+HFILES = $(shell ls  *.h  |   sed '/internal_format_type.h/d'  | sed '/Header.h/d' | sed '/format_type.h/d' | sed '/format_conversion_spec.h/d' | sed '/libm3l.h/d' | sort -df)
+
 PWD = $(shell pwd)
 OBJS=$(FILES:%.c=%.o)
 

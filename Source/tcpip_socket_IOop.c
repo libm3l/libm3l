@@ -82,7 +82,7 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 // 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
 	
 	Popts = &opts;
-	m3l_set_set_Send_to_tcpipsocket(&Popts);
+	m3l_set_Send_to_tcpipsocket(&Popts);
 	
 	option_index = 0;
 /*
@@ -283,7 +283,7 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 // 	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
 
 	Popts = &opts;
-	m3l_m3l_set_Send_receive_tcpipsocket(&Popts);
+	m3l_set_Send_receive_tcpipsocket(&Popts);
 	
 	option_index = 0;
 /*

@@ -82,7 +82,7 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 	// opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	
 	Popts = &opts;
-	m3l_set_Cat(&Popts);
+	m3l_set_Cp(&Popts);
 
 	
 	option_index = 0;

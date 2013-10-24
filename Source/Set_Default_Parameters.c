@@ -91,7 +91,7 @@ void m3l_set_Send_to_tcpipsocket(opts_t **Popts){
 }
 
 
-void m3l_m3l_set_Send_receive_tcpipsocket(opts_t **Popts){
+void m3l_set_Send_receive_tcpipsocket(opts_t **Popts){
 
 	(*Popts)->opt_linkscleanemptlinks = '\0';  // clean empty links
 	(*Popts)->opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
@@ -105,7 +105,7 @@ void m3l_m3l_set_Send_receive_tcpipsocket(opts_t **Popts){
 
 void m3l_set_Receive_send_tcpipsocket(opts_t **Popts){
 	
-// 	(*Popts)->opt_linkscleanemptlinks = '\0';  // clean empty links
+ 	(*Popts)->opt_linkscleanemptlinks = '\0';  // clean empty links
 	(*Popts)->opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 	(*Popts)->opt_linkscleanemptrefs = '\0'; // clean empty link references
 	(*Popts)->opt_tcpencoding = 'I'; // serialization and encoding when sending over TCP/IP
