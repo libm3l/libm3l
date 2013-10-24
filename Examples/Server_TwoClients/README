@@ -1,0 +1,14 @@
+run example:
+
+
+	choose port number  for ex portno = 20000
+	if all processes are execited on the same computer, choose localhost as
+	an IP address, otherwise give IP address of a computer where the
+	Server_Example.out is executed
+	
+	then:
+	
+
+	./Server_Example.out  #portno
+	./Client1.out   localhost #portno
+	./Client2.out   localhost #portno
