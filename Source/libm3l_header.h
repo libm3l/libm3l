@@ -21,7 +21,7 @@
 
 
 /*
- *     Header file Header.h
+ *     Header file libm3l_header.h
  *
  *     Date: 2012-07-01
  * 
