@@ -1,5 +1,5 @@
 /*
- *     Copyright (C) 2012  Adam Jirasek
+ *     Copyright (C) 2013  Adam Jirasek
  * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@
 
 #ifndef   __LIBM3L_H__
 #define   __LIBM3L_H__
-#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/libm3l/Source/Header.h"
+#include  "/home/jka/Cprograms/2D_Double_Allocation/Source/libm3l/Source/libm3l_header.h"
 #include  "/home/jka/Cprograms/2D_Double_Allocation/Source/libm3l/Source/format_type.h"
 #include  "/home/jka/Cprograms/2D_Double_Allocation/Source/libm3l/Source/internal_format_type.h"
 #include  "/home/jka/Cprograms/2D_Double_Allocation/Source/libm3l/Source/Add.h"

@@ -46,7 +46,7 @@
  *
  */
  
-#include "Header.h"
+#include "libm3l_header.h"
 #include "format_type.h"
 #include "internal_format_type.h"
 #include "format_conversion_spec.h"
@@ -58,7 +58,7 @@
 #include "Check_EOFbuff.h"
 
 /*
- * note EXPR = EXPR_SNPRNTF was used when MEMCP was #define(d) in Header.h
+ * note EXPR = EXPR_SNPRNTF was used when MEMCP was #define(d) in libm3l_header.h
  * for valule of MEMCP == SNPRINTF
  * for value fo MEMCP == MEMCPY the value of EXPR = EXPR_MEMCP
  * 
@@ -271,7 +271,7 @@ node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 					type[i] = '\0';
 /*
  * check that the end of entire message ends with EOFbuff
- * length of EOFbuff is EOBlen (defined in Header.h)
+ * length of EOFbuff is EOBlen (defined in libm3l_header.h)
  * loop over EOBlen times to make sure that if EOFbuff is sent over in single bytes 
  * entire word is received. If possitive test ( == 1), return Gnode, otherwise give warning and exit
  */

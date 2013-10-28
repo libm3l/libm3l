@@ -50,7 +50,7 @@
 
 
  
-#include "Header.h"
+#include "libm3l_header.h"
 #include "format_type.h"
 #include "internal_format_type.h"
 #include "format_conversion_spec.h"
@@ -240,7 +240,7 @@ node_t *m3l_read_file(FILE *fp, opts_t *Popts)
  */
 					prevbuff[0] = '\0';
 /*
- * check that the last sequence in the file is end-of-file (defined in Header.h as EOFfile with length EOFlen
+ * check that the last sequence in the file is end-of-file (defined in libm3l_header.h as EOFfile with length EOFlen
  */
 					for(i=0; i<EOFlen; i++){
 						if(Check_EOFfile(buff,prevbuff, strlen(buff),EOFlen, EOFfile) == 1){

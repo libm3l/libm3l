@@ -45,7 +45,7 @@
  *
  */
 
-#include "Header.h"
+#include "libm3l_header.h"
 #include "format_type.h"
 #include "FunctionsPrt.h"
 
@@ -73,25 +73,28 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 	va_list args;
 	lmint_t c;
 	lmint_t option_index;
-	
+
 // 	opts.opt_linkscleanemptlinks = '\0';  // clean empty links
 // 	opts.opt_nomalloc = '\0'; // if 'm', do not malloc (used in Mklist --no_malloc
 // 	opts.opt_linkscleanemptrefs = '\0'; // clean empty link references
 // 	opts.opt_tcpencoding = 't'; // serialization and encoding when sending over TCP/IP
 // 	opts.opt_MEMCP = 'S';  // type of buffering
 // 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
-	
+
 	Popts = &opts;
 	m3l_set_Send_to_tcpipsocket(&Popts);
-	
+
 	option_index = 0;
+	
+	if(Lnode == NULL)
+		Error("m3l_Send_to_tcpipsocket: NULL Lnode");
 /*
  * if hostname == NULL, portnumber is socket number
  */
 
 /*
  * get number of options
- */	
+ */
 	if(Options != NULL){
 		va_start(args, Options);
 		args_num = 1;
@@ -117,10 +120,10 @@ lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t
 		if ( (opt[0] = (lmchar_t *)malloc( sizeof(lmchar_t) )) == NULL)
 				Perror("malloc");
 		opt[0][0]='\0';
-	
- 		len = strlen(Options);	
+
+		len = strlen(Options);	
 		if ( (opt[1] = (lmchar_t *)malloc( (len+1) * sizeof(lmchar_t ) )) == NULL)
-				Perror("malloc");
+			Perror("malloc");
 		strncpy(opt[1], Options, len);
 		opt[1][len] = '\0';
 /*
@@ -284,6 +287,9 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 
 	Popts = &opts;
 	m3l_set_Send_receive_tcpipsocket(&Popts);
+	
+	if(Lnode == NULL)
+		Error("m3l_Send_receive_tcpipsocket: NULL Lnode");
 	
 	option_index = 0;
 /*
@@ -494,7 +500,10 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 	
 	Popts = &opts;
 	m3l_set_Receive_send_tcpipsocket(&Popts);
-	
+
+	if(Lnode == NULL)
+		Error("m3l_Receive_send_tcpipsocket: NULL Lnode");
+
 	option_index = 0;
 /*
  * get number of options
@@ -681,7 +690,6 @@ node_t *m3l_Receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 
 node_t *m3l_Receive_tcpipsocket(const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...)
 {
-
 	node_t *List;
 	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
