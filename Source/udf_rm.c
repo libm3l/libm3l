@@ -274,11 +274,13 @@ lmint_t m3l_AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 /*
  * filling Lnode->ndim, if List is not DIR, this has already been filled with in AllocateNode
  */
-	(*Lnode)->ndim = TMPSTR.ndim;
+	if(   ( (*Lnode)->ndim = TMPSTR.ndim) < 1 )
+		Error("udf_rm: too low value of number of dimensions");
 	
 	tot_dim = 1;
 	for(i=0; i<TMPSTR.ndim; i++){
-		(*Lnode)->fdim[i] = TMPSTR.dim[i];
+		if ( (   (*Lnode)->fdim[i] = TMPSTR.dim[i]  ) < 1 )
+			Error("udf_rm: too low value of dimensions");
 		tot_dim = tot_dim * TMPSTR.dim[i];
 	}
 /*
