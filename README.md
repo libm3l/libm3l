@@ -1,4 +1,3 @@
-
 libm3l - A data protocol for transfer of basic data stored in a linked list over TCP/IP
 =======================================================================================
 
@@ -13,7 +12,7 @@ Programming Language
 
 Programming language is ANSI-C
 
-PORTABILITY
+Portability
 -----------
 
 libm3l is primarily for Linux. After some modifications it can be used
