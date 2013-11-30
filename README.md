@@ -1,7 +1,6 @@
-libm3l
-======
-libm3l - A protocol for transfer of basic data stored in linked list over TCP/IP
-===============================================================================
+
+libm3l - A data protocol for transfer of basic data stored in a linked list over TCP/IP
+=======================================================================================
 
 libm3l is a utility which stores the basic data type (float, double, char, int ...) in 
 a linked list and enables its transfer over the TCP/IP to a waiting process.
