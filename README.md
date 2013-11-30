@@ -1,0 +1,21 @@
+libm3l
+======
+libm3l - A protocol for transfer of basic data stored in linked list over TCP/IP
+===============================================================================
+
+libm3l is a utility which stores the basic data type (float, double, char, int ...) in 
+a linked list and enables its transfer over the TCP/IP to a waiting process.
+The library enables operations with a linked list such as make list, add list, copy list, remove list,
+link list etc.
+
+
+Programming Language
+--------------------
+
+Programming language is ANSI-C
+
+PORTABILITY
+-----------
+
+libm3l is primarily for Linux. After some modifications it can be used
+on Windows systems, the necessary modifications are not part of this distribution.
