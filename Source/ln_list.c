@@ -499,7 +499,8 @@ lmint_t m3l_AllocateLinkInfo(node_t **Slist, node_t *Tlist){
  * function allocates the linknode structure in the source node (Slist) and fills it with 
  * address if link target (Tlist)
  */
-	size_t lcounter; 
+	size_t lcounter;
+	struct find_str **realloc_linknode;
 	
 	if( (*Slist)->linknode == NULL){
 /*
@@ -518,12 +519,18 @@ lmint_t m3l_AllocateLinkInfo(node_t **Slist, node_t *Tlist){
 	}
 	else{
 /*
- * structure already exist
+ * structure already exist, add one item
  */
 		lcounter = (*Slist)->lcounter;
 		
-		if( ( (*Slist)->linknode = (find_str_t **)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(find_str_t *))) == NULL)
-			Perror("linknode malloc");
+// 		if( ( (*Slist)->linknode = (find_str_t **)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(find_str_t *))) == NULL)
+// 			Perror("linknode malloc");
+		realloc_linknode = NULL;
+		
+		if( ( realloc_linknode = (find_str_t **)realloc( (*Slist)->linknode, (lcounter+1) * sizeof(find_str_t *))) == NULL){
+			Perror("linknode malloc");}
+		else
+			(*Slist)->linknode = realloc_linknode;
 		
 		if( ( (*Slist)->linknode[lcounter] = (find_str_t *)malloc(sizeof(find_str_t))) == NULL)
 			Perror("linknode malloc");
