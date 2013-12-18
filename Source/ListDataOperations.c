@@ -294,3 +294,10 @@ lmint_t m3l_attach_data_to_List(node_t **Lnode, opts_t *Popts){
 	else
 		return 0;
 }
+
+// node_t *m3l_reallocNode(node_t **Lnode, opts_t *Popts){
+// /*
+//  * function reallocates node
+//  */
+// 	
+// }

@@ -216,6 +216,7 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, opts_t 
 
 lmint_t m3l_AddRecord(node_t *Tmpnode)
 {
+	find_str_t **realloc_find;
 /*
  * function adds new record (*Tmpnode) to list of found records - Found_Nodes
  * If Found_Nodes does not contain any data set (nalloc = 0) use malloc
@@ -241,8 +242,16 @@ lmint_t m3l_AddRecord(node_t *Tmpnode)
  */
 	{
 		nalloc++;
-		if ( (Founds->Found_Nodes =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL)
+// 		if ( (Founds->Found_Nodes =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL)
+// 			Perror("realloc");
+		realloc_find = NULL;
+		if ( (realloc_find =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL){
 			Perror("realloc");
+		}
+		else{
+			Founds->Found_Nodes = realloc_find;
+		}
+		
 		if ( (Founds->Found_Nodes[nalloc-1] =(find_str_t *)malloc( sizeof(find_str_t))) == NULL)
 			Perror("malloc");
 		Founds->Found_Nodes[nalloc-1]->List = Tmpnode;
