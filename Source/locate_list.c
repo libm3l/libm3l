@@ -155,8 +155,8 @@ find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *p
 			m3l_destroy_pars_path(&parsed_path);
 			Error("Number of items in path different from location specification");  /* NOTE - in later versions, use one symbol '*' can be used for all paths segments */
 			return (find_t *)NULL;
-			}
-			
+		}
+	
  		Founds_Loc = m3l_locator(Founds, parsed_path, parsed_path_loc, Popts);
 	
 		free(search_term);
@@ -233,6 +233,7 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
 		{
 			HelpNodeI[i] = 0;
 		}
+
 		free(node_path);
 	}
 /*
@@ -265,7 +266,7 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
  * loop over founds and check for match, If HelpNodeI == 0, the node is already marked as negative match
  */
 		for(j = 0; j< Founds->founds; j++){
-			
+
 			if( HelpNodeI[j] == 1){
 /*
  * node is considered as possible match
@@ -285,7 +286,7 @@ find_t *m3l_locator(find_t *Founds, path_t *parsed_path, path_t *parsed_path_loc
  */	
 					len1 = strlen(parsed_path->path[i]);
 					len2 = strlen(parsed_path_Ffounds[j]->path[i]);
-										
+
 					if( (len1 == len2 && strncmp(parsed_path->path[i], parsed_path_Ffounds[j]->path[i], len1) == 0) || 
 					    (strncmp(parsed_path->path[i], ".", 1) == 0 && len1 == 1 && i == 0) ||
 					    (strncmp(parsed_path->path[i], "~", 1) == 0	&& i == 0)){
@@ -397,6 +398,7 @@ lmint_t m3l_match_test(node_t *List, get_arg_t argsstr, lmsize_t counter)
  */
 	node_t *Tmpnode;
 	lmint_t retval;
+	lmsize_t len1, len2;
 
 	if( argsstr.first == 'S' || argsstr.first == 's' ){
 /*
@@ -408,7 +410,17 @@ lmint_t m3l_match_test(node_t *List, get_arg_t argsstr, lmsize_t counter)
 		}
 		else{
 			while(Tmpnode != NULL){
-				if( (retval = m3l_match_single_test(Tmpnode,  argsstr, counter)) == 1) return 1;
+/*
+ * check that the name of the node is 
+ * equal to required name of node
+ */
+				len1 = strlen(Tmpnode->name);
+				len2 = strlen(argsstr.s_name);
+				
+				if(len1 == len2 && strncmp(Tmpnode->name, argsstr.s_name, len1) == 0 ){
+					if( (retval = m3l_match_single_test(Tmpnode,  argsstr, counter)) == 1) 
+						return 1;
+				}
 				Tmpnode = Tmpnode->next;
 			}
 			return 0;
@@ -430,7 +442,7 @@ lmint_t m3l_match_single_test(node_t *List, get_arg_t argsstr, lmsize_t counter)
 	lmchar_t c;
 	lmsize_t len1, len2;
 	c = (lmint_t)argsstr.arg;
-
+	
 	switch ( c ){
 			
 		case '*':
@@ -444,6 +456,7 @@ lmint_t m3l_match_single_test(node_t *List, get_arg_t argsstr, lmsize_t counter)
 			if(strncmp(List->type,"C",1) == 0){
 				len1 = strlen(List->data.c);
 				len2 = strlen(argsstr.args);
+				
 				if(len1 == len2 && strncmp(List->data.c, argsstr.args, len1) == 0 ){
 					return 1;
 				}
