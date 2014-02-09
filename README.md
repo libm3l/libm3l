@@ -17,3 +17,6 @@ Portability
 
 libm3l is primarily for Linux. After some modifications it can be used
 on Windows systems, the necessary modifications are not part of this distribution.
+
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/c5c42b03225907b85a2df6a925a586aa "githalytics.com")](http://githalytics.com/github.com/libm3l)
