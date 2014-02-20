@@ -1,4 +1,3 @@
-
 libm3l - A data protocol for transfer of basic data stored in a linked list over TCP/IP
 =======================================================================================
 
@@ -20,4 +19,4 @@ libm3l is primarily for Linux. After some modifications it can be used
 on Windows systems, the necessary modifications are not part of this distribution.
 
 
-[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/4d91e0dc47dde9de95f7bb5bf081496c "githalytics.com")](http://githalytics.com/libm3l/libm3l)
+[![Analytics](https://ga-beacon.appspot.com/UA-47981720-2/libm3l/readme)](https://github.com/igrigorik/ga-beacon)
