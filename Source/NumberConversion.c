@@ -106,6 +106,7 @@ Uint64_t pack754(lmlongdouble_t f, unsigned bits, unsigned expbits)
 // 	long long shift;
 // 	unsigned bias;
 // 	unsigned significandbits = bits - expbits - 1; // mantisa = total - exponent -1 for sign
+
 lmlongdouble_t unpack754(Uint64_t i, unsigned bits, unsigned expbits)
 {
 	lmlongdouble_t result;
@@ -161,4 +162,39 @@ lmchar_t * double_2_Hex(lmdouble_t a)
 	*(n) = '\0';
 	
 	return n;
+}
+
+
+lmuint_t hex2dec(lmchar_t *hex)
+{
+/*
+ * converts hex number to long integer number
+ * hex number characters are in upper case
+ * routine programmed according to
+ * http://www.programmingspark.com/2012/11/Convert-hexadecimal-to-decimal-c.html
+ */
+	lmint_t i,j,num,len,counter;
+	lmuint_t sum=0;  //value can cross range of int
+/*
+ * all counters are integer type instead of size_t, do not expect 
+ * enourmously long numbers
+ */
+	len=strlen(hex);
+	counter = 0;
+	
+	for(i=len-1;i>=0;i--){
+		if(hex[i]>='0'&&hex[i]<='9')
+			num=hex[i]-'0';     //the character is number in between 0 to 9
+		else{
+			if(hex[i]>='A'&&hex[i]<='F')
+				num=hex[i]-55;      //the character is either a,b,c,d,e or f
+			else{
+				printf("The Entered number is not hexadecimal number");
+				return -1;
+			}
+		}
+		sum=sum+pow(16,counter)*num;  //according to formula given by the link
+		counter++;
+	}
+	return sum;
 }

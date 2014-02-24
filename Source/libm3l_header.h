@@ -59,6 +59,8 @@
 #include <float.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <time.h>
+#include"math.h"
 
 /*
  * TCP/IP communication option
