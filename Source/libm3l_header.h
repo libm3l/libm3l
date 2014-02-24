@@ -60,6 +60,11 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <time.h>
+#include <net/if.h>
+#include <netdb.h>
+#include <sys/ioctl.h>
+#include <arpa/inet.h>
+
 #include"math.h"
 
 /*

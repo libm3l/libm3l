@@ -39,7 +39,7 @@
 Uint64_t pack754(lmlongdouble_t f, unsigned bits, unsigned expbits);
 lmlongdouble_t unpack754(Uint64_t i, unsigned bits, unsigned expbits);
 lmchar_t * double_2_Hex(lmdouble_t a);
-lmuint_t hex2dec(lmchar_t *);
+lmlint_t hex2dec(lmchar_t *);
 
 
 #endif
