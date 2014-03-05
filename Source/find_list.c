@@ -242,8 +242,6 @@ lmint_t m3l_AddRecord(node_t *Tmpnode)
  */
 	{
 		nalloc++;
-// 		if ( (Founds->Found_Nodes =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL)
-// 			Perror("realloc");
 		realloc_find = NULL;
 		if ( (realloc_find =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL){
 			Perror("realloc");
