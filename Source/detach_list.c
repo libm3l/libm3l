@@ -66,6 +66,8 @@ find_t *m3l_detach_caller(node_t **List, const lmchar_t *path, const lmchar_t *p
 	lmsize_t i, detached_nodes;
 	find_t *Founds;
 	lmint_t init_call;
+	
+	init_call = 1;
 /*
  * call locator to locate nodes to be deleted
  */
@@ -111,8 +113,7 @@ lmsize_t m3l_detach_list(lmint_t call, node_t **List, opts_t *Popts)
 /*
  * function detaches all items in List
  */
-	node_t *PAR, *CLD, *NEXT, *PREV, *CURR,  *Tmpnode, *Tmpnode1, *TmpH;
-	lmsize_t rmnodes, i;
+	node_t *PAR, *CLD, *NEXT, *PREV, *CURR;
 
 	if((*List) == NULL){
 /*

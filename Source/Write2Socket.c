@@ -230,7 +230,7 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
  */
 lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_t socket_descrpt, opts_t *Popts)
 {	
-	lmsize_t i, n, len, length, length32;
+	lmsize_t i, n, length, length32, len;
 	lmchar_t *pc;
 	lmchar_t buff[MAX_WORD_LENGTH+1];
 	
@@ -497,7 +497,9 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 		else
 		{
 			Error("Unknown type");
-		}					
+		}
+		
+		return 1;
 }
 /*
  * function writes add data in buff to buffer
@@ -519,7 +521,7 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
  * NOTE-URGENT - check the algorithm for adding SEPAR_SIGN at the end of buffer, 
  * especially situation after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
  */
-	lmsize_t i, size;
+	lmsize_t size;
 	lmssize_t n;
 	     
 	while(*buff != '\0'){
@@ -588,7 +590,7 @@ lmint_t m3l_write_buffer_OC(const lmchar_t *buff, lmint_t sockfd, lmint_t force,
  * add   - parameter adds separ sing to the end, it is needed when 
  * 	chars are written in
  */
-	lmsize_t i, size;
+	lmsize_t size;
 	lmssize_t n;
 	     
 	while(*buff != '\0'){

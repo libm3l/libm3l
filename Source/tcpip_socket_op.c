@@ -54,6 +54,7 @@
 #include "libm3l_header.h"
 #include "format_type.h"
 #include "tcpip_socket_op.h"
+#include "FunctionsPrt.h"
 
 
 lmint_t m3l_server_openbindlistensocket(lmint_t portno, lmchar_t* Options, ...)
@@ -64,7 +65,6 @@ lmint_t m3l_server_openbindlistensocket(lmint_t portno, lmchar_t* Options, ...)
 	lmint_t sockfd, on, status;
 	struct sockaddr_in serv_addr, cli_addr;
 	struct hostent *hostPtr = NULL;
-	lmchar_t hostname[80] = ""; 
 /*
  * create socket
  */

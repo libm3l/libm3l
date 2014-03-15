@@ -65,8 +65,8 @@
 
 
 static lmsize_t m3l_ln_list(lmint_t , node_t **, node_t **, lmchar_t*, opts_t * );
-static lmint_t ln_m3l_recrt_list(node_t **, node_t **, lmchar_t *);
 static node_t *m3l_ln_crt_list(node_t **, lmchar_t *, opts_t *);
+static lmint_t m3l_ln_recrt_list(node_t **, node_t **, lmchar_t *);
 
 /*
  * function links list. If the list has children, it deletes them before removing list.
@@ -84,10 +84,12 @@ lmsize_t m3l_ln_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 	lmsize_t i,j,k,l , ln_tot_nodes, ln_nodes,len;
 	find_t *SFounds, *TFounds;
 	lmint_t init_call;
-	lmchar_t *name, *path, *path_loc, *newname;
+	lmchar_t *path, *path_loc, *newname;
 	const lmchar_t *pc;
 	node_t *Tmpnode, *TmpnodePar;
 	opts_t *Popts_Tlist, opts;
+	
+	init_call = 1;
 /*
  * check if data set exists
  */	
@@ -383,7 +385,6 @@ node_t *m3l_ln_crt_list(node_t **Slist, lmchar_t *NewName, opts_t *Popts){
  */
 	node_t *Pnode;
 	tmpstruct_t TMPSTR;
-	size_t i;
 	
 	if(NewName != NULL){
 		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s",NewName) < 0){
@@ -430,8 +431,6 @@ lmint_t m3l_ln_recrt_list(node_t ** Tlist, node_t **Slist, lmchar_t *NewName){
  *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
  *	Tlist
  */
-	node_t *Pnode;
-	size_t i;
 /* 
  * copy name, type, number iof dimensions, dimensions
  * if list has a different name then original list, rename the list

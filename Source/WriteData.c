@@ -307,7 +307,7 @@ lmint_t m3l_write_file_data_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE 
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
-			else if(counter = MAXLINE){
+			else if(counter == MAXLINE){
 /*
  * if not enough space, add '0\' signe
  * write to buffer and set counter to 0 
@@ -369,7 +369,7 @@ lmint_t m3l_write_file_data_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE 
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
-			else if(counter = MAXLINE){
+			else if(counter == MAXLINE){
 /*
  * if not enough space, add '0\' signe
  * write to buffer and set counter to 0 
@@ -428,7 +428,7 @@ lmint_t m3l_write_file_data_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE 
 					Perror("fwrite");
 				bzero(buff, sizeof(buff));
 			}
-			else if(counter = MAXLINE){
+			else if(counter == MAXLINE){
 /*
  * if not enough space, add '0\' signe
  * write to buffer and set counter to 0 
@@ -572,5 +572,7 @@ lmint_t m3l_write_file_data_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE 
 		else
 		{
 			Error("Unknown type");
-		}					
+		}
+		
+	return 1;
 }

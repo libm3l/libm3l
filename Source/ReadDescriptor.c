@@ -84,7 +84,7 @@ lmsize_t ngotten;
 node_t *m3l_read_file(FILE *fp, opts_t *Popts)
 {
 	lmchar_t type[MAX_WORD_LENGTH], lastchar;
-	lmsize_t   wc, i, hi, tmpi;
+	lmsize_t   wc, i, hi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
 	lmchar_t prevbuff[EOFlen+1];
@@ -512,7 +512,7 @@ lmint_t m3l_read_file_data_line(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp, op
  * function reads data from FILE
  */
 	lmchar_t type[MAX_WORD_LENGTH], lastchar;
-	lmsize_t i, tot_dim, wc, hi, j;
+	lmsize_t i, tot_dim, wc, hi;
 	
 	lmfloat_t         *pf;
 	lmdouble_t        *pdf;
@@ -666,7 +666,6 @@ lmint_t m3l_read_file_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, FILE *fp
 /* 
  * function reads data from FILE
  */
-	lmchar_t 		type[MAX_WORD_LENGTH], lastchar;
 	lmsize_t 		i, tot_dim;
 	lmchar_t		*pdat;
 	lmusignchar_t 	*pdatu;

@@ -59,7 +59,7 @@
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
 #include "find_list.h"
-
+#include "ln_list.h"
 /*
  * function deletes list. If the list has children, it deletes them before removing list.
  * called recursivelly
@@ -230,7 +230,7 @@ lmsize_t m3l_rm_list(lmint_t call, node_t **List, opts_t *Popts)
 /*
  * if required, clean-up the reference field
  */
-				if(Popts != NULL && Popts->opt_linkscleanemptrefs == 'c' && CLD != NULL) m3l_ln_cleanemptylinksref(&CLD);
+				if(Popts != NULL && Popts->opt_linkscleanemptrefs == 'c' && CLD != NULL) m3l_ln_cleanemptylinksref(&CLD, Popts);
 			}
 			(*List)->child = NULL;
 		}

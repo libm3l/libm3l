@@ -58,7 +58,7 @@
 #include "FunctionsPrt.h"
 
 static lmsize_t m3l_FindList(lmint_t, node_t *, lmchar_t *, opts_t *);
-static m3l_AddRecord(node_t *);
+static lmint_t m3l_AddRecord(node_t *);
 static lmusignchar_t m3l_CompStatement(lmchar_t *, lmchar_t *, lmchar_t *, opts_t *);
 static lmusignchar_t m3l_EvalSearchPatt(lmchar_t *, lmchar_t *, opts_t *);
 
@@ -242,8 +242,6 @@ lmint_t m3l_AddRecord(node_t *Tmpnode)
  */
 	{
 		nalloc++;
-// 		if ( (Founds->Found_Nodes =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL)
-// 			Perror("realloc");
 		realloc_find = NULL;
 		if ( (realloc_find =(find_str_t **)realloc(Founds->Found_Nodes, nalloc * sizeof(find_str_t *))) == NULL){
 			Perror("realloc");

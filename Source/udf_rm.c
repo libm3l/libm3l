@@ -73,12 +73,12 @@ lmint_t m3l_Free(node_t **Lnode)
 
 	if((*Lnode)->type != NULL) {
 		free((*Lnode)->type);
-		(*Lnode)->type == NULL;
+		(*Lnode)->type = NULL;
 	}  
 
 	if((*Lnode)->name != NULL) {
 		free((*Lnode)->name);
-		(*Lnode)->name == NULL;
+		(*Lnode)->name = NULL;
 	}
 /*
  * nullify node_t

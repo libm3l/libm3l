@@ -57,6 +57,8 @@
 #include "Mklist.h"
 #include "udf_rm.h"
 #include "rm_list.h"
+#include "FunctionsPrt.h"
+#include "add_list.h"
 
 extern lmint_t optind;
 static lmint_t verbose_flag;

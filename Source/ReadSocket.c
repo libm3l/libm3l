@@ -70,7 +70,7 @@
 
 #define EXPR (*pc != SEPAR_SIGN && *pc != '\0')
 
-#define IFEXPR     (*pc == SEPAR_SIGN || *pc == ' ' || *pc == '\t' || *pc == '\n' && *pc != '\0')
+#define IFEXPR     ( (*pc == SEPAR_SIGN || *pc == ' ' || *pc == '\t' || *pc == '\n' ) && *pc != '\0')
 #define LASTEXPR   (lastchar != ' ' && lastchar != '\t' && lastchar != '\n' && lastchar != '\0' && lastchar != SEPAR_SIGN)
 
 
@@ -105,7 +105,7 @@ lmssize_t ngotten;
 node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 {
 	lmchar_t type[MAX_WORD_LENGTH], lastchar;
-	lmsize_t   wc, i, hi, tmpi;
+	lmsize_t   wc, i, hi;
 	tmpstruct_t TMPSTR;
 	node_t *Dnode;
 	lmchar_t prevbuff[EOBlen+1];
@@ -543,7 +543,7 @@ lmint_t m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, lmint_t de
  * function reads data from FILE
  */
 	lmchar_t type[MAX_WORD_LENGTH], lastchar;
-	lmsize_t i, tot_dim, wc, hi, j, len;
+	lmsize_t i, tot_dim, wc, hi, len;
 	
 	lmfloat_t         *pf, f2;
 	lmdouble_t        *pdf, d2;
@@ -551,7 +551,7 @@ lmint_t m3l_read_socket_data_line(node_t **Lnode, tmpstruct_t TMPSTR, lmint_t de
 /*
  * chars
  */
-	lmchar_t           *err, *end;
+	lmchar_t           *err;
 /*
  * integers
  */
@@ -1154,7 +1154,7 @@ lmint_t m3l_read_socket_data_charline(node_t **Lnode, tmpstruct_t TMPSTR, lmint_
 		
 		buff[ngotten] = '\0';
 		pc = &buff[0];
-		if(ngotten == 0)-1;
+		if(ngotten == 0) return -1;
 
 		if( m3l_read_socket_data_charline(Lnode, TMPSTR, descrpt) != 0){
 				Error("Error reading data");

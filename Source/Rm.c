@@ -71,7 +71,7 @@ lmsize_t m3l_Rm(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, l
 	opts_t *Popts, opts;
 	lmsize_t args_num, len, i, rm_tot_nodes;
 	va_list args;
-	lmint_t c, init_call;
+	lmint_t c;
 	lmint_t option_index;
 	
 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0';; opts.opt_L = '\0'; opts.opt_l = '\0';
@@ -79,7 +79,6 @@ lmsize_t m3l_Rm(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, l
 	
 	option_index = 0;
 	rm_tot_nodes=0;
-	init_call = 2;
 /*
  * check if data set exists
  */

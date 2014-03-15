@@ -233,16 +233,19 @@ lmchar_t *StrToUpper(lmchar_t *s)
 
 void *RD_MemcpyD(Uint64_t *di, lmchar_t *type, lmsize_t length)
 {	
-	memcpy(di, &type[0], length);	
+	memcpy(di, &type[0], length);
+	return NULL;
 }
 
 void *RD_MemcpyF(Uint32_t *di, lmchar_t *type, lmsize_t length)
 {	
-	memcpy(di, &type[0], length);	
+	memcpy(di, &type[0], length);
+	return NULL;
 }
 void *RD_StrtoullD(Uint64_t *di, lmchar_t *type, lmsize_t length)
 {	
 	*di = Strtoull(type, length);
+	return NULL;
 }
 
 void *WR_MemcpyD(lmchar_t *buff, Uint64_t *di, lmsize_t length)
@@ -250,6 +253,7 @@ void *WR_MemcpyD(lmchar_t *buff, Uint64_t *di, lmsize_t length)
 	memcpy( &buff[0], di, length);
 	buff[length] = SEPAR_SIGN;
 	buff[length+1] = '\0';
+	return NULL;
 }
 
 void *WR_snprintfD(lmchar_t *buff, Uint64_t *di, lmsize_t length){
@@ -259,6 +263,7 @@ void *WR_snprintfD(lmchar_t *buff, Uint64_t *di, lmsize_t length){
 	if( (n=snprintf(buff, length, "%" PRIx64 "%c", *di, SEPAR_SIGN)) < 0)
 		Perror("snprintf");
 	buff[n] = '\0';
+	return NULL;
 }
 
 void *WR_MemcpyF(lmchar_t *buff, Uint32_t *di, lmsize_t length)
@@ -266,6 +271,8 @@ void *WR_MemcpyF(lmchar_t *buff, Uint32_t *di, lmsize_t length)
 	memcpy( &buff[0], di, length);
 	buff[length] = SEPAR_SIGN;
 	buff[length+1] = '\0';
+
+	return NULL;
 }
 
 // void *WR_MemcpyI(lmchar_t *buff, void *i, lmsize_t length)
@@ -282,6 +289,7 @@ void *WR_snprintfF(lmchar_t *buff, Uint32_t *di, lmsize_t length){
 	if( (n=snprintf(buff, length, "%" PRIx32 "%c", *di, SEPAR_SIGN)) < 0)
 		Perror("snprintf");
 	buff[n] = '\0';
+	return NULL;
 }
 
 
@@ -401,14 +409,14 @@ path_t *m3l_parse_path(const lmchar_t *path)
  */
 	path_t *Path;
 	const lmchar_t *pc, *pc1;
-	lmsize_t counter, j, st,k;
+	lmsize_t counter, j, st;
 	lmchar_t abspath;
 /*
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
  */
 	pc = path;
-	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
+	while( (*pc == ' ' || *pc == '\t') && *pc != '\0'  )pc++;
 /*
  * check that if the path starts with ~ it is followed by /
  */
@@ -432,7 +440,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
  * parse the path
  */
 	pc = path;
-	while( *pc == '\t' || *pc == ' ' &&  *pc != '\0') pc++;
+	while( (*pc == '\t' || *pc == ' ') &&  *pc != '\0') pc++;
 /*
  * path starts with /
  */
@@ -570,7 +578,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
 				if(j > counter){
 					Error(" Path too long");
 					m3l_destroy_pars_path(&Path);
-					(path_t *) NULL;
+					return (path_t *) NULL;
 				}
 			}
 			else
@@ -609,7 +617,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
 	else{
 		Error(" Path too long - can not add terminating character");
 		m3l_destroy_pars_path(&Path);
-		(path_t *) NULL;
+		return (path_t *) NULL;
 	}
 	Path->abspath 	= abspath;	/* Realative (R) or absolute (A) path */
 	Path->seg_count     = counter;	/* Number of segments in path */
@@ -655,7 +663,7 @@ get_arg_t m3l_get_arguments(const lmchar_t *text)
  * disregard empty spaces and tabs at the beginning 
  */
 	pc = text;
-	while(*pc == ' ' || *pc == '\t' && *pc != '\0'  )pc++;
+	while( (*pc == ' ' || *pc == '\t') && *pc != '\0'  )pc++;
 /*
  * get the first letter, check that it is not '\0'
  */

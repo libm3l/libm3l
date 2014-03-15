@@ -73,7 +73,7 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 	opts_t *Popts, opts;
 	size_t args_num, len, i, cp_tot_nodes;
 	va_list args;
-	lmint_t c, init_call;
+	lmint_t c;
 	lmint_t option_index;
 	
 // 	opts.opt_i = '\0'; opts.opt_d = '\0'; opts.opt_f = '\0'; opts.opt_r = 'r'; opts.opt_I = '\0'; opts.opt_k = '\0'; opts.opt_b = '\0';opts.opt_l = '\0';
@@ -87,7 +87,6 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 	
 	option_index = 0;
 	cp_tot_nodes=0;
-	init_call = 2;
 /*
  * check if data set exists
  */

@@ -54,6 +54,8 @@
 #include "ReadSocket.h"
 #include "udf_rm.h"
 #include "Mklist.h"
+#include "add_list.h"
+#include "rm_list.h"
 
 node_t *m3l_ACKN(lmchar_t *answer)
 {
