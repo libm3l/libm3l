@@ -58,7 +58,7 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 #include "cat_list.h"
-
+#include "Set_Default_Parameters.h"
 
 
 extern lmint_t optind;
@@ -71,7 +71,7 @@ lmint_t m3l_Cat(node_t *List, lmchar_t * Options, ...)
 {
 	
  	lmchar_t *word, **opt, *search_term, *search_term1;
-	size_t args_num, len, i, founds;
+	size_t args_num, len, i;
 	find_t *Founds;
 	node_t *Tmp1;
 	opts_t *Popts, opts;
@@ -343,7 +343,7 @@ lmint_t m3l_Cat(node_t *List, lmchar_t * Options, ...)
 		}
 		else
 		{
-			printf(" number of founds is %ld \n", founds);
+			printf(" number of founds is %ld \n", Founds->founds);
 
 			for (i=0; i< Founds->founds; i++){
 				Tmp1 = Founds->Found_Nodes[i]->List;

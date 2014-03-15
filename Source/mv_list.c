@@ -81,6 +81,8 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
  	lmchar_t *name, *path, *path_loc, *newname;
 	const lmchar_t *pc;
 	opts_t *Popts_Tlist, opts;
+	
+	init_call = 1;
 /*
  * check if data set exists
  */

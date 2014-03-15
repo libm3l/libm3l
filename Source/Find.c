@@ -68,7 +68,6 @@ find_t *m3l_Find(node_t *List, lmchar_t * Options, ...)
 {
 	
 	find_t *Founds;
-	node_t *Tmp1;
  	lmchar_t *word, **opt, *search_term, *search_term1, *node_path;
 	opts_t *Popts, opts;
 	size_t args_num, len, i, j;

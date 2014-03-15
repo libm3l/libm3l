@@ -57,7 +57,7 @@
 #include "rm_list.h"
 #include "udf_rm.h"
 #include "Check_EOFbuff.h"
-
+#include "Set_Default_Parameters.h"
 
 inline static lmssize_t WriteEOB(lmint_t);
 static lmssize_t ReadSock(lmint_t , lmchar_t *, lmint_t );
@@ -66,7 +66,6 @@ static lmsize_t GetEOFBuffseq(lmint_t);
 
 lmint_t m3l_Send_to_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lmint_t portnumber, lmchar_t * Options, ...){
 
-	node_t *List;
 	lmchar_t *word, **opt;
 	opts_t *Popts, opts;
 	lmsize_t args_num, len,i;
@@ -1091,7 +1090,7 @@ node_t *m3l_send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 /*
  * shutdown socket for writing
  */
-		if(Popts->opt_shutdown = 's'){
+		if(Popts->opt_shutdown == 's'){
 			if( shutdown(socketnr,SHUT_WR) != 0)
 				Perror("shutdown");
 		}
@@ -1208,7 +1207,7 @@ node_t *m3l_receive_send_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 /*
  * shutdown socket for reading
  */
-		if(Popts->opt_shutdown = 's'){
+		if(Popts->opt_shutdown == 's'){
 			if( shutdown(socketnr,SHUT_RD) != 0)
 				Perror("shutdown");
 		}

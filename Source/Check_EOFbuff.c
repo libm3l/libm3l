@@ -93,20 +93,14 @@ lmint_t Check_EOFfile(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoble
  * - used when only looking for EOFbuff sequence to 
  * terminate reading from socket
  */
-	size_t counter,i, tecount, count1;
+	size_t i, tecount, count1;
 	lmchar_t *pcloc;
 	
-	counter = 0;
 	tecount = 0;
 	count1  = 0;
 /*
  * find how many character has buffer, up to eoblen
  */
-	if(eoblen < n)
-		counter = eoblen ;
-	else
-		counter = n;
-	
 	pcloc = &buff[n-1];
 /*
  * get rid of trailing spaces, newlines and tabs

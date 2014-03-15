@@ -60,6 +60,7 @@
 #include "udf_rm.h"
 #include "FunctionsPrt.h"
 #include "find_list.h"
+#include "ln_list.h"
 
 static lmint_t m3l_cp_list(lmint_t , node_t **, node_t **, lmchar_t *, opts_t *);
 static node_t *m3l_cp_crt_list( node_t **, opts_t *);
@@ -81,10 +82,12 @@ size_t m3l_cp_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_p
 	size_t i,j,k,l , cp_tot_nodes, cp_nodes, len;
 	find_t *SFounds, *TFounds;
 	lmint_t init_call;
-	lmchar_t *name, *path, *path_loc, *newname;
+	lmchar_t *path, *path_loc, *newname;
 	const lmchar_t *pc;
 	node_t *Tmpnode, *TmpnodePar;
 	opts_t *Popts_Tlist, opts;
+	
+	init_call = 1;
 /*
  * check if data set exists
  */
@@ -362,7 +365,7 @@ lmint_t m3l_cp_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t *NewN
 /*
  * node is link
  */
-			if(Popts->opt_L = 'L'){
+			if(Popts->opt_L == 'L'){
 /*
  * dereference link
  */
@@ -379,7 +382,7 @@ lmint_t m3l_cp_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t *NewN
 				Tmpnode->next = TmpnodeNext;
 				Tmpnode->prev = TmpnodePrev;
 				
-				if( m3l_AllocateLinkInfo(&((*SList)->child), TList, Popts) < 0){
+				if( m3l_AllocateLinkInfo(&((*SList)->child), (*TList)) < 0){
 					Error("AllocateLinkInfo");
 					return -1;
 				}
@@ -437,6 +440,7 @@ lmint_t m3l_cp_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t *NewN
 			return -1;
 		}
 	}
+	return 1;
 }
 
 node_t *m3l_cp_crt_list(node_t **List, opts_t *Popts)
@@ -446,7 +450,6 @@ node_t *m3l_cp_crt_list(node_t **List, opts_t *Popts)
  * If SList is DIR, copying is done by traversin entire SList and copying each item
  */
 	node_t *Tmpnode, *NewList, *RetNode;
-	size_t i;
 
 	if(*List == NULL){
 		Warning("WriteData: NULL list");
@@ -584,7 +587,6 @@ lmint_t m3l_cp_recrt_list(node_t **Tlist, node_t **Slist, lmchar_t *NewName, opt
  *	first the target list data union and ->fdim is freed, then reallocated and Slist data union, ->fdim and ->ndim is sopied to 
  *	Tlist
  */
-	node_t *Pnode;
 	tmpstruct_t TMPSTR;
 	size_t i;
 /* 

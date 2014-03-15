@@ -58,7 +58,7 @@
 #include "FunctionsPrt.h"
 
 static lmsize_t m3l_FindList(lmint_t, node_t *, lmchar_t *, opts_t *);
-static m3l_AddRecord(node_t *);
+static lmint_t m3l_AddRecord(node_t *);
 static lmusignchar_t m3l_CompStatement(lmchar_t *, lmchar_t *, lmchar_t *, opts_t *);
 static lmusignchar_t m3l_EvalSearchPatt(lmchar_t *, lmchar_t *, opts_t *);
 

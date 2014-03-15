@@ -36,10 +36,10 @@
 
 
 
-#ifndef __TCPIP_SOCKET_OP_H__
-#define __TCPIP_SOCKET_OP_H__
+#ifndef __TCPIP_SOCKET_IOOP_H__
+#define __TCPIP_SOCKET_IOOP_H__
 
-extern lmint_t m3l_Sent_to_tcpipsocket(node_t *, const lmchar_t *, lmint_t , lmchar_t * , ...);
+extern lmint_t m3l_Send_to_tcpipsocket(node_t *, const lmchar_t *, lmint_t , lmchar_t * , ...);
 extern node_t *m3l_Send_receive_tcpipsocket(node_t *, const lmchar_t *, lmint_t, lmchar_t * , ... );
 extern node_t *m3l_Receive_send_tcpipsocket(node_t *, const lmchar_t *, lmint_t , lmchar_t * , ...);
 extern node_t *m3l_Receive_tcpipsocket(const lmchar_t *, lmint_t , lmchar_t *, ...);

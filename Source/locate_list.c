@@ -73,7 +73,7 @@ static lmint_t verbose_flag;
 find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
 	path_t *parsed_path, *parsed_path_loc;
-	lmchar_t *search_term, *node_path;
+	lmchar_t *search_term;
 	lmsize_t i;
 	find_t *Founds, *Founds_Loc;
 	node_t *Tmp_node;
@@ -502,4 +502,5 @@ lmint_t m3l_match_single_test(node_t *List, get_arg_t argsstr, lmsize_t counter)
 			}
 		break;
 	}
+	return 0;
 }

@@ -76,7 +76,7 @@ typedef union{
 	lmulint_t		*uli;
 	lmllint_t		*lli;
 	lmsllint_t		*slli;
-	lmsllint_t 		*ulli;
+	lmullint_t 		*ulli;
 
 	lmsize_t		 *st;
 	lmptrdiff_t		 *ptrdf;

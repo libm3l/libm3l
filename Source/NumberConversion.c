@@ -173,7 +173,7 @@ lmlint_t hex2dec(lmchar_t *hex)
  * routine programmed according to
  * http://www.programmingspark.com/2012/11/Convert-hexadecimal-to-decimal-c.html
  */
-	lmint_t i,j,num,len,counter;
+	lmint_t i,num,len,counter;
 	lmlint_t sum=0;  //value can cross range of int
 /*
  * all counters are integer type instead of size_t, do not expect 
