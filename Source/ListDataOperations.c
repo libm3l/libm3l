@@ -51,6 +51,7 @@
 
 #include "libm3l_header.h"
 #include "format_type.h"
+#include "FunctionsPrt.h"
 #include "internal_format_type.h"
 #include "ListDataOperations.h"
 
@@ -293,6 +294,36 @@ lmint_t m3l_attach_data_to_List(node_t **Lnode, opts_t *Popts){
 	}
 	else
 		return 0;
+}
+
+lmint_t m3l_RenameList(node_t *Lnode, lmchar_t *newname, opts_t *Popts){
+	
+	lmsize_t len;
+	len = strlen(newname);
+	if(len > MAX_NAME_LENGTH){
+		Warning("m3l_RenameList: Node name not malloced");
+		return -1;
+	}
+	
+	if(Lnode != NULL){
+
+		if(Lnode->name == NULL){
+			Warning("m3l_RenameList: Node name not malloced");
+			return -1;
+		}
+		
+		bzero(Lnode->name, MAX_NAME_LENGTH);
+
+		if( snprintf( Lnode->name, len,"%s", newname) < 0){
+			Perror("m3l_RenameList: snprintf");
+			return -1;
+		}
+		Lnode->name[len] = '\0';
+		
+		return 1;
+	}
+	return 0;
+
 }
 
 // node_t *m3l_reallocNode(node_t **Lnode, opts_t *Popts){
