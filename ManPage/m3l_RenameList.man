@@ -1,0 +1,39 @@
+.\" 
+.\" groff -man -Tascii name_of_file
+.\"
+.TH libm3l 1 "June 2014" libm3l "User Manuals"
+.SH NAME
+m3l_RenameList.man \- renames list
+
+.SH SYNOPSIS
+
+#include <libm3l.h>
+
+.B lmint_t m3l_RenameList
+(node_t *Lnode, lmchar_t *newname, opts_t *Popts)
+
+
+
+.SH DESCRIPTION
+.B m3l_RenameList
+Function replaces the original name of the list given to the list 
+during Mklist by newname
+.
+
+.SH OPTIONS
+none
+
+
+.SH RETURN VALUE
+Upon successful the function returns 0 otherwise -1
+
+.SH ERRORS
+
+
+.SH CHANGE HISTORY
+none
+
+.SH AUTHOR
+Adam Jirasek <libm3l at google dot com>
+.SH "SEE ALSO"
+.BR Mklist
