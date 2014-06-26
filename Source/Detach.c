@@ -242,7 +242,7 @@ find_t *m3l_Detach_List(node_t **List, const lmchar_t *path, const lmchar_t *pat
  */
 	Popts = &opts;
 	
- 	Deattach_Nodes = m3l_detach_caller(List, path, path_loc, Popts);
+ 	Deattach_Nodes = m3l_detach_(List, path, path_loc, Popts);
 
 	return Deattach_Nodes;
 }

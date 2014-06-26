@@ -39,7 +39,7 @@
 #ifndef __RM_LIST_H__
 #define __RM_LIST_H__
 
-extern lmsize_t m3l_rm_caller(node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
+extern lmsize_t m3l_rm_(node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
 extern lmsize_t m3l_rm_list(lmint_t , node_t **, opts_t *);
 
 #endif

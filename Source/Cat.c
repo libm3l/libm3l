@@ -337,7 +337,7 @@ lmint_t m3l_Cat(node_t *List, lmchar_t * Options, ...)
 
 		status1 = 0;
 
-		if ( (Founds = m3l_Find_caller(1, List, search_term, Popts)) == NULL){
+		if ( (Founds = m3l_find(1, List, search_term, Popts)) == NULL){
 			free(search_term);
 			return -1;
 		}

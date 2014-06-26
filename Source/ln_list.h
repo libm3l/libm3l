@@ -39,7 +39,7 @@
 #ifndef __LN_LIST_H__
 #define __LN_LIST_H__
 
-extern lmsize_t m3l_ln_caller(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
+extern lmsize_t m3l_ln_(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
 extern lmint_t m3l_AllocateLinkInfo(node_t **, node_t *);
 extern lmsize_t m3l_ln_cleanemptylinks(node_t **,  opts_t *);
 extern lmint_t m3l_ln_cleanemptylinksref(node_t **,  opts_t *);

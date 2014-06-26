@@ -66,7 +66,7 @@
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-lmsize_t m3l_rm_caller(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
+lmsize_t m3l_rm_(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
 	lmsize_t i, rm_tot_nodes, rm_nodes;
 	find_t *Founds;
@@ -79,7 +79,7 @@ lmsize_t m3l_rm_caller(node_t **List, const lmchar_t *path, const lmchar_t *path
 /*
  * call locator to locate nodes to be deleted
  */
-	if ( (Founds = m3l_locator_caller( *List, path, path_loc, Popts)) == NULL){
+	if ( (Founds = m3l_locate( *List, path, path_loc, Popts)) == NULL){
 		return 0;
 	}
 	else

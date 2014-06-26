@@ -61,7 +61,7 @@
  * function detach list. 
  */
 
-find_t *m3l_detach_caller(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
+find_t *m3l_detach_(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
 	lmsize_t i, detached_nodes;
 	find_t *Founds;
@@ -71,7 +71,7 @@ find_t *m3l_detach_caller(node_t **List, const lmchar_t *path, const lmchar_t *p
 /*
  * call locator to locate nodes to be deleted
  */
-	if ( (Founds = m3l_locator_caller( *List, path, path_loc, Popts)) == NULL){
+	if ( (Founds = m3l_locate( *List, path, path_loc, Popts)) == NULL){
 		return 0;
 	}
 	else

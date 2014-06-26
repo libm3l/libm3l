@@ -258,7 +258,7 @@ find_t *m3l_Locate(node_t *List, const lmchar_t *path, const lmchar_t *path_loc,
 
 	Popts = &opts;
 	
-	if( (Founds_Loc = m3l_locator_caller(List, path, path_loc, Popts)) == NULL)
+	if( (Founds_Loc = m3l_locate(List, path, path_loc, Popts)) == NULL)
 		return (find_t *)NULL;
 
 	return Founds_Loc;
