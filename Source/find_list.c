@@ -130,7 +130,7 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, opts_t 
 			return -1;
 	}
 	 
-	if(Popt->opt_r == 'r'){
+	if(Popt != NULL && Popt->opt_r == 'r'){
 /*
  * List entire tree
  */ 
@@ -271,7 +271,7 @@ lmusignchar_t m3l_CompStatement(lmchar_t *search_term, lmchar_t *pattern, lmchar
 /*
  * DIR types only
  */
-		if(Popts->opt_d == 'd'){
+		if(Popts != NULL && Popts->opt_d == 'd'){
 			if( strncmp("DIR",type, 3) == 0 ){
 				return '1';
 			}
@@ -283,7 +283,7 @@ lmusignchar_t m3l_CompStatement(lmchar_t *search_term, lmchar_t *pattern, lmchar
 /*
  * LINKS types only
  */
-		else if (Popts->opt_l == 'l'){
+		else if (Popts != NULL && Popts->opt_l == 'l'){
 			if( strncmp("LINK",type, 4) == 0 ){
 				return '0';
 			}
@@ -295,7 +295,7 @@ lmusignchar_t m3l_CompStatement(lmchar_t *search_term, lmchar_t *pattern, lmchar
 /*
  * FILE types only
  */
-		else if (Popts->opt_f == 'f'){
+		else if (Popts != NULL && Popts->opt_f == 'f'){
 			if( strncmp("DIR",type, 3) == 0 ){
 				return '0';
 			}
@@ -324,7 +324,7 @@ lmusignchar_t  m3l_EvalSearchPatt(lmchar_t *search_term, lmchar_t *pattern, opts
 	if ( (Ppattern = strdup(pattern)) == NULL)
 		Perror("strdup");
 
-	if(Popts->opt_i == 'i') 
+	if(Popts != NULL && Popts->opt_i == 'i') 
 	       Ppattern = StrToLower(Ppattern);
 	
 	len1 = strlen(Ppattern);
@@ -335,7 +335,7 @@ lmusignchar_t  m3l_EvalSearchPatt(lmchar_t *search_term, lmchar_t *pattern, opts
  * upon leaving, free *Ppattern 
  */
 	if( (strncmp(search_term, Ppattern, strlen(Ppattern)) == 0 && len1 == len2)   ||  *search_term == '*'){
-		if(Popts->opt_I == 'I'){
+		if(Popts != NULL && Popts->opt_I == 'I'){
 			free(Ppattern);
 			return '0';
 		}
@@ -347,7 +347,7 @@ lmusignchar_t  m3l_EvalSearchPatt(lmchar_t *search_term, lmchar_t *pattern, opts
 	}
 	else
 	{
-		if(Popts->opt_I == 'I'){
+		if(Popts != NULL && Popts->opt_I == 'I'){
 			free(Ppattern);
 			return '1';
 		}
