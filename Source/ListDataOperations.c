@@ -207,14 +207,16 @@ lmsize_t m3l_get_List_totdim(node_t *List){
 	lmsize_t tot_dim, i;
 
 	tot_dim = 1;
+	if(strncmp(List->type,"DIR",3) != 0 && strncmp(List->type,"LINK",4) != 0 ){
+		
+		if(List->ndim == 1)
+			return List->fdim[0];
+		else{
+			for(i=0; i<List->ndim; i++)
+				tot_dim = tot_dim*List->fdim[i];
 
-	if(List->ndim == 1)
-		return List->fdim[0];
-	else{
-		for(i=0; i<List->ndim; i++)
-			tot_dim = tot_dim*List->fdim[i];
-
-		return tot_dim;
+			return tot_dim;
+		}
 	}
 }
 /* 

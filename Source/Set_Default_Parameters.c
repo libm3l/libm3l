@@ -105,7 +105,7 @@ void m3l_set_Find(opts_t **Popts){
 	(*Popts)->opt_i = '\0'; 
 	(*Popts)->opt_d = '\0'; 
 	(*Popts)->opt_f = '\0'; 
-	(*Popts)->opt_r = '\0'; 
+	(*Popts)->opt_r = 'r'; 
 	(*Popts)->opt_I = '\0';
 	(*Popts)->opt_d = '\0'; 
 	(*Popts)->opt_f = '\0'; 
