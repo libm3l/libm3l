@@ -258,7 +258,7 @@ lmsize_t m3l_Mv(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_l
  */
 	Popts = &opts;
 	
- 	mv_tot_nodes = m3l_mv_(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	mv_tot_nodes = m3l_mv(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
 	return mv_tot_nodes;
 }

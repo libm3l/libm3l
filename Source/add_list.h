@@ -39,7 +39,7 @@
 #ifndef  __ADD_LIST_H__
 #define __ADD_LIST_H__
 
-lmint_t m3l_add_(node_t **, node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
+lmint_t m3l_add(node_t **, node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
 lmint_t m3l_add_list(node_t **, node_t **, opts_t *);
 
 #endif

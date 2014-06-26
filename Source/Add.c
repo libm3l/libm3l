@@ -213,7 +213,7 @@ lmint_t m3l_Add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
 /*
  * locate nodes using find function
  */	
- 	addlist = m3l_add_(SList, TList, t_path, t_path_loc, Popts);
+ 	addlist = m3l_add(SList, TList, t_path, t_path_loc, Popts);
 
 	return addlist;
 }

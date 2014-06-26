@@ -66,7 +66,7 @@
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-lmsize_t m3l_rm_(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
+lmsize_t m3l_rm(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
 	lmsize_t i, rm_tot_nodes, rm_nodes;
 	find_t *Founds;

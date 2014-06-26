@@ -61,7 +61,7 @@
  * function detach list. 
  */
 
-find_t *m3l_detach_(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
+find_t *m3l_detach(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
 	lmsize_t i, detached_nodes;
 	find_t *Founds;
