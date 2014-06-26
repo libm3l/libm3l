@@ -67,7 +67,7 @@ static lmint_t m3l_mv_list(lmint_t , node_t **, node_t **, opts_t *);
  * function moves list.
  */
 
-lmsize_t m3l_mv_(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
+lmsize_t m3l_mv(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a  of the mv function

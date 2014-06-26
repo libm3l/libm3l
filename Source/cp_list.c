@@ -74,7 +74,7 @@ static lmint_t m3l_cp_list_content(node_t **, node_t *);
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t m3l_cp_(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
+size_t m3l_cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a  of the cp functions

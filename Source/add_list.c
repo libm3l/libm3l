@@ -55,7 +55,7 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
-lmint_t m3l_add_(node_t **SList, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
+lmint_t m3l_add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a  of the cp functions

@@ -272,7 +272,7 @@ lmsize_t m3l_Rm(node_t **List, const lmchar_t *path, const lmchar_t *path_loc, l
  */
 	Popts = &opts;
 	
-	rm_tot_nodes = m3l_rm_(List, path, path_loc, Popts);
+	rm_tot_nodes = m3l_rm(List, path, path_loc, Popts);
 
 	return rm_tot_nodes;
 }

@@ -76,7 +76,7 @@ static lmint_t m3l_ln_recrt_list(node_t **, node_t **, lmchar_t *);
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-lmsize_t m3l_ln_(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
+lmsize_t m3l_ln(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
  * function is a  of the ln functions
