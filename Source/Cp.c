@@ -269,7 +269,7 @@ size_t m3l_Cp(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc
 /*
  * locate nodes using find function
  */	
- 	cp_tot_nodes = m3l_cp_caller(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
+ 	cp_tot_nodes = m3l_cp_(SList, s_path, s_path_loc, TList, t_path, t_path_loc, Popts);
 
 
 	return cp_tot_nodes;

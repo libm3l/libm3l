@@ -72,7 +72,7 @@ find_t *Founds;
  * decalred above
  */
 
-find_t *m3l_Find_caller(lmint_t call, node_t *List, lmchar_t *search_term, opts_t *Popt)
+find_t *m3l_find(lmint_t call, node_t *List, lmchar_t *search_term, opts_t *Popt)
 {
 /*
  * allocate find_t pointer and first element
@@ -366,7 +366,7 @@ lmusignchar_t  m3l_EvalSearchPatt(lmchar_t *search_term, lmchar_t *pattern, opts
 void m3l_DestroyFound(find_t **Founds)
 {
 /*
- * function destroys filed allocted by function Find_caller
+ * function destroys filed allocted by function find
  */
 	lmsize_t i;
 	if(*Founds == NULL)return ;

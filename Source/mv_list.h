@@ -39,6 +39,6 @@
 #ifndef __MV_LIST_H__
 #define __MV_LIST_H__
 
-extern lmsize_t m3l_mv_caller(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
+extern lmsize_t m3l_mv_(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
 
 #endif

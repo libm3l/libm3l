@@ -67,10 +67,10 @@ static lmint_t m3l_mv_list(lmint_t , node_t **, node_t **, opts_t *);
  * function moves list.
  */
 
-lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
+lmsize_t m3l_mv_(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
- * function is a caller of the mv function
+ * function is a  of the mv function
  */
 
 /* NOTE - check that Tfounds and SFounds are identical */
@@ -98,7 +98,7 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 /*
  * call locator to locate the target node
  */
-	if ( (SFounds = m3l_locator_caller( *SList, s_path, s_path_loc, Popts)) == NULL){
+	if ( (SFounds = m3l_locate( *SList, s_path, s_path_loc, Popts)) == NULL){
 		Warning("mv: NULL SFounds");
 		return 0;
 	}
@@ -126,7 +126,7 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 /*
  * locate target; if target == NULL, just rename the node(s) or --add option specified 
  */
-		if ( Popts->opt_add == 'a' || (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
+		if ( Popts->opt_add == 'a' || (TFounds = m3l_locate( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -198,7 +198,7 @@ lmsize_t m3l_mv_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts_Tlist)) == NULL){
+				if ( (TFounds = m3l_locate( *TList, path, path_loc, Popts_Tlist)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);

@@ -70,7 +70,7 @@ static lmint_t verbose_flag;
  * and then filters the subset using additional info (location etc.)
  */
 
-find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
+find_t *m3l_locate(node_t *List, const lmchar_t *path, const lmchar_t *path_loc, opts_t *Popts)
 {
 	path_t *parsed_path, *parsed_path_loc;
 	lmchar_t *search_term;
@@ -130,7 +130,7 @@ find_t *m3l_locator_caller(node_t *List, const lmchar_t *path, const lmchar_t *p
 			Perror("strdup");
 	if(Popts != NULL && Popts->opt_i == 'i')search_term = StrToLower(search_term);
 
-	if ( (Founds = m3l_Find_caller(2, Tmp_node, search_term, Popts)) == NULL){
+	if ( (Founds = m3l_find(2, Tmp_node, search_term, Popts)) == NULL){
 		free(search_term);
 		m3l_destroy_pars_path(&parsed_path);
 //  		Warning("Locator: No Founds");

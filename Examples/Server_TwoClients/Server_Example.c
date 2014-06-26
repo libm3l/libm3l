@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 			if( (RecNode = m3l_Receive_tcpipsocket((const char *)NULL, newsockfd, "--encoding" , "IEEE-754", (char *)NULL)) == NULL)
 				Error("Error during reading data from socket");
 		
-			if ( (SFounds = m3l_locator_caller(RecNode, "/Client_Data/Name", "/*/*", Popts)) != NULL){
+			if ( (SFounds = m3l_locate(RecNode, "/Client_Data/Name", "/*/*", Popts)) != NULL){
 				TmpNode = SFounds->Found_Nodes[0]->List;
 			}
 			else{
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
 
 				stop = 0;
 
-				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Client_Data/STOP", "/*/*", Popts)) != NULL){
+				if ( (SFounds1 = m3l_locate(RecNode, "/Client_Data/STOP", "/*/*", Popts)) != NULL){
 					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
 					m3l_DestroyFound(&SFounds1);
 				}		
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
 			else    /*  CLIENT 2 */
 			{
 				stop = 0;
-				if ( (SFounds1 = m3l_locator_caller(RecNode, "/Client_Data/STOP", "/*/*", Popts)) != NULL){
+				if ( (SFounds1 = m3l_locate(RecNode, "/Client_Data/STOP", "/*/*", Popts)) != NULL){
 					stop = SFounds1->Found_Nodes[0]->List->data.i[0];
 					m3l_DestroyFound(&SFounds1);
 				}

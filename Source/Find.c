@@ -286,7 +286,7 @@ find_t *m3l_Find(node_t *List, lmchar_t * Options, ...)
  * this function returns back found_t **pointer which has "founds" number of items
  * do not forget to free it when you do not need it
  */
-	if ( (Founds = m3l_Find_caller(2, List, search_term, Popts)) == NULL){
+	if ( (Founds = m3l_find(2, List, search_term, Popts)) == NULL){
 		free(search_term);
 		return (find_t *)NULL;
 	}

@@ -265,7 +265,7 @@ node_t *m3l_Mklist(const lmchar_t *name, const lmchar_t *type, lmsize_t ndim, lm
  */
 	if( WTAList != NULL){
 		
-		if( m3l_add_caller(&List, WTAList, t_path, t_path_loc, Popts) < 0){
+		if( m3l_add_(&List, WTAList, t_path, t_path_loc, Popts) < 0){
 /*
  * list could not be added, remove list and give warning
  */

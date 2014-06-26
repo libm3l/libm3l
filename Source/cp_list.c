@@ -74,10 +74,10 @@ static lmint_t m3l_cp_list_content(node_t **, node_t *);
  * upon return, returns number of deleted lists, upon failure returns -1
  */
 
-size_t m3l_cp_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
+size_t m3l_cp_(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_loc, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
- * function is a caller of the cp functions
+ * function is a  of the cp functions
  */
 	size_t i,j,k,l , cp_tot_nodes, cp_nodes, len;
 	find_t *SFounds, *TFounds;
@@ -103,7 +103,7 @@ size_t m3l_cp_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_p
 /* 
  * check location of sources
  */
-	if ( (SFounds = m3l_locator_caller( (*SList), s_path, s_path_loc, Popts)) == NULL){
+	if ( (SFounds = m3l_locate( (*SList), s_path, s_path_loc, Popts)) == NULL){
 		Warning("Cp: NULL SFounds");
 		return 0;
 	}
@@ -153,7 +153,7 @@ size_t m3l_cp_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_p
 /*
  * locate target; if target == NULL, just rename the node(s) or --add option specified 
  */
-		if ( Popts->opt_add == 'a' || (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
+		if ( Popts->opt_add == 'a' || (TFounds = m3l_locate( *TList, t_path, t_path_loc, Popts_Tlist)) == NULL){
 /*
  * check it the direcotry exist, if it does, the name is new name
  */
@@ -225,7 +225,7 @@ size_t m3l_cp_caller(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_p
 /*
  * make new find for parent dir of the new name
  */
-				if ( (TFounds = m3l_locator_caller( *TList, path, path_loc, Popts_Tlist)) == NULL){
+				if ( (TFounds = m3l_locate( *TList, path, path_loc, Popts_Tlist)) == NULL){
 					free(path);
 					free(path_loc);	
 					free(newname);

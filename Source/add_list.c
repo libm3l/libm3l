@@ -55,10 +55,10 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
-lmint_t m3l_add_caller(node_t **SList, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
+lmint_t m3l_add_(node_t **SList, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
- * function is a caller of the cp functions
+ * function is a  of the cp functions
  */
 
 /* NOTE - check that Tfounds and SFounds are identical */
@@ -100,7 +100,7 @@ lmint_t m3l_add_caller(node_t **SList, node_t **TList, const lmchar_t *t_path, c
 /*
  * locate target; if target == NULL, just rename the node(s)
  */
-		if ( (TFounds = m3l_locator_caller( *TList, t_path, t_path_loc, Popts)) == NULL){
+		if ( (TFounds = m3l_locate( *TList, t_path, t_path_loc, Popts)) == NULL){
 			Warning("add_list: no correct target specified");
 			return -1;
 		}
