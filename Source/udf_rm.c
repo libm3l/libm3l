@@ -68,6 +68,9 @@ lmint_t m3l_Free(node_t **Lnode)
  */
 	lmsize_t i;
 	
+	if(strncmp((*Lnode)->type, "LINK",4) == 0)
+		return -1;
+	
 	if( m3l_Free_data_str(Lnode) != 0)
 		Perror("Free_data_str");
 
