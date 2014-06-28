@@ -69,7 +69,7 @@ static node_t *m3l_ln_crt_list(node_t **, lmchar_t *, opts_t *);
 static lmint_t m3l_ln_recrt_list(node_t **, node_t **, lmchar_t *);
 
 /*
- * function links list. If the list has children, it deletes them before removing list.
+ * function links list. If the list where the other list is linked has children, it deletes them before removing list.
  * Source list is linked to Target->child 
  * When the Source is linked to target, strucure Slist->inknode is allocated and filled by Target
  * called recursivelly
@@ -319,8 +319,8 @@ lmsize_t m3l_ln(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_l
 
 size_t m3l_ln_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t* NewName, opts_t *Popts){
 /*
- * function copies list SList to a target list TList
- * 	if the SList is FILE, TLIST has to be file too. The data sunion and ->fdim of the TList target nodes is furst freed, then reallocated
+ * 	function links list SList to a target list TList
+ * 	if the SList is FILE, TLIST has to be file too. The data union and ->fdim of the TList target nodes is first freed, then reallocated
  *	and then SList data union + ->fdim and ->ndim are copied.
  * 	if the TList is DIR the Slist is re-created and added to the TList. In case SList is a DIR, the copying is done by 
  *	traversing the list and copying it item-by-item
@@ -335,14 +335,14 @@ size_t m3l_ln_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t* NewNa
  * *Tlist is FILE, check that SList is not DIR
  */
 		if(strncmp( (*SList)->type, "DIR", 3) == 0){
-			Warning(" cp_list: cannot overwrite non-DIR  with DIR ");
+			Warning(" ln_list: cannot overwrite non-DIR  with DIR ");
 			return -1;
 		}
 /*
  * link list to the source list
  */
 		if (  m3l_ln_recrt_list(TList, SList, NewName) < 1){
-			Error("Copying list");
+			Error("ln_list: Copying list");
 			return -1;
 		}
 
@@ -353,7 +353,7 @@ size_t m3l_ln_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t* NewNa
  * link list to the directory, first make a new lits
  */
 		if ( (NewList = m3l_ln_crt_list(SList, NewName, Popts)) == NULL){
-			Error("Copying list");
+			Error("ln_list: Copying list");
 			return -1;
 		}
 /*
@@ -362,7 +362,7 @@ size_t m3l_ln_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t* NewNa
 		if(NewName != NULL){
 			bzero(NewList->name, sizeof(name));
 			if( snprintf(NewList->name,MAX_NAME_LENGTH,"%s",NewName) < 0){
-				Perror("snprintf");
+				Perror("ln_list: snprintf");
 				return -1;
 			}
 		}
@@ -370,7 +370,7 @@ size_t m3l_ln_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t* NewNa
  * add a new node to the DIR list
  */
 		if ( m3l_add_list(&NewList, TList, Popts) < 0){
-			Warning("Error cp_list copy");
+			Warning("ln_list: Error cp_list copy");
 			return -1;
 		}
 	}
@@ -388,19 +388,19 @@ node_t *m3l_ln_crt_list(node_t **Slist, lmchar_t *NewName, opts_t *Popts){
 	
 	if(NewName != NULL){
 		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s",NewName) < 0){
-			Perror("snprintf");
+			Perror("m3l_ln_crt_list: snprintf");
 			return (node_t *) NULL;
 		}
 	}
 	else{
 		if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s", (*Slist)->name) < 0){
-			Perror("snprintf");
+			Perror("m3l_ln_crt_list: snprintf");
 			return (node_t *) NULL;
 		}
 	}
 
 	if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"LINK") < 0){
-		Perror("snprintf");
+		Perror("m3l_ln_crt_list: snprintf");
 		return (node_t *) NULL;
 	}
 	TMPSTR.ndim = 1;
@@ -409,14 +409,14 @@ node_t *m3l_ln_crt_list(node_t **Slist, lmchar_t *NewName, opts_t *Popts){
  * create new node
  */
 	if( (Pnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
-		Error("Allocate");
+		Error("m3l_ln_crt_list: Allocate");
 		return (node_t *)NULL;
 	}
 
 	Pnode->child  = (*Slist);
 	
 	if( m3l_AllocateLinkInfo(Slist, Pnode) < 0){
-		Error("AllocateLinkInfo");
+		Error("m3l_ln_crt_list: AllocateLinkInfo");
 		return (node_t *) NULL;
 	}
 		

@@ -123,12 +123,13 @@ void *m3l_get_data_pointer(node_t *Lnode)
  * if list is LINK, set TmpNode to link target node (Lnode->child)
  * otherwise set TmpNode = Lnode
  */
-	if(strncmp( Lnode->type,"DIR",3) == 0)
-		return NULL;
-	else if(strncmp(Lnode->type, "LINK",4) == 0)
+	TmpNode = Lnode;
+	
+	if(strncmp(Lnode->type, "LINK",4) == 0)
 		TmpNode = Lnode->child;
-	else
-		TmpNode = Lnode;
+	
+	if(strncmp( TmpNode->type,"DIR",3) == 0)
+		return NULL;
 	
 	if (strncmp(TmpNode->type,"LD",2) == 0){  /* long double */
 		return (void *)TmpNode->data.ldf;
@@ -198,25 +199,40 @@ void *m3l_get_data_pointer(node_t *Lnode)
  * return dimensions of the node
  */
 lmsize_t *m3l_get_List_dim(node_t *List){
-	return List->fdim;
+	
+	node_t *TmpNode;
+	
+	TmpNode = List;
+	
+	if(strncmp(TmpNode->type, "LINK",4) == 0)
+		TmpNode = List->child;
+	
+	return TmpNode->fdim;
 }
 /* 
  * calculate and return total dimensions 
  */
 lmsize_t m3l_get_List_totdim(node_t *List){
+
 	lmsize_t tot_dim, i;
+	node_t *TmpNode;
+	
+	TmpNode = List;
+	
+	if(strncmp(TmpNode->type, "LINK",4) == 0)
+		TmpNode = List->child;
+	
+	if(strncmp( TmpNode->type,"DIR",3) == 0)
+		return -1;
 
 	tot_dim = 1;
-	if(strncmp(List->type,"DIR",3) != 0 && strncmp(List->type,"LINK",4) != 0 ){
 		
-		if(List->ndim == 1)
-			return List->fdim[0];
-		else{
-			for(i=0; i<List->ndim; i++)
-				tot_dim = tot_dim*List->fdim[i];
-
-			return tot_dim;
-		}
+	if(TmpNode->ndim == 1)
+		return TmpNode->fdim[0];
+	else{
+		for(i=0; i<TmpNode->ndim; i++)
+			tot_dim = tot_dim*TmpNode->fdim[i];
+		return tot_dim;
 	}
 }
 /* 
@@ -254,7 +270,18 @@ node_t *m3l_get_Found_node(find_t *Founds, lmsize_t i){
  * return no_malloc option value
  */
 lmchar_t m3l_get_List_no_malloc(node_t *List){
-	return List->no_malloc;
+	
+	node_t *TmpNode;
+	TmpNode = List;
+	
+	if(strncmp(TmpNode->type, "LINK",4) == 0)
+		TmpNode = TmpNode->child;
+	
+	if(strncmp( TmpNode->type,"DIR",3) == 0)
+		return 'e';
+	
+	
+	return TmpNode->no_malloc;
 }
 
 void *m3l_detach_data_from_List(node_t **List, opts_t *Popts)
@@ -264,8 +291,15 @@ void *m3l_detach_data_from_List(node_t **List, opts_t *Popts)
 * It specifies --no_malloc='n' so that when the list is freed the 
 * data.[type] structure is not freed. 
 * Function return the pointer to data structure
+* 
+* If node is Link, it gives warning
 */
-	node_t *RetNode=NULL;
+	node_t  *RetNode=NULL;
+	
+	if(strncmp((*List)->type, "LINK",4) == 0){
+		Warning("m3l_detach_data_from_List: Can not detach LINK type list");
+		return NULL;
+	}
 /*  
  * set --no_malloc option in the node
  */
@@ -278,7 +312,6 @@ void *m3l_detach_data_from_List(node_t **List, opts_t *Popts)
 	}
 }
 
-// void *m3l_attach_data_to_List(void *array, char *typeofarray, lmsize_t *ndim, lmsize_t *fdim, opts_t *Popts)
 lmint_t m3l_attach_data_to_List(node_t **Lnode, opts_t *Popts){
 /*
 * Function attaches an array to the list. 
@@ -290,6 +323,11 @@ lmint_t m3l_attach_data_to_List(node_t **Lnode, opts_t *Popts){
 /*  
  * set --no_malloc option in the node
  */
+	if(strncmp((*Lnode)->type, "LINK",4) == 0){
+		Warning("m3l_attach_data_to_List: Can not detach LINK type list");
+		return -1;
+	}
+
 	if( m3l_get_data_pointer( *Lnode ) != NULL){
 		(*Lnode)->no_malloc = '\0';
 		return 1;
