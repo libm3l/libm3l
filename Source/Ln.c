@@ -85,12 +85,12 @@ lmsize_t m3l_Ln(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_l
  * check if data set exists
  */
 // 	if(SList == NULL){
-// 		Warning("Cp: NULL source list");
+// 		Warning("Ln: NULL source list");
 // 		return -1;
 // 	}
 	
 	if(*TList == NULL){
-		Warning("Cp: NULL target list");
+		Warning("Ln: NULL target list");
 		return -1;
 	}
 /*
