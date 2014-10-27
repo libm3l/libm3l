@@ -125,8 +125,12 @@ typedef struct node {
 	lmsize_t lcounter;
  /*
   * parameter specifying if data.[type] has been malloc'ed lmchar_t != 'n' or not lmchar_t == 'n'
-  */	
+  */
 	lmchar_t no_malloc;
+/*
+ * access permission
+ */
+	lmint_t ap;
 
 }node_t;
 

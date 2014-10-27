@@ -58,5 +58,6 @@ extern lmint_t m3l_attach_data_to_List(node_t **, opts_t *);
 extern lmsize_t m3l_get_Found_number(find_t *);
 extern node_t *m3l_get_Found_node(find_t *, lmsize_t);
 extern lmint_t m3l_RenameList(node_t *, lmchar_t *,  opts_t*);
+extern lmint_t m3l_chmod(node_t *, lmint_t , opts_t *);
 
 #endif

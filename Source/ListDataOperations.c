@@ -363,9 +363,21 @@ lmint_t m3l_RenameList(node_t *Lnode, lmchar_t *newname, opts_t *Popts){
 		return 1;
 	}
 	return 0;
-
 }
 
+lmint_t m3l_chmod(node_t *Lnode, lmint_t ap, opts_t *Popts){
+
+	if(Lnode != NULL){
+		
+		if(ap > 0){
+			Warning("Wrong mode");
+			return -2;
+		}
+		Lnode->ap = ap;
+	}
+	else
+		return -1;
+}
 // node_t *m3l_reallocNode(node_t **Lnode, opts_t *Popts){
 // /*
 //  * function reallocates node

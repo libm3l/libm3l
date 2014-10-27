@@ -231,6 +231,7 @@ node_t *m3l_AllocateNode(tmpstruct_t TMPSTR, opts_t *Popt){
 	Lnode->lcounter = 0;
 	
 	Lnode->no_malloc = '\0';
+	Lnode->ap = 0;
  /*
   * Allocate pointers
   */
