@@ -326,7 +326,6 @@ size_t m3l_ln_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t* NewNa
  *	traversing the list and copying it item-by-item
  */
 	node_t *NewList;
-	lmchar_t *name;
 /*
  * copy source (Slist) to target (Tlist)
  */
@@ -360,7 +359,7 @@ size_t m3l_ln_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t* NewNa
  * if list has a different name then original list, rename the list
  */
 		if(NewName != NULL){
-			bzero(NewList->name, sizeof(name));
+			bzero(NewList->name, MAX_NAME_LENGTH);
 			if( snprintf(NewList->name,MAX_NAME_LENGTH,"%s",NewName) < 0){
 				Perror("ln_list: snprintf");
 				return -1;
@@ -606,7 +605,7 @@ lmint_t m3l_ln_cleanemptylinksref(node_t **List,  opts_t *Popt){
  * function cleans empty references in  
  * (*Slist)->linknode structure
  */
-	size_t i, counter, old_counter;
+	size_t i, counter;
 	counter = 0;
 	
 	find_str_t **TMP;
@@ -622,7 +621,6 @@ lmint_t m3l_ln_cleanemptylinksref(node_t **List,  opts_t *Popt){
  * discard NULL links
  */
 	if((*List)->lcounter > 0 ){
-		old_counter = (*List)->lcounter;
 		for(i=0; i< (*List)->lcounter; i++)
 			if( (*List)->linknode[i]->List != NULL)counter++;
 	}
