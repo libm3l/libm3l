@@ -415,10 +415,11 @@ path_t *m3l_parse_path(const lmchar_t *path)
  * check that the path makes sense, ie. no spaces tabs and newlines are in
  * disregard empty spaces and tabs at the beginning 
  */
+	printf(" PATH '%s'\n", path);
 	pc = path;
 	while( (*pc == ' ' || *pc == '\t') && *pc != '\0'  )pc++;
 /*
- * check that if the path starts with ~ it is followed by /
+ * check that if the path starts with ~ followed by /
  */
 	if( *pc != '\0' && *pc == '~' && *++pc != '/'){
 			Error(" Wrong path");
@@ -456,7 +457,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
 // 		pc++;
 // 	}
 	else if(*pc == '.'){
-		counter = 0;
+		counter = 1;
 		pc++;
 		abspath = 'R';
 	}
