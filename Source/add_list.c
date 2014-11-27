@@ -87,7 +87,8 @@ lmint_t m3l_add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
  */
 	len  = strlen(t_path_loc);
 	len1 = strlen(t_path);
-	if(  (strncmp(t_path_loc, "./", 2) == 0 && len == 2)  && ( strncmp(t_path, "./", 2) == 0 && len1 == 2)){
+// 	if(  (strncmp(t_path_loc, "./", 2) == 0 && len == 2)  && ( strncmp(t_path, "./", 2) == 0 && len1 == 2)){
+	if(  (strncmp(t_path_loc, "./", 2) == 0 && len == 2)){
 /*
  * list is to be added to the root (not necessarily the main root) of the List
  *
