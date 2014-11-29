@@ -64,12 +64,12 @@ lmint_t m3l_Free(node_t **Lnode)
  * NOTE: This routine would not need to be necessarily written 
  *       having pointer-to-pointer argument if it ONLY freed the pointer!
  *       as freeing pointer does not modify its value
-  *      http://cboard.cprogramming.com/c-programming/66209-struct-pointer-memory-allocation.html
+ *       http://cboard.cprogramming.com/c-programming/66209-struct-pointer-memory-allocation.html
  */
 	lmsize_t i;
 	
-	if(strncmp((*Lnode)->type, "LINK",4) == 0)
-		return -1;
+// 	if(strncmp((*Lnode)->type, "LINK",4) == 0)
+// 		return -1;
 	
 	if( m3l_Free_data_str(Lnode) != 0)
 		Perror("Free_data_str");
@@ -87,9 +87,8 @@ lmint_t m3l_Free(node_t **Lnode)
  * nullify node_t
  */
 	(*Lnode)->next=NULL; (*Lnode)->prev=NULL; (*Lnode)->parent=NULL; (*Lnode)->child=NULL;  (*Lnode)->fdim=NULL; 
-	
 /*
- * free filed of lists pointing to links
+ * free array of lists pointing to links
  */
 	if((*Lnode)->lcounter > 0){
 		for (i=0; i<(*Lnode)->lcounter; i++)
