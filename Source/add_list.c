@@ -55,6 +55,8 @@
 #include "FunctionsPrt.h"
 #include "find_list.h"
 
+static lmint_t comp_simle_path(lmchar_t *, const lmchar_t *);
+
 lmint_t m3l_add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lmchar_t *t_path_loc, opts_t *Popts)
 {
 /*
@@ -85,20 +87,31 @@ lmint_t m3l_add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
 /*
  * check only one node is to be moved to the Tlist
  */
-	len  = strlen(t_path_loc);
-	len1 = strlen(t_path);
-// 	if(  (strncmp(t_path_loc, "./", 2) == 0 && len == 2)  && ( strncmp(t_path, "./", 2) == 0 && len1 == 2)){
+	len  = strlen(t_path_loc);;
 	if(  (strncmp(t_path_loc, "./", 2) == 0 && len == 2)){
 /*
- * list is to be added to the root (not necessarily the main root) of the List
- *
- * check that there is only one DIR in root of *TList
+ * check that there is only one DIR in root of *TList 
  */
 		if( (*TList)->next != NULL){
 			Warning("add_list: DIR is not unique");
 			return -1;
 		}
-
+		
+		len1 = strlen(t_path);
+		if(  ( strncmp(t_path, "./", 2) != 0  ||  len1 != 2)){
+/*
+ * list is to be added to the root (not necessarily the main root) of the List
+ * compare the names given in t_path with the name of root dir, if t_path != ./
+ * do not care put it where it is
+ */
+			if( comp_simle_path((*TList)->name, t_path) != 0){
+				Warning("add_list: List name is not valid");
+				return -1;
+			}
+		}
+/*
+ * check that the *Tlist is DIR type
+ */
 		if( strncmp( (*TList)->type, "DIR", 3) == 0){
 			addlist = m3l_add_list(SList, TList,Popts);
 			return addlist;
@@ -110,6 +123,7 @@ lmint_t m3l_add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
 	}
 	else{
 /*
+ * if t_path_loc =! ./ first locate the list and then add the new list
  * locate target; if target == NULL, just rename the node(s)
  */
 		if ( (TFounds = m3l_locate( *TList, t_path, t_path_loc, Popts)) == NULL){
@@ -277,3 +291,101 @@ lmint_t m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 return -3;
 }
 
+
+
+
+
+
+lmint_t comp_simle_path(lmchar_t *listname, const lmchar_t *name){
+/*
+ * function compares the name with listname
+ * both names are likely to start with / or ./ or ~/
+ * so avoid these, check that there is not any second / followed by 
+ * another character
+ */
+	lmsize_t len, i, j;
+	const lmchar_t *pc, *pc1, *pc2;
+	
+	pc = name;
+	
+	len = strlen(name);
+	if(len < 1) return -1;
+	
+	i = 0;
+/*
+ * get rid of initial ./  / ~/ empty spaces, tabs etc.
+ */
+	while(i++ < len &&  (*pc == ' ' ||  *pc == '\n' ||  *pc == '/' || *pc == '.' ||  *pc == '~' ||  *pc == '\t' ) &&  *pc != '\0' )pc++;
+	
+	if(i == len){
+/*
+ * character contained only / or ./ or ~/ or empty characters
+ */
+          printf(" returning \n");
+		return 1;
+	}
+/*
+ * get rid of trailing edge /
+ */
+	pc1 = pc;
+	j = i;
+	
+	while(*pc != '\0' &&  *pc != '/' &&  *pc != ' ' &&  *pc != '\n' &&  *pc != '\t' ){
+		j++;
+		pc++;
+/* 
+ * substract the count of these characters from length of the word
+ */
+		len--;
+	}
+	j--;
+	if(j < i){
+/*
+ * name contained only initial /
+ */
+		return 1;
+	}
+/*
+ * check trailing edge characters
+ */
+    if(j < len){
+/*
+ * still come characters following the traling /  filter empty characters
+ */
+		while( *pc != '\0' && (*pc1 == ' ' ||  *pc == '\n' ||  *pc == '\t'))pc++;
+    
+		if(*pc != '\0'){
+/*
+ * still some trailing edge characters
+ */
+				printf(" returning1 \n");
+				return 1;
+		}
+    }
+/*
+ * length of word is j-i+1 and it starts at pc1
+ * compare with name
+ */
+	pc2 = listname;
+/*
+ * get rid of initial ./  / ~/ empty spaces, tabs etc.
+ */
+	while( (*pc2 == ' ' ||  *pc2 == '\n' ||  *pc2 == '/' || *pc2 == '.' ||  *pc2 == '~' ||  *pc2 == '\t' ) &&  *pc2 != '\0' )pc2++;
+	
+	while(*pc1 != '\0' && *pc1 != '/' && *pc2 != '\0' && *pc2 != '/'){
+			if(*pc1 != *pc2)return -1;
+			pc1++;
+			pc2++;
+	}
+/*
+ * check that pc2 does not have any other characters except /
+ */
+	while( *pc2 != '\0'){
+		if( *pc2 != '/' && *pc2 != ' ' && *pc2 != '\t' && *pc2 != '\n' )return 1;
+		pc2++;
+	}
+/*
+ * names are the same
+ */
+	return 0;
+}
