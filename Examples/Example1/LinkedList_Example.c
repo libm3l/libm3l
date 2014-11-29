@@ -49,6 +49,12 @@ lmint_t main(void)
     
     lmchar_t *node_path;
     
+//     lmchar_t *test="test\t\n";
+//     
+//     printf(" STRLEN is %d\n ", strlen(test));
+    
+//     return 0;
+    
     
     lmsize_t maxsize = (lmsize_t)-1;
 /*
@@ -145,7 +151,7 @@ lmint_t main(void)
  */
 		dim = (lmsize_t *) malloc( 1* sizeof(lmsize_t));
 		dim[0] = 10;
-	 	if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main", "./", (lmchar_t *)NULL)) == 0)
+	 	if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, &Gnode, "/main/", "./", (lmchar_t *)NULL)) == 0)
 // 	 	if(  (NewList = m3l_Mklist("MADE_LIST", "I", 1, dim, &Gnode, "./", "./", (lmchar_t *)NULL)) == 0)
 			Error("Mklist");
 		free(dim);
