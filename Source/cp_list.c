@@ -337,7 +337,6 @@ lmint_t m3l_cp_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t *NewN
  *	traversing the list and copying it item-by-item
  */
 	node_t *NewList, *Tmpnode, *TmpnodePrev, *TmpnodeNext;
-	lmchar_t *name;
 /*
  * copy source (Slist) to target (Tlist)
  */
@@ -426,7 +425,7 @@ lmint_t m3l_cp_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t *NewN
  * if list has a different name then original list, rename the list
  */			
 		if(NewName != NULL){
-			bzero(NewList->name, sizeof(name));
+			bzero(NewList->name, MAX_NAME_LENGTH);
 			if( snprintf(NewList->name,MAX_NAME_LENGTH,"%s",NewName) < 0){
 				Perror("snprintf");
 				return -1;
