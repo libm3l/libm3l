@@ -114,7 +114,7 @@ lmsize_t m3l_mv(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_l
 	if(strncmp(t_path_loc, "./", 2) == 0 && len == 2){
 		for(i=0; i< SFounds->founds; i++){
 			name = SFounds->Found_Nodes[i]->List->name;
-			bzero(name, sizeof(name));
+			bzero(name, MAX_NAME_LENGTH);
 			if( snprintf(name,MAX_NAME_LENGTH,"%s",t_path) < 0)
 				Perror("snprintf");
 		}
@@ -225,7 +225,7 @@ lmsize_t m3l_mv(node_t **SList, const lmchar_t *s_path, const lmchar_t *s_path_l
  * change the name of the listPopts_TList
  */
 					name = SFounds->Found_Nodes[i]->List->name;
-					bzero(name, sizeof(name));
+					bzero(name, MAX_NAME_LENGTH);
 					if( snprintf(name,MAX_NAME_LENGTH,"%s",newname) < 0)
 						Perror("snprintf");
 /*
@@ -351,8 +351,8 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 		TPrev = (*TList)->prev;
 		TPar  = (*TList)->parent;
 		
-		bzero((*SList)->name, sizeof((*SList)->name));
-		if( snprintf((*SList)->name, sizeof((*SList)->name),"%s", (*TList)->name) < 0){
+		bzero((*SList)->name, MAX_NAME_LENGTH);
+		if( snprintf((*SList)->name, MAX_NAME_LENGTH,"%s", (*TList)->name) < 0){
 			Perror("snprintf");
 			return -1;
 		}

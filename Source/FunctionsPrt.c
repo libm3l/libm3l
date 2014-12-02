@@ -418,7 +418,7 @@ path_t *m3l_parse_path(const lmchar_t *path)
 	pc = path;
 	while( (*pc == ' ' || *pc == '\t') && *pc != '\0'  )pc++;
 /*
- * check that if the path starts with ~ it is followed by /
+ * check that if the path starts with ~ followed by /
  */
 	if( *pc != '\0' && *pc == '~' && *++pc != '/'){
 			Error(" Wrong path");
@@ -675,7 +675,7 @@ get_arg_t m3l_get_arguments(const lmchar_t *text)
 	if(*pc == '\0'){
 		Error("No argument");;
 		argsstr.retval = -1;
-		return;
+		return argsstr;
 	}
 	else{
 		argsstr.retval = 0;
@@ -691,14 +691,14 @@ get_arg_t m3l_get_arguments(const lmchar_t *text)
 			Error("Wrong argument");
 			argsstr.arg = '\0';
 			argsstr.retval = -1;
-			return ;
+			return argsstr;
 		}
 		argsstr.arg = *pc++;
 		if(*pc == '\0' || *pc != '_' ){; /* must be _ symbol */
 			Error("Wrong argument");
 			argsstr.arg = '\0';
 			argsstr.retval = -1;
-			return ;
+			return argsstr;
 		}
 		pc++;
 		
@@ -709,7 +709,7 @@ get_arg_t m3l_get_arguments(const lmchar_t *text)
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
 				argsstr.retval = -1;
-				return ;
+				return argsstr;
 			}
 		}
 		
@@ -743,7 +743,7 @@ get_arg_t m3l_get_arguments(const lmchar_t *text)
 				if(i > MAX_NAME_LENGTH){
 					Error(" too long argument field");
 					argsstr.retval = -1;
-					return ;
+					return argsstr;
 				}
 			}
 			
@@ -765,7 +765,7 @@ get_arg_t m3l_get_arguments(const lmchar_t *text)
 				if(i > MAX_NAME_LENGTH){
 					Error(" too long argument field");
 					argsstr.retval = -1;
-					return ;
+					return argsstr;
 			}
 		}
 		
@@ -782,7 +782,7 @@ get_arg_t m3l_get_arguments(const lmchar_t *text)
 			if(i > MAX_NAME_LENGTH){
 				Error(" too long argument field");
 				argsstr.retval = -1;
-				return ;
+				return argsstr;
 			}
 		}
 		
