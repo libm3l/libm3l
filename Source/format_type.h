@@ -114,6 +114,7 @@ typedef struct node {
 	lmsize_t *fdim;
 	lmsize_t ndim;
 	data_t data;
+ 	time_t create_time;
  /* 
   * pointers to the next list, parent list and child list and if the list is link, the original of the link
   */

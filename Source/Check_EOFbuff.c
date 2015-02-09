@@ -66,11 +66,15 @@ lmint_t Check_EOFbuff(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoble
 		counter = eoblen ;
 	else
 		counter = n;
-	
+/*
+ * shift characters from end by counter
+ */	
 	for (i=counter; i<eoblen; i++)
 		*(eofbuff+i-counter) = *(eofbuff+i);
 // 		eofbuff[i-counter] = eofbuff[i];
-	
+/*
+ * fill the rest by buff
+ */	
 	for (i=0; i<counter; i++)
 		*(eofbuff+i+eoblen-counter) = *(buff+n-counter+i);
 // 		eofbuff[i+eoblen-counter] = buff[n-counter+i];
@@ -122,7 +126,6 @@ lmint_t Check_EOFfile(lmchar_t *buff, lmchar_t *eofbuff, ssize_t n, size_t eoble
 /*
  * shift characters from end by count1
  */	
-
 	for (i=count1; i<eoblen; i++)
 		*(eofbuff+i-count1) = *(eofbuff+i);
 /*
