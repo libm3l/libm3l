@@ -87,8 +87,8 @@ static node_t *m3l_read_socket_dir_data(tmpstruct_t , lmint_t, opts_t *);
 static node_t *m3l_read_socket_data(lmint_t, opts_t *);
 static lmssize_t Read(lmint_t ,lmint_t );
 
-lmchar_t *pc, buff[MAXLINE];
-lmssize_t ngotten;
+static lmchar_t *pc, buff[MAXLINE];
+static lmssize_t ngotten;
 
 /*
  * Function read just one line from a socket, disregarding comments line

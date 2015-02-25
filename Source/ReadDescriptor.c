@@ -71,8 +71,8 @@ static node_t *m3l_read_file_dir_data(tmpstruct_t , FILE *f, opts_t *);
 static node_t *m3l_read_file_data(FILE *f, opts_t *);
 static lmssize_t Fread(FILE * ,lmint_t);
 
-lmchar_t *pc, buff[MAXLINE];
-lmsize_t ngotten;
+static lmchar_t *pc, buff[MAXLINE];
+static lmsize_t ngotten;
 
 /*
  * Function read just one line from a socket, disregarding comments line
