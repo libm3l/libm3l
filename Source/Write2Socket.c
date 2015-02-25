@@ -63,7 +63,7 @@ inline static lmssize_t Write(lmint_t ,  lmsize_t);
 
 
 #define MAXLINE_OC 100
-lmchar_t *pc, buffer[MAXLINE], OCbuffer[MAXLINE_OC];
+lmchar_t buffer[MAXLINE], OCbuffer[MAXLINE_OC];
 lmssize_t bitcount;
 
 /*
@@ -509,7 +509,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
 {
 /*
- * Function writes chinks of info inbuff to buffer which is MAXLINE long before sending it 
+ * Function writes chunks of info in jbuff to buffer which is MAXLINE long before sending it 
  * to TCP/IP socket
  * force - parameter forces buffer to be written to 
  * 	socket even if it is not fully used
@@ -527,6 +527,10 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
 	while(*buff != '\0'){
 		if(bitcount == (MAXLINE-1))
 		{
+/*
+ * end of buffer reached, send add the \0 sign to the very end and 
+ * write to socket
+ */
 			*(buffer+bitcount) = '\0';
 			bitcount = 0;
 /*
@@ -583,7 +587,7 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
 
 lmint_t m3l_write_buffer_OC(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
 {
-/* Function writes chinks of info inbuff to OCbuffer which is MAXLINE_OC long before sending it 
+/* Function writes chunks of info inbuff to OCbuffer which is MAXLINE_OC long before sending it 
  * to TCP/IP socket. The OCbuffer is then online compressed and send lined up in buffer (m3l_write_buffer function)
  * force - parameter forces buffer to be written to 
  * 	socket even if it is not fully used
