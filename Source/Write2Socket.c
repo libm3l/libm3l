@@ -63,7 +63,7 @@ inline static lmssize_t Write(lmint_t ,  lmsize_t);
 
 
 #define MAXLINE_OC 100
-lmchar_t *pc, buffer[MAXLINE], OCbuffer[MAXLINE_OC];
+lmchar_t buffer[MAXLINE], OCbuffer[MAXLINE_OC];
 lmssize_t bitcount;
 
 /*
