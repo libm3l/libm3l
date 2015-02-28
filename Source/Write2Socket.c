@@ -60,31 +60,39 @@
 static lmint_t m3l_write_buffer(lmchar_t *, lmsize_t *, const lmchar_t *, lmint_t, lmint_t, lmint_t, opts_t *);
 inline static lmint_t m3l_write_file_data_intdescprt(lmchar_t *, lmsize_t *,node_t *, lmsize_t , lmint_t, opts_t *);
 inline static lmssize_t Write(lmchar_t *,lmint_t ,  lmsize_t);
-
-
-#define MAXLINE_OC 100
-// lmchar_t buffer[MAXLINE], OCbuffer[MAXLINE_OC];
-// lmssize_t bitcount;
-
+static lmint_t m3l_write_to_socket_reentrant(lmchar_t *, lmchar_t *, lmsize_t *, lmint_t , node_t *,  lmint_t , opts_t *);
 /*
  * routine writes linked list structure to socket
  */
-lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
-{
-	lmchar_t buffer[MAXLINE];
-	lmsize_t *bitcount, bitccc;
+
+lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts){
+
+	lmchar_t *buffer, *buff;
+	lmsize_t *bitcount;
+
+	if( (buffer = (lmchar_t *)malloc(sizeof(lmchar_t) * MAXLINE)) == NULL)
+		Perror("malloc");
+	if( (buff = (lmchar_t *)malloc(sizeof(lmchar_t) * (MAX_WORD_LENGTH+1))) == NULL)
+		Perror("malloc");
+	if( (bitcount = (lmint_t *)malloc(sizeof(lmsize_t)))
+		Perror("malloc");
+	*bitcount = 0;
 	
+	m3l_write_to_socket_reentrant(buffer, buff, bitcount, 1, List,  socket_descrpt, Popts);
+	
+	free(buffer);
+	free(buff);
+	free(bitcount);
+	
+}
+
+lmint_t m3l_write_to_socket_reentrant(lmchar_t *buffer,lmchar_t *buff,lmsize_t *bitcount, lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
+{
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
 	lmsize_t i, tot_dim, n;
-	lmchar_t buff[MAX_WORD_LENGTH+1];
-	
-	bitcount = &bitccc;
 /*
- * initial call - nullify counters
+ * check if list has child or not
  */
-	if(call == 1)
-		*bitcount = 0;
- 
 	if(List == NULL){
 		Warning("WriteData2Socket: NULL list");
 		return -1;
@@ -182,7 +190,7 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 					Tmplist->next = NULL;
 					Tmplist->prev = NULL;				
 					
-					if(m3l_write_to_socket(2, Tmplist,socket_descrpt, Popts) != 0){
+					if(m3l_write_to_socket_reentrant(buffer, buff, bitcount, 2, Tmplist,socket_descrpt, Popts) != 0){
 /*
  * restore original state
  */
@@ -201,14 +209,14 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 /*
  * empty LINK
  */					
-					if(m3l_write_to_socket(2, Tmpnode,socket_descrpt, Popts) != 0){
+					if(m3l_write_to_socket_reentrant(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
 						Warning("Write data problem");
 						return -1;
 					}
 				}
 			}				
 			else{
-				if(m3l_write_to_socket(2, Tmpnode,socket_descrpt, Popts) != 0){
+				if(m3l_write_to_socket_reentrant(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
 					Warning("Write data problem");
 					return -1;
 				}
@@ -225,6 +233,7 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s",EOFbuff)) < 0)
 			Perror("snprintf");
 		buff[n] = '\0';
+
 		if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,1,0, Popts) == 0 )
 			Error("Writing buffer");
 	}
@@ -528,9 +537,7 @@ lmint_t m3l_write_buffer(lmchar_t *buffer, lmsize_t *bitcount, const lmchar_t *b
  */
 	lmsize_t size;
 	lmssize_t n;
-	
-	printf(" To write buffer, bitcount is %ld\n ", *bitcount);
-	     
+     
 	while(*buff != '\0'){
 		if(*bitcount == (MAXLINE-1))
 		{
@@ -584,7 +591,9 @@ lmint_t m3l_write_buffer(lmchar_t *buffer, lmsize_t *bitcount, const lmchar_t *b
  * this is the end of sending processs, send everything you have in buffer regardless how long it is.
  * The last sequence of the bugger is -EOMB-
  */
-		size = strlen(buffer);
+		buffer[*bitcount] = '\0';
+// 		size = strlen(buffer);
+		size = *bitcount;
 		if ( (n = Write(buffer, sockfd,size)) < size)
 			Perror("write()");
 	}
