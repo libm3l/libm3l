@@ -201,7 +201,13 @@ node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 /*
  * save the last character - if the last character was due to \0 in buffer, save the one before
  */
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1);
+// 			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1);
+			if(i > 0 ){
+				if (*(pc+hi) == '\0')
+					lastchar = *(pc+hi-1);
+				else
+					lastchar = *(pc+hi);
+			}
 
 /*
  * if reached the end of buff
@@ -400,7 +406,13 @@ node_t *m3l_read_socket_data(lmint_t descrpt, opts_t *Popts)
 				hi = 1;
 			}
 
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1);
+// 			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1);
+			if(i > 0 ){
+				if (*(pc+hi) == '\0')
+					lastchar = *(pc+hi-1);
+				else
+					lastchar = *(pc+hi);
+			}
 			
 			if ( *(pc+hi) == '\0'){
 /*
