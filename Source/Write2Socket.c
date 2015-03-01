@@ -60,7 +60,7 @@
 static lmint_t m3l_write_buffer(lmchar_t *, lmsize_t *, const lmchar_t *, lmint_t, lmint_t, lmint_t, opts_t *);
 inline static lmint_t m3l_write_file_data_intdescprt(lmchar_t *, lmsize_t *,node_t *, lmsize_t , lmint_t, opts_t *);
 inline static lmssize_t Write(lmchar_t *,lmint_t ,  lmsize_t);
-static lmint_t m3l_write_to_socket_reentrant(lmchar_t *, lmchar_t *, lmsize_t *, lmint_t , node_t *,  lmint_t , opts_t *);
+static lmint_t m3l_write_to_socket_threadsafe(lmchar_t *, lmchar_t *, lmsize_t *, lmint_t , node_t *,  lmint_t , opts_t *);
 /*
  * routine writes linked list structure to socket
  */
@@ -83,14 +83,14 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 	bitcount = &BITT;
 	*bitcount = 0;
 	
-	m3l_write_to_socket_reentrant(buffer, buff, bitcount, 1, List,  socket_descrpt, Popts);
+	m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 1, List,  socket_descrpt, Popts);
 	
 // 	free(buffer);
 // 	free(buff);
 // 	free(bitcount);
 }
 
-lmint_t m3l_write_to_socket_reentrant(lmchar_t *buffer,lmchar_t *buff,lmsize_t *bitcount, lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
+lmint_t m3l_write_to_socket_threadsafe(lmchar_t *buffer,lmchar_t *buff,lmsize_t *bitcount, lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
 {
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
 	lmsize_t i, tot_dim, n;
@@ -194,7 +194,7 @@ lmint_t m3l_write_to_socket_reentrant(lmchar_t *buffer,lmchar_t *buff,lmsize_t *
 					Tmplist->next = NULL;
 					Tmplist->prev = NULL;				
 					
-					if(m3l_write_to_socket_reentrant(buffer, buff, bitcount, 2, Tmplist,socket_descrpt, Popts) != 0){
+					if(m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 2, Tmplist,socket_descrpt, Popts) != 0){
 /*
  * restore original state
  */
@@ -213,14 +213,14 @@ lmint_t m3l_write_to_socket_reentrant(lmchar_t *buffer,lmchar_t *buff,lmsize_t *
 /*
  * empty LINK
  */					
-					if(m3l_write_to_socket_reentrant(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
+					if(m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
 						Warning("Write data problem");
 						return -1;
 					}
 				}
 			}				
 			else{
-				if(m3l_write_to_socket_reentrant(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
+				if(m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
 					Warning("Write data problem");
 					return -1;
 				}
