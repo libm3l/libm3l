@@ -115,10 +115,7 @@ node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 	bzero(buff, MAXLINE);
 	
 	Lnode = m3l_read_socket_threadsafe(buff, &pc, ngotten, descrpt, Popts);
-	
-	if(m3l_Cat(Lnode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
-		Error("CatData");
-	
+
 	return Lnode;
 	
 }
@@ -176,8 +173,6 @@ node_t *m3l_read_socket_threadsafe(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngo
 
 	buff[*ngotten] = '\0';
 	*pc = &buff[0];
-	
-	printf(" First sign is %c\n", **pc);
 
 	if(*ngotten == 0)return (node_t *)NULL;
 /*
@@ -198,18 +193,13 @@ node_t *m3l_read_socket_threadsafe(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngo
  */
 			while(EXPR){ 
 				
-				printf(" ----- Sign is %c \n", **pc);
 				type[i++] = *(*pc)++;
-				
-			       printf(" Sign is %c \n", **pc);
 /*
  * if number of chars in one word exceeds limit, print warning
  */
 				if(i == (MAX_WORD_LENGTH-1))
 					Perror("read_socket - word too long");
 			}
-			
-			printf(" Here \n");
 /*
  * set the last member of the string to \0
  */
@@ -226,16 +216,16 @@ node_t *m3l_read_socket_threadsafe(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngo
 			{
 				hi = 1;
 			}
-			
-			printf(" Here  %ld \n", hi);
-
 /*
  * save the last character - if the last character was due to \0 in buffer, save the one before
  */
-			if(i > 0 && *(*pc+hi) == '\0') lastchar = *(*pc+hi-1);
-			
-			printf(" Here  '%c'     -   '%c' -   '%c'\n", lastchar, *(*pc+hi-1), *(*pc+hi) );
-
+// 			if(i > 0 && *(*pc+hi) == '\0') lastchar = *(*pc+hi-1);
+			if(i > 0 ){
+				if (*(*pc+hi) == '\0')
+					lastchar = *(*pc+hi-1);
+				else
+					lastchar = *(*pc+hi);
+			}			
 /*
  * if reached the end of buff
  */
@@ -291,7 +281,7 @@ node_t *m3l_read_socket_threadsafe(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngo
 /*
  * Return main list
  */
-					while(IFEXPR) *pc++;
+					while(IFEXPR)  (*pc)++;
 					i = 0;
 					while(EXPR){
 						type[i++] = *(*pc)++;
@@ -321,12 +311,11 @@ node_t *m3l_read_socket_threadsafe(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngo
 					printf("\n  WARNING - end of buffer not reached, remaining data is %s\n", buff);
 						exit(0);
 				}
-			}
-	
+			}	
 /*
  * if emtpy spaces and new lines and seprar sight (SEPAR_SIGN) and not '\0' after the word, move pointer
  */
-			if(IFEXPR) *pc++;
+			if(IFEXPR) (*pc)++;
 /*
  * nullify type char, set counter of chars in word to 0 and set lastchar to \0
  */
@@ -359,18 +348,11 @@ node_t *m3l_read_socket_dir_data(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngott
 	if( (Dnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
 	}
-
-	printf(" ndim is %ld\n", TMPSTR.ndim);
 	
 	for(i=1;i<=TMPSTR.ndim; i++){ 
 		Tmpnode=NULL;
 		if ( (Tmpnode = m3l_read_socket_data(buff, pc, ngotten, descrpt, Popts)) == NULL)
 			Error("ReadDirData: ReadData");
-		
-		if(m3l_Cat(Tmpnode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
-		Error("CatData");
-		printf(" After reading Tmpnode \n");
-
 /*
  * add to node
  */
@@ -387,12 +369,6 @@ node_t *m3l_read_socket_dir_data(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngott
 			 Pnode            = Tmpnode;
 		}
 	}
-	
-	
-	if(m3l_Cat(Dnode, "--all", "-P", "-L",  "*",   (char *)NULL) != 0)
-		Error("CatData");
-	
-	printf(" After reading Dnode \n");
 	return Dnode;
 }
 
@@ -434,7 +410,6 @@ node_t *m3l_read_socket_data(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngotten, 
 					Perror("read_socket - word too long");
 			}
 			
-			printf(" Here \n");
 			type[i] = '\0';
 /*
  * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
@@ -448,7 +423,13 @@ node_t *m3l_read_socket_data(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngotten, 
 				hi = 1;
 			}
 
-			if(i > 0 && *(*pc+hi) == '\0') lastchar = *(*pc+hi-1);
+// 			if(i > 0 && *(*pc+hi) == '\0') lastchar = *(*pc+hi-1);
+			if(i > 0 ){
+				if (*(*pc+hi) == '\0')
+					lastchar = *(*pc+hi-1);
+				else
+					lastchar = *(*pc+hi);
+			}
 			
 			if ( *(*pc+hi) == '\0'){
 /*
@@ -517,7 +498,7 @@ node_t *m3l_read_socket_data(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngotten, 
 				}
 			}
 
-			if(IFEXPR) *pc++;
+			if(IFEXPR)  (*pc)++;
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';
@@ -913,7 +894,7 @@ lmint_t m3l_read_socket_data_line(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngot
 //  */
 // 		while(*pc != '\0'){
 // 			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
-// 				type[i++] = *pc++;				
+// 				type[i++] =  (*pc)++;				
 // /*
 //  * if number of chars in one word exceeds limit, print warning
 //  */
@@ -1088,7 +1069,7 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 /*
  * read until end of buffer or until end of array dimension reached
  */
-			if(i == 0) while(IFEXPR) *pc++;	/* if in middle of reading buffer, consider all characters */
+			if(i == 0) while(IFEXPR)  (*pc)++;	/* if in middle of reading buffer, consider all characters */
 			while(**pc != '\0' && i < tot_dim){
 				*pdatu++ = (lmusignchar_t)*(*pc)++;
 				i++;
@@ -1156,7 +1137,7 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 /*
  * read until end of buffer or end of array dimension reached
  */
-			if(i == 0) while(IFEXPR) *pc++;	/* if in middle of reading buffer, consider all characters */
+			if(i == 0) while(IFEXPR)  (*pc)++;	/* if in middle of reading buffer, consider all characters */
 			while(**pc != '\0' && i < tot_dim){
 				*pdats++ = (lmsignchar_t)*(*pc)++;
 				i++;
@@ -1223,7 +1204,7 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 /*
  * if in middle of reading buffer, consider all characters
  */
-			if(i == 0) while(IFEXPR) *pc++;
+			if(i == 0) while(IFEXPR)  (*pc)++;
 /*
  * read until end of buffer or end of array dimension reached
  */
@@ -1275,7 +1256,6 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 			Perror("read");
 			return -1;
 		}
-//  				printf("3- buffer is '%s'\n", buff);
 
 		buff[*ngotten] = '\0';
 		*pc = &buff[0];
@@ -1285,7 +1265,6 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 				Error("Error reading data");
 			return -1;
 		}
-// 		printf(" returning E4\n");
 		return 0;
 	}
 	else{
@@ -1306,7 +1285,6 @@ lmssize_t Read(lmchar_t *buff, lmssize_t *ngotten, lmint_t descrpt ,lmint_t n)
 			return -1;
 		}
 		
-		printf(" reading in Read %ld %ld %ld '%s' \n", *ngotten, n, descrpt, buff);
 		buff[*ngotten] = '\0';
 	return *ngotten;
 }

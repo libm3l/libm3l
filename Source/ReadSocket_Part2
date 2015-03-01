@@ -4,7 +4,7 @@
 				if( wc == tot_dim ) return 0;
 			}
 
-			if(IFEXPR) *pc++;
+			if(IFEXPR) (*pc)++;
 			bzero(type,sizeof(type));
 			i = 0;
 			lastchar = '\0';
