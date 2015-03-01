@@ -150,7 +150,7 @@ node_t *m3l_read_socket(lmint_t descrpt, opts_t *Popts)
 /*
  * read MAXLINE-1, MAXLINE will be '\0', put pointer at the beginning of the array
  */
-	bzero(buff, strlen(buff));
+	bzero(buff, MAXLINE);
 	if (  (ngotten = Read(descrpt, MAXLINE-1)) == -1)
 		Perror("read");
 

@@ -577,7 +577,8 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
  * this is the end of sending processs, send everything you have in buffer regardless how long it is.
  * The last sequence of the bugger is -EOMB-
  */
-		size = strlen(buffer);
+// 		size = strlen(buffer);
+		size = bitcount;
 		if ( (n = Write(sockfd,size)) < size)
 			Perror("write()");
 	}
