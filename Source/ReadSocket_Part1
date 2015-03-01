@@ -1,4 +1,4 @@
-	while(*pc != '\0') /*  while(**ngotten) */
+	while(**pc != '\0') /*  while(**ngotten) */
 	{
 		bzero(type,sizeof(type));
 		i = 0;
@@ -7,9 +7,9 @@
 /*
  * read until the end of string
  */
-		while(*pc != '\0'){
+		while(**pc != '\0'){
 			while(EXPR){ /*avoid having empty spaces, tabs, newlines or end of buffer */
-				type[i++] = *pc++;				
+				type[i++] = *(*pc)++;				
 /*
  * if number of chars in one word exceeds limit, print warning
  */
@@ -22,7 +22,7 @@
  * save last character, if it is space, tab or \0 it means the buffer ended at end of the word
  * otherwise the buffer ended in the middle of word
  */
-			if(*pc == '\0'){
+			if(**pc == '\0'){
 				hi =0;
 			}
 			else
@@ -30,10 +30,10 @@
 				hi = 1;
 			}
 
-			if(i > 0 && *(pc+hi) == '\0') lastchar = *(pc+hi-1); 
+			if(i > 0 && *(*pc+hi) == '\0') lastchar = *(*pc+hi-1); 
 				
 			
-			if ( *(pc+hi) == '\0'){
+			if ( *(*pc+hi) == '\0'){
 /*
  * read next chunk of text file, complete the word by the rest from next chunk
  */
@@ -42,7 +42,7 @@
 					Perror("read");
 
 				buff[*ngotten] = '\0';
-				pc = &buff[0];
+				*pc = &buff[0];
 				
 				if(LASTEXPR) continue;
 			}
