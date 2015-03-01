@@ -14,16 +14,16 @@
  * if upon entering function *pc == '\0' attempt to read buffer and call routine recurively
  */
 	bzero(buff,sizeof(buff));
-	if (  (ngotten = Read(descrpt,MAXLINE-1)) == -1){
+	if (  (*ngotten = Read(buff, ngotten, descrpt,MAXLINE-1)) == -1){
 		Perror("read");
 		return -1;
 	}
 	
-	buff[ngotten] = '\0';
+	buff[*ngotten] = '\0';
 	pc = &buff[0];
-	if(ngotten == 0)return -1;
+	if(*ngotten == 0)return -1;
 
-	if( m3l_read_socket_data_line(Lnode, TMPSTR, descrpt, Popts) != 0){
+	if( m3l_read_socket_data_line(buff, pc, ngotten, Lnode, TMPSTR, descrpt, Popts) != 0){
 		Error("Error reading data");
 		return -1;
 	}
