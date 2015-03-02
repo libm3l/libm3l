@@ -57,29 +57,46 @@
 #include "format_conversion_spec.h"
 #include "NumberConversion.h"
 
-static lmint_t m3l_write_buffer(const lmchar_t *, lmint_t, lmint_t, lmint_t, opts_t *);
-inline static lmint_t m3l_write_file_data_intdescprt(node_t *, lmsize_t , lmint_t, opts_t *);
-inline static lmssize_t Write(lmint_t ,  lmsize_t);
-
-
-#define MAXLINE_OC 100
-lmchar_t buffer[MAXLINE], OCbuffer[MAXLINE_OC];
-lmssize_t bitcount;
-
+static lmint_t m3l_write_buffer(lmchar_t *, lmsize_t *, const lmchar_t *, lmint_t, lmint_t, lmint_t, opts_t *);
+inline static lmint_t m3l_write_file_data_intdescprt(lmchar_t *, lmsize_t *,node_t *, lmsize_t , lmint_t, opts_t *);
+inline static lmssize_t Write(lmchar_t *,lmint_t ,  lmsize_t);
+static lmint_t m3l_write_to_socket_threadsafe(lmchar_t *, lmchar_t *, lmsize_t *, lmint_t , node_t *,  lmint_t , opts_t *);
 /*
  * routine writes linked list structure to socket
  */
-lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
+
+lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts){
+
+// 	lmchar_t *buffer, *buff;
+// 	lmsize_t *bitcount;
+//
+// 	if( (buffer = (lmchar_t *)malloc(sizeof(lmchar_t) * MAXLINE)) == NULL)
+// 		Perror("malloc");
+// 	if( (buff = (lmchar_t *)malloc(sizeof(lmchar_t) * (MAX_WORD_LENGTH+1))) == NULL)
+// 		Perror("malloc");
+// 	if( (bitcount = (lmint_t *)malloc(sizeof(lmsize_t)))
+// 		Perror("malloc");
+	
+	lmchar_t buffer[MAXLINE], buff[MAX_WORD_LENGTH+1];
+	lmsize_t *bitcount, BITT;
+	
+	bitcount = &BITT;
+	*bitcount = 0;
+	
+	m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 1, List,  socket_descrpt, Popts);
+	
+// 	free(buffer);
+// 	free(buff);
+// 	free(bitcount);
+}
+
+lmint_t m3l_write_to_socket_threadsafe(lmchar_t *buffer,lmchar_t *buff,lmsize_t *bitcount, lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
 {
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
 	lmsize_t i, tot_dim, n;
-	lmchar_t buff[MAX_WORD_LENGTH+1];	
 /*
- * initial call - nullify counters
+ * check if list has child or not
  */
-	if(call == 1)
-		bitcount = 0;
- 
 	if(List == NULL){
 		Warning("WriteData2Socket: NULL list");
 		return -1;
@@ -101,7 +118,7 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 			if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type,SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
     					        Perror("snprintf");
 			buff[n] = '\0';
-			if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+			if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 				Error("Writing buffer");
 		}
 		else
@@ -113,7 +130,7 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 			if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmpnode->name, SEPAR_SIGN, Tmpnode->type, SEPAR_SIGN, Tmpnode->ndim, SEPAR_SIGN)) < 0)
     					        Perror("snprintf");
 			buff[n] = '\0';
-			if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+			if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 				Error("Writing buffer");
 /*
  * get field dimensions
@@ -125,14 +142,14 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 					if( (n=snprintf(buff, MAX_WORD_LENGTH,"%ld%c",Tmpnode->fdim[i], SEPAR_SIGN)) < 0)
 								Perror("snprintf");
 					buff[n] = '\0';
-					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+					if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 						tot_dim = tot_dim * Tmpnode->fdim[i];
 				}
 /*
  * write data
  */
-				m3l_write_file_data_intdescprt(Tmpnode, tot_dim, socket_descrpt, Popts);
+				m3l_write_file_data_intdescprt(buffer, bitcount, Tmpnode, tot_dim, socket_descrpt, Popts);
 			}
 		}
 /*
@@ -152,7 +169,8 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s%c%s%c%ld%c",Tmplist->name, SEPAR_SIGN, Tmplist->type, SEPAR_SIGN, Tmplist->ndim, SEPAR_SIGN)) < 0)
 	              Perror("snprintf");
 		buff[n] = '\0';
-		if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+
+		if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 			Error("Writing buffer");
 /*
  * ... and go to its first child. Call write_to_socket recursivelly
@@ -176,7 +194,7 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 					Tmplist->next = NULL;
 					Tmplist->prev = NULL;				
 					
-					if(m3l_write_to_socket(2, Tmplist,socket_descrpt, Popts) != 0){
+					if(m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 2, Tmplist,socket_descrpt, Popts) != 0){
 /*
  * restore original state
  */
@@ -195,14 +213,14 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 /*
  * empty LINK
  */					
-					if(m3l_write_to_socket(2, Tmpnode,socket_descrpt, Popts) != 0){
+					if(m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
 						Warning("Write data problem");
 						return -1;
 					}
 				}
 			}				
 			else{
-				if(m3l_write_to_socket(2, Tmpnode,socket_descrpt, Popts) != 0){
+				if(m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 2, Tmpnode,socket_descrpt, Popts) != 0){
 					Warning("Write data problem");
 					return -1;
 				}
@@ -219,7 +237,8 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 		if( (n=snprintf(buff, MAX_WORD_LENGTH,"%s",EOFbuff)) < 0)
 			Perror("snprintf");
 		buff[n] = '\0';
-		if( m3l_write_buffer(buff, socket_descrpt,1,0, Popts) == 0 )
+
+		if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,1,0, Popts) == 0 )
 			Error("Writing buffer");
 	}
 	return 0;
@@ -228,7 +247,7 @@ lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt,
 /*
  * function writes actual data of the FILE, need to distinguish between the type of field
  */
-lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_t socket_descrpt, opts_t *Popts)
+lmint_t m3l_write_file_data_intdescprt(lmchar_t *buffer, lmsize_t *bitcount, node_t *Tmpnode, lmsize_t tot_dim, lmint_t socket_descrpt, opts_t *Popts)
 {	
 	lmsize_t i, n, length, length32, len;
 	lmchar_t *pc;
@@ -267,7 +286,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 					bzero(buff, sizeof(buff));
 					di = pack754_128(Tmpnode->data.ldf[i]);
 					WRtoBuffD(&buff[0], &di, length);
-					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+					if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
 			}
@@ -292,7 +311,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
  * set the last element of the buff to \0 and add buff to buffer
  */
 					buff[n] = '\0';
-					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 ){
+					if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 ){
 						Error("Writing buffer");
 						return -1;
 					}
@@ -306,7 +325,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 					bzero(buff, sizeof(buff));
 					di = pack754_64(Tmpnode->data.df[i]);
 					WRtoBuffD(&buff[0], &di, length);
-					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+					if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
 			}
@@ -320,7 +339,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 	 				if( (n=FCS_W_D(Tmpnode->data.df[i], SEPAR_SIGN)) < 0)
 	 	      			       	Perror("snprintf");
 					buff[n] = '\0';
-					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+					if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
 			}
@@ -335,7 +354,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 					bzero(buff, sizeof(buff));
 					fi = pack754_32(Tmpnode->data.f[i]);
 					WRtoBuffF(&buff[0], &fi, length32);
-					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+					if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				}
 			}
@@ -349,7 +368,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 					if( (n=FCS_W_F(Tmpnode->data.f[i], SEPAR_SIGN)) < 0)
 						Perror("snprintf");
 					buff[n] = '\0';
-					if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+					if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 						Error("Writing buffer");
 				} 
 			}
@@ -362,17 +381,17 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
  * clean buff and make pointer pointing at its beginning
  */
 			pc = (lmchar_t *)&Tmpnode->data.sc[0];
-			if( m3l_write_buffer(pc, socket_descrpt,0,1, Popts) == 0 )
+			if( m3l_write_buffer(buffer, bitcount,pc, socket_descrpt,0,1, Popts) == 0 )
 				Error("Writing buffer");
 		}
 		else if(strncmp(Tmpnode->type,"UC",2) == 0){  /* unsigned char */
 			pc = (lmchar_t *)&Tmpnode->data.uc[0];
-			if( m3l_write_buffer(pc, socket_descrpt,0,1, Popts) == 0 )
+			if( m3l_write_buffer(buffer, bitcount,pc, socket_descrpt,0,1, Popts) == 0 )
 				Error("Writing buffer");
 		}
 		else if(strncmp(Tmpnode->type,"C",1) == 0){  /* char */
 			pc = &Tmpnode->data.c[0];
-			if( m3l_write_buffer(pc, socket_descrpt,0,1, Popts) == 0 )
+			if( m3l_write_buffer(buffer, bitcount,pc, socket_descrpt,0,1, Popts) == 0 )
 				Error("Writing buffer");
 		}
 /*
@@ -384,7 +403,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_ULLI(Tmpnode->data.ulli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -394,7 +413,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_SLLI(Tmpnode->data.slli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -404,7 +423,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_LLI(Tmpnode->data.lli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -414,7 +433,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_ULI(Tmpnode->data.uli[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -424,7 +443,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_USI(Tmpnode->data.usi[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -434,7 +453,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_SI(Tmpnode->data.si[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -444,7 +463,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_UI(Tmpnode->data.ui[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -454,7 +473,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_LI(Tmpnode->data.li[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -464,7 +483,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_I(Tmpnode->data.i[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -477,7 +496,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_ST(Tmpnode->data.st[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -487,7 +506,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
 				if( (n=FCS_W_PTRDF(Tmpnode->data.ptrdf[i], SEPAR_SIGN)) < 0)
 	      			       	Perror("snprintf");
 				buff[n] = '\0';
-				if( m3l_write_buffer(buff, socket_descrpt,0,0, Popts) == 0 )
+				if( m3l_write_buffer(buffer, bitcount,buff, socket_descrpt,0,0, Popts) == 0 )
 					Error("Writing buffer");
 			} 
 		}
@@ -506,7 +525,7 @@ lmint_t m3l_write_file_data_intdescprt(node_t *Tmpnode, lmsize_t tot_dim, lmint_
  * when the buffer is full, it is written to socket and 
  * pointer is set at the beginning of the buffer
  */ 
-lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
+lmint_t m3l_write_buffer(lmchar_t *buffer, lmsize_t *bitcount, const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
 {
 /*
  * Function writes chunks of info in jbuff to buffer which is MAXLINE long before sending it 
@@ -516,60 +535,59 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
  * add   - parameter adds separ sing to the end, it is needed when 
  * 	chars are written in
  */
-
 /*
  * NOTE-URGENT - check the algorithm for adding SEPAR_SIGN at the end of buffer, 
  * especially situation after condition if(bitcount < (MAXLINE-1) && add == 1) when bitcount == MAXLINE-1
  */
 	lmsize_t size;
 	lmssize_t n;
-	     
+     
 	while(*buff != '\0'){
-		if(bitcount == (MAXLINE-1))
+		if(*bitcount == (MAXLINE-1))
 		{
 /*
  * end of buffer reached, send add the \0 sign to the very end and 
  * write to socket
  */
-			*(buffer+bitcount) = '\0';
-			bitcount = 0;
+			*(buffer+*bitcount) = '\0';
+			*bitcount = 0;
 /*
 * SEND TO SOCKET
 */
 			size = strlen(buffer);
-			if ( (n = Write(sockfd,size)) < size)
+			if ( (n = Write(buffer,sockfd,size)) < size)
 				Perror("write()");
 		}
-		*(buffer+bitcount) = *buff++;
-		bitcount++;
+		*(buffer+*bitcount) = *buff++;
+		(*bitcount)++;
 	}
 	
-	if(bitcount < (MAXLINE-1) && add == 1){
+	if(*bitcount < (MAXLINE-1) && add == 1){
 /*
  * add separ sign 
- * NOTE: make sure that if bitcount here is = MAXLINE-2 and add = force then it adds SEPAR_SIGN here as well
+ * NOTE: make sure that if *bitcount here is = MAXLINE-2 and add = force then it adds SEPAR_SIGN here as well
  */
-		*(buffer+bitcount) = SEPAR_SIGN;
-		bitcount++;
+		*(buffer+*bitcount) = SEPAR_SIGN;
+		(*bitcount)++;
 	}
 	
-	if(bitcount == (MAXLINE-1))
+	if(*bitcount == (MAXLINE-1))
 	{
-		*(buffer+bitcount) = '\0';
-		bitcount = 0;
+		*(buffer+*bitcount) = '\0';
+		*bitcount = 0;
 /*
 * SEND TO SOCKET
 */
 		size = strlen(buffer);
-		if ( (n = Write(sockfd,size)) < size)
+		if ( (n = Write(buffer,sockfd,size)) < size)
 			Perror("write()");
 		
 		if(add == 1 ){
 /*
  * add separ sign 
  */
-			*(buffer+bitcount) = SEPAR_SIGN;
-			bitcount++;
+			*(buffer+*bitcount) = SEPAR_SIGN;
+			(*bitcount)++;
 		}
 	}
 	else if(force == 1){
@@ -577,85 +595,86 @@ lmint_t m3l_write_buffer(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lm
  * this is the end of sending processs, send everything you have in buffer regardless how long it is.
  * The last sequence of the bugger is -EOMB-
  */
+		buffer[*bitcount] = '\0';
 // 		size = strlen(buffer);
-		size = bitcount;
-		if ( (n = Write(sockfd,size)) < size)
+		size = *bitcount;
+		if ( (n = Write(buffer, sockfd,size)) < size)
 			Perror("write()");
 	}
 	return 1;
 }
 
 
-lmint_t m3l_write_buffer_OC(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
-{
-/* Function writes chunks of info inbuff to OCbuffer which is MAXLINE_OC long before sending it 
- * to TCP/IP socket. The OCbuffer is then online compressed and send lined up in buffer (m3l_write_buffer function)
- * force - parameter forces buffer to be written to 
- * 	socket even if it is not fully used
- * add   - parameter adds separ sing to the end, it is needed when 
- * 	chars are written in
- */
-	lmsize_t size;
-	lmssize_t n;
-	     
-	while(*buff != '\0'){
-		if(bitcount == (MAXLINE_OC-1))
-		{
-			*(OCbuffer+bitcount) = '\0';
-			bitcount = 0;
-/*
-* SEND TO SOCKET
-*/
-			size = strlen(OCbuffer);
+// lmint_t m3l_write_buffer_OC(const lmchar_t *buff, lmint_t sockfd, lmint_t force, lmint_t add, opts_t *Popts)
+// {
+// /* Function writes chunks of info inbuff to OCbuffer which is MAXLINE_OC long before sending it 
+//  * to TCP/IP socket. The OCbuffer is then online compressed and send lined up in buffer (m3l_write_buffer function)
+//  * force - parameter forces buffer to be written to 
+//  * 	socket even if it is not fully used
+//  * add   - parameter adds separ sing to the end, it is needed when 
+//  * 	chars are written in
+//  */
+// 	lmsize_t size;
+// 	lmssize_t n;
+// 	     
+// 	while(*buff != '\0'){
+// 		if(bitcount == (MAXLINE_OC-1))
+// 		{
+// 			*(OCbuffer+bitcount) = '\0';
+// 			bitcount = 0;
+// /*
+// * SEND TO SOCKET
+// */
+// 			size = strlen(OCbuffer);
+// 
+// 			if ( (n = Write(sockfd,size)) < size)     
+// 				Perror("write()");
+// 		}
+// 		*(OCbuffer+bitcount) = *buff++;
+// 		bitcount++;
+// 	}
+// 	
+// 	if(bitcount < (MAXLINE_OC-1) && add == 1){
+// /*
+//  * add separ sign 
+//  * NOTE: make sure that if bitcount here is = MAXLINE_OC-2 and add = force then it adds SEPAR_SIGN here as well
+//  */
+// 		*(OCbuffer+bitcount) = SEPAR_SIGN;
+// 		bitcount++;
+// 	}
+// 	
+// 	if(bitcount == (MAXLINE_OC-1))
+// 	{
+// 		*(OCbuffer+bitcount) = '\0';
+// 		bitcount = 0;
+// /*
+// * SEND TO SOCKET
+// */
+// 		size = strlen(OCbuffer);
+// 		if ( (n = Write(sockfd,size)) < size)
+// 			Perror("write()");
+// 		
+// 		if(add == 1 ){
+// /*
+//  * add separ sign 
+//  */
+// 			*(OCbuffer+bitcount) = SEPAR_SIGN;
+// 			bitcount++;
+// 		}
+// 	}
+// 	else if(force == 1){
+// /*
+//  * this is the end of sending processs, send everything you have in OCbuffer regardless how long it is.
+//  * The last sequence of the bugger is -EOMB-
+//  */
+// 		size = strlen(OCbuffer);
+// 		if ( (n = Write(sockfd,size)) < size)
+// 			Perror("write()");
+// 	}
+// 	return 1;
+// }
 
-			if ( (n = Write(sockfd,size)) < size)     
-				Perror("write()");
-		}
-		*(OCbuffer+bitcount) = *buff++;
-		bitcount++;
-	}
-	
-	if(bitcount < (MAXLINE_OC-1) && add == 1){
-/*
- * add separ sign 
- * NOTE: make sure that if bitcount here is = MAXLINE_OC-2 and add = force then it adds SEPAR_SIGN here as well
- */
-		*(OCbuffer+bitcount) = SEPAR_SIGN;
-		bitcount++;
-	}
-	
-	if(bitcount == (MAXLINE_OC-1))
-	{
-		*(OCbuffer+bitcount) = '\0';
-		bitcount = 0;
-/*
-* SEND TO SOCKET
-*/
-		size = strlen(OCbuffer);
-		if ( (n = Write(sockfd,size)) < size)
-			Perror("write()");
-		
-		if(add == 1 ){
-/*
- * add separ sign 
- */
-			*(OCbuffer+bitcount) = SEPAR_SIGN;
-			bitcount++;
-		}
-	}
-	else if(force == 1){
-/*
- * this is the end of sending processs, send everything you have in OCbuffer regardless how long it is.
- * The last sequence of the bugger is -EOMB-
- */
-		size = strlen(OCbuffer);
-		if ( (n = Write(sockfd,size)) < size)
-			Perror("write()");
-	}
-	return 1;
-}
-
-lmssize_t Write(lmint_t sockfd,  lmsize_t size){
+lmssize_t Write(lmchar_t *buffer, lmint_t sockfd,  lmsize_t size){
 /*
  * write buffer to socket
  */
