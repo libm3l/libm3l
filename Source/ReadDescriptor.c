@@ -72,9 +72,6 @@ static node_t *m3l_read_file_data(lmchar_t *, lmchar_t **, lmssize_t *,FILE *f, 
 static lmssize_t Fread(lmchar_t *, lmssize_t *,FILE * ,lmint_t);
 static node_t *m3l_read_file_threadsafe(lmchar_t *, lmchar_t **, lmssize_t *,FILE *, opts_t *);
 
-// static lmchar_t *pc, buff[MAXLINE];
-// static lmsize_t ngotten;
-
 /*
  * Function read just one line from a socket, disregarding comments line
  * It identifies if the line is a header of DATA or DIR list
