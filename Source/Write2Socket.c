@@ -66,28 +66,17 @@ static lmint_t m3l_write_to_socket_threadsafe(lmchar_t *, lmchar_t *, lmsize_t *
  */
 
 lmint_t m3l_write_to_socket(lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts){
-
-// 	lmchar_t *buffer, *buff;
-// 	lmsize_t *bitcount;
-//
-// 	if( (buffer = (lmchar_t *)malloc(sizeof(lmchar_t) * MAXLINE)) == NULL)
-// 		Perror("malloc");
-// 	if( (buff = (lmchar_t *)malloc(sizeof(lmchar_t) * (MAX_WORD_LENGTH+1))) == NULL)
-// 		Perror("malloc");
-// 	if( (bitcount = (lmint_t *)malloc(sizeof(lmsize_t)))
-// 		Perror("malloc");
 	
 	lmchar_t buffer[MAXLINE], buff[MAX_WORD_LENGTH+1];
 	lmsize_t *bitcount, BITT;
+	lmint_t retval;
 	
 	bitcount = &BITT;
 	*bitcount = 0;
 	
-	m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 1, List,  socket_descrpt, Popts);
+	retval = m3l_write_to_socket_threadsafe(buffer, buff, bitcount, 1, List,  socket_descrpt, Popts);
 	
-// 	free(buffer);
-// 	free(buff);
-// 	free(bitcount);
+	return retval;
 }
 
 lmint_t m3l_write_to_socket_threadsafe(lmchar_t *buffer,lmchar_t *buff,lmsize_t *bitcount, lmint_t call, node_t *List,  lmint_t socket_descrpt, opts_t *Popts)
