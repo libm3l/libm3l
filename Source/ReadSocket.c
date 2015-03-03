@@ -1077,7 +1077,7 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 /*
  * find why while was left
  */
-			if(**pc == '\0'){	
+			if(**pc == '\0'){
 				bzero(buff,sizeof(buff));
 				if (  (*ngotten = Read(buff, ngotten, descrpt, MAXLINE-1)) == -1)
 					Perror("read");
@@ -1086,7 +1086,6 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 				buff[*ngotten] = '\0';
 				*pc = &buff[0];
 				if(*ngotten == 0)return -1;
-
 /*
  * if this is at the same time end of reading the text (i == tot_dim) and the first character of the next buffer is IFEXPR, return
  */
@@ -1279,13 +1278,12 @@ lmint_t m3l_read_socket_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *
 
 lmssize_t Read(lmchar_t *buff, lmssize_t *ngotten, lmint_t descrpt ,lmint_t n)
 {
-
-		if (  (*ngotten = read(descrpt,buff,n)) == -1){
-			Perror("read");
-			return -1;
-		}
+	if (  (*ngotten = read(descrpt,buff,n)) == -1){
+		Perror("read");
+		return -1;
+	}
 		
-		buff[*ngotten] = '\0';
+	buff[*ngotten] = '\0';
 	return *ngotten;
 }
 
