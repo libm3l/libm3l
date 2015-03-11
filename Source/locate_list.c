@@ -62,9 +62,6 @@ static lmint_t m3l_match_test(node_t *, get_arg_t, lmsize_t);
 static lmint_t m3l_match_single_test(node_t *, get_arg_t, lmsize_t);
 static find_t *m3l_locator(find_t *, path_t *, path_t *, opts_t *);
 
-extern lmint_t optind;
-static lmint_t verbose_flag;
-
 /*
  * function uses Find_list to find all possible items with given name
  * and then filters the subset using additional info (location etc.)
