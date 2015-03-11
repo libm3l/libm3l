@@ -57,14 +57,14 @@
 #include "find_list.h"
 #include "FunctionsPrt.h"
 
-static lmsize_t m3l_FindList(lmint_t, node_t *, lmchar_t *, lmsize_t *, opts_t *);
-static lmint_t m3l_AddRecord(node_t *, lmsize_t *);
+static lmsize_t m3l_FindList(lmint_t, node_t *, lmchar_t *, lmsize_t *, find_t *, opts_t *);
+static lmint_t m3l_AddRecord(node_t *, lmsize_t *, find_t *);
 static lmusignchar_t m3l_CompStatement(lmchar_t *, lmchar_t *, lmchar_t *, opts_t *);
 static lmusignchar_t m3l_EvalSearchPatt(lmchar_t *, lmchar_t *, opts_t *);
 
 
 // lmsize_t nalloc;
-find_t *Founds;
+// find_t *Founds;
 /*
  * this function is similar to FindListPointer 
  * with an exception that all options have to be specified
@@ -79,6 +79,7 @@ find_t *m3l_find(lmint_t call, node_t *List, lmchar_t *search_term, opts_t *Popt
  * if no founds, free it
  */
         lmsize_t nalloc;
+	find_t *Founds;
 
 	nalloc = 0;
 
@@ -92,7 +93,7 @@ find_t *m3l_find(lmint_t call, node_t *List, lmchar_t *search_term, opts_t *Popt
 		Perror("malloc");
 	
 	Founds->founds = 0;
-	Founds->founds = m3l_FindList(call, List, search_term, &nalloc, Popt);
+	Founds->founds = m3l_FindList(call, List, search_term, &nalloc, Founds, Popt);
 	
 	if ( Founds->founds == 0){
 		free(Founds->Found_Nodes[0]);
@@ -112,7 +113,7 @@ find_t *m3l_find(lmint_t call, node_t *List, lmchar_t *search_term, opts_t *Popt
 /*
  * function is a pointer to pointer type 
  */
-lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_t *nalloc, opts_t *Popt)
+lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_t *nalloc, find_t *Founds, opts_t *Popt)
 {
 /*
  * function looks for items with given pattern and option
@@ -142,7 +143,7 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_
  */
 			Tmpnode = List;
 			if ( m3l_CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
-				if ( m3l_AddRecord(Tmpnode, nalloc) != 1)
+				if ( m3l_AddRecord(Tmpnode, nalloc,Founds) != 1)
 				Warning("Error adding record to the list");
 			}
 		}
@@ -156,7 +157,7 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_
  * not initial call, ie. do not list the main parent node, you want to list what is in it
  */
 				if ( m3l_CompStatement(search_term, List->name, List->type, Popt) == '1'){
-					if ( m3l_AddRecord(List, nalloc) != 1)
+					if ( m3l_AddRecord(List, nalloc,Founds) != 1)
 						Warning("Error adding record to the list");	
 				}
 			}
@@ -166,10 +167,10 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_
 			Tmpnode = List->child;
 			while(Tmpnode != NULL){
 				if( strncmp(Tmpnode->type, "LINK", 4 ) == 0  && Popt->opt_L == 'L'){
-					m3l_FindList(2, Tmpnode->child, search_term, nalloc, Popt);
+					m3l_FindList(2, Tmpnode->child, search_term, nalloc, Founds,Popt);
 				}
 				else{
-					m3l_FindList(2, Tmpnode, search_term, nalloc, Popt);
+					m3l_FindList(2, Tmpnode, search_term, nalloc, Founds,Popt);
 				}
 				Tmpnode = Tmpnode->next;
 			}
@@ -187,7 +188,7 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_
  * if initial call, do not list the main parent node, you want to list what is in it
  */
 			if ( m3l_CompStatement(search_term, List->name, List->type, Popt) == '1'){
-				if ( m3l_AddRecord(List, nalloc) != 1)
+				if ( m3l_AddRecord(List, nalloc,Founds) != 1)
 					Warning("Error adding record to the list");	
 			}
 		}
@@ -202,7 +203,7 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_
  * List first one
  */
 				if ( m3l_CompStatement(search_term, Tmpnode->name, Tmpnode->type, Popt) == '1'){
-					if ( m3l_AddRecord(Tmpnode, nalloc) != 1)
+					if ( m3l_AddRecord(Tmpnode, nalloc,Founds) != 1)
 						Warning("Error adding record to the list");
 				}
 /*
@@ -216,7 +217,7 @@ lmsize_t m3l_FindList(lmint_t call, node_t *List, lmchar_t *search_term, lmsize_
 }
 
 
-lmint_t m3l_AddRecord(node_t *Tmpnode, lmsize_t *nalloc)
+lmint_t m3l_AddRecord(node_t *Tmpnode, lmsize_t *nalloc, find_t *Founds)
 {
 	find_str_t **realloc_find;
 /*
