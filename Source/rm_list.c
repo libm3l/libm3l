@@ -264,7 +264,10 @@ lmsize_t m3l_rm_list(lmint_t call, node_t **List, opts_t *Popts)
  *	set the temporary pointer to first child node
  */
 		rmnodes = 0;
-		
+/*
+ * if list is Link, delete the list itself, its child contains
+ * linked list
+ */
 		if(strncmp( (*List)->type, "LINK", 4) == 0){
 			Tmpnode =  *List;
 		}
