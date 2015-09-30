@@ -12,6 +12,15 @@ Programming Language
 
 Programming language is ANSI-C
 
+Linking
+-----------
+
+To link the shared library use 
+
+-L/PATHTOLIBM3L/ -lm3l -Wl,-rpath=/PATHTOLIBM3L/ 
+
+where PATHTOLIBM3L is a path to location of libm3l.so file 
+
 Portability
 -----------
 
