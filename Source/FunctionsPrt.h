@@ -41,25 +41,25 @@
 #ifndef  __FUNCTIONPRT_H__
 #define  __FUNCTIONPRT_H__
 
-extern void Perror(const lmchar_t *);
-extern void Warning(const lmchar_t *);
-extern void Error(const lmchar_t *);
-extern lmsize_t Strol(lmchar_t *);
-extern Uint64_t Strtoull(lmchar_t *, lmint_t);
-extern lmulint_t Strtoul(lmchar_t *, lmint_t);
-extern lmchar_t *StrToLower(lmchar_t *); 
-extern lmchar_t *m3l_Path(node_t *, node_t *);
-extern path_t *m3l_parse_path(const lmchar_t *);
-extern void m3l_destroy_pars_path(path_t **);
-extern get_arg_t m3l_get_arguments(const lmchar_t *);
+extern CPP_C  void Perror(const lmchar_t *);
+extern CPP_C  void Warning(const lmchar_t *);
+extern CPP_C  void Error(const lmchar_t *);
+extern CPP_C  lmsize_t Strol(lmchar_t *);
+extern CPP_C  Uint64_t Strtoull(lmchar_t *, lmint_t);
+extern CPP_C  lmulint_t Strtoul(lmchar_t *, lmint_t);
+extern CPP_C  lmchar_t *StrToLower(lmchar_t *); 
+extern CPP_C  lmchar_t *m3l_Path(node_t *, node_t *);
+extern CPP_C  path_t *m3l_parse_path(const lmchar_t *);
+extern CPP_C  void m3l_destroy_pars_path(path_t **);
+extern CPP_C  get_arg_t m3l_get_arguments(const lmchar_t *);
 
-extern void *RD_MemcpyD(Uint64_t *, lmchar_t *, lmsize_t );
-extern void *RD_MemcpyF(Uint32_t *, lmchar_t *, lmsize_t );
-extern void *RD_StrtoullD(Uint64_t *, lmchar_t *, lmsize_t );
-extern void *WR_MemcpyD(lmchar_t *, Uint64_t *, lmsize_t);
-extern void *WR_snprintfD(lmchar_t *, Uint64_t *, lmsize_t);
-extern void *WR_MemcpyF(lmchar_t *, Uint32_t *, lmsize_t);
-extern void *WR_snprintfF(lmchar_t *, Uint32_t *, lmsize_t);
+extern CPP_C  void *RD_MemcpyD(Uint64_t *, lmchar_t *, lmsize_t );
+extern CPP_C  void *RD_MemcpyF(Uint32_t *, lmchar_t *, lmsize_t );
+extern CPP_C  void *RD_StrtoullD(Uint64_t *, lmchar_t *, lmsize_t );
+extern CPP_C  void *WR_MemcpyD(lmchar_t *, Uint64_t *, lmsize_t);
+extern CPP_C  void *WR_snprintfD(lmchar_t *, Uint64_t *, lmsize_t);
+extern CPP_C  void *WR_MemcpyF(lmchar_t *, Uint32_t *, lmsize_t);
+extern CPP_C  void *WR_snprintfF(lmchar_t *, Uint32_t *, lmsize_t);
 
 #endif
 

@@ -39,7 +39,7 @@
 #ifndef __FREAD_H__
 #define __FREAD_H__
 
-node_t *m3l_Fread(const lmchar_t *, lmchar_t * , ...);
-lmint_t m3l_Fwrite(node_t *, const lmchar_t *, lmchar_t * , ...);
+extern CPP_C  node_t *m3l_Fread(const lmchar_t *, lmchar_t * , ...);
+extern CPP_C  lmint_t m3l_Fwrite(node_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

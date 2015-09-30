@@ -39,7 +39,13 @@
 #ifndef  __UMOUNT_H__
 #define  __UMOUNT_H__
 
-extern lmint_t m3l_Umount(node_t **);
+#ifdef __cplusplus 
+#define CPP_C "C"
+#else
+#define CPP_C
+#endif
+
+extern CPP_C  lmint_t m3l_Umount(node_t **);
 
 
 #endif

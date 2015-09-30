@@ -39,10 +39,10 @@
 #ifndef  __FREE_H__
 #define  __FREE_H__
 
-extern lmint_t m3l_Free(node_t **);
-extern lmint_t m3l_Free_data_str(node_t **);
+extern CPP_C  lmint_t m3l_Free(node_t **);
+extern CPP_C  lmint_t m3l_Free_data_str(node_t **);
 
-extern node_t *m3l_AllocateNode(tmpstruct_t, opts_t *);
-extern lmint_t m3l_AllocateNodeData(node_t **, tmpstruct_t, opts_t *);
+extern CPP_C  node_t *m3l_AllocateNode(tmpstruct_t, opts_t *);
+extern CPP_C  lmint_t m3l_AllocateNodeData(node_t **, tmpstruct_t, opts_t *);
 
 #endif

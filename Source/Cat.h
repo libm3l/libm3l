@@ -41,6 +41,6 @@
 #ifndef __CAT_H__
 #define __CAT_H__
 
-lmint_t m3l_Cat(node_t *, lmchar_t * , ...);
+extern CPP_C  lmint_t m3l_Cat(node_t *, lmchar_t * , ...);
 
 #endif
