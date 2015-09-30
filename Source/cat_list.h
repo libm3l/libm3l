@@ -39,6 +39,6 @@
 #ifndef __CAT_LIST_H__
 #define __CAT_LIST_H__
 
-lmint_t m3l_cat_list(lmint_t , node_t *, opts_t *);
+extern CPP_C  lmint_t m3l_cat_list(lmint_t , node_t *, opts_t *);
 
 #endif

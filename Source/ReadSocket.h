@@ -39,6 +39,6 @@
 #ifndef __READSOCKET_H__
 #define __READSOCKET_H__
 
-extern node_t *m3l_read_socket(lmint_t, opts_t *);
+extern CPP_C  node_t *m3l_read_socket(lmint_t, opts_t *);
 
 #endif

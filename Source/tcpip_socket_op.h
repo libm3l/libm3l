@@ -39,7 +39,13 @@
 #ifndef __TCPIP_SOCKET_OP_H__
 #define __TCPIP_SOCKET_OP_H__
 
-extern lmint_t m3l_server_openbindlistensocket(lmint_t, lmchar_t* Options, ...);
-extern lmint_t m3l_cli_open_socket(const lmchar_t *, lmint_t, lmchar_t* Options, ...);
+#ifdef __cplusplus 
+#define CPP_C "C"
+#else
+#define CPP_C
+#endif
+
+extern CPP_C  lmint_t m3l_server_openbindlistensocket(lmint_t, lmchar_t* Options, ...);
+extern CPP_C  lmint_t m3l_cli_open_socket(const lmchar_t *, lmint_t, lmchar_t* Options, ...);
 
 #endif

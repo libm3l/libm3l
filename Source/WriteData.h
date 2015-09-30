@@ -39,6 +39,6 @@
 #ifndef __WRITEDATA_H__
 #define __WRITEDATA_H__
 
-extern lmint_t m3l_WriteData(lmint_t call, node_t *, FILE *);
+extern CPP_C  lmint_t m3l_WriteData(lmint_t call, node_t *, FILE *);
 
 #endif

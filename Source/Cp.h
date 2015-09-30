@@ -39,6 +39,6 @@
 #ifndef __CP_H__
 #define __CP_H__
 
-lmsize_t m3l_Cp(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
+extern CPP_C  lmsize_t m3l_Cp(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

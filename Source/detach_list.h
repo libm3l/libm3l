@@ -41,7 +41,7 @@
 #ifndef __DETACH_LIST_H__
 #define __DETACH_LIST_H__
 
-extern find_t *m3l_detach(node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
-extern lmsize_t m3l_detach_list(lmint_t , node_t **, opts_t *);
+extern CPP_C  find_t *m3l_detach(node_t **, const lmchar_t *, const lmchar_t *, opts_t *);
+extern CPP_C  lmsize_t m3l_detach_list(lmint_t , node_t **, opts_t *);
 
 #endif

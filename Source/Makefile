@@ -5,6 +5,8 @@ HFILES = $(shell ls  *.h  |   sed '/internal_format_type.h/d'  | sed '/libm3l_he
 PWD = $(shell pwd)
 OBJS=$(FILES:%.c=%.o)
 
+CC = gcc
+
 CFLAGS = -0
 LFLAGS = 
 #
@@ -29,16 +31,16 @@ main:
 prog: $(OBJS)
 
 
-	gcc -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS)
+	$(CC) -shared -Wl,-soname,libm3l.so.1.0 -o libm3l.so.1.0   $(OBJS)
 	ln -sf libm3l.so.1.0 libm3l.so
 
-#	ar  rcs libm3l.a    $(OBJS)
+	ar  rcs libm3l.a    $(OBJS)
 
 -include $(OBJS:.o=.d)
 
 %.o: %.c
-	gcc -c -g  -fPIC $*.c -o $*.o
-	gcc -MM -g  -fPIC $*.c > $*.d
+	$(CC) -c -g  -fPIC $*.c -o $*.o
+	$(CC) -MM -g  -fPIC $*.c > $*.d
 	@mv -f $*.d $*.d.tmp
 	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
 	@sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -1 | \

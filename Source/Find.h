@@ -39,6 +39,6 @@
 #ifndef __FIND_LIST_POINTER_H__
 #define __FIND_LIST_POINTER_H__
 
-find_t *m3l_Find(node_t *, lmchar_t * , ...);
+extern CPP_C  find_t *m3l_Find(node_t *, lmchar_t * , ...);
 
 #endif

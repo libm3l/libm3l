@@ -39,6 +39,6 @@
 #ifndef __READDESCRIPTOR_H__
 #define __READDESCRIPTOR_H__
 
-extern node_t *m3l_read_file(FILE *, opts_t *);
+extern CPP_C  node_t *m3l_read_file(FILE *, opts_t *);
 
 #endif

@@ -40,8 +40,13 @@
 #ifndef  __TMPSTRUCT_T__
 #define  __TMPSTRUCT_T__
 
-
 #define lm3lTCPIPHeader "-libm3l_TCPIP_Header-"              /* end of buffer TCP/IP */
+
+#ifdef __cplusplus 
+#define CPP_C "C"
+#else
+#define CPP_C
+#endif
 
 
 typedef struct tmpstruct{

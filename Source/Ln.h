@@ -39,6 +39,6 @@
 #ifndef __LN_H__
 #define __LN_H__
 
-lmsize_t m3l_Ln(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
+extern CPP_C  lmsize_t m3l_Ln(node_t **, const lmchar_t *, const lmchar_t *, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif

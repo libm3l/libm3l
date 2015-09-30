@@ -39,6 +39,6 @@
 #ifndef  __ADD_H__
 #define  __ADD_H__
 
-lmint_t m3l_Add(node_t **, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
+extern CPP_C  lmint_t m3l_Add(node_t **, node_t **, const lmchar_t *, const lmchar_t *, lmchar_t * , ...);
 
 #endif
