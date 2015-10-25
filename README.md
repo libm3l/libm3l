@@ -28,4 +28,4 @@ libm3l is primarily for Linux. After some modifications it can be used
 on Windows systems, the necessary modifications are not part of this distribution.
 
 
-[![Analytics](https://ga-beacon.appspot.com/UA-47981720-2/libm3l/libm3l/libm3l)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-47981720-2/libm3l/libm3l)](https://github.com/igrigorik/ga-beacon)
