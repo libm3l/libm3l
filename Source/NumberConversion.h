@@ -30,10 +30,12 @@
 #define unpack754_64(i) (unpack754((i), 64, 11))
 #define unpack754_128(i) (unpack754((i), 128, 15))
 
+#ifndef CPP_C
 #ifdef __cplusplus 
 #define CPP_C "C"
 #else
 #define CPP_C
+#endif
 #endif
 
 // #define to_uint64(buffer,n) (*(uint64_t*)(buffer + n))

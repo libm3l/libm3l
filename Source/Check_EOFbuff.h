@@ -40,10 +40,12 @@
 #ifndef  __CHECKEOFBUFF_H__
 #define __CHECKEOFBUFF_H__
 
+#ifndef CPP_C
 #ifdef __cplusplus 
 #define CPP_C "C"
 #else
 #define CPP_C
+#endif
 #endif
 
 extern CPP_C  lmint_t Check_EOFbuff(lmchar_t *, lmchar_t *, lmssize_t , lmsize_t , lmchar_t *);

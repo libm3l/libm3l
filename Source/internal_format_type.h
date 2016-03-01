@@ -42,10 +42,12 @@
 
 #define lm3lTCPIPHeader "-libm3l_TCPIP_Header-"              /* end of buffer TCP/IP */
 
+#ifndef CPP_C
 #ifdef __cplusplus 
 #define CPP_C "C"
 #else
 #define CPP_C
+#endif
 #endif
 
 
