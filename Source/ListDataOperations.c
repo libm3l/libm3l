@@ -324,7 +324,7 @@ lmint_t m3l_attach_data_to_List(node_t **Lnode, opts_t *Popts){
  * set --no_malloc option in the node
  */
 	if(strncmp((*Lnode)->type, "LINK",4) == 0){
-		Warning("m3l_attach_data_to_List: Can not detach LINK type list");
+		Warning("m3l_attach_data_to_List: Can not attach LINK type list");
 		return -1;
 	}
 
@@ -384,3 +384,44 @@ lmint_t m3l_chmod(node_t *Lnode, lmint_t ap, opts_t *Popts){
 //  */
 // 	
 // }
+
+node_t *m3l_detach_List(node_t **List){
+	node_t *RetList, *PAR,*NEXT,*PREV;
+/*
+ * function detaches (separated the list from the tree)
+ * The List has to be DIR type
+ */	
+	if(*List == NULL) return -1;
+    
+	PAR  =  (*List)->parent;
+	
+	if(PAR== NULL){
+/*
+ * specified list does not have parent, return 0
+ */
+		return *List;
+	}
+	
+	NEXT =  (*List)->next;
+	PREV =  (*List)->prev;
+/*
+ * set parent, next and previous to NULL
+ */
+	(*List)->next = NULL;
+	(*List)->prev = NULL;
+	(*List)->parent = NULL;
+	
+	if(PREV == NULL){
+/*
+ * the first list of the parent, set parent CLD to next
+ */
+		PAR->child = NEXT;
+	}
+/*
+ * "glue" the list, ie. set the reference of the PREV to NEXT and NEXT to PREV 
+ */
+	NEXT->prev = PREV;
+	PREV->next = NEXT;
+	
+	
+}
