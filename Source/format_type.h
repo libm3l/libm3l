@@ -112,7 +112,7 @@ typedef struct node {
   * and field dimensions (fdim)
   */
 	lmsize_t *fdim;
-	lmsize_t ndim;
+	lmsize_t ndim;  /* number of dimensions for DATA type, number of items in DIR type */
 	data_t data;
  	time_t create_time;
  /* 
