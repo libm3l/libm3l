@@ -61,7 +61,7 @@ node_t *ackn(void)
 		Perror("m3l_Mklist");
 	
 	dim = (size_t *) malloc( 1* sizeof(size_t));
-	dim[0] = strlen(answer)+1;
+	dim[0] = strlen(answer);
 	
 	if(  (TmpNode = m3l_Mklist("ANSWER", "C", 1, dim, &Gnode, "/Answer", "./", "--no_malloc", (char *)NULL)) == 0)
 		Error("m3l_Mklist");
@@ -82,7 +82,7 @@ node_t *client_name(char *name)
 		Perror("m3l_Mklist");
 	
 	dim = (size_t *) malloc( 1* sizeof(size_t));
-	dim[0] = strlen(name)+1;
+	dim[0] = strlen(name);
 	
 	if(  (TmpNode = m3l_Mklist("Name", "C", 1, dim, &Gnode, "/Client_Data", "./", "--no_malloc", (char *)NULL)) == 0)
 		Error("m3l_Mklist");

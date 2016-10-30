@@ -21,6 +21,6 @@ Main_DATA_Structure  DIR   8
 	3001 3002 3003
 	EEEE D 1 2
 	3.1415926  1.123456123456789
-        TEXT C 1 27
+        TEXT C 1 26
        `This is an example of text`
 -EOMF-

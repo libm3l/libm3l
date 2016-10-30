@@ -1,23 +1,23 @@
 main DIR 4
 Dir DIR 4 
-	Gobal_Data_Set C 1 17 
+	Gobal_Data_Set C 1 16 
 		`Global_Data_Set1`
 	Data_Set DIR 2
-		name C 1 9
+		name C 1 8
 			`DataSet1`
 		Data_Array_Integer I 2 2 2 
 			8001 8002 8003 8004 
 	Data_Set DIR 1
-		name C 1 9 
+		name C 1 8 
 			`DataSet2`
 	Data_Set DIR 1
-		name2 C 1 9 
+		name2 C 1 8 
 			`DataSet3`
 Dir DIR 2
-	Gobal_Data_Set C 1 17
+	Gobal_Data_Set C 1 16
 		`Global_Data_Set2`
 	Data_Set DIR 1
-		name C 1 9 
+		name C 1 8
 		`DataSet1`
 GlobalIntArray I 3 2 3 4 
 	11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34  
