@@ -66,7 +66,7 @@ node_t *m3l_ACKN(lmchar_t *answer)
 		Perror("m3l_Mklist");
 	
 	dim = (lmsize_t *) malloc( 1* sizeof(lmsize_t));
-	dim[0] = strlen(answer)+1;
+	dim[0] = strlen(answer); //+1;
 	
 	if(  (TmpNode = m3l_Mklist("ANSWER", "C", 1, dim, &Gnode, "/ackn", "./", (lmchar_t *)NULL)) == 0)
 		Error("m3l_Mklist");

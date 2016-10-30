@@ -282,11 +282,24 @@ lmint_t m3l_AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 		Error("udf_rm: too low value of number of dimensions");
 	
 	tot_dim = 1;
-	for(i=0; i<TMPSTR.ndim; i++){
-		if ( (   (*Lnode)->fdim[i] = TMPSTR.dim[i]  ) < 1 )
-			Error("udf_rm: too low value of dimensions");
-		tot_dim = tot_dim * TMPSTR.dim[i];
-	}
+/*
+ * if character array, increse dimensions for /0 trminating character
+ */
+    if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C' || strncmp(TMPSTR.Type,"DISKFILE",8) == 0){
+        for(i=0; i<TMPSTR.ndim; i++){
+            if ( (   (*Lnode)->fdim[i] = TMPSTR.dim[i] + 1 ) < 1 )
+                Error("udf_rm: too low value of dimensions");
+            tot_dim = tot_dim * TMPSTR.dim[i];
+        }
+    }
+    else{
+            
+        for(i=0; i<TMPSTR.ndim; i++){
+            if ( (   (*Lnode)->fdim[i] = TMPSTR.dim[i] ) < 1 )
+                Error("udf_rm: too low value of dimensions");
+            tot_dim = tot_dim * TMPSTR.dim[i];
+        } 
+    }
 /*
  * if not required to malloc field, return now
  */	

@@ -473,15 +473,22 @@ node_t *m3l_read_file_data(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngotten,FIL
 			i = 0;
 			lastchar = '\0';
 		}
+
 					
 		if( (Pnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 			Error("Allocate");}
-		
+
 		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C' || strncmp(TMPSTR.Type,"DISKFILE",8) == 0){
 /*
  * data is Char type or DISK file
  * if DISKFILE, read name of the file and work with it only when sending through ReadSocket and Write2Socket
  */ 
+/*
+ * if character array, increse dimensions for /0 trminating character, Pnode->fdim was increase in m3l_AllocateNode
+ */
+           for(i=0; i<TMPSTR.ndim; i++)
+		       TMPSTR.dim[i]  = TMPSTR.dim[i] + 1 ;
+               
 			if( m3l_read_file_data_charline(buff, pc, ngotten, &Pnode, TMPSTR, fp) != 0){
 				Error("Error reading data");
 				return NULL;
@@ -707,7 +714,7 @@ lmint_t m3l_read_file_data_charline(lmchar_t *buff, lmchar_t **pc, lmssize_t *ng
 /*
  * array was allocated with +1 to store '\0' symbol
  */
-	tot_dim--;
+  	tot_dim--;
 /*
  * what type of data
  */

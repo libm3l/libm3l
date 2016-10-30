@@ -103,12 +103,21 @@ lmint_t m3l_WriteData(lmint_t call, node_t *List,  FILE *fp)
 				Perror("fwrite");
 
 			if(Tmpnode->ndim > 0){
-
+/*
+ * when writing character, dncrese dimensions, an extra dimensions was allocated for /0 trminating character
+ */
 				tot_dim = 1;
 				for(i=0; i<Tmpnode->ndim; i++){
 						bzero(buff, sizeof(buff));
-					if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
-								Perror("snprintf");
+                    if( strncmp(Tmpnode->type,"UC",2) == 0 || strncmp(Tmpnode->type,"SC",2) == 0 || Tmpnode->type[0] == 'C' || strncmp(Tmpnode->type,"DISKFILE",8) == 0){
+                        if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]-1) < 0)
+							Perror("snprintf");
+                    }
+                    else
+                    {
+                        if( snprintf(buff, MAX_WORD_LENGTH,"%ld ",Tmpnode->fdim[i]) < 0)
+							Perror("snprintf");
+                    }
 					if (fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp ) < strlen(buff))
 						Perror("fwrite");
 						tot_dim = tot_dim * Tmpnode->fdim[i];
