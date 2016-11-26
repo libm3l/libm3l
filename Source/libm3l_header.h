@@ -81,7 +81,7 @@
 /*
  * node_t data specification - NOTE: these MUST be smaller then MAX_WORD_LENGTH
  */
-#define MAX_TYPE_LENGTH   30        /* Max length of type in format */
+#define MAX_TYPE_LENGTH   4        /* Max length of type in format */
 #define MAX_NAME_LENGTH   255       /* Max length of list name */
 
 
