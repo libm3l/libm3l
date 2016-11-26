@@ -52,7 +52,7 @@
 
 
 typedef struct tmpstruct{
-	 lmchar_t Type[MAX_TYPE_LENGTH], Name_Of_List[MAX_TYPE_LENGTH]; 
+	 lmchar_t Type[MAX_TYPE_LENGTH], Name_Of_List[MAX_NAME_LENGTH]; 
  	lmsize_t ndim, *dim;
 }tmpstruct_t;
 
