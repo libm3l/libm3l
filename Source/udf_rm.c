@@ -246,7 +246,7 @@ node_t *m3l_AllocateNode(tmpstruct_t TMPSTR, opts_t *Popt){
 	if( snprintf(Lnode->type, MAX_TYPE_LENGTH,"%s",TMPSTR.Type) < 0)
 		Perror("snprintf");
 
-	if( snprintf(Lnode->name, MAX_TYPE_LENGTH,"%s",TMPSTR.Name_Of_List) < 0)
+	if( snprintf(Lnode->name, MAX_NAME_LENGTH ,"%s",TMPSTR.Name_Of_List) < 0)
 		Perror("snprintf");
 /*
  * filling Lnode->ndim, if List is not DIR, this will be re-filled again with the same value of AllocateNodeData
