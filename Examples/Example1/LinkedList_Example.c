@@ -175,7 +175,8 @@ lmint_t main(void)
 		printf(" ----------------------------------  \n");		
 		printf(" Writing Gnode to file - WriteFile.txt \n\n");
 
-		m3l_Fwrite(Gnode, "WriteFile.txt", (lmchar_t *)NULL);
+		m3l_Fwrite(Gnode, "WriteFile.txt", "--format", "a", (lmchar_t *)NULL);
+		m3l_Fwrite(Gnode, "WriteFile.bxt", "--format", "b", (lmchar_t *)NULL);
 
 		if(m3l_Umount(&Gnode) != 1)
 			Perror("m3l_Umount");

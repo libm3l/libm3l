@@ -40,6 +40,7 @@
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/find_list.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/FunctionsPrt.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/IO.h"
+#include  "/home/jka/Cprograms/Sources/libm3l/Source/IO_types.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/ListDataOperations.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/Ln.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/ln_list.h"
@@ -61,5 +62,6 @@
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/udf_rm.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/Umount.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/Write2Socket.h"
+#include  "/home/jka/Cprograms/Sources/libm3l/Source/WriteBData.h"
 #include  "/home/jka/Cprograms/Sources/libm3l/Source/WriteData.h"
 #endif

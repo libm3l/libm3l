@@ -322,7 +322,7 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
-                {"input_file",     	required_argument,	0, 'f' },
+                {"format",     	required_argument,	0, 'f' },
 				{0, 0, 0, 0}
 			};
  /*
@@ -358,17 +358,17 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
 /*
  * format
  */
-					if( strncmp(optarg, "binary", 6) == 0){
+					if( strncmp(optarg, "b", 6) == 0){
 /*
  * IEEE-754 encoding for numbers
  */
 						opts.opt_format = 'b';
 					}
-					else if(strncmp(optarg, "ascii", 3) == 0){
+					else if(strncmp(optarg, "a", 3) == 0){
 /*
  * raw data sending
  */
-						opts.opt_tcpencoding = 'a';
+						opts.opt_format = 'a';
 					}
 				break;
 /* 
@@ -401,21 +401,11 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
  */
 	Popts = &opts;
     
-    if(Popts->opt_format == 'a'){
-        if( m3l_Write_list(Lnode, name, Popts) < 0){
-            return -1;
-        }
-        else{
-            return 0;
-        }
-    }    
+    if( m3l_Write_list(Lnode, name, Popts) < 0){
+       return -1;
+    }
     else{
-        if( m3l_Write_list(Lnode, name, Popts) < 0){
-            return -1;
-        }
-        else{
-            return 0;
-        }        
+       return 0;
     }
 }
 
@@ -436,8 +426,13 @@ lmint_t m3l_Write_list(node_t *Lnode, const lmchar_t *name, opts_t * Popts)
 	if ( (fp = fopen(name,"w")) == NULL)
 		Perror("fopen");
 
-	if( m3l_WriteData(1, Lnode, fp) != 0)
-		Perror("WriteData");
+    if(Popts->opt_format == 'a'){
+        if( m3l_WriteData(1, Lnode, fp) != 0)
+            Perror("WriteData");
+    }else{
+        if( m3l_WriteBData( Lnode, fp) != 0)
+            Perror("WriteData");   
+    }
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop
   */
