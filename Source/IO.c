@@ -322,12 +322,13 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
+                {"input_file",     	required_argument,	0, 'f' },
 				{0, 0, 0, 0}
 			};
  /*
   * getopt_long stores the option index here. 
   */
-			c = getopt_long (args_num, opt, "e", long_options, &option_index);
+			c = getopt_long (args_num, opt, "ef:", long_options, &option_index);
 /*
  * Detect the end of the options 
  */
@@ -352,6 +353,23 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
  * clean empty list
  */
 					opts.opt_linkscleanemptlinks = 'e';
+
+                case 'f':
+/*
+ * format
+ */
+					if( strncmp(optarg, "binary", 6) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_format = 'b';
+					}
+					else if(strncmp(optarg, "ascii", 3) == 0){
+/*
+ * raw data sending
+ */
+						opts.opt_tcpencoding = 'a';
+					}
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -382,13 +400,23 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
  * locate nodes using find function
  */
 	Popts = &opts;
-	
- 	if( m3l_Write_list(Lnode, name, Popts) < 0){
-		return -1;
-	}
-	else{
-		return 0;
-	}
+    
+    if(Popts->opt_format == 'a'){
+        if( m3l_Write_list(Lnode, name, Popts) < 0){
+            return -1;
+        }
+        else{
+            return 0;
+        }
+    }    
+    else{
+        if( m3l_Write_list(Lnode, name, Popts) < 0){
+            return -1;
+        }
+        else{
+            return 0;
+        }        
+    }
 }
 
 
