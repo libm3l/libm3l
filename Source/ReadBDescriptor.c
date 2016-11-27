@@ -68,9 +68,9 @@
 
 // static lmint_t m3l_read_Bfile_data_line(lmchar_t *, lmchar_t **, lmssize_t *,node_t **, tmpstruct_t, FILE *f, opts_t *);
 // static lmint_t m3l_read_Bfile_data_charline(lmchar_t *, lmchar_t **, lmssize_t *,node_t **, tmpstruct_t, FILE *f);
-static node_t *m3l_read_Blist(tmpstruct_t , FILE *f, opts_t *);
-static node_t *m3l_read_Bfile_data(FILE *f, opts_t *);
+static node_t *m3l_read_Blist(tmpstruct_t , FILE *f, lmsize_t *, opts_t *);
 static node_t *m3l_read_file_Bthreadsafe(FILE *, lmsize_t *, opts_t *);
+static node_t *m3l_read_Bfile_data(FILE*, lmsize_t *, opts_t *);
 
 /*
  * Function read just one line from a socket, disregarding comments line
@@ -86,7 +86,8 @@ node_t *m3l_read_Bfile(FILE *fp, opts_t *Popts){
 	node_t *Lnode;
 	
     ppos = &pos;
-    pos =1 ;
+    pos =0;
+    
 	Lnode = m3l_read_file_Bthreadsafe(fp, ppos, Popts);
 
 	return Lnode;
@@ -97,20 +98,19 @@ node_t *m3l_read_Bfile(FILE *fp, opts_t *Popts){
 node_t *m3l_read_file_Bthreadsafe(FILE *fp, lmsize_t *pos, opts_t *Popts)
 {
     IOstr_t IOstruct, *pIOstruct;
-	pIOstruct = &IOstruct;
     lmsize_t ngotten;
     tmpstruct_t TMPSTR;	
     node_t *Dnode;
 
+	pIOstruct = &IOstruct;
 
+    
     fseek( fp, *pos, SEEK_SET );
 	
-	if(   (ngotten = fread(pIOstruct ,IOLEN,  1 , fp ))   < 0){
+	if(   (ngotten = fread(pIOstruct ,IOLEN,  1 , fp ))   < 1){
 		Perror("fread");
 	}
-	
-     printf(" DATA are:    '%s'  '%s'  %ld \n" ,  pIOstruct->Type, pIOstruct->Name ,   pIOstruct->ndim);
-     
+
     if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s",  pIOstruct->Type) < 0)
         Perror("snprintf");
     if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s",  pIOstruct->Name) < 0)
@@ -119,7 +119,7 @@ node_t *m3l_read_file_Bthreadsafe(FILE *fp, lmsize_t *pos, opts_t *Popts)
     TMPSTR.ndim = pIOstruct->ndim;
     TMPSTR.dim=NULL;
      
-    if( (Dnode = m3l_read_Blist(TMPSTR, fp, Popts)) == NULL)
+    if( (Dnode = m3l_read_Blist(TMPSTR, fp, pos, Popts)) == NULL)
         Perror("ReadDirData - ReadDir");
      
     return Dnode;
@@ -131,12 +131,12 @@ node_t *m3l_read_file_Bthreadsafe(FILE *fp, lmsize_t *pos, opts_t *Popts)
  * reads data after line identifying DIR
  */
 
-node_t *m3l_read_Blist(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
+node_t *m3l_read_Blist(tmpstruct_t TMPSTR, FILE *fp, lmsize_t *pos, opts_t *Popts)
 {
 	lmsize_t i;
 	node_t *Dnode, *Tmpnode, *Pnode;
  /*
- * allocate node
+ * allocate node which is DIR type
  */	
 	if( (Dnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 		Error("Allocate");
@@ -144,9 +144,9 @@ node_t *m3l_read_Blist(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 
 	for(i=1;i<=TMPSTR.ndim; i++){
 
-		Tmpnode=NULL;	
+            Tmpnode=NULL;	
 
-// 		if ( (Tmpnode = m3l_read_Bfile_data(fp, Popts)) == NULL)
+  		if ( (Tmpnode = m3l_read_Bfile_data(fp, pos, Popts)) == NULL)
 			Error("ReadDirData: ReadData");
 /*
  * add to node
@@ -165,4 +165,181 @@ node_t *m3l_read_Blist(tmpstruct_t TMPSTR, FILE *fp, opts_t *Popts)
 		}
 	}
 	return Dnode;
+}
+
+node_t *m3l_read_Bfile_data(FILE* fp, lmsize_t * pos, opts_t *Popts){
+    
+	node_t *Dnode;    
+    tmpstruct_t TMPSTR;
+    lmsize_t ngotten;
+    IOstr_t IOstruct, *pIOstruct;
+    lmsize_t i,tot_dim;
+
+	pIOstruct = &IOstruct;
+	
+    if(   (ngotten = fread(pIOstruct ,IOLEN,  1 , fp ))   < 1){
+		Perror("fread");
+	}
+
+    *pos = *pos + IOLEN;
+    
+//      printf(" DATA are:    '%s'  '%s'  %ld \n" ,  pIOstruct->Type, pIOstruct->Name ,   pIOstruct->ndim);
+     
+    if( snprintf(TMPSTR.Type, sizeof(TMPSTR.Type),"%s",  pIOstruct->Type) < 0)
+        Perror("snprintf");
+    if( snprintf(TMPSTR.Name_Of_List, sizeof(TMPSTR.Name_Of_List),"%s",  pIOstruct->Name) < 0)
+        Perror("snprintf");
+     
+    TMPSTR.ndim = pIOstruct->ndim;
+    TMPSTR.dim=NULL;
+    
+    if ( strncmp(TMPSTR.Type,"DIR",3) != 0 &&  strncmp(TMPSTR.Type,"LINK",4) != 0 ){
+/*
+ * if type is FILE, read what it contains
+ */
+        if( (TMPSTR.dim=(lmsize_t *)malloc(TMPSTR.ndim * sizeof(lmsize_t))) == NULL)
+			Perror("malloc");
+/*
+ * read dimensions
+ */
+        if(   (ngotten = fread(TMPSTR.dim ,sizeof(lmsize_t),  TMPSTR.ndim , fp ))   < TMPSTR.ndim ){
+            Perror("fread");
+        }
+        *pos = *pos + sizeof(lmsize_t) *  TMPSTR.ndim;
+        
+        tot_dim = 1;
+        for(i=0;i< TMPSTR.ndim; i++)
+            tot_dim = tot_dim*TMPSTR.dim[i];
+/*
+ * allocate node
+ */
+        if( (Dnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
+            Error("Allocate");
+        }
+
+        
+        if (strncmp(TMPSTR.Type,"LD",2) == 0){  /* long double */
+            if(   (ngotten = fread(Dnode->data.ldf ,sizeof(lmlongdouble_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmlongdouble_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"D",1) == 0){  /* double */
+            if(   (ngotten = fread(Dnode->data.df ,sizeof(lmdouble_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+             *pos = *pos + sizeof(lmdouble_t) *  tot_dim;
+       }
+        else if(strncmp(TMPSTR.Type,"F",1) == 0){  /* float */
+            if(   (ngotten = fread(Dnode->data.f ,sizeof(lmfloat_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmfloat_t) *  tot_dim;
+        }
+/*
+ * integers
+ */
+        else if(strncmp(TMPSTR.Type,"ULLI",4) == 0){  /* unsigned long long  int */
+            if(   (ngotten = fread(Dnode->data.ulli ,sizeof(lmullint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmullint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"SLLI",4) == 0){  /* signed long long  int */
+            if(   (ngotten = fread(Dnode->data.slli ,sizeof(lmsllint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmsllint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"ULI",3) == 0){  /* unsigned long int */
+            if(   (ngotten = fread(Dnode->data.uli,sizeof(lmulint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmsllint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"LLI",3) == 0){  /* unsigned long int */
+            if(   (ngotten = fread(Dnode->data.lli ,sizeof(lmllint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmllint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"USI",3) == 0){  /* unsigned short int */
+            if(   (ngotten = fread(Dnode->data.usi ,sizeof(lmushint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmushint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"SI",2) == 0){  /* short int */
+            if(   (ngotten = fread(Dnode->data.si ,sizeof(lmshint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmshint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"UI",2) == 0){  /* unsigned int */
+            if(   (ngotten = fread(Dnode->data.ui ,sizeof(lmuint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmuint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"LI",2) == 0){  /* long  int */
+            if(   (ngotten = fread(Dnode->data.li ,sizeof(lmlint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmlint_t) *  tot_dim;
+        }
+        else if(strncmp(TMPSTR.Type,"I",1) == 0){  /* int */
+            if(   (ngotten = fread(Dnode->data.i ,sizeof(lmint_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            *pos = *pos + sizeof(lmint_t) *  tot_dim;
+        }
+/*
+ * chars and strings
+ */
+        else if ( strncmp(TMPSTR.Type,"SC",2) == 0 ){
+            if(   (ngotten = fread(Dnode->data.sc ,sizeof(lmsignchar_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            Dnode->data.c[tot_dim] = '\0'; 
+            *pos = *pos + sizeof(lmsignchar_t) *  tot_dim;            
+        }
+        else if ( strncmp(TMPSTR.Type,"UC",2) == 0 ){
+            if(   (ngotten = fread(Dnode->data.uc ,sizeof(lmusignchar_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            Dnode->data.c[tot_dim] = '\0'; 
+            *pos = *pos + sizeof(lmusignchar_t) *  tot_dim;             
+        }
+        else if ( TMPSTR.Type[0] == 'C'){
+            if(   (ngotten = fread(Dnode->data.c ,sizeof(lmchar_t),  tot_dim , fp ))   < tot_dim ){
+                Perror("fread");
+            }
+            Dnode->data.c[tot_dim] = '\0';            
+            *pos = *pos + sizeof(lmchar_t) *  tot_dim;
+        }
+/*
+ * counters
+ */
+        else if(strncmp(TMPSTR.Type,"ST",2) == 0){  /* lmsize_t */
+//             pst = (*Lnode)->data.st;
+        }
+        else if(strncmp(TMPSTR.Type,"PTRDF",1) == 0){  /* ptrdf_t */
+//             pptrdf = (*Lnode)->data.ptrdf;
+        }
+        
+        
+        
+    }else{
+/*
+ * if type is DIR, read it
+ */
+        if( (Dnode = m3l_read_Blist(TMPSTR, fp, pos, Popts)) == NULL)
+            Perror("ReadDirData - ReadDir");
+        return Dnode;
+    }
+					
+					
+    return Dnode;
+    
+    
 }

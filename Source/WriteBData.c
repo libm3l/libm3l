@@ -212,76 +212,72 @@ lmint_t m3l_WriteBData(node_t *List,  FILE *fp)
 
 
 
-
-
-
 lmint_t m3l_write_file_Bdata_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE *fp)
 {	
 	lmsize_t i, n, counter;
 	lmchar_t *pc;
-	lmchar_t buff[MAX_WORD_LENGTH+1];
 /*
  * find type of the argument - Floats
  */
 		if (strncmp(Tmpnode->type,"LD",2) == 0){  /* long double */
-            if ( fwrite (buff ,sizeof(lmlongdouble_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.ldf ,sizeof(lmlongdouble_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"D",1) == 0){  /* double */
-            if ( fwrite (buff ,sizeof(lmdouble_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.df ,sizeof(lmdouble_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"F",1) == 0){  /* float */
-            if ( fwrite (buff ,sizeof(lmfloat_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.f ,sizeof(lmfloat_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 /*
  * chars
  */
 		else if(strncmp(Tmpnode->type,"UC",2) == 0){  /* char */
-
+            if ( fwrite (Tmpnode->data.sc ,sizeof(lmusignchar_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if (strncmp(Tmpnode->type,"SC",2) == 0){  /* signed char */
-
+            if ( fwrite (Tmpnode->data.sc ,sizeof(lmsignchar_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"C",1) == 0){  /* char */
-            if ( fwrite (Tmpnode->data.c ,sizeof(lmchar_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.c ,sizeof(lmchar_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 /*
  * integers
  */
 		else if(strncmp(Tmpnode->type,"ULLI",4) == 0){  /* unsigned long long  int */
-            if ( fwrite (buff ,sizeof(lmullint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.ulli ,sizeof(lmullint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"SLLI",4) == 0){  /* signed long long  int */
-            if ( fwrite (buff ,sizeof(lmsllint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.slli ,sizeof(lmsllint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"LLI",3) == 0){  /* signed long long  int */
-            if ( fwrite (buff ,sizeof(lmllint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.lli ,sizeof(lmllint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"ULI",3) == 0){  /* unsigned long int */
-            if ( fwrite (buff ,sizeof(lmulint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.uli ,sizeof(lmulint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"USI",3) == 0){  /* unsigned short int */
-            if ( fwrite (buff ,sizeof(lmushint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.usi ,sizeof(lmushint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"SI",2) == 0){  /* short int */
-            if ( fwrite (buff ,sizeof(lmshint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.si ,sizeof(lmshint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"UI",2) == 0){  /* unsigned int */
-            if ( fwrite (buff ,sizeof(lmuint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.ui ,sizeof(lmuint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"LI",2) == 0){  /* long  int */
-            if ( fwrite (buff ,sizeof(lmlint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.li ,sizeof(lmlint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"I",1) == 0){  /* int */
-            if ( fwrite (buff ,sizeof(lmint_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.i ,sizeof(lmint_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 /*
  * counters
  */
 		else if(strncmp(Tmpnode->type,"ST",2) == 0){  /* size_t */
-            if ( fwrite (buff ,sizeof(lmsize_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.st ,sizeof(lmsize_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else if(strncmp(Tmpnode->type,"PTRDF",1) == 0){  /* ptrdf_t */
-            if ( fwrite (buff ,sizeof(lmintptr_t),  tot_dim, fp )< tot_dim);
+            if ( fwrite (Tmpnode->data.ptrdf ,sizeof(lmintptr_t),  tot_dim, fp )< tot_dim)Perror("fwrite");
 		}
 		else
 		{

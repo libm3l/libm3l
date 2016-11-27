@@ -180,6 +180,9 @@ lmint_t main(void)
         
   	if( (Gnode = m3l_Fread("WriteFile.bxt" , "--clean_empy_links",  "--format", "b",(lmchar_t *)NULL))  == NULL)
   		Perror("Linked_test: m3l_Fread");
+    
+    	if(m3l_Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (lmchar_t *)NULL) != 0)
+ 	        Error("CatData");
 
 		if(m3l_Umount(&Gnode) != 1)
 			Perror("m3l_Umount");
