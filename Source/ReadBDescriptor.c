@@ -86,7 +86,7 @@ node_t *m3l_read_Bfile(FILE *fp, opts_t *Popts){
 	node_t *Lnode;
 	
     ppos = &pos;
-    pos =0;
+    pos = 0;
     
 	Lnode = m3l_read_file_Bthreadsafe(fp, ppos, Popts);
 
@@ -104,7 +104,7 @@ node_t *m3l_read_file_Bthreadsafe(FILE *fp, lmsize_t *pos, opts_t *Popts)
 
 	pIOstruct = &IOstruct;
 
-    
+
     fseek( fp, *pos, SEEK_SET );
 	
 	if(   (ngotten = fread(pIOstruct ,IOLEN,  1 , fp ))   < 1){
@@ -144,7 +144,7 @@ node_t *m3l_read_Blist(tmpstruct_t TMPSTR, FILE *fp, lmsize_t *pos, opts_t *Popt
 
 	for(i=1;i<=TMPSTR.ndim; i++){
 
-            Tmpnode=NULL;	
+        Tmpnode=NULL;	
 
   		if ( (Tmpnode = m3l_read_Bfile_data(fp, pos, Popts)) == NULL)
 			Error("ReadDirData: ReadData");
