@@ -62,7 +62,7 @@ lmint_t main(void)
  */
 
 	printf(" ----------------------------------  \n");		
-  	if( (Gnode = m3l_Fread("FILE.DAT" , "--clean_empy_links", (lmchar_t *)NULL))  == NULL)
+  	if( (Gnode = m3l_Fread("FILE.DAT" , "--clean_empy_links",  "--format", "a",(lmchar_t *)NULL))  == NULL)
   		Perror("Linked_test: m3l_Fread");
 	
 	if(m3l_Cat(Gnode, "--all", "-P", "-L","--links",  "*",   (lmchar_t *)NULL) != 0)
@@ -72,7 +72,7 @@ lmint_t main(void)
  */	
 	printf(" ----------------------------------  \n");		
 	printf(" Reading file #2\n");		
-	if( (Anode = m3l_Fread("TEST.dat", (lmchar_t *)NULL))  == NULL)
+	if( (Anode = m3l_Fread("TEST.dat", "--format", "a", (lmchar_t *)NULL))  == NULL)
  		Perror("Linked_test: m3l_Fread");	
 
  		if(m3l_Cat(Anode, "--all", "-P", "-L", "--links", "*", (lmchar_t *)NULL) != 0)
@@ -177,6 +177,9 @@ lmint_t main(void)
 
 		m3l_Fwrite(Gnode, "WriteFile.txt", "--format", "a", (lmchar_t *)NULL);
 		m3l_Fwrite(Gnode, "WriteFile.bxt", "--format", "b", (lmchar_t *)NULL);
+        
+  	if( (Gnode = m3l_Fread("WriteFile.bxt" , "--clean_empy_links",  "--format", "b",(lmchar_t *)NULL))  == NULL)
+  		Perror("Linked_test: m3l_Fread");
 
 		if(m3l_Umount(&Gnode) != 1)
 			Perror("m3l_Umount");

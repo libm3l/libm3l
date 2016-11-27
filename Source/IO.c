@@ -56,7 +56,9 @@
 
 #include "IO.h"
 #include "ReadDescriptor.h"
+#include "ReadBDescriptor.h"
 #include "WriteData.h"
+#include "WriteBData.h"
 #include "ln_list.h"
 #include "Set_Default_Parameters.h"
 #include "FunctionsPrt.h"
@@ -145,6 +147,7 @@ node_t *m3l_Fread(const lmchar_t *name, lmchar_t * Options, ...)
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
+                {"format",     	required_argument,	0, 'f' },
 				{0, 0, 0, 0}
 			};
  /*
@@ -175,6 +178,24 @@ node_t *m3l_Fread(const lmchar_t *name, lmchar_t * Options, ...)
  * clean empty list
  */
 					opts.opt_linkscleanemptlinks = 'e';
+				break;
+                
+                case 'f':
+/*
+ * format
+ */
+					if( strncmp(optarg, "b", 6) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_format = 'b';
+					}
+					else if(strncmp(optarg, "a", 3) == 0){
+/*
+ * raw data sending
+ */
+						opts.opt_format = 'a';
+					}
 				break;
 /* 
  * Error, getopt_long already printed an error message
@@ -229,8 +250,13 @@ node_t *m3l_Read_list(const lmchar_t *name, opts_t *Popts)
 	if ( (fp = fopen(name,"r")) == NULL)
 		Perror("fopen");
 
-	if( (Lnode = m3l_read_file(fp, Popts)) == NULL)
-		Perror("read_file");
+    if(Popts->opt_format == 'a'){
+        if( (Lnode = m3l_read_file(fp, Popts)) == NULL)
+            Perror("read_file");
+    }else{
+        if( (Lnode = m3l_read_Bfile(fp, Popts)) == NULL)
+            Perror("read_file"); 
+    }
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop
   */
