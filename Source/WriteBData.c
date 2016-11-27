@@ -67,7 +67,7 @@ static lmint_t m3l_write_file_Bdata_filedescprt(node_t *, lmsize_t , FILE *);
 lmint_t m3l_WriteBData(node_t *List,  FILE *fp)
 {
 	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
-	lmsize_t i, n, tot_dim;
+	lmsize_t i, n, tot_dim, *fdim;
     
     IOstr_t IOstruct, *pIOstruct;
  
@@ -105,15 +105,35 @@ lmint_t m3l_WriteBData(node_t *List,  FILE *fp)
 				Perror("fwrite");
 
 			if(Tmpnode->ndim > 0){
-                tot_dim = 1;
-				for(i=0; i<Tmpnode->ndim; i++){
-						tot_dim = tot_dim * Tmpnode->fdim[i];
-				}
 /*
- * when writing character, dncrese dimensions, an extra dimensions was allocated for /0 trminating character
+ * when writing character, dncrese dimensions, an extra dimensions was allocated for /0 terminating character
  */
-				if (fwrite (Tmpnode->fdim ,sizeof(lmsize_t), Tmpnode->ndim , fp ) < Tmpnode->ndim)
-                    Perror("fwrite");
+                if( strncmp(Tmpnode->type,"UC",2) == 0 || strncmp(Tmpnode->type,"SC",2) == 0 || 
+                            Tmpnode->type[0] == 'C' || strncmp(Tmpnode->type,"DISKFILE",8) == 0){
+                    
+                    tot_dim = 1;
+                    for(i=0; i<Tmpnode->ndim; i++)
+						tot_dim = tot_dim * (Tmpnode->fdim[i]-1);
+                    
+                    if ( (fdim  = (lmsize_t *)malloc(Tmpnode->ndim * sizeof(lmsize_t))) == NULL)
+                        Perror("malloc");
+                    for(i=0; i<Tmpnode->ndim; i++)
+						fdim[i] =  Tmpnode->fdim[i]-1;
+                    
+                    if (fwrite (fdim ,sizeof(lmsize_t), Tmpnode->ndim , fp ) < Tmpnode->ndim)
+                            Perror("fwrite");
+                    free(fdim);
+                }
+                else
+                {
+                    tot_dim = 1;
+                    for(i=0; i<Tmpnode->ndim; i++)
+						tot_dim = tot_dim * Tmpnode->fdim[i];
+                   if (fwrite (Tmpnode->fdim ,sizeof(lmsize_t), Tmpnode->ndim , fp ) < Tmpnode->ndim)
+                     Perror("fwrite");
+                }
+// 				if (fwrite (Tmpnode->fdim ,sizeof(lmsize_t), Tmpnode->ndim , fp ) < Tmpnode->ndim)
+//                     Perror("fwrite");
 /*
  * call to function printing actual data in file
  */						
@@ -216,187 +236,14 @@ lmint_t m3l_write_file_Bdata_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE
  * chars
  */
 		else if(strncmp(Tmpnode->type,"UC",2) == 0){  /* char */
-			bzero(buff, sizeof(buff));
-			pc = (lmchar_t *)&Tmpnode->data.uc[0];
-/*
- * start with writing TEXT_SEPAR_SIGN
- */
-			counter = 0;
-			buff[counter] = TEXT_SEPAR_SIGN;
-			counter++;
-			
-			while(*pc != '\0'){   /*can be replaced by for (i=0; i<tot_dim; i++) loop */
-				buff[counter] = *pc++;
-				counter++;
-				if(counter == MAXLINE){
-					buff[counter] = '\0';
-					if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-						Perror("fwrite");
-					counter = 0;
-					bzero(buff, sizeof(buff));
-				}	
-				
-			}
-/*
- * add terminating TEXT_SEPAR_SIGN
- */
-			if(counter != 0 && counter < MAXLINE-1){
-/*
- * if enough space, add both TEXT_SEPAR_SIGN and '\0'
- */
-				buff[counter] = TEXT_SEPAR_SIGN;
-				counter++;
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-			}
-			else if(counter == MAXLINE){
-/*
- * if not enough space, add '0\' signe
- * write to buffer and set counter to 0 
- */
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-				counter = 0;
-			}
-/*
- * if counter == 0, add TEXT_SEPAR_SIGN and '\0'
- */			
-			if(counter == 0){
-				buff[counter] = TEXT_SEPAR_SIGN;
-				counter++;
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-			}
+
 		}
 		else if (strncmp(Tmpnode->type,"SC",2) == 0){  /* signed char */
-/*
- * clean buff and make pointer pointing at its beginning
- */
-			bzero(buff, sizeof(buff));
-			pc = (lmchar_t *)&Tmpnode->data.sc[0];
-/*
- * start with writing TEXT_SEPAR_SIGN
- */
-			counter = 0;
-			buff[counter] = TEXT_SEPAR_SIGN;
-			counter++;
-			
-			while(*pc != '\0'){   /*can be replaced by for (i=0; i<tot_dim; i++) loop */
-				buff[counter] = *pc++;
-				counter++;
-				if(counter == MAXLINE){
-					buff[counter] = '\0';
-					if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-						Perror("fwrite");
-					counter = 0;
-					bzero(buff, sizeof(buff));
-				}	
-				
-			}
-/*
- * add terminating TEXT_SEPAR_SIGN
- */
-			if(counter != 0 && counter < MAXLINE-1){
-/*
- * if enough space, add both TEXT_SEPAR_SIGN and '\0'
- */
-				buff[counter] = TEXT_SEPAR_SIGN;
-				counter++;
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-			}
-			else if(counter == MAXLINE){
-/*
- * if not enough space, add '0\' signe
- * write to buffer and set counter to 0 
- */
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-				counter = 0;
-			}
-/*
- * if counter == 0, add TEXT_SEPAR_SIGN and '\0'
- */			
-			if(counter == 0){
-				buff[counter] = TEXT_SEPAR_SIGN;
-				counter++;
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-			}
+
 		}
 		else if(strncmp(Tmpnode->type,"C",1) == 0){  /* char */
-			bzero(buff, sizeof(buff));
-			pc = &Tmpnode->data.c[0];
-/*
- * start with writing TEXT_SEPAR_SIGN
- */
-			counter = 0;
-			buff[counter] = TEXT_SEPAR_SIGN;
-			counter++;
-			
-			while(*pc != '\0'){   /*can be replaced by for (i=0; i<tot_dim; i++) loop */
-				buff[counter] = *pc++;
-				counter++;
-				if(counter == MAXLINE){
-					buff[counter] = '\0';
-					if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-						Perror("fwrite");
-					counter = 0;
-					bzero(buff, sizeof(buff));
-				}	
-				
-			}
-/*
- * add terminating TEXT_SEPAR_SIGN
- */
-			if(counter != 0 && counter < MAXLINE-1){
-/*
- * if enough space, add both TEXT_SEPAR_SIGN and '\0'
- */
-				buff[counter] = TEXT_SEPAR_SIGN;
-				counter++;
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-			}
-			else if(counter == MAXLINE){
-/*
- * if not enough space, add '0\' signe
- * write to buffer and set counter to 0 
- */
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-				counter = 0;
-			}
-/*
- * if counter == 0, add TEXT_SEPAR_SIGN and '\0'
- */			
-			if(counter == 0){
-				buff[counter] = TEXT_SEPAR_SIGN;
-				counter++;
-				buff[counter] = '\0';
-				if ( fwrite (buff ,sizeof(lmchar_t),  strlen(buff) , fp )< strlen(buff))
-					Perror("fwrite");
-				bzero(buff, sizeof(buff));
-			}
+            if ( fwrite (Tmpnode->data.c ,sizeof(lmchar_t),  tot_dim, fp )< tot_dim);
 		}
-		
-		
 /*
  * integers
  */

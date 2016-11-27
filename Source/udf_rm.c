@@ -283,7 +283,7 @@ lmint_t m3l_AllocateNodeData(node_t **Lnode, tmpstruct_t TMPSTR, opts_t *Popt)
 	
 	tot_dim = 1;
 /*
- * if character array, increse dimensions for /0 trminating character
+ * if character array, increse dimensions for /0 terminating character
  */
     if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C' || strncmp(TMPSTR.Type,"DISKFILE",8) == 0){
         for(i=0; i<TMPSTR.ndim; i++){
