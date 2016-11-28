@@ -1,6 +1,6 @@
 FILES = $(shell ls  *.c )
 PATHL  = $(shell pwd )
-HFILES = $(shell ls  *.h  |   sed '/internal_format_type.h/d'  | sed '/libm3l_header.h/d' | sed '/format_type.h/d' | sed '/format_conversion_spec.h/d' | sed '/libm3l.h/d' | sort -df)
+HFILES = $(shell ls  *.h  |   sed '/libm3l_mpi.h/d'  | sed '/libm3l.h/d' | sort -df)
 
 PWD = $(shell pwd)
 OBJS=$(FILES:%.c=%.o)
@@ -19,7 +19,7 @@ main:
 	@echo "#ifndef   __LIBM3LMPI_H__" >> libm3l_mpi.h
 	@echo "#define   __LIBM3LMPI_H__" >> libm3l_mpi.h
 
-	@echo "#include " \"../data_util/libm3l.h\">>libm3l_mpi.h
+#	@echo "#include " \"../data_util/libm3l.h\">>libm3l_mpi.h
 
 	@$(foreach file,$(HFILES),  echo "#include " \"$$PWD/$(file)\">>libm3l_mpi.h;)
 	@echo "#endif" >> libm3l_mpi.h

@@ -49,7 +49,7 @@
 #ifndef  __MPI_SUM_H__
 #define __MPI_SUM_H__
 
-extern CPP_C  lmint_t m3l_mpi_sum(lmint_communicator, );
+extern CPP_C  lmint_t m3l_mpi_sum(lmint_t, node_t *);
     
 #endif        
     
