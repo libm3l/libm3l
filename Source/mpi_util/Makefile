@@ -5,7 +5,7 @@ HFILES = $(shell ls  *.h  |   sed '/internal_format_type.h/d'  | sed '/libm3l_he
 PWD = $(shell pwd)
 OBJS=$(FILES:%.c=%.o)
 
-CC = gcc
+CC = mpicc
 
 CFLAGS = -0
 LFLAGS = 
