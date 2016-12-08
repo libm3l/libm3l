@@ -49,10 +49,12 @@
 #endif
 
 #define IOLEN  MAX_TYPE_LENGTH + MAX_NAME_LENGTH + 8
+#define FLLIOLEN  16 + 4 + 8 + 8
+
 
 typedef struct IOstr{
-	 lmchar_t *Type;
      lmchar_t *Name; 
+	 lmchar_t *Type;
  	 lmsize_t ndim;
 }IOstr_t;
 

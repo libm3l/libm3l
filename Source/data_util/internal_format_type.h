@@ -83,6 +83,7 @@ typedef struct opts{
 	lmchar_t opt_EOBseq;
 	lmchar_t opt_REOBseq;
     lmchar_t opt_format;
+    lmchar_t opt_xformat;
 
 } opts_t;
 

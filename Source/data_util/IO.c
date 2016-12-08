@@ -148,6 +148,7 @@ node_t *m3l_Fread(const lmchar_t *name, lmchar_t * Options, ...)
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
                 {"format",     	required_argument,	0, 'f' },
+                {"xformat",     	required_argument,	0, 'x' },
 				{0, 0, 0, 0}
 			};
  /*
@@ -184,17 +185,35 @@ node_t *m3l_Fread(const lmchar_t *name, lmchar_t * Options, ...)
 /*
  * format
  */
-					if( strncmp(optarg, "b", 6) == 0){
+					if( strncmp(optarg, "b", 1) == 0){
 /*
  * IEEE-754 encoding for numbers
  */
 						opts.opt_format = 'b';
 					}
-					else if(strncmp(optarg, "a", 3) == 0){
+					else if(strncmp(optarg, "a", 1) == 0){
 /*
  * raw data sending
  */
 						opts.opt_format = 'a';
+					}
+				break;
+                
+                case 'x':
+/*
+ * format
+ */
+					if( strncmp(optarg, "fll", 3) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_xformat = 'f';
+					}
+					else{
+/*
+ * raw data sending
+ */
+						opts.opt_xformat = '\0';
 					}
 				break;
 /* 
