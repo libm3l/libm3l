@@ -367,7 +367,8 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
 			static struct option long_options[] =
 			{
 				{"clean_empy_links",     no_argument,       0, 'e'},
-                {"format",     	required_argument,	0, 'f' },
+                {"format",     	required_argument,	0, 'f' }, 
+                {"xformat",     	required_argument,	0, 'x' },
 				{0, 0, 0, 0}
 			};
  /*
@@ -416,9 +417,22 @@ lmint_t m3l_Fwrite(node_t *Lnode,  const lmchar_t *name, lmchar_t * Options, ...
 						opts.opt_format = 'a';
 					}
 				break;
-/* 
- * Error, getopt_long already printed an error message
+                case 'x':
+/*
+ * format
  */
+					if( strncmp(optarg, "fll", 3) == 0){
+/*
+ * IEEE-754 encoding for numbers
+ */
+						opts.opt_xformat = 'f';
+					}
+					else{
+/*
+ * raw data sending
+ */
+						opts.opt_xformat = '\0';
+					}
 				break;
 
 				default:
@@ -475,8 +489,14 @@ lmint_t m3l_Write_list(node_t *Lnode, const lmchar_t *name, opts_t * Popts)
         if( m3l_WriteData(1, Lnode, fp) != 0)
             Perror("WriteData");
     }else{
-        if( m3l_WriteBData( Lnode, fp) != 0)
-            Perror("WriteData");   
+        if(Popts->opt_xformat == 'f'){
+            if( m3l_WriteBDataFll( Lnode, fp) != 0)
+                Perror("WriteData");
+        }
+        else{
+            if( m3l_WriteBData( Lnode, fp) != 0)
+                Perror("WriteData");  
+        }
     }
  /*
   * end of reading the file   - while (   ( fgets(buff, MAXLINE, fp) != NULL) ) {  -- loop

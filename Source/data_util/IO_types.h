@@ -59,5 +59,13 @@ typedef struct IOstr{
 }IOstr_t;
 
 
+typedef struct IOstrfll{
+     lmchar_t *Name; 
+	 lmchar_t *Type;
+ 	 lmsize_t ndim;
+     lmsize_t nsize;
+}IOstrfll_t;
+
+
 
 #endif

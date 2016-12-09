@@ -106,7 +106,166 @@ lmint_t m3l_WriteBData(node_t *List,  FILE *fp)
 
 			if(Tmpnode->ndim > 0){
 /*
- * when writing character, dncrese dimensions, an extra dimensions was allocated for /0 terminating character
+ * when writing character, decrese dimensions, an extra dimensions was allocated for /0 terminating character
+ */
+                if( strncmp(Tmpnode->type,"UC",2) == 0 || strncmp(Tmpnode->type,"SC",2) == 0 || 
+                            Tmpnode->type[0] == 'C' || strncmp(Tmpnode->type,"DISKFILE",8) == 0){
+                    
+                    tot_dim = 1;
+                    for(i=0; i<Tmpnode->ndim; i++)
+						tot_dim = tot_dim * (Tmpnode->fdim[i]-1);
+                    
+                    if ( (fdim  = (lmsize_t *)malloc(Tmpnode->ndim * sizeof(lmsize_t))) == NULL)
+                        Perror("malloc");
+                    for(i=0; i<Tmpnode->ndim; i++)
+						fdim[i] =  Tmpnode->fdim[i]-1;
+                    
+                    if (fwrite (fdim ,sizeof(lmsize_t), Tmpnode->ndim , fp ) < Tmpnode->ndim)
+                            Perror("fwrite");
+                    free(fdim);
+                }
+                else
+                {
+                    tot_dim = 1;
+                    for(i=0; i<Tmpnode->ndim; i++)
+						tot_dim = tot_dim * Tmpnode->fdim[i];
+                   if (fwrite (Tmpnode->fdim ,sizeof(lmsize_t), Tmpnode->ndim , fp ) < Tmpnode->ndim)
+                     Perror("fwrite");
+                }
+// 				if (fwrite (Tmpnode->fdim ,sizeof(lmsize_t), Tmpnode->ndim , fp ) < Tmpnode->ndim)
+//                     Perror("fwrite");
+/*
+ * call to function printing actual data in file
+ */						
+                 m3l_write_file_Bdata_filedescprt(Tmpnode, tot_dim, fp);
+			}
+		}
+		Tmpnode = Tmpnode->next;
+	}
+	else
+	{
+/*
+ * list has children
+ */
+		Tmplist = List;
+
+        pIOstruct->Type  = Tmplist->type;
+        pIOstruct->Name = Tmplist->name;
+        pIOstruct->ndim = Tmplist->ndim;
+
+        if ( fwrite (pIOstruct ,IOLEN,  1 , fp ) < 1)
+			Perror("fwrite");
+
+		Tmpnode = Tmplist->child;
+		while(Tmpnode != NULL){
+
+			if( strncmp(Tmpnode->type, "LINK", 4 ) == 0){
+/*
+ * List is link, write the target
+ */
+				Tmplist=Tmpnode->child;
+				if(Tmplist != NULL){
+/*
+ * save connectivity data and nullify them temporarily
+ */
+					Tmpnext = Tmplist->next;
+					Tmpprev = Tmplist->prev;
+					Tmplist->next = NULL;
+					Tmplist->prev = NULL;
+					
+					if(m3l_WriteBData(Tmplist,fp) != 0){
+						Warning("Write data problem");
+/*
+ * restore original state
+ */
+						Tmplist->next = Tmpnext;
+						Tmplist->prev = Tmpprev;
+						return -1;
+					}
+/*
+ * restore original state
+ */
+					Tmplist->next = Tmpnext;
+					Tmplist->prev = Tmpprev;
+				}
+				else{
+/*
+ * empty LINK
+ */					
+					if(m3l_WriteBData(Tmpnode,fp) != 0){
+						Warning("Write data problem");
+						return -1;
+					}
+				}
+			}
+			else{
+				if(m3l_WriteBData(Tmpnode,fp) != 0){
+					Warning("Write data problem");
+					return -1;
+				}
+			}
+			Tmpnode = Tmpnode->next;
+		}
+	}
+	return 0;
+}
+
+
+
+
+
+lmint_t m3l_WriteBDataFll(node_t *List,  FILE *fp)
+{
+	node_t *Tmpnode, *Tmplist, *Tmpnext, *Tmpprev;
+	lmsize_t i, n, tot_dim, *fdim;
+    
+    IOstr_t IOstruct, *pIOstruct;
+    IOstrfll_t fllIOstruct, *pfllIOstruct;
+
+ 
+	if(List == NULL){
+		Warning("WriteData: NULL list");
+		return -1;
+	}
+
+	pIOstruct = &IOstruct;
+    pfllIOstruct = &fllIOstruct;
+    
+	if(List->child == NULL ){
+/*
+ * loop over next nodes
+ */
+	Tmpnode = List;
+
+		if(strncmp(Tmpnode->type, "DIR", 3) == 0){
+            pIOstruct->Type  = Tmpnode->type;
+            pIOstruct->Name = Tmpnode->name;
+            pIOstruct->ndim = Tmpnode->ndim ;
+
+            if ( fwrite (pIOstruct ,IOLEN,  1 , fp ) < 1)
+				Perror("fwrite");
+		}
+		else
+		{
+/*
+ * write only FILE data, if DIR is empty, it will be written here too
+ */
+            pfllIOstruct->Type  = Tmpnode->type;
+            pfllIOstruct->Name = Tmpnode->name;
+            if(Tmpnode->ndim == 1){
+              pfllIOstruct->ndim = Tmpnode->fdim[0];
+              pfllIOstruct->nsize = 0;
+            }else{
+                pfllIOstruct->ndim = Tmpnode->fdim[0];
+                pfllIOstruct->nsize = Tmpnode->fdim[1];
+            }
+
+            if ( fwrite (pfllIOstruct ,FLLIOLEN,  1 , fp ) < 1)
+				Perror("fwrite");
+
+			if(Tmpnode->ndim > 0){
+/*
+ * when writing character, decrese dimensions, an extra dimensions was allocated for /0 terminating character
  */
                 if( strncmp(Tmpnode->type,"UC",2) == 0 || strncmp(Tmpnode->type,"SC",2) == 0 || 
                             Tmpnode->type[0] == 'C' || strncmp(Tmpnode->type,"DISKFILE",8) == 0){
@@ -288,7 +447,7 @@ lmint_t m3l_write_file_Bdata_filedescprt(node_t *Tmpnode, lmsize_t tot_dim, FILE
 }
 
 /*
- *  function writes bindary files
+ *  function writes bindary files in fll format
  */
 
 

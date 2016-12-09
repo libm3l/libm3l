@@ -40,5 +40,7 @@
 #define __WRITEBDATA_H__
 
 extern CPP_C  lmint_t m3l_WriteBData(node_t *, FILE *);
+extern CPP_C  lmint_t m3l_WriteBDataFll(node_t *,  FILE *);
+
 
 #endif
