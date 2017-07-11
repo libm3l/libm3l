@@ -517,8 +517,18 @@ node_t *m3l_read_socket_data(lmchar_t *buff, lmchar_t **pc, lmssize_t *ngotten, 
 /*
  * allocate array for FILE type of node
  */
+
 		if( (Pnode = m3l_AllocateNode(TMPSTR, Popts)) == NULL){
 			Error("Allocate");}
+/*
+ * if node contains char data, substract 1 from each dimension. It is becase the length of sent char data is increased by
+ * 1 for '\0' symbol. Upon creating node Pnode in m3l_AllocateNode, tha allocation function adds automatically 
+ * +1 to dimensions for '\0' symbol. Because sent dimensions already reflect this, -1 needs to be substracted
+ */
+ 		if( strncmp(TMPSTR.Type,"UC",2) == 0 || strncmp(TMPSTR.Type,"SC",2) == 0 || TMPSTR.Type[0] == 'C')
+                   for(i=0; i<TMPSTR.ndim; i++){
+                        Pnode->fdim[i] = Pnode->fdim[i]-1;
+		    }
 /*
  * read the data in node
  */
