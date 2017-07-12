@@ -12,6 +12,12 @@ Programming Language
 
 Programming language is ANSI-C
 
+Installation
+---------------
+
+Got to Source/data_util and type make. The dynamic library and header file libm3l.h are going to be located in this 
+directory
+
 Linking
 -----------
 
