@@ -33,5 +33,18 @@ Portability
 libm3l is primarily for Linux. After some modifications it can be used
 on Windows systems, the necessary modifications are not part of this distribution.
 
+Reference
+-----------
+Some details can be found in AIAA Papers:
+Adam Jirasek and Arthur W. Rizzi. "libm3l and lsipdx - Utilities for Inter-Process Data Transfer and Synchronization", 52nd Aerospace Sciences Meeting, AIAA SciTech Forum, (AIAA 2014-1045)
+https://doi.org/10.2514/6.2014-1045
+
+https://www.researchgate.net/publication/269248697_libm3l_and_lsipdx_-_Utilities_for_Inter-Process_Data_Transfer_and_Synchronization
+
+ Adam Jirasek, Olivier Amoignon, and Peter Eliasson. "Coupling of the Edge CFD Solver with External Solvers", 53rd AIAA Aerospace Sciences Meeting, AIAA SciTech Forum, (AIAA 2015-0769)
+https://doi.org/10.2514/6.2015-0769
+
+https://www.researchgate.net/publication/273462889_Coupling_of_the_Edge_CFD_Solver_with_External_Solvers
+
 
 [![Analytics](https://ga-beacon.appspot.com/UA-47981720-2/libm3l/libm3l)](https://github.com/igrigorik/ga-beacon)
