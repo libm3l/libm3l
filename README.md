@@ -36,6 +36,7 @@ on Windows systems, the necessary modifications are not part of this distributio
 Reference
 -----------
 Some details can be found in AIAA Papers:
+
 Adam Jirasek and Arthur W. Rizzi. "libm3l and lsipdx - Utilities for Inter-Process Data Transfer and Synchronization", 52nd Aerospace Sciences Meeting, AIAA SciTech Forum, (AIAA 2014-1045)
 https://doi.org/10.2514/6.2014-1045
 
