@@ -39,7 +39,8 @@
  * 
  *
  *     Modifications:
- *     Date		Version		Patch number		CLA 
+ *     Date	        	Version		Patch number		CLA  Description
+ *     07-26-2017     1.1                    -                     -      replace gethostbyname by getaddrinfo
  *
  *
  *     Description
@@ -113,12 +114,15 @@ lmint_t m3l_server_openbindlistensocket(lmint_t portno, lmchar_t* Options, ...)
 
 lmint_t m3l_cli_open_socket(const lmchar_t * server_addr, lmint_t portno, lmchar_t* Options, ...)
 {
-	lmint_t sockfd;
+	lmint_t sockfd, rv;
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
     
-	if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		Perror("socket()");
+    struct addrinfo hints, *servinfo, *p;
+    lmchar_t sport[15];
+    
+// 	if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+// 		Perror("socket()");
 
 /*
  * link_bandwidth (100Mbps data link) * RTT (0.05secs)
@@ -128,25 +132,49 @@ lmint_t m3l_cli_open_socket(const lmchar_t * server_addr, lmint_t portno, lmchar
                    (lmchar_t *)&sock_buf_size, sizeof(sock_buf_size) );
 	retval = setsockopt( sockfd, SOL_SOCKET, SO_RCVBUF,
                    (lmchar_t *)&sock_buf_size, sizeof(sock_buf_size) );
-*/
+*/    
+// 	if( (server = gethostbyname(server_addr)) == NULL)
+// 		Perror("gethostbyname()");
+//     
+// /*
+//  * connect to socket
+//  */
+// 	bzero((lmchar_t *) &serv_addr, sizeof(serv_addr));
+//     
+// 	serv_addr.sin_family = AF_INET;
+// 	bcopy((lmchar_t *)server->h_addr, (lmchar_t *)&serv_addr.sin_addr.s_addr,server->h_length);
+// 	serv_addr.sin_port = htons(portno);
+//     
+// 	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
+// 		Perror("ERROR connecting");
+// 
+// 	return sockfd;
+
 
 /*
- * get server name
- */    
-	if( (server = gethostbyname(server_addr)) == NULL)
-		Perror("gethostbyname()");
-/*
- * connect to socket
+ * get server name  http://beej.us/guide/bgnet/output/html/multipage/gethostbynameman.html
+ * http://beej.us/guide/bgnet/output/html/multipage/getaddrinfoman.html
  */
-	bzero((lmchar_t *) &serv_addr, sizeof(serv_addr));
-    
-	serv_addr.sin_family = AF_INET;
-	bcopy((lmchar_t *)server->h_addr, (lmchar_t *)&serv_addr.sin_addr.s_addr,server->h_length);
-	serv_addr.sin_port = htons(portno);
-    
-	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
-		Perror("ERROR connecting");
 	
+	memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_INET;  //AF_UNSPEC; // use AF_INET6 to force IPv6
+    hints.ai_socktype = SOCK_STREAM;
+    
+    snprintf(sport, 15, "%d", portno);
+
+	if ((rv = getaddrinfo(server_addr, sport, &hints, &servinfo)) != 0) {
+         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+         exit(1);
+     }
+     p = servinfo;
+     
+     if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
+        Perror("socket");
+     }
+     if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+        Perror("connect");
+        close(sockfd);
+     }
 /*
  * for test purposes, specify TCP_NODELAY, ie. dissable Nagle's algorithm
  */
