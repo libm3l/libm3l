@@ -39,8 +39,8 @@
  * 
  *
  *     Modifications:
- *     Date	        	Version		Patch number		CLA  Description
- *     07-26-2017     1.1                    -                     -      replace gethostbyname by getaddrinfo
+ *     Author        Date	        	Version		Patch number		CLA  Description
+ *     A. Jirasek  07-26-2017     1.1                    -                     -      replace gethostbyname by getaddrinfo
  *
  *
  *     Description
