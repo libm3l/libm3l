@@ -350,6 +350,10 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 		TNext = (*TList)->next;
 		TPrev = (*TList)->prev;
 		TPar  = (*TList)->parent;
+        
+        if(TNext == *Slist){
+            
+        }
 		
 		bzero((*SList)->name, MAX_NAME_LENGTH);
 		if( snprintf((*SList)->name, MAX_NAME_LENGTH,"%s", (*TList)->name) < 0){
@@ -363,6 +367,15 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 			Error("mv_list: rm_list");
 			return -1;
 		}
+/*
+ * if list was moved to its predecessor, just remove predecessor
+ */
+		if(TNext == *Slist)return 1;
+/*
+ * if list was moved to its successor, just remove predecessor
+ */
+		if(TPrev == *Slist)return 1;
+
 /*
  * Place Slist where TList was before
  */
