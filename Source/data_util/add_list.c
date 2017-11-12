@@ -162,7 +162,7 @@ lmint_t m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
  * function adds list to the list tree
  * Input is a node to add (**List) and node where to add (**WTAList)
   * if the node where to add is DIR, the node is added to the DIR either at the beginning (option b) or at the end (option e)
-  * if the node where to add is FILE type, the node is add before that node (b) or after that node (a).
+  * if the node where to add is FILE type, the node is added before that node (b) or after that node (a).
   * in each case the count of parent DIR is increased by 1
   *
   * Upon return function returns:

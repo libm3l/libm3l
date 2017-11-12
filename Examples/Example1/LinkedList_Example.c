@@ -188,7 +188,18 @@ lmint_t main(void)
 			Perror("m3l_Umount");
 		if(m3l_Umount(&Anode) != 1)
 			Perror("m3l_Umount");
-	
+    
+		printf(" ----------------------------------  \n");		
+		printf(" Reading fll format \n\n");        
+        
+        if( (Gnode = m3l_Fread("Ifiles_1.bsol" , "--clean_empy_links",  "--format", "b",  "--xformat", "fll", (lmchar_t *)NULL))  == NULL)
+  		Perror("Linked_test: m3l_Fread");
+        
+        printf(" Done reading\n");
+    
+    	if(m3l_Cat(Gnode, "-D", "-P", "-L","--links",  "*",   (lmchar_t *)NULL) != 0)
+ 	        Error("CatData");
+        	
   return 0;
 
 }

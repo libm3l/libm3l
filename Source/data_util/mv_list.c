@@ -366,11 +366,11 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 /*
  * Place Slist where TList was before
  */
-		(*SList)->next    = TNext;
+        if(TNext != *SList)(*SList)->next  = TNext; // prevent circular dependency
 		(*SList)->prev    = TPrev;
 		(*SList)->parent  = TPar;
 		
-		if((*SList)->next != NULL) TNext->prev = (*SList);
+		if((*SList)->next != NULL && TNext != *SList) TNext->prev = (*SList);
 		if((*SList)->prev != NULL) TPrev->next = (*SList);
 /*
  * if moved node is in the same directory as target node
