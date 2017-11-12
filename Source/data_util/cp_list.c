@@ -340,6 +340,14 @@ lmint_t m3l_cp_list(lmint_t call, node_t **SList, node_t **TList, lmchar_t *NewN
 /*
  * copy source (Slist) to target (Tlist)
  */
+    if(*SList == *TList){
+/*
+ * specified list does not exist
+ */
+		Warning("cp_list: : list can not be copied to itself");
+		return -2;
+	}
+
 	if(strncmp( (*TList)->type, "DIR", 3) != 0){
 /*
  * *Tlist is FILE, check that SList is not DIR
