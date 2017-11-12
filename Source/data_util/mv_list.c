@@ -374,7 +374,7 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 		if((*SList)->prev != NULL) TPrev->next = (*SList);
 /*
  * if moved node is in the same directory as target node
- * dicrease number of items in the directory
+ * do not increase coutn of nodes, otherwise increase count of nodes in directory
  */
  		if(Par != TPar)
 			TPar->ndim++;
@@ -394,7 +394,7 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
  * This will not happen if Slist was a head node, ie. its Par == NULL
  */
 	if(Par != NULL){
-		Par->ndim--;
+		if(Par != TPar) Par->ndim--;
 		if(Par->ndim > 0){
 /*
  * still nodes in directory
