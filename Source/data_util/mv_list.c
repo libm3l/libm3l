@@ -324,6 +324,14 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
  */
 	node_t *Prev, *Par, *Next;
 	node_t *TPrev, *TPar, *TNext;
+    
+    if(*SList == *TList){
+/*
+ * specified list does not exist
+ */
+		Warning("mv_list: : list can not be moved to itself");
+		return -2;
+	}
 /*
  * save neighbours of the Slist
  */
@@ -380,7 +388,7 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
  * Place Slist where TList was before
  */
         if(TNext != *SList)(*SList)->next  = TNext; // prevent circular dependency
-		(*SList)->prev    = TPrev;
+		(*SList)->prev     = TPrev;
 		(*SList)->parent  = TPar;
 		
 		if((*SList)->next != NULL && TNext != *SList) TNext->prev = (*SList);
@@ -396,10 +404,14 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 /*
  * add a new node to the DIR list
  */
-		if ( m3l_add_list(SList, TList, Popts) < 0){
-			Warning("Error mv_list copy");
-			return -1;
-		}
+        if(Par != TPar){
+		  if ( m3l_add_list(SList, TList, Popts) < 0){
+			  Warning("Error mv_list copy");
+			  return -1;
+		  }
+        }
+        else
+           return 1;
 	}
 /*
  * If the SList was removed, connect the list chain (after SList was removed)
@@ -416,16 +428,14 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 /*
  * List is in the middle
  */
-				Prev->next = Next;
-				Next->prev = Prev;
+                 Prev->next = Next;
+				 Next->prev = Prev;
 			}
 			else if(Next == NULL){
 /*
  * List is the last in line
  */
 				Prev->next = NULL;
-// 			Par->child = NULL;
-// 			Par->ndim = 0;
 			}
 			else if(Prev == NULL){
 /*
