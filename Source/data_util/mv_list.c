@@ -351,7 +351,7 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 		TPrev = (*TList)->prev;
 		TPar  = (*TList)->parent;
         
-        if(TNext == *Slist){
+        if(TNext == *SList){
             
         }
 		
@@ -370,11 +370,11 @@ lmint_t m3l_mv_list(lmint_t call, node_t **SList, node_t **TList, opts_t *Popts)
 /*
  * if list was moved to its predecessor, just remove predecessor
  */
-		if(TNext == *Slist)return 1;
+		if(TNext == *SList)return 1;
 /*
  * if list was moved to its successor, just remove predecessor
  */
-		if(TPrev == *Slist)return 1;
+		if(TPrev == *SList)return 1;
 
 /*
  * Place Slist where TList was before
