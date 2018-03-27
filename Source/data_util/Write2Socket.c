@@ -582,7 +582,7 @@ lmint_t m3l_write_buffer(lmchar_t *buffer, lmsize_t *bitcount, const lmchar_t *b
 	else if(force == 1){
 /*
  * this is the end of sending processs, send everything you have in buffer regardless how long it is.
- * The last sequence of the bugger is -EOMB-
+ * The last sequence of the buffer is -EOMB-
  */
 		buffer[*bitcount] = '\0';
 // 		size = strlen(buffer);
@@ -654,7 +654,7 @@ lmint_t m3l_write_buffer(lmchar_t *buffer, lmsize_t *bitcount, const lmchar_t *b
 // 	else if(force == 1){
 // /*
 //  * this is the end of sending processs, send everything you have in OCbuffer regardless how long it is.
-//  * The last sequence of the bugger is -EOMB-
+//  * The last sequence of the buffer is -EOMB-
 //  */
 // 		size = strlen(OCbuffer);
 // 		if ( (n = Write(sockfd,size)) < size)
