@@ -30,7 +30,7 @@ where PATHTOLIBM3L is a path to location of libm3l.so file
 Portability
 -----------
 
-libm3l is primarily for Linux. After some modifications it can be used
+libm3l is primarily for Linux systems. After some modifications it can be used
 on Windows systems, the necessary modifications are not part of this distribution.
 
 References
