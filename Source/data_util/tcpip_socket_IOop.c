@@ -283,6 +283,14 @@ node_t *m3l_Send_receive_tcpipsocket(node_t *Lnode, const lmchar_t *hostname, lm
 // 	opts.opt_MEMCP = 'S';  // type of buffering
 // 	opts.opt_EOBseq = '\0'; // send EOFbuff sequence only
 // 	opts.opt_REOBseq = '\0'; // read EOFbuff sequence only
+/*
+ * opt_EOBseq and opt_REOBseq are used to specify that 
+ * the only thing which is sent/receive through channel 
+ * is EOB sequence
+ * It is used if multiple libm3l list are to be sequentially sent by one process and 
+ * received by another process. To notify the processes that one libm3l list was sent, the 
+ * receiving process sends EOB and sending process will receive it
+ */
 
 	Popts = &opts;
 	m3l_set_Send_receive_tcpipsocket(&Popts);
