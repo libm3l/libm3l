@@ -30,17 +30,17 @@ where PATHTOLIBM3L is a path to location of libm3l.so file
 Portability
 -----------
 
-libm3l is primarily for Linux. After some modifications it can be used
+libm3l is primarily for Linux systems. After some modifications it can be used
 on Windows systems, the necessary modifications are not part of this distribution.
 
 References
 -----------
 
-Adam Jirasek and Arthur W. Rizzi. "libm3l and lsipdx - Utilities for Inter-Process Data Transfer and Synchronization", 52nd Aerospace Sciences Meeting, AIAA SciTech Forum, (AIAA 2014-1045) https://doi.org/10.2514/6.2014-1045, https://www.researchgate.net/publication/269248697_libm3l_and_lsipdx_-_Utilities_for_Inter-Process_Data_Transfer_and_Synchronization
+Adam Jirasek and Arthur W. Rizzi: "libm3l and lsipdx - Utilities for Inter-Process Data Transfer and Synchronization", 52nd Aerospace Sciences Meeting, AIAA SciTech Forum, (AIAA 2014-1045) https://doi.org/10.2514/6.2014-1045, https://www.researchgate.net/publication/269248697_libm3l_and_lsipdx_-_Utilities_for_Inter-Process_Data_Transfer_and_Synchronization
 
- Adam Jirasek, Olivier Amoignon, and Peter Eliasson. "Coupling of the Edge CFD Solver with External Solvers", 53rd AIAA Aerospace Sciences Meeting, AIAA SciTech Forum, (AIAA 2015-0769) https://doi.org/10.2514/6.2015-0769, https://www.researchgate.net/publication/273462889_Coupling_of_the_Edge_CFD_Solver_with_External_Solvers
+ Adam Jirasek, Olivier Amoignon, Peter Eliasson, Mats Dalenbring and Urban Falk: "Coupling of the Edge CFD Solver with External Solvers", 53rd AIAA Aerospace Sciences Meeting, AIAA SciTech Forum, (AIAA 2015-0769) https://doi.org/10.2514/6.2015-0769, https://www.researchgate.net/publication/273462889_Coupling_of_the_Edge_CFD_Solver_with_External_Solvers
 
-Karlsson A. and Ringertz U.: Experimental and Analytical Investigation of Aircraft-Like Wind Tunnel Model with External Stores, XVII INTERNATIONAL FORUM OF AEROELASTICITY AND STRUCTURAL DYNAMICS 25-28 June, 2017, COMO, ITALY
+Karlsson A. and Ringertz U.: Experimental and Analytical Investigation of Aircraft-Like Wind Tunnel Model with External Stores, XVII International Forum on Aeroleasticity and Structural Dynamics, 25-28 June, 2017, Como, Italy
 
 
 

@@ -195,6 +195,14 @@ lmint_t m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
 		Warning("add_list: : NULL list");
 		return -2;
 	}
+	
+	if(*List == *WTAList){
+/*
+ * specified list does not exist
+ */
+		Warning("add_list: : list can not be added to itself position");
+		return -2;
+	}
 		
 	if(strncmp( (*WTAList)->type, "DIR", 3) != 0){
 /*
@@ -205,9 +213,8 @@ lmint_t m3l_add_list(node_t **List, node_t **WTAList, opts_t *Popt)
  * add node before WTAList
  */		
 			(*List)->parent  = (*WTAList)->parent;
-			(*List)->prev    = (*WTAList)->prev;
+            (*List)->prev    = (*WTAList)->prev;
 			(*List)->next    = (*WTAList);
-
 			(*WTAList)->prev = (*List);
 /*
  * increase counter of number of items in parent list
