@@ -175,6 +175,8 @@ lmint_t m3l_cli_open_socket(const lmchar_t * server_addr, lmint_t portno, lmchar
         Perror("connect");
         close(sockfd);
      }
+     
+     freeaddrinfo(servinfo); 
 /*
  * for test purposes, specify TCP_NODELAY, ie. dissable Nagle's algorithm
  */
