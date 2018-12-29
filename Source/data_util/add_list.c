@@ -92,8 +92,8 @@ lmint_t m3l_add(node_t **SList, node_t **TList, const lmchar_t *t_path, const lm
 /*
  * check that there is only one DIR in root of *TList 
  */
-		if( (*TList)->next != NULL){
-			Warning("add_list: DIR is not unique");
+		if( (*TList)->next != NULL && (*TList)->parent == NULL){
+			Warning("add_list: root DIR is not unique");
 			return -1;
 		}
 		
