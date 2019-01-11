@@ -42,9 +42,9 @@
 #define __FUNCTIONSARRAYS_H__
 
 extern CPP_C  lmsize_t m3l_get_ind(lmsize_t , lmsize_t *, lmsize_t *);
-extern CPP_C  lmsize_t m3l_get_4ind(lmsize_t , lmsize_t , lmsize_t , lmsize_t, lmsize_t, lmsize_t, lmsize_t, lmsize_t);
-extern CPP_C  lmsize_t m3l_get_3ind(lmsize_t , lmsize_t , lmsize_t , lmsize_t, lmsize_t, lmsize_t);
-extern CPP_C  lmsize_t m3l_get_2ind(lmsize_t , lmsize_t , lmsize_t , lmsize_t );
+extern CPP_C  lmsize_t m3l_get_4ind(lmsize_t , lmsize_t , lmsize_t , lmsize_t, lmsize_t, lmsize_t, lmsize_t);
+extern CPP_C  lmsize_t m3l_get_3ind(lmsize_t , lmsize_t , lmsize_t , lmsize_t, lmsize_t);
+extern CPP_C  lmsize_t m3l_get_2ind(lmsize_t , lmsize_t , lmsize_t  );
 extern CPP_C  void *m3l_get_data_pointer(node_t *);
 extern CPP_C  lmsize_t *m3l_get_List_dim(node_t *);
 extern CPP_C  lmsize_t m3l_get_List_ndim(node_t *);

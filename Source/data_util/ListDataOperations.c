@@ -81,7 +81,7 @@ lmsize_t m3l_get_ind(lmsize_t ndim, lmsize_t *ind,  lmsize_t *dim)
 /*
  * function get index of 1D array from 4-dimensional array
  */
-lmsize_t m3l_get_4nd(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t l, lmsize_t im, lmsize_t jm, lmsize_t km, lmsize_t lm)
+lmsize_t m3l_get_4nd(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t l,  lmsize_t jm, lmsize_t km, lmsize_t lm)
 {
 	lmsize_t ret_ind; 	
  	ret_ind = i*jm*km*lm+j*km*lm+k*lm+l;
@@ -92,7 +92,7 @@ lmsize_t m3l_get_4nd(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t l, lmsize_t im
 /*
  * function get index of 1D array from 3-dimensional array
  */
-lmsize_t m3l_get_3ind(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t im, lmsize_t jm, lmsize_t km)
+lmsize_t m3l_get_3ind(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t jm, lmsize_t km)
 {
 	lmsize_t ret_ind; 	
  	ret_ind = i*jm*km+j*km+k;
@@ -103,7 +103,7 @@ lmsize_t m3l_get_3ind(lmsize_t i, lmsize_t j, lmsize_t k, lmsize_t im, lmsize_t 
 /*
  * function get index of 1D array from 2-dimensional array
  */
-lmsize_t m3l_get_2ind(lmsize_t i, lmsize_t j, lmsize_t im, lmsize_t jm)
+lmsize_t m3l_get_2ind(lmsize_t i, lmsize_t j, lmsize_t jm)
 {
 	lmsize_t ret_ind; 	
  	ret_ind = i*jm+j;
