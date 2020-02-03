@@ -30,8 +30,7 @@ where PATHTOLIBM3L is a path to location of libm3l.so file
 Portability
 -----------
 
-libm3l is primarily for Linux systems. After some modifications it can be used
-on Windows systems, the necessary modifications are not part of this distribution.
+libm3l is primarily intended for Linux systems. Other systems will likely require modification to the library.
 
 References
 -----------
@@ -42,6 +41,6 @@ Adam Jirasek and Arthur W. Rizzi: "libm3l and lsipdx - Utilities for Inter-Proce
 
 Karlsson A. and Ringertz U.: Experimental and Analytical Investigation of Aircraft-Like Wind Tunnel Model with External Stores, XVII International Forum on Aeroleasticity and Structural Dynamics, 25-28 June, 2017, Como, Italy
 
-
+Adam Jirasek and Jurgen Saidel: Recent Developments in Fun3D and LoCi/CHEM CFD Codes Towards Multiphysics Modeling, AIAA 2020-1033, Orlando, Florida, 2020 Published Online:5 Jan 2020https://doi.org/10.2514/6.2020-1033
 
 [![Analytics](https://ga-beacon.appspot.com/UA-47981720-2/libm3l/libm3l)](https://github.com/igrigorik/ga-beacon)
